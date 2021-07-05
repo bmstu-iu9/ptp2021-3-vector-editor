@@ -1,0 +1,58 @@
+body {
+  height: 100%;
+  background: rgb(236, 221, 221);
+}
+h1 {
+  font-size: 4vh;
+  font-family: Courier;
+  color: rgb(255, 255, 255);
+  margin-left: 1vw;
+}
+header {
+  width: 100vw;
+  height: 10vh;
+  background-color: #310000;
+  display: flex;
+  position: fixed;
+}
+#left-panel {
+  width: 13vh;
+  height: 100vh;
+  background-color: #bb9292;
+  position: fixed;
+  top: 11vh;
+}
+/*scrolling*/
+.layer {
+  overflow: scroll; /* Добавляем полосы прокрутки */
+  width: 850px; /* Ширина блока */
+  height: 500px; /* Высота блока */
+  padding: 10px; /* Поля вокруг текста */
+  /* border: solid 1px black;  Параметры рамки */
+  position: fixed;
+  top: 14vh;
+  left: 10vw;
+  background: rgb(231, 204, 204);
+}
+#draw-panel {
+  position: absolute;
+  top: 8%;
+  left: 8%;
+  background: rgb(255, 255, 255);
+}
+.button {
+  display: inline-block;
+  overflow: hidden;
+  margin: 20%;
+  width: 8vh;
+  height: 8vh;
+  border-radius: 10%;
+  background-size: contain;
+  background-color: #ffdbdb;
+  border-color:rgb(141, 94, 94);
+  /*border: none;*/
+}
+
+.button:hover {
+  background-color: #966d6d;
+}

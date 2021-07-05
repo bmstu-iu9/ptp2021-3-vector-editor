@@ -15,8 +15,8 @@ header {
   display: flex;
   position: fixed;
 }
-#left-panel {
-  width: 13vh;
+#vertical_panel {
+  width: 7vw;
   height: 100vh;
   background-color: #bb9292;
   position: fixed;
@@ -24,22 +24,25 @@ header {
 }
 /*scrolling*/
 .layer {
-  overflow: scroll; /* Добавляем полосы прокрутки */
-  width: 850px; /* Ширина блока */
-  height: 500px; /* Высота блока */
-  padding: 10px; /* Поля вокруг текста */
-  /* border: solid 1px black;  Параметры рамки */
+  overflow: scroll; 
+  width: 650px; 
+  height: 380px; 
+  padding: 10px; 
   position: fixed;
   top: 14vh;
   left: 10vw;
   background: rgb(231, 204, 204);
 }
-#draw-panel {
-  position: absolute;
-  top: 8%;
-  left: 8%;
+/*холст*/
+#svg_panel {
+  width: 700px;
+  height: 300px;
+  position: relative;
+  left: 5%;
+  top: 5%;
   background: rgb(255, 255, 255);
 }
+
 .button {
   display: inline-block;
   overflow: hidden;
@@ -49,7 +52,7 @@ header {
   border-radius: 10%;
   background-size: contain;
   background-color: #ffdbdb;
-  border-color:rgb(141, 94, 94);
+  border-color: rgb(141, 94, 94);
   /*border: none;*/
 }
 

@@ -3,28 +3,36 @@
   <head>
     <meta charset="UTF-8" />
     <title>svg</title>
-    <link rel="stylesheet" href="style.css" /> 
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <header>
-        <h1>SVG</h1>
+      <h1>SVG</h1>
     </header>
     <main>
-      <div id="left-panel">
-        <button title="Рука" class="button" id="hand" style="background-image: url(img/hand.svg)"></button>
-        <button title="Неработающая лупа" class="button" id="scale" style="background-image: url(img/лупа.svg)"></button>
+      <div id="vertical_panel">
+        <button
+          title="Рука"
+          class="button"
+          id="hand"
+          style="background-image: url(img/hand.svg)"
+        ></button>
+        <button
+          title="Неработающая лупа"
+          class="button"
+          id="scale"
+          style="background-image: url(img/лупа.svg)"
+        ></button>
       </div>
-      <div class="layer" id="scroll-panel">
-        <div id="draw-panel">
-          <svg
-            id="svg-panel"
-            width="700"
-            height="400"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:svg="http://www.w3.org/2000/svg"
-          ></svg>
-        </div>
+      <div class="layer" id="main_panel">
+        <svg
+          id="svg_panel"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:svg="http://www.w3.org/2000/svg"
+        ></svg>
       </div>
     </main>
+    <script src="js/hand.js"></script>
+    <script src="js/лупа.js"></script>
   </body>
 </html>

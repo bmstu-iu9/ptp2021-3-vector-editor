@@ -1,0 +1,62 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+body {
+  background: rgb(236, 221, 221);
+}
+h1 {
+  font-size: 5.2vh;
+  font-family: Courier;
+  color: rgb(255, 255, 255);
+  margin-left: 1vw;
+  margin-top: 2vh;
+}
+header {
+  width: 100vw;
+  height: 10vh;
+  background-color: #310000;
+  position: fixed;
+}
+#vertical_panel {
+  width: 5vw;
+  height: 90vh;
+  background-color: #bb9292;
+  position: fixed;
+  top: 10vh;
+}
+/*scrolling*/
+.layer {
+  overflow: scroll;
+  width: 80vw; 
+  height: 70vh; 
+  position: fixed;
+  top: 14vh;
+  left: 8vw;
+  background: rgb(231, 204, 204);
+}
+/*холст*/
+#svg_panel {
+  width: 40vw;
+  height: 70vh;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgb(255, 255, 255);
+}
+
+.button {
+  margin: 0.5vw;
+  width: 4vw;
+  height: 4vw;
+  border-radius: 10%;
+  background-size: cover;
+  background-color: #ffdbdb;
+  border-color: rgb(141, 94, 94);
+  /*border: none;*/
+}
+
+.button:hover {
+  background-color: #966d6d;
+}

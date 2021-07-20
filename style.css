@@ -22,7 +22,10 @@ header {
   color: rgb(255, 255, 255);
   background-color: #310000;
   position: fixed;
+  z-index: 2;
 }
+
+/*MENU*/
 
 #menu_bar {
   top: 0vh;
@@ -49,21 +52,31 @@ header {
 
 .container > ul li {
   position: relative;
-  border-right: 0.15px solid #bb9292;
 } 
-
-.container > ul li:first-child {
-  border-left: 0.15px solid #bb9292;
-}
-
-.container > ul li:last-child {
-  border-right: 0.15px solid #bb9292;
-}
 
 .container ul > li a:hover {
   background-color: #bb9292;
   box-shadow: 1px 5px 10px -5px black;
   transition: all 0.3s ease;
+}
+
+/*SUB MENU*/
+
+.container li ul {
+  position: absolute;
+  display: none;
+  list-style: none;
+}
+
+.container li > ul li a {
+  font-size: 2vh;
+  padding: 1.8vh 1vw 1.8vh 1vw;
+  text-transform: none;
+  background-color: #310000;
+}
+
+.container li:hover > ul {
+  display: block;
 }
 
 /*MAIN*/
@@ -81,10 +94,11 @@ header {
   overflow: scroll;
   width: 80vw; 
   height: 70vh; 
-  position: fixed;
+  position: relative;
   top: 14vh;
   left: 8vw;
   background: rgb(231, 204, 204);
+  z-index:  1;
 }
 
 /*холст*/
@@ -96,6 +110,7 @@ header {
   left: 50%;
   transform: translate(-50%, -50%);
   background: rgb(255, 255, 255);
+  z-index: 1;
 }
 
 .button {

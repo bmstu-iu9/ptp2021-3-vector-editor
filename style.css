@@ -2,22 +2,72 @@
     margin: 0;
     padding: 0;
 }
+
 body {
   background: rgb(236, 221, 221);
 }
-h1 {
+
+/*HEADER*/
+
+#logo {
   font-size: 5.2vh;
-  font-family: Courier;
-  color: rgb(255, 255, 255);
-  margin-left: 1vw;
+  margin-left: 1.5vw;
   margin-top: 2vh;
 }
+
 header {
   width: 100vw;
   height: 10vh;
+  font-family: Courier;
+  color: rgb(255, 255, 255);
   background-color: #310000;
   position: fixed;
 }
+
+#menu_bar {
+  top: 0vh;
+  height: 10vh;
+  width:  100%;
+  margin-left:  8vw;
+  position: fixed;
+  background-color:  #310000;
+  font-size: 3vh;
+}
+
+.container > ul {
+  display: flex;
+  list-style: none;
+}
+
+.container > ul li a {
+  display: block;
+  text-decoration: none;
+  padding: 3.3vh 1.4vw 3.3vh 1.6vw;
+  color: rgb(255, 255, 255);
+  transition: all 0.3s ease;
+}
+
+.container > ul li {
+  position: relative;
+  border-right: 0.15px solid #bb9292;
+} 
+
+.container > ul li:first-child {
+  border-left: 0.15px solid #bb9292;
+}
+
+.container > ul li:last-child {
+  border-right: 0.15px solid #bb9292;
+}
+
+.container ul > li a:hover {
+  background-color: #bb9292;
+  box-shadow: 1px 5px 10px -5px black;
+  transition: all 0.3s ease;
+}
+
+/*MAIN*/
+
 #vertical_panel {
   width: 5vw;
   height: 90vh;
@@ -25,6 +75,7 @@ header {
   position: fixed;
   top: 10vh;
 }
+
 /*scrolling*/
 .layer {
   overflow: scroll;
@@ -35,6 +86,7 @@ header {
   left: 8vw;
   background: rgb(231, 204, 204);
 }
+
 /*холст*/
 #svg_panel {
   width: 40vw;

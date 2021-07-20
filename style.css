@@ -114,7 +114,7 @@ header {
 }
 
 .button {
-  margin: 0.5vw;
+  margin: 0.45vw;
   width: 4vw;
   height: 4vw;
   border-radius: 10%;
@@ -126,4 +126,6 @@ header {
 
 .button:hover {
   background-color: #966d6d;
+  box-shadow: 1px 5px 10px -5px black;
+  transition: all 0.3s ease;
 }

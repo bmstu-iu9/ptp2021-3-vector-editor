@@ -1,21 +1,21 @@
 scale = document.getElementById("scale");
 scale.onclick = function () {
   wasPressed = "scale";
-  panel.style.cursor = "zoom-in";
-  panel.onmousedown = function (event) {
+  svgPanel.style.cursor = "zoom-in";
+  svgPanel.onmousedown = function (event) {
     if (wasPressed == "scale") {
-      if (event.ctrlKey) panel.style.cursor = "zoom-out";
-      else panel.style.cursor = "zoom-in";
+      if (event.ctrlKey) svgPanel.style.cursor = "zoom-out";
+      else svgPanel.style.cursor = "zoom-in";
     }
   };
-  panel.onmouseup = function (event) {
+  svgPanel.onmouseup = function (event) {
     if (wasPressed == "scale") {
       if (event.ctrlKey) {
-        panel.style.width = panel.clientWidth / 1.5 + "px";
-        panel.style.height = panel.clientHeight / 1.5 + "px";
+        svgPanel.style.width = svgPanel.clientWidth / 1.5 + "px";
+        svgPanel.style.height = svgPanel.clientHeight / 1.5 + "px";
       } else {
-        panel.style.width = panel.clientWidth * 1.5 + "px";
-        panel.style.height = panel.clientHeight * 1.5 + "px";
+        svgPanel.style.width = svgPanel.clientWidth * 1.5 + "px";
+        svgPanel.style.height = svgPanel.clientHeight * 1.5 + "px";
       }
     }
   };

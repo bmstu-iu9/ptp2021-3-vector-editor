@@ -87,6 +87,7 @@ header {
   background-color: #bb9292;
   position: fixed;
   top: 10vh;
+  z-index: 2;
 }
 
 /*scrolling*/
@@ -113,19 +114,52 @@ header {
   z-index: 1;
 }
 
-.button {
-  margin: 0.45vw;
+.tool_button {
+  margin: 0.5vw;
   width: 4vw;
   height: 4vw;
   border-radius: 10%;
   background-size: cover;
   background-color: #ffdbdb;
   border-color: rgb(141, 94, 94);
-  /*border: none;*/
+  border-width: medium;
 }
 
-.button:hover {
+.active_tool_button {
+  margin: 0.5vw;
+  width: 4vw;
+  height: 4vw;
+  border-radius: 10%;
+  background-size: cover;
+  background-color: #ffdbdb;
+  border-color: rgb(141, 94, 94);
+  border-width: thick;
+}
+
+.tool_button:hover {
   background-color: #966d6d;
-  box-shadow: 1px 5px 10px -5px black;
-  transition: all 0.3s ease;
+}
+
+/*VERT MENU*/
+#figures:hover{
+  background-color: #ffdbdb;
+}
+.vertical_menu{
+  position: absolute;
+  list-style: none;
+  width: 100%;
+  left: 95%;
+  opacity: 0;
+}
+.vertical_menu a{
+  font-size: 150%;
+  background-color: #ffdbdb;
+  text-decoration: none;
+  color:rgb(104, 70, 70)
+}
+.vertical_menu a:hover{
+  background-color: #966d6d;
+}
+#figures:hover .vertical_menu{
+  opacity: 1;
 }

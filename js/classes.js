@@ -45,13 +45,13 @@ class pencil extends object {
     constructor(name, x0, y0){
         super(name);
 
-        this.path = x0 + " " + y0 + ", ";
+        this.path = x0 + " " + y0;
         this.svgElement.setAttribute('fill', "none");
         this.svgElement.setAttribute('stroke', "black");
         this.svgElement.setAttribute('points', this.path);
     }
     updateAttributes(curX, curY){
-        this.path += curX + " " + curY + ", ";
+        this.path += ", " + curX + " " + curY;
         this.svgElement.setAttribute('points', this.path);
     }
 }

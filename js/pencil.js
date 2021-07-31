@@ -1,4 +1,5 @@
 pencil = document.getElementById("pencil");
+let is_beyond = false;
 
 pencil.onclick = function () {
     wasPressed = "pencil";
@@ -20,8 +21,17 @@ pencil.onclick = function () {
                 svgPanel.onmousemove = null;
             };
             svgPanel.onmouseleave = function () {
-                svgPanel.onmousemove = null;
+                is_beyond = true;
+            };
+            svgPanel.onmouseenter = function (current) {
+                if (is_beyond) {
+                    coords = getCoords(svgPanel);
+                    x0 = (current.pageX - coords.left) / scaleСoef;
+                    y0 = (current.pageY - coords.top) / scaleСoef;
+                    newObject = new pencil("polyline", x0, y0);
+                    is_beyond = false;
+                 }
             };
         }
     };
-}
+};

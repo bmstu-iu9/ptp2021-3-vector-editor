@@ -10,7 +10,7 @@ rectangle.onclick = function () {
         let newObject = new rectangle('rect');
 
         if (wasPressed == "rectangle") {
-            scrollPanel.onmousemove = function (current) {
+            document.onmousemove = function (current) {
                 curX = (current.pageX - coords.left)/scaleСoef;
                 curY = (current.pageY - coords.top)/scaleСoef;
 
@@ -18,7 +18,7 @@ rectangle.onclick = function () {
             };
 
             document.onmouseup = function () {
-                scrollPanel.onmousemove = null;
+                document.onmousemove = null;
             };            
         }
     };

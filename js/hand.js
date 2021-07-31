@@ -3,7 +3,6 @@ hand = document.getElementById("hand");
 hand.onclick = function () {
   wasPressed = "hand";
   svgPanel.style.cursor = "grab";
-
   svgPanel.onmousedown = function (current) {
     if (wasPressed == "hand") {
       svgPanel.style.cursor = "grabbing";

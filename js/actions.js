@@ -1,5 +1,4 @@
 //DELETE
-
 deleteChild = document.getElementById("delete");
 
 deleteChild.onclick = function () {
@@ -8,7 +7,6 @@ deleteChild.onclick = function () {
         currentObject = null;
     }
 }
-
 document.addEventListener('keydown', function(event) {
     if (event.code == 'Delete' && currentObject != null) {
         svgPanel.removeChild(currentObject);
@@ -17,7 +15,6 @@ document.addEventListener('keydown', function(event) {
 });
 
 //CANCEL
-
 /*cancel = document.getElementById("cancel");
 
 cancel.onclick = function () {
@@ -37,7 +34,6 @@ document.addEventListener('keydown', function(event) {
 });*/
 
 //SAVE
-
 /*save = document.getElementById("save");
 
 save.onclick = function () {

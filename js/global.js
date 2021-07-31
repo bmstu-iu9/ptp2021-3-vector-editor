@@ -1,7 +1,7 @@
 svgPanel = document.getElementById("svg_panel");
 scrollPanel = document.getElementById("main_panel");
 let wasPressed, currentColor, currentObject = null, objects = [];
-
+let scaleСoef = 1;
 
 //ACTIVE TOOL
 var vertical_panel = document.getElementById("vertical_panel");

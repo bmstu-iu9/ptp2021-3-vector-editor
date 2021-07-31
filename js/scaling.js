@@ -1,4 +1,5 @@
 scale = document.getElementById("scale");
+
 scale.onclick = function () {
   wasPressed = "scale";
   svgPanel.style.cursor = "zoom-in";
@@ -13,9 +14,11 @@ scale.onclick = function () {
       if (event.ctrlKey) {
         svgPanel.style.width = svgPanel.clientWidth / 1.5 + "px";
         svgPanel.style.height = svgPanel.clientHeight / 1.5 + "px";
+        scaleСoef /= 1.5;
       } else {
         svgPanel.style.width = svgPanel.clientWidth * 1.5 + "px";
         svgPanel.style.height = svgPanel.clientHeight * 1.5 + "px";
+        scaleСoef *= 1.5;
       }
     }
   };

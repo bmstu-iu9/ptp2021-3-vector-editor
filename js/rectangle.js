@@ -4,22 +4,19 @@ rectangle.onclick = function () {
     wasPressed = "rectangle";
     svgPanel.style.cursor = "default";
     svgPanel.onmousedown = function (current) {
-        let coords = getCoords(svgPanel);
-        let x0 = (current.pageX - coords.left) / scaleСoef;
-        let y0 = (current.pageY - coords.top) / scaleСoef;
-        let newObject = new rectangle();
-
         if (wasPressed == "rectangle") {
+            coords = getMouseCoords(current);
+            let x0 = coords.x;
+            let y0 = coords.y;
+            let newObject = new rectangle();
+
             document.onmousemove = function (current) {
-                curX = (current.pageX - coords.left) / scaleСoef;
-                curY = (current.pageY - coords.top) / scaleСoef;
-
-                newObject.updateAttributes(x0, y0, curX, curY);
+                coords = getMouseCoords(current);
+                newObject.updateAttributes(x0, y0, coords.x, coords.y);
             };
-
             document.onmouseup = function () {
                 document.onmousemove = null;
-            };            
+            };
         }
     };
 }

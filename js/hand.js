@@ -6,10 +6,9 @@ hand.onclick = function () {
   svgPanel.onmousedown = function (current) {
     if (wasPressed == "hand") {
       svgPanel.style.cursor = "grabbing";
-      let coords = getCoords(svgPanel);
       let scrollcoords = getCoords(scrollPanel);
-      let shiftX = current.pageX - coords.left + scrollcoords.left;
-      let shiftY = current.pageY - coords.top + scrollcoords.top;
+      let shiftX = current.pageX - svgPanelCoords.left + scrollcoords.left;
+      let shiftY = current.pageY - svgPanelCoords.top + scrollcoords.top;
 
       svgPanel.onmousemove = function (current) {
         svgPanel.style.transform = "translate(0, 0)";
@@ -21,6 +20,7 @@ hand.onclick = function () {
         svgPanel.onmousemove = null;
         document.onmouseup = null;
         svgPanel.style.cursor = "grab";
+        svgPanelCoords = getCoords(svgPanel);
       };
     }
   };

@@ -20,6 +20,9 @@ class object{
 //RECTANGLE
 
 class rectangle extends object {
+    constructor(){
+        super('rect');
+    }
     updateAttributes(x0, y0, curX, curY){
         this.svgElement.setAttribute('width', Math.abs(curX - x0));
         this.svgElement.setAttribute('height', Math.abs(curY - y0));
@@ -31,6 +34,9 @@ class rectangle extends object {
 //ELLIPSE
 
 class ellipse extends object {
+    constructor(){
+        super('ellipse');
+    }
     updateAttributes(x0, y0, curX, curY){
         this.svgElement.setAttribute("rx", Math.abs(curX - x0)/2);
         this.svgElement.setAttribute("ry", Math.abs(curY - y0)/2);
@@ -42,9 +48,8 @@ class ellipse extends object {
 //PENCIL
 
 class pencil extends object {
-    constructor(name, x0, y0){
-        super(name);
-
+    constructor(x0, y0){
+        super('polyline');
         this.path = x0 + " " + y0;
         this.svgElement.setAttribute('fill', "none");
         this.svgElement.setAttribute('stroke', "black");

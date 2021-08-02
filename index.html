@@ -21,7 +21,7 @@
                 <li> <a href="#"> <b> Новый документ </b> </a> </li>
                 <li> <a href="#"> <b> Открыть SVG-файл </b> </a> </li>
                 <li> <a href="#"  id="save"> <b> Сохранить изображение </b> </a> </li>
-                <li> <a href="#"> <b> Сохранить как PNG </b> </a> </li>  
+                <li> <a href="#" id="savePng"> <b> Сохранить как PNG </b> </a> </li>  
               </ul>       
             </li>
             <li class="dropdown"> <a href="#"> <b> Редактировать </b> </a> 
@@ -31,14 +31,14 @@
                 <li> <a href="#"> <b> Вырезать </b> </a> </li>
                 <li> <a href="#"> <b> Копировать </b> </a> </li>  
                 <li> <a href="#"> <b> Вставить </b> </a> </li>  
-                <li> <a href="#" id="delete"> <b> Удалить </b> </a> </li> 
+                <li> <a href="#" id="deleteObject"> <b> Удалить </b> </a> </li> 
               </ul>    
             </li>
             <li class="dropdown"> <a href="#"> <b> Вид </b> </a>
               <ul class="sub_menu">
                 <li> <a href="#"> <b> Просмотр линейки </b> </a> </li> 
-                <li> <a href="#"> <b> Увеличить масштаб </b> </a> </li> 
-                <li> <a href="#"> <b> Уменьшить масштаб </b> </a> </li> 
+                <li> <a href="#" id="zoomIn"> <b> Увеличить масштаб </b> </a> </li> 
+                <li> <a href="#" id="zoomOut"> <b> Уменьшить масштаб </b> </a> </li> 
               </ul>      
             </li>
             <li class="dropdown"> <a href="#"> <b> Помощь </b> </a> </li>
@@ -122,17 +122,16 @@
           xmlns:svg="http://www.w3.org/2000/svg">
         </svg>
       </div>
+      <canvas id="canvas" width="800" height="550" style="display: none;"></canvas>
     </main>
     <script src="js/global.js"></script>
     <script src="js/actions.js"></script>
-
     <script src="js/cursor.js"></script>
     <script src="js/hand.js"></script>
     <script src="js/scaling.js"></script>
     <script src="js/pencil.js"></script>
     <script src="js/rectangle.js"></script>
     <script src="js/ellipse.js"></script>
-
     <script src="js/classes.js"></script>
   </body>
 </html>

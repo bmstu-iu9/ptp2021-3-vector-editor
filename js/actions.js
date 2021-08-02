@@ -1,7 +1,7 @@
 //DELETE
-deleteChild = document.getElementById("delete");
+deleteObject = document.getElementById("deleteObject");
 
-deleteChild.onclick = function () {
+deleteObject.onclick = function () {
     if (currentObject != null) {
         svgPanel.removeChild(currentObject);
         currentObject = null;
@@ -34,28 +34,64 @@ document.addEventListener('keydown', function(event) {
 });*/
 
 //SAVE
-/*save = document.getElementById("save");
+save = document.getElementById("save");
 
 save.onclick = function () {
-    let svgData = svgPanel.innerHTML.toString();
-
-    let fileName = prompt('Введите, пожалуйста, имя файла без расширения:');
-
+    let svgData = main_panel.innerHTML.toString();
+    let fileName = prompt('Введите имя файла без расширения:');
     if (fileName == null)
     return;
+    let blob = new Blob([svgData], {type: "image/svg+xml;charset=utf-8"});
+    let url = window.URL.createObjectURL(blob);
 
     let a = document.createElement("a");
-    document.body.appendChild(a);
     a.style = "display: none";
-
-    let blob = new Blob([svgData], {type: "octet/stream"}),
-        url = window.URL.createObjectURL(blob);
-
     a.href = url;
     a.download = fileName + ".svg";
     a.click();
 
     window.URL.revokeObjectURL(url);
-}*/
+}
+
+//SAVEPNG
+savePng = document.getElementById("savePng");
+
+savePng.onclick = function () {
+    let svgData = main_panel.innerHTML.toString();
+    let fileName = prompt('Введите имя файла без расширения:');
+    if (fileName == null)
+    return;
+    let blob = new Blob([svgData], {type: "image/svg+xml;charset=utf-8"});
+    let url = window.URL.createObjectURL(blob);
+
+    let canvas = document.getElementById("canvas");
+    let img = new Image();
+    img.onload = function() {
+        canvas.getContext("2d").drawImage(img, 0, 0);
+
+        let a = document.createElement("a");
+        a.style = "display: none";
+        a.href = canvas.toDataURL("image/png");;
+        a.download = fileName + ".png";
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+    }
+    img.src = url;
+}
 
 
+//SCALING
+zoomIn = document.getElementById("zoomIn");
+zoomIn.onclick = function () {
+    svgPanel.style.width = svgPanel.clientWidth * 1.5 + "px";
+    svgPanel.style.height = svgPanel.clientHeight * 1.5 + "px";
+    scaleСoef *= 1.5;
+}
+
+zoomOut = document.getElementById("zoomOut");
+zoomOut.onclick = function () {
+    svgPanel.style.width = svgPanel.clientWidth / 1.5 + "px";
+    svgPanel.style.height = svgPanel.clientHeight / 1.5 + "px";
+    scaleСoef /= 1.5;
+}

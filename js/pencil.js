@@ -6,14 +6,14 @@ pencil.onclick = function () {
     svgPanel.style.cursor = "default";
     svgPanel.onmousedown = function (current) {
         let coords = getCoords(svgPanel);
-        let x0 = (current.pageX - coords.left)/scaleСoef;
-        let y0 = (current.pageY - coords.top)/scaleСoef;
-        let newObject = new pencil('polyline', x0, y0);
+        let x0 = (current.pageX - coords.left) / scaleСoef;
+        let y0 = (current.pageY - coords.top) / scaleСoef;
+        let newObject = new pencil(x0, y0);
         
         if (wasPressed == "pencil") {
             svgPanel.onmousemove = function (current) {
-                curX = (current.pageX - coords.left)/scaleСoef;
-                curY = (current.pageY - coords.top)/scaleСoef;
+                curX = (current.pageX - coords.left) / scaleСoef;
+                curY = (current.pageY - coords.top) / scaleСoef;
 
                 newObject.updateAttributes(curX, curY);
             };
@@ -28,7 +28,7 @@ pencil.onclick = function () {
                     coords = getCoords(svgPanel);
                     x0 = (current.pageX - coords.left) / scaleСoef;
                     y0 = (current.pageY - coords.top) / scaleСoef;
-                    newObject = new pencil("polyline", x0, y0);
+                    newObject = new pencil(x0, y0);
                     is_beyond = false;
                  }
             };

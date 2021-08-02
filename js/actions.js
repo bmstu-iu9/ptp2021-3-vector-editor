@@ -51,6 +51,47 @@ save.onclick = function () {
     a.click();
 
     window.URL.revokeObjectURL(url);
-}*/
+}
+
+//SAVEPNG
+savePng = document.getElementById("savePng");
+
+savePng.onclick = function () {
+    let svgData = main_panel.innerHTML.toString();
+    let fileName = prompt('Введите имя файла без расширения:');
+    if (fileName == null)
+    return;
+    let blob = new Blob([svgData], {type: "image/svg+xml;charset=utf-8"});
+    let url = window.URL.createObjectURL(blob);
+
+    let canvas = document.getElementById("canvas");
+    let img = new Image();
+    img.onload = function() {
+        canvas.getContext("2d").drawImage(img, 0, 0);
+
+        let a = document.createElement("a");
+        a.style = "display: none";
+        a.href = canvas.toDataURL("image/png");;
+        a.download = fileName + ".png";
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+    }
+    img.src = url;
+}
 
 
+//SCALING
+zoomIn = document.getElementById("zoomIn");
+zoomIn.onclick = function () {
+    svgPanel.style.width = svgPanel.clientWidth * 1.5 + "px";
+    svgPanel.style.height = svgPanel.clientHeight * 1.5 + "px";
+    scaleСoef *= 1.5;
+}
+
+zoomOut = document.getElementById("zoomOut");
+zoomOut.onclick = function () {
+    svgPanel.style.width = svgPanel.clientWidth / 1.5 + "px";
+    svgPanel.style.height = svgPanel.clientHeight / 1.5 + "px";
+    scaleСoef /= 1.5;
+}

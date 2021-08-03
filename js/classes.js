@@ -1,11 +1,11 @@
 class object {
-    constructor(name, x0, y0) {
+    constructor(name) {
         this.svgElement = document.createElementNS("http://www.w3.org/2000/svg", name);;
         svgPanel.appendChild(this.svgElement);
-        this.x0 = x0;
-        this.y0 = y0;
+        this.x0 = curX;
+        this.y0 = curY;
         this.svgElement.setAttribute('fill', getCurrentColor());
-        console.log(getCurrentColor());
+        /*console.log(getCurrentColor());*/
 
         this.svgElement.addEventListener("click", function () {
             if (wasPressed == "cursor") {
@@ -25,10 +25,10 @@ class object {
 //RECTANGLE
 
 class rectangle extends object {
-    constructor(x0, y0) {
-        super('rect', x0, y0);
+    constructor() {
+        super('rect');
     }
-    updateAttributes(curX, curY) {
+    updateAttributes() {
         this.svgElement.setAttribute('width', Math.abs(curX - this.x0));
         this.svgElement.setAttribute('height', Math.abs(curY - this.y0));
         this.svgElement.setAttribute('x', Math.min(this.x0, curX));
@@ -39,10 +39,10 @@ class rectangle extends object {
 //ELLIPSE
 
 class ellipse extends object {
-    constructor(x0, y0) {
-        super('ellipse', x0, y0);
+    constructor() {
+        super('ellipse');
     }
-    updateAttributes(curX, curY) {
+    updateAttributes() {
         this.svgElement.setAttribute("rx", Math.abs(curX - this.x0) / 2);
         this.svgElement.setAttribute("ry", Math.abs(curY - this.y0) / 2);
         this.svgElement.setAttribute("cx", Math.min(this.x0, curX) + Math.abs(curX - this.x0) / 2);
@@ -53,14 +53,14 @@ class ellipse extends object {
 //PENCIL
 
 class pencil extends object {
-    constructor(x0, y0) {
-        super('polyline', x0, y0);
-        this.path = x0 + " " + y0;
+    constructor() {
+        super('polyline');
+        this.path = curX + " " + curY;
         this.svgElement.setAttribute('fill', "none");
         this.svgElement.setAttribute('stroke', getCurrentColor());
         this.svgElement.setAttribute('points', this.path);
     }
-    updateAttributes(curX, curY) {
+    updateAttributes() {
         this.path += ", " + curX + " " + curY;
         this.svgElement.setAttribute('points', this.path);
     }

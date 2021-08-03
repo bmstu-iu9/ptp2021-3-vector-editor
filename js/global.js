@@ -3,7 +3,9 @@ scrollPanel = document.getElementById("main_panel");
 let wasPressed, currentObject = null,
   strokeColor = "black",
   objects = [];
-let coords, svgPanelCoords = getCoords(svgPanel);
+let svgPanelCoords = getCoords(svgPanel),
+  scrollcoords = getCoords(scrollPanel),
+  curX, curY; //cursor coordinates
 let scaleСoef = 1;
 
 //CURRENT COLOR
@@ -33,9 +35,7 @@ function getCoords(elem) {
   };
 }
 
-function getMouseCoords(current) {
-  return {
-    x: (current.pageX - svgPanelCoords.left) / scaleСoef,
-    y: (current.pageY - svgPanelCoords.top) / scaleСoef,
-  };
+function updateCursorCoords(current) {
+  curX = (current.pageX - svgPanelCoords.left) / scaleСoef;
+  curY = (current.pageY - svgPanelCoords.top) / scaleСoef;
 }

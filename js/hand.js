@@ -6,7 +6,6 @@ hand.onclick = function () {
   svgPanel.onmousedown = function (current) {
     if (wasPressed == "hand") {
       svgPanel.style.cursor = "grabbing";
-      let scrollcoords = getCoords(scrollPanel);
       let shiftX = current.pageX - svgPanelCoords.left + scrollcoords.left;
       let shiftY = current.pageY - svgPanelCoords.top + scrollcoords.top;
 

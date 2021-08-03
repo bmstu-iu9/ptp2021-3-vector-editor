@@ -68,6 +68,40 @@ create.onclick = function () {
     scrollcoords, svgPanelCoords = getCoords(svgPanel);
 }
 
+//OPEN
+open = document.getElementById("open"); 
+
+open.onclick = function() {
+    document.getElementById("file-selector").click(); 
+}
+
+function readFile(object) {
+    let file = object.target.files[0]; 
+    let reader = new FileReader();
+    reader.onload = function (event) {
+        let result = confirm("Вы действительно хотите открыть новый файл? Все изменения в текущем файле будут удалены.");
+        if (!result) 
+            return;
+        svgPanel.outerHTML = event.target.result;
+        let divs = document.querySelector("#draw_panel");
+        let first = divs.firstElementChild;
+        if (first.id == "") {
+            first.setAttribute('id', 'svg_panel');
+        }
+        if (first.getAttribute('width') || first.getAttribute('height') == null) {
+            first.setAttribute('width', 512);
+            first.setAttribute('height', 512); 
+            first.setAttribute('viewBox', '0 0 512 512');
+        }
+        first.setAttribute('style', 'background-color: #fff; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);');
+        svgPanel = document.getElementById(first.id);
+        scrollcoords, svgPanelCoords = getCoords(svgPanel);
+    };
+    reader.readAsText(file); 
+}
+
+document.getElementById("file-selector").addEventListener("change", readFile);
+
 //SAVE
 save = document.getElementById("save");
 

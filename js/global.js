@@ -4,6 +4,7 @@ let wasPressed, currentObject = null,
   strokeColor = "black",
   objects = [];
 let svgPanelCoords = getCoords(svgPanel),
+  scrollcoords = getCoords(scrollPanel),
   curX, curY; //cursor coordinates
 let scaleСoef = 1;
 

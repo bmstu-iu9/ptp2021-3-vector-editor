@@ -8,11 +8,11 @@ ellipse.onclick = function () {
             coords = getMouseCoords(current);
             let x0 = coords.x;
             let y0 = coords.y;
-            let newObject = new ellipse();
+            let newObject = new ellipse(x0, y0);
 
             document.onmousemove = function (current) {
                 coords = getMouseCoords(current);
-                newObject.updateAttributes(x0, y0, coords.x, coords.y);
+                newObject.updateAttributes(coords.x, coords.y);
             };
             document.onmouseup = function () {
                 document.onmousemove = null;

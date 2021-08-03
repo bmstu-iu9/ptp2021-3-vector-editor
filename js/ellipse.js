@@ -5,14 +5,12 @@ ellipse.onclick = function () {
     svgPanel.style.cursor = "default";
     svgPanel.onmousedown = function (current) {
         if (wasPressed == "ellipse") {
-            coords = getMouseCoords(current);
-            let x0 = coords.x;
-            let y0 = coords.y;
-            let newObject = new ellipse(x0, y0);
+            updateCursorCoords(current);
+            let newObject = new ellipse();
 
             document.onmousemove = function (current) {
-                coords = getMouseCoords(current);
-                newObject.updateAttributes(coords.x, coords.y);
+                updateCursorCoords(current);
+                newObject.updateAttributes();
             };
             document.onmouseup = function () {
                 document.onmousemove = null;

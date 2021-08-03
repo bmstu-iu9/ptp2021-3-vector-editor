@@ -5,19 +5,19 @@ pencil.onclick = function () {
     svgPanel.style.cursor = "default";
     svgPanel.onmousedown = function (current) {
         if (wasPressed == "pencil") {
-            coords = getMouseCoords(current);
-            let newObject = new pencil(coords.x, coords.y);
+            updateCursorCoords(current);
+            let newObject = new pencil();
 
             svgPanel.onmousemove = function (current) {
-                coords = getMouseCoords(current);
-                newObject.updateAttributes(coords.x, coords.y);
+                updateCursorCoords(current);
+                newObject.updateAttributes();
             };
             document.onmouseup = function () {
                 svgPanel.onmousemove = null;
             };
             svgPanel.onmouseenter = function (current) {
-                coords = getMouseCoords(current);
-                newObject = new pencil(coords.x, coords.y);
+                updateCursorCoords(current);
+                newObject = new pencil();
             };
         }
     };

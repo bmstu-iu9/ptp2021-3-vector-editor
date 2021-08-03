@@ -1,4 +1,5 @@
 svgPanel = document.getElementById("svg_panel");
+drawPanel = document.getElementById("draw_panel");
 scrollPanel = document.getElementById("main_panel");
 let wasPressed, currentObject = null,
   strokeColor = "black",

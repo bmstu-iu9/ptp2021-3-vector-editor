@@ -106,7 +106,7 @@ document.getElementById("file-selector").addEventListener("change", readFile);
 save = document.getElementById("save");
 
 save.onclick = function () {
-    let svgData = main_panel.innerHTML.toString();
+    let svgData = draw_panel.innerHTML.toString();
     let fileName = prompt('Введите имя файла без расширения:');
     if (fileName == null)
     return;
@@ -126,7 +126,7 @@ save.onclick = function () {
 savePng = document.getElementById("savePng");
 
 savePng.onclick = function () {
-    let svgData = main_panel.innerHTML.toString();
+    let svgData = draw_panel.innerHTML.toString();
     let fileName = prompt('Введите имя файла без расширения:');
     if (fileName == null)
     return;

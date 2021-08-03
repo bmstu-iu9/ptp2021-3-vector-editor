@@ -1,6 +1,6 @@
 * {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 body {
@@ -30,19 +30,19 @@ header {
 #menu_bar {
   top: 0vh;
   height: 10vh;
-  width:  100%;
-  margin-left:  13vh;
+  width: 100%;
+  margin-left: 13vh;
   position: fixed;
-  background-color:  #310000;
+  background-color: #310000;
   font-size: 3vh;
 }
 
-.container > ul {
+.container>ul {
   display: flex;
   list-style: none;
 }
 
-.container > ul li a {
+.container>ul li a {
   display: block;
   text-decoration: none;
   padding: 3.3vh 1.4vw 3.3vh 1.6vw;
@@ -50,11 +50,11 @@ header {
   transition: all 0.3s ease;
 }
 
-.container > ul li {
+.container>ul li {
   position: relative;
-} 
+}
 
-.container ul > li a:hover {
+.container ul>li a:hover {
   background-color: #bb9292;
   box-shadow: 1px 5px 10px -5px black;
   transition: all 0.3s ease;
@@ -68,14 +68,14 @@ header {
   list-style: none;
 }
 
-.container li > ul li a {
+.container li>ul li a {
   font-size: 2vh;
   padding: 1.8vh 1vw 1.8vh 1vw;
   text-transform: none;
   background-color: #310000;
 }
 
-.container li:hover > ul {
+.container li:hover>ul {
   display: block;
 }
 
@@ -93,13 +93,13 @@ header {
 /*scrolling*/
 .layer {
   overflow: scroll;
-  width: 88vw; 
-  height: 80vh; 
+  width: 88vw;
+  height: 80vh;
   position: relative;
   top: 14vh;
   left: 8vw;
   background: rgb(231, 204, 204);
-  z-index:  1;
+  z-index: 1;
 }
 
 /*холст*/
@@ -125,14 +125,7 @@ header {
   border-width: medium;
 }
 
-.active_tool_button {
-  margin: 0.5vw;
-  width: 4vw;
-  height: 4vw;
-  border-radius: 10%;
-  background-size: cover;
-  background-color: #ffdbdb;
-  border-color: rgb(141, 94, 94);
+.active {
   border-width: thick;
 }
 
@@ -141,25 +134,45 @@ header {
 }
 
 /*VERT MENU*/
-#figures:hover{
+#figures:hover {
   background-color: #ffdbdb;
 }
-.vertical_menu{
+
+.vertical_menu {
   position: absolute;
   list-style: none;
   width: 100%;
   left: 95%;
   opacity: 0;
 }
-.vertical_menu a{
+
+.vertical_menu a {
   font-size: 150%;
   background-color: #ffdbdb;
   text-decoration: none;
-  color:rgb(104, 70, 70)
+  color: rgb(104, 70, 70)
 }
-.vertical_menu a:hover{
+
+.vertical_menu a:hover {
   background-color: #966d6d;
 }
-#figures:hover .vertical_menu{
+
+#figures:hover .vertical_menu {
   opacity: 1;
+}
+
+/*PALETTE*/
+#palette {
+  text-align: center;
+  border-style: solid;
+  border-color: rgb(49, 0, 0);
+  border-image: initial;
+  border-width: 6px 0px 0px;
+}
+
+#colorpicker {
+  width: 4vw;
+  height: 4vw;
+  margin: 0.3vw;
+  border-radius: 10%;
 }

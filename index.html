@@ -1,137 +1,92 @@
 <!DOCTYPE html>
 <html lang="ru">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Векторный графический редактор, позволяющий пользователю создавать 
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Векторный графический редактор, позволяющий пользователю создавать 
     и редактировать векторные изображения">
-    <meta name="keywords" content="графический редактор, создать, удалить, переместить, объединить"> 
-    <meta name="authors" content=""> 
-    <title>svg</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <header>
-      <h1 id="logo"> SVG </h1>
-      <nav id="menu_bar">
-        <div class="container">
-          <ul class="menu">
-            <li class="dropdown"> <a href="#"> <b> Файл </b> </a>
-              <ul class="sub_menu">
-                <li> <a href="#"> <b> Новый документ </b> </a> </li>
-                <li> <a href="#"> <b> Открыть SVG-файл </b> </a> </li>
-                <li> <a href="#"  id="save"> <b> Сохранить изображение </b> </a> </li>
-                <li> <a href="#" id="savePng"> <b> Сохранить как PNG </b> </a> </li>  
-              </ul>       
-            </li>
-            <li class="dropdown"> <a href="#"> <b> Редактировать </b> </a> 
-              <ul class="sub_menu">
-                <li> <a href="#" id="cancel"> <b> Отменить </b> </a> </li>
-                <li> <a href="#"> <b> Повторить </b> </a> </li>
-                <li> <a href="#"> <b> Вырезать </b> </a> </li>
-                <li> <a href="#"> <b> Копировать </b> </a> </li>  
-                <li> <a href="#"> <b> Вставить </b> </a> </li>  
-                <li> <a href="#" id="deleteObject"> <b> Удалить </b> </a> </li> 
-              </ul>    
-            </li>
-            <li class="dropdown"> <a href="#"> <b> Вид </b> </a>
-              <ul class="sub_menu">
-                <li> <a href="#"> <b> Просмотр линейки </b> </a> </li> 
-                <li> <a href="#" id="zoomIn"> <b> Увеличить масштаб </b> </a> </li> 
-                <li> <a href="#" id="zoomOut"> <b> Уменьшить масштаб </b> </a> </li> 
-              </ul>      
-            </li>
-            <li class="dropdown"> <a href="#"> <b> Помощь </b> </a> </li>
-          </ul> 
-        </div>
-      </nav>
-    </header>
-    <main>
-      <div id="vertical_panel">
-        <button
-          title="Курсор"
-          class="tool_button"
-          id="cursor"
-          style="background-image: url(img/cursor.svg)"
-        ></button>
-        <button
-          title="Рука"
-          class="tool_button"
-          id="hand"
-          style="background-image: url(img/hand.svg)"
-        ></button>
-        <button
-          title="Масштабирование
-Приблизить/Отдалить(Ctrl)"
-          class="tool_button"
-          id="scale"
-          style="background-image: url(img/scale.svg)"
-        ></button>
-        <button
-          title="Карандаш"
-          class="tool_button"
-          id="pencil"
-          style="background-image: url(img/pencil.svg)"
-        ></button>
-        <button
-          title="Кисть"
-          class="tool_button"
-          id="brush"
-          style="background-image: url(img/brush.svg)"
-        ></button>
-        <button
-          title="Линия"
-          class="tool_button"
-          id="line"
-          style="background-image: url(img/line.svg)"
-        ></button>
-        <button
-          title="Фигуры"
-          class="tool_button"
-          id="figures"
-          style="background-image: url(img/figures.svg)"
-        >
-          <ul class="vertical_menu">
-            <li><a href="#" id="rectangle">Прямоугольник</a></li>
-            <li><a href="#" id="ellipse">Эллипс</a></li>
-          </ul></button>
-        <button
-          title="Текст"
-          class="tool_button"
-          id="text"
-          style="background-image: url(img/text.svg)"
-        ></button>
-        <button
-          title="Рисование по точкам"
-          class="tool_button"
-          id="path_tool"
-          style="background-image: url(img/path_tool.svg)"
-        ></button>
-        <button
-          title="Пипетка"
-          class="tool_button"
-          id="pipette"
-          style="background-image: url(img/pipette.svg)"
-        ></button>
+  <meta name="keywords" content="графический редактор, создать, удалить, переместить, объединить">
+  <meta name="authors" content="">
+  <title>svg</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header>
+    <h1 id="logo"> SVG </h1>
+    <nav id="menu_bar">
+      <div class="container">
+        <ul class="menu">
+          <li class="dropdown"> <a href="#"> <b> Файл </b> </a>
+            <ul class="sub_menu">
+              <li> <a href="#"> <b> Новый документ </b> </a> </li>
+              <li> <a href="#"> <b> Открыть SVG-файл </b> </a> </li>
+              <li> <a href="#" id="save"> <b> Сохранить изображение </b> </a> </li>
+              <li> <a href="#" id="savePng"> <b> Сохранить как PNG </b> </a> </li>
+            </ul>
+          </li>
+          <li class="dropdown"> <a href="#"> <b> Редактировать </b> </a>
+            <ul class="sub_menu">
+              <li> <a href="#" id="cancel"> <b> Отменить </b> </a> </li>
+              <li> <a href="#"> <b> Повторить </b> </a> </li>
+              <li> <a href="#"> <b> Вырезать </b> </a> </li>
+              <li> <a href="#"> <b> Копировать </b> </a> </li>
+              <li> <a href="#"> <b> Вставить </b> </a> </li>
+              <li> <a href="#" id="deleteObject"> <b> Удалить </b> </a> </li>
+            </ul>
+          </li>
+          <li class="dropdown"> <a href="#"> <b> Вид </b> </a>
+            <ul class="sub_menu">
+              <li> <a href="#"> <b> Просмотр линейки </b> </a> </li>
+              <li> <a href="#" id="zoomIn"> <b> Увеличить масштаб </b> </a> </li>
+              <li> <a href="#" id="zoomOut"> <b> Уменьшить масштаб </b> </a> </li>
+            </ul>
+          </li>
+          <li class="dropdown"> <a href="#"> <b> Помощь </b> </a> </li>
+        </ul>
       </div>
-      <div class="layer" id="main_panel">
-        <svg id="svg_panel"
-          width="800" height="550" 
-          viewBox="0 0 800 550" 
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:svg="http://www.w3.org/2000/svg">
-        </svg>
+    </nav>
+  </header>
+  <main>
+    <div id="vertical_panel">
+      <button title="Курсор" class="tool_button" id="cursor" style="background-image: url(img/cursor.svg)"></button>
+      <button title="Рука" class="tool_button" id="hand" style="background-image: url(img/hand.svg)"></button>
+      <button title="Масштабирование
+Приблизить/Отдалить(Ctrl)" class="tool_button" id="scale" style="background-image: url(img/scale.svg)"></button>
+      <button title="Карандаш" class="tool_button" id="pencil" style="background-image: url(img/pencil.svg)"></button>
+      <button title="Кисть" class="tool_button" id="brush" style="background-image: url(img/brush.svg)"></button>
+      <button title="Линия" class="tool_button" id="line" style="background-image: url(img/line.svg)"></button>
+      <button title="Фигуры" class="tool_button" id="figures" style="background-image: url(img/figures.svg)">
+        <ul class="vertical_menu">
+          <li><a href="#" id="rectangle">Прямоугольник</a></li>
+          <li><a href="#" id="ellipse">Эллипс</a></li>
+        </ul>
+      </button>
+      <button title="Текст" class="tool_button" id="text" style="background-image: url(img/text.svg)"></button>
+      <button title="Рисование по точкам" class="tool_button" id="path_tool"
+        style="background-image: url(img/path_tool.svg)"></button>
+      <!--<button title="Пипетка" class="tool_button" id="pipette" style="background-image: url(img/pipette.svg)"></button>-->
+      <div id="palette">
+        <input id="colorpicker" type="color" value="#000000">
       </div>
-      <canvas id="canvas" width="800" height="550" style="display: none;"></canvas>
-    </main>
-    <script src="js/global.js"></script>
-    <script src="js/actions.js"></script>
-    <script src="js/cursor.js"></script>
-    <script src="js/hand.js"></script>
-    <script src="js/scaling.js"></script>
-    <script src="js/pencil.js"></script>
-    <script src="js/rectangle.js"></script>
-    <script src="js/ellipse.js"></script>
-    <script src="js/classes.js"></script>
-  </body>
+    </div>
+    <div class="layer" id="main_panel">
+      <svg id="svg_panel" width="800" height="550" viewBox="0 0 800 550" xmlns="http://www.w3.org/2000/svg"
+        xmlns:svg="http://www.w3.org/2000/svg">
+      </svg>
+    </div>
+    <canvas id="canvas" width="800" height="550" style="display: none;"></canvas>
+  </main>
+  <script src="js/global.js"></script>
+  <script src="js/actions.js"></script>
+  <script src="js/cursor.js"></script>
+  <script src="js/hand.js"></script>
+  <script src="js/scaling.js"></script>
+  <script src="js/pencil.js"></script>
+  <script src="js/rectangle.js"></script>
+  <script src="js/ellipse.js"></script>
+  <script src="js/classes.js"></script>
+</body>
+
 </html>

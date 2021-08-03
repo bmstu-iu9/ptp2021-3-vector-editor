@@ -33,6 +33,41 @@ document.addEventListener('keydown', function(event) {
     }
 });*/
 
+//CREATE 
+create = document.getElementById("create"); 
+
+function deleteChild(node, parent) {
+    for (var i = 0; i < node.childNodes.length;)
+        deleteChild(node.childNodes[i], node);
+
+    if (node.childNodes.length == 0) {
+        parent.removeChild(node);
+        return;
+    }
+}
+
+function deleteAllChildren(node) {
+    for (var i = 0; i < node.childNodes.length;)
+        deleteChild(node.childNodes[i], node);
+}
+
+create.onclick = function () {
+    let width = prompt('Введите ширину нового холста в пикселях:', 512);
+    let height = prompt('Введите высоту нового холста в пикселях:', 512);
+
+    if (width < 1 || height < 1){
+        alert("Недопустимый размер холста!")
+        return;
+    }
+
+    deleteAllChildren(svgPanel);
+
+    svgPanel.setAttribute('viewBox', '0 0 ' + String(width) + ' ' + String(height)); 
+    svgPanel.setAttribute('width', width);
+    svgPanel.setAttribute('height', height);
+    scrollcoords, svgPanelCoords = getCoords(svgPanel);
+}
+
 //SAVE
 save = document.getElementById("save");
 

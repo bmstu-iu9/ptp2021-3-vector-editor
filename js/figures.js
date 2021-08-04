@@ -53,7 +53,7 @@ polygonButton.onclick = function () {
         if (wasPressed == "polygon") {
             updateCursorCoords(current);
             let newObject = new polygon();
-            document.addEventListener('keydown', newObject.updateVertNum);
+            newObject.addHotKeys();
 
             document.onmousemove = function (current) {
                 updateCursorCoords(current);
@@ -61,7 +61,7 @@ polygonButton.onclick = function () {
             };
             document.onmouseup = function () {
                 document.onmousemove = null;
-                document.removeEventListener('keydown', newObject.updateVertNum);
+                newObject.removeHotKeys();
             };
         }
     };

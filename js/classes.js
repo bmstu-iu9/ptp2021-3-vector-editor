@@ -53,14 +53,18 @@ class polygon extends object {
         super('polygon');
         this.vertNum = curVertNum;
         this.points = "";
-
+        this.fixedRotation = false;
+        this.fixRotation = this.fixRotation.bind(this);
+        this.freeRotation = this.freeRotation.bind(this);
         this.updateVertNum = this.updateVertNum.bind(this);
     }
     updateAttributes() {
         let dx = curX - this.x0,
             dy = curY - this.y0,
             r = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)),
-            phi = dy > 0 ? Math.acos(dx / r) : -Math.acos(dx / r);
+            phi = 0;
+        if (this.fixedRotation) phi = (this.vertNum - 2) * Math.PI / (this.vertNum * 2);
+        else if (r > 0) phi = dy > 0 ? Math.acos(dx / r) : -Math.acos(dx / r);
         for (let i = 0; i < this.vertNum; i++) {
             let x = this.x0 + r * Math.cos(phi + 2 * Math.PI * i / this.vertNum);
             let y = this.y0 + r * Math.sin(phi + 2 * Math.PI * i / this.vertNum);
@@ -68,6 +72,17 @@ class polygon extends object {
             else this.points += ", " + x + " " + y;
         }
         this.svgElement.setAttribute('points', this.points);
+
+    }
+    addHotKeys() {
+        document.addEventListener('keydown', this.updateVertNum);
+        document.addEventListener('keydown', this.fixRotation);
+        document.addEventListener('keyup', this.freeRotation);
+    }
+    removeHotKeys() {
+        document.removeEventListener('keydown', this.updateVertNum);
+        document.removeEventListener('keydown', this.fixRotation);
+        document.removeEventListener('keyup', this.freeRotation);
     }
     updateVertNum(event) {
         if (event.code == 'ArrowUp') {
@@ -78,6 +93,18 @@ class polygon extends object {
         if (event.code == 'ArrowDown' && curVertNum > 3) {
             curVertNum--;
             this.vertNum--;
+            this.updateAttributes();
+        }
+    }
+    fixRotation(event) {
+        if (event.key == 'Shift') {
+            this.fixedRotation = true;
+            this.updateAttributes();
+        }
+    }
+    freeRotation(event) {
+        if (event.key == 'Shift') {
+            this.fixedRotation = false;
             this.updateAttributes();
         }
     }

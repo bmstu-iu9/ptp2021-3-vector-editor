@@ -26,11 +26,21 @@ class rectangle extends object {
     constructor() {
         super('rect');
     }
-    updateAttributes() {
-        this.svgElement.setAttribute('width', Math.abs(curX - this.x0));
-        this.svgElement.setAttribute('height', Math.abs(curY - this.y0));
-        this.svgElement.setAttribute('x', Math.min(this.x0, curX));
-        this.svgElement.setAttribute('y', Math.min(this.y0, curY));
+    updateAttributes(current) {
+        let w = curX - this.x0;
+        let h = curY - this.y0;
+        let signW = w > 0 ? 1 : -1;
+        let signH = h > 0 ? 1 : -1;
+        let absW = Math.abs(w);
+        let absH = Math.abs(h);
+        if (current.shiftKey) {
+            absW = Math.min(absW, absH);
+            absH = absW;
+        }
+        this.svgElement.setAttribute('width', absW);
+        this.svgElement.setAttribute('height', absH);
+        this.svgElement.setAttribute('x', Math.min(this.x0, this.x0 + signW * absW));
+        this.svgElement.setAttribute('y', Math.min(this.y0, this.y0 + signH * absH));
     }
 }
 
@@ -39,11 +49,21 @@ class ellipse extends object {
     constructor() {
         super('ellipse');
     }
-    updateAttributes() {
-        this.svgElement.setAttribute("rx", Math.abs(curX - this.x0) / 2);
-        this.svgElement.setAttribute("ry", Math.abs(curY - this.y0) / 2);
-        this.svgElement.setAttribute("cx", Math.min(this.x0, curX) + Math.abs(curX - this.x0) / 2);
-        this.svgElement.setAttribute("cy", Math.min(this.y0, curY) + Math.abs(curY - this.y0) / 2);
+    updateAttributes(current) {
+        let w = (curX - this.x0) / 2;
+        let h = (curY - this.y0) / 2;
+        let signW = w > 0 ? 1 : -1;
+        let signH = h > 0 ? 1 : -1;
+        let absW = Math.abs(w);
+        let absH = Math.abs(h);
+        if (current.shiftKey) {
+            absW = Math.min(absW, absH);
+            absH = absW;
+        }
+        this.svgElement.setAttribute('rx', absW);
+        this.svgElement.setAttribute('ry', absH);
+        this.svgElement.setAttribute('cx', Math.min(this.x0, this.x0 + 2 * signW * absW) + absW);
+        this.svgElement.setAttribute('cy', Math.min(this.y0, this.y0 + 2 * signH * absH) + absH);
     }
 }
 
@@ -100,7 +120,7 @@ class pencil extends object {
 
 //LINE
 class line extends object {
-    constructor(){
+    constructor() {
         super('line');
         this.svgElement.setAttribute('x1', curX);
         this.svgElement.setAttribute('y1', curY);
@@ -108,8 +128,23 @@ class line extends object {
         this.svgElement.setAttribute('y2', curY);
         this.svgElement.setAttribute('stroke', getCurrentColor());
     }
-    updateAttributes(){
-        this.svgElement.setAttribute('x2', curX);
-        this.svgElement.setAttribute('y2', curY);
+    updateAttributes(current) {
+        let w = curX - this.x0;
+        let h = curY - this.y0;
+        let signW = w > 0 ? 1 : -1;
+        let signH = h > 0 ? 1 : -1;
+        let absW = Math.abs(w);
+        let absH = Math.abs(h);
+        if (current.shiftKey) {
+            if (absH < absW) {
+                if (absH / absW < Math.tan(Math.PI / 8)) absH = 0;
+                else absW = absH;
+            } else {
+                if (absW / absH < Math.tan(Math.PI / 8)) absW = 0;
+                else absH = absW;
+            }
+        }
+        this.svgElement.setAttribute('x2', this.x0 + signW * absW);
+        this.svgElement.setAttribute('y2', this.y0 + signH * absH);
     }
 }

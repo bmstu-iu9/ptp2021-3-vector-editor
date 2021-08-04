@@ -11,7 +11,7 @@ rectangleButton.onclick = function () {
 
             document.onmousemove = function (current) {
                 updateCursorCoords(current);
-                newObject.updateAttributes();
+                newObject.updateAttributes(current);
             };
             document.onmouseup = function () {
                 document.onmousemove = null;
@@ -33,7 +33,7 @@ ellipseButton.onclick = function () {
 
             document.onmousemove = function (current) {
                 updateCursorCoords(current);
-                newObject.updateAttributes();
+                newObject.updateAttributes(current);
             };
             document.onmouseup = function () {
                 document.onmousemove = null;
@@ -80,7 +80,7 @@ line.onclick = function () {
 
             document.onmousemove = function (current) {
                 updateCursorCoords(current);
-                newObject.updateAttributes();
+                newObject.updateAttributes(current);
             };
             document.onmouseup = function () {
                 document.onmousemove = null;

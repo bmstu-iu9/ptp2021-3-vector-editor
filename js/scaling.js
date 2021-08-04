@@ -7,10 +7,10 @@ scale.onclick = function () {
     if (wasPressed == "scale") {
       if (event.ctrlKey) {
         sizeCoef = 2 / 3;
-        shiftCoef = 1 / 3
+        shiftCoef = 1 / 3;
       } else {
         sizeCoef = 3 / 2;
-        shiftCoef = - 1 / 2;
+        shiftCoef = -1 / 2;
       }
       svgPanel.style.width = svgPanel.clientWidth * sizeCoef + "px";
       svgPanel.style.height = svgPanel.clientHeight * sizeCoef + "px";

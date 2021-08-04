@@ -7,7 +7,7 @@ deleteObject.onclick = function () {
         currentObject = null;
     }
 }
-document.addEventListener('keydown', function(event) {
+document.addEventListener('keydown', function (event) {
     if (event.code == 'Delete' && currentObject != null) {
         svgPanel.removeChild(currentObject);
         currentObject = null;
@@ -37,11 +37,13 @@ document.addEventListener('keydown', function(event) {
 save = document.getElementById("save");
 
 save.onclick = function () {
-    let svgData = main_panel.innerHTML.toString();
+    let svgData = draw_panel.innerHTML.toString();
     let fileName = prompt('Введите имя файла без расширения:');
     if (fileName == null)
-    return;
-    let blob = new Blob([svgData], {type: "image/svg+xml;charset=utf-8"});
+        return;
+    let blob = new Blob([svgData], {
+        type: "image/svg+xml;charset=utf-8"
+    });
     let url = window.URL.createObjectURL(blob);
 
     let a = document.createElement("a");
@@ -57,16 +59,18 @@ save.onclick = function () {
 savePng = document.getElementById("savePng");
 
 savePng.onclick = function () {
-    let svgData = main_panel.innerHTML.toString();
+    let svgData = draw_panel.innerHTML.toString();
     let fileName = prompt('Введите имя файла без расширения:');
     if (fileName == null)
-    return;
-    let blob = new Blob([svgData], {type: "image/svg+xml;charset=utf-8"});
+        return;
+    let blob = new Blob([svgData], {
+        type: "image/svg+xml;charset=utf-8"
+    });
     let url = window.URL.createObjectURL(blob);
 
     let canvas = document.getElementById("canvas");
     let img = new Image();
-    img.onload = function() {
+    img.onload = function () {
         canvas.getContext("2d").drawImage(img, 0, 0);
 
         let a = document.createElement("a");
@@ -79,7 +83,6 @@ savePng.onclick = function () {
     }
     img.src = url;
 }
-
 
 //SCALING
 zoomIn = document.getElementById("zoomIn");

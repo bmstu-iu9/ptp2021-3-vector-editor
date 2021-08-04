@@ -1,11 +1,10 @@
 class object {
     constructor(name) {
-        this.svgElement = document.createElementNS("http://www.w3.org/2000/svg", name);;
+        this.svgElement = document.createElementNS("http://www.w3.org/2000/svg", name);
         svgPanel.appendChild(this.svgElement);
         this.x0 = curX;
         this.y0 = curY;
         this.svgElement.setAttribute('fill', getCurrentColor());
-        /*console.log(getCurrentColor());*/
 
         this.svgElement.addEventListener("click", function () {
             if (wasPressed == "cursor") {
@@ -23,7 +22,6 @@ class object {
 }
 
 //RECTANGLE
-
 class rectangle extends object {
     constructor() {
         super('rect');
@@ -37,7 +35,6 @@ class rectangle extends object {
 }
 
 //ELLIPSE
-
 class ellipse extends object {
     constructor() {
         super('ellipse');
@@ -50,8 +47,43 @@ class ellipse extends object {
     }
 }
 
-//PENCIL
+//POLYGON
+class polygon extends object {
+    constructor() {
+        super('polygon');
+        this.vertNum = curVertNum;
+        this.points = "";
 
+        this.updateVertNum = this.updateVertNum.bind(this);
+    }
+    updateAttributes() {
+        let dx = curX - this.x0,
+            dy = curY - this.y0,
+            r = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)),
+            phi = dy > 0 ? Math.acos(dx / r) : -Math.acos(dx / r);
+        for (let i = 0; i < this.vertNum; i++) {
+            let x = this.x0 + r * Math.cos(phi + 2 * Math.PI * i / this.vertNum);
+            let y = this.y0 + r * Math.sin(phi + 2 * Math.PI * i / this.vertNum);
+            if (i == 0) this.points = x + " " + y;
+            else this.points += ", " + x + " " + y;
+        }
+        this.svgElement.setAttribute('points', this.points);
+    }
+    updateVertNum(event) {
+        if (event.code == 'ArrowUp') {
+            curVertNum++;
+            this.vertNum++;
+            this.updateAttributes();
+        }
+        if (event.code == 'ArrowDown' && curVertNum > 3) {
+            curVertNum--;
+            this.vertNum--;
+            this.updateAttributes();
+        }
+    }
+}
+
+//PENCIL
 class pencil extends object {
     constructor() {
         super('polyline');

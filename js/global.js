@@ -40,3 +40,8 @@ function updateCursorCoords(current) {
   curX = (current.pageX - svgPanelCoords.left) / scaleСoef;
   curY = (current.pageY - svgPanelCoords.top) / scaleСoef;
 }
+
+window.onresize = function () {
+  svgPanelCoords = getCoords(svgPanel);
+  scrollcoords = getCoords(scrollPanel);
+}

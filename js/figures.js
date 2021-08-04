@@ -66,3 +66,25 @@ polygonButton.onclick = function () {
         }
     };
 }
+
+//LINE
+line = document.getElementById("line");
+
+line.onclick = function () {
+    wasPressed = "line";
+    svgPanel.style.cursor = "default";
+    svgPanel.onmousedown = function (current) {
+        if (wasPressed == "line") {
+            updateCursorCoords(current);
+            let newObject = new line();
+
+            document.onmousemove = function (current) {
+                updateCursorCoords(current);
+                newObject.updateAttributes();
+            };
+            document.onmouseup = function () {
+                document.onmousemove = null;
+            };
+        }
+    };
+}

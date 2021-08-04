@@ -97,3 +97,19 @@ class pencil extends object {
         this.svgElement.setAttribute('points', this.path);
     }
 }
+
+//LINE
+class line extends object {
+    constructor(){
+        super('line');
+        this.svgElement.setAttribute('x1', curX);
+        this.svgElement.setAttribute('y1', curY);
+        this.svgElement.setAttribute('x2', curX);
+        this.svgElement.setAttribute('y2', curY);
+        this.svgElement.setAttribute('stroke', getCurrentColor());
+    }
+    updateAttributes(){
+        this.svgElement.setAttribute('x2', curX);
+        this.svgElement.setAttribute('y2', curY);
+    }
+}

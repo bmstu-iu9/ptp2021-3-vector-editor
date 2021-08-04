@@ -1,6 +1,6 @@
-pencil = document.getElementById("pencil");
+pencilButton = document.getElementById("pencil");
 
-pencil.onclick = function () {
+pencilButton.onclick = function () {
     wasPressed = "pencil";
     svgPanel.style.cursor = "default";
     svgPanel.onmousedown = function (current) {

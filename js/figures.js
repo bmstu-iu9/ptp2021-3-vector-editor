@@ -57,7 +57,7 @@ polygonButton.onclick = function () {
 
             document.onmousemove = function (current) {
                 updateCursorCoords(current);
-                newObject.updateAttributes();
+                newObject.updateAttributes(current);
             };
             document.onmouseup = function () {
                 document.onmousemove = null;

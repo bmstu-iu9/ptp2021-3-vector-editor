@@ -2,6 +2,7 @@ class object {
     constructor(name) {
         this.svgElement = document.createElementNS("http://www.w3.org/2000/svg", name);
         svgPanel.appendChild(this.svgElement);
+        this.type = name;
         this.x0 = curX;
         this.y0 = curY;
         this.svgElement.setAttribute('fill', getCurrentColor());
@@ -18,6 +19,12 @@ class object {
                 currentObject = this;
             }
         });
+    }
+    remove() {
+        svgPanel.removeChild(this.svgElement);
+    }
+    setElementAttribute(attribute, value) {
+        this.svgElement.setAttribute(attribute, value);
     }
 }
 
@@ -115,7 +122,7 @@ class polygon extends object {
 class pencil extends object {
     constructor() {
         super('polyline');
-        this.path = curX + " " + curY;
+        this.path = this.x0 + " " + this.y0;
         this.svgElement.setAttribute('fill', "none");
         this.svgElement.setAttribute('stroke', getCurrentColor());
         this.svgElement.setAttribute('points', this.path);
@@ -154,5 +161,31 @@ class line extends object {
         }
         this.svgElement.setAttribute('x2', this.x0 + signW * absW);
         this.svgElement.setAttribute('y2', this.y0 + signH * absH);
+    }
+}
+
+//POLYLINE
+class polyline extends object {
+    constructor() {
+        super('polyline');
+        this.points = this.x0 + " " + this.y0;
+        this.svgElement.setAttribute('fill', getCurrentColor());
+        this.svgElement.setAttribute('stroke', getCurrentColor());
+        this.svgElement.setAttribute('points', this.points);
+        this.line = new line();
+    }
+    updateLine(current) {
+        this.line.updateAttributes(current);
+    }
+    removeLine() {
+        this.line.remove();
+    }
+    updateAttributes() {
+        this.points += ", " + curX + " " + curY;
+        this.svgElement.setAttribute('points', this.points);
+        this.line.remove();
+        this.line = new line();
+        this.line.setElementAttribute('stroke-opacity', "0.3");
+        this.line.setElementAttribute('stroke', this.svgElement.getAttribute('stroke'));
     }
 }

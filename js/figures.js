@@ -88,3 +88,37 @@ line.onclick = function () {
         }
     };
 }
+
+//POLYLINE
+pathTool = document.getElementById("pathTool");
+let completed = true;
+
+pathTool.onclick = function () {
+    wasPressed = "pathTool";
+    svgPanel.style.cursor = "default";
+    svgPanel.onmousedown = function (current) {
+        if (wasPressed == "pathTool" && completed) {
+            updateCursorCoords(current);
+            let newObject = new polyline();
+            completed = false;
+
+            document.onmousemove = function (current) {
+                if (wasPressed != "pathTool") {
+                    newObject.removeLine();
+                    completed = true;
+                    document.onmousemove = null;
+                }
+                updateCursorCoords(current);
+                newObject.updateLine(current);
+            };
+            document.onmouseup = function (current) {
+                newObject.updateAttributes();
+                if (current.ctrlKey) {
+                    newObject.removeLine();
+                    completed = true;
+                    document.onmousemove = null;
+                }
+            };
+        }
+    };
+};

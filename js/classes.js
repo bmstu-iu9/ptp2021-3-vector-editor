@@ -23,8 +23,11 @@ class object {
     remove() {
         svgPanel.removeChild(this.svgElement);
     }
-    setElementAttribute(attribute, value) {
-        this.svgElement.setAttribute(attribute, value);
+    setElementAttribute(attributeName, value) {
+        this.svgElement.setAttribute(attributeName, value);
+    }
+    getElementAttribute(attributeName) {
+        return this.svgElement.getAttribute(attributeName);
     }
 }
 
@@ -135,12 +138,14 @@ class pencil extends object {
 
 //LINE
 class line extends object {
-    constructor() {
+    constructor(x1 = curX, y1 = curY, x2 = curX, y2 = curY) {
         super('line');
-        this.svgElement.setAttribute('x1', curX);
-        this.svgElement.setAttribute('y1', curY);
-        this.svgElement.setAttribute('x2', curX);
-        this.svgElement.setAttribute('y2', curY);
+        this.x0 = x1;
+        this.y0 = y1;
+        this.svgElement.setAttribute('x1', x1);
+        this.svgElement.setAttribute('y1', y1);
+        this.svgElement.setAttribute('x2', x2);
+        this.svgElement.setAttribute('y2', y2);
         this.svgElement.setAttribute('stroke', getCurrentColor());
     }
     updateAttributes(current) {
@@ -181,10 +186,12 @@ class polyline extends object {
         this.line.remove();
     }
     updateAttributes() {
-        this.points += ", " + curX + " " + curY;
+        const x = Number(this.line.getElementAttribute('x2')),
+            y = Number(this.line.getElementAttribute('y2'));
+        this.points += ", " + x + " " + y;
         this.svgElement.setAttribute('points', this.points);
         this.line.remove();
-        this.line = new line();
+        this.line = new line(x, y, curX, curY);
         this.line.setElementAttribute('stroke-opacity', "0.3");
         this.line.setElementAttribute('stroke', this.svgElement.getAttribute('stroke'));
     }

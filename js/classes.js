@@ -5,6 +5,7 @@ class object {
         this.type = name;
         this.x0 = curX;
         this.y0 = curY;
+        this.pointsArray = [];
         this.svgElement.setAttribute('fill', getCurrentColor());
 
         this.svgElement.addEventListener("click", function () {
@@ -28,6 +29,16 @@ class object {
     }
     getElementAttribute(attributeName) {
         return this.svgElement.getAttribute(attributeName);
+    }
+    hidePoints() {
+        for (let i = 0; i < this.pointsArray.length; i++) {
+            this.pointsArray[i].hide();
+        }
+    }
+    showPoints() {
+        for (let i = 0; i < this.pointsArray.length; i++) {
+            this.pointsArray[i].show();
+        }
     }
 }
 
@@ -83,7 +94,6 @@ class polygon extends object {
         super('polygon');
         this.vertNum = curVertNum;
         this.points = "";
-        this.updateVertNum = this.updateVertNum.bind(this);
     }
     updateAttributes(current) {
         let dx = curX - this.x0,
@@ -102,10 +112,10 @@ class polygon extends object {
 
     }
     addHotKeys() {
-        document.addEventListener('keydown', this.updateVertNum);
+        document.addEventListener('keydown', this.updateVertNum.bind(this));
     }
     removeHotKeys() {
-        document.removeEventListener('keydown', this.updateVertNum);
+        document.removeEventListener('keydown', this.updateVertNum.bind(this));
     }
     updateVertNum(current) {
         if (current.code == 'ArrowUp') {
@@ -177,22 +187,81 @@ class polyline extends object {
         this.svgElement.setAttribute('fill', getCurrentColor());
         this.svgElement.setAttribute('stroke', getCurrentColor());
         this.svgElement.setAttribute('points', this.points);
+        this.pointsArray.push(new point(this.x0, this.y0, this));
+        this.pointsArray[0].setPointAttribute('fill', "blue");
         this.line = new line();
     }
     updateLine(current) {
         this.line.updateAttributes(current);
+        if (Math.pow(curX - this.x0, 2) + Math.pow(curY - this.y0, 2) <= Math.pow(pointRadius, 2) && this.pointsArray.length > 1) {
+            this.pointsArray[0].setPointAttribute('fill', "red");
+        } else {
+            this.pointsArray[0].setPointAttribute('fill', "blue");
+        }
     }
     removeLine() {
         this.line.remove();
     }
     updateAttributes() {
+        if (wasPressed != "pathTool") {
+            this.completePolyline();
+            return;
+        }
         const x = Number(this.line.getElementAttribute('x2')),
             y = Number(this.line.getElementAttribute('y2'));
-        this.points += ", " + x + " " + y;
-        this.svgElement.setAttribute('points', this.points);
-        this.line.remove();
-        this.line = new line(x, y, curX, curY);
-        this.line.setElementAttribute('stroke-opacity', "0.3");
-        this.line.setElementAttribute('stroke', this.svgElement.getAttribute('stroke'));
+        if (Math.pow(x - this.x0, 2) + Math.pow(y - this.y0, 2) <= Math.pow(pointRadius, 2) && this.pointsArray.length > 1) {
+            this.completePolyline();
+            return;
+        }
+        if (x != this.x0) {
+            this.points += ", " + x + " " + y;
+            this.svgElement.setAttribute('points', this.points);
+            this.pointsArray.push(new point(x, y, this));
+            this.line.remove();
+            this.line = new line(x, y, curX, curY);
+            this.line.setElementAttribute('stroke-opacity', "0.3");
+            this.line.setElementAttribute('stroke', this.svgElement.getAttribute('stroke'));
+        }
+    }
+    completePolyline() {
+        if (!completed) {
+            if (this.pointsArray.length < 2) {
+                svgPanel.removeChild(this.svgElement);
+            }
+            this.line.remove();
+            this.points += ", " + this.x0 + " " + this.y0;
+            this.svgElement.setAttribute('points', this.points);
+            completed = true;
+            this.hidePoints();
+            document.onmousemove = null;
+        }
+    }
+}
+
+//POINT
+class point {
+    constructor(x, y, object) {
+        this.circle = document.createElementNS("http://www.w3.org/2000/svg", 'ellipse');
+        svgPanel.appendChild(this.circle);
+        this.x = x;
+        this.y = y;
+        this.object = object;
+        this.circle.setAttribute('fill', "white");
+        this.circle.setAttribute('stroke', "black");
+        this.circle.setAttribute('cx', x);
+        this.circle.setAttribute('cy', y);
+        this.circle.setAttribute('rx', pointRadius);
+        this.circle.setAttribute('ry', pointRadius);
+    }
+    hide() {
+        this.circle.setAttribute('fill-opacity', 0);
+        this.circle.setAttribute('stroke-opacity', 0);
+    }
+    show() {
+        this.circle.setAttribute('fill-opacity', 1);
+        this.circle.setAttribute('stroke-opacity', 1);
+    }
+    setPointAttribute(attributeName, value) {
+        this.circle.setAttribute(attributeName, value);
     }
 }

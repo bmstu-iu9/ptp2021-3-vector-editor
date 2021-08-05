@@ -104,19 +104,15 @@ pathTool.onclick = function () {
 
             document.onmousemove = function (current) {
                 if (wasPressed != "pathTool") {
-                    newObject.removeLine();
-                    completed = true;
-                    document.onmousemove = null;
+                    newObject.completePolyline();
                 }
                 updateCursorCoords(current);
                 newObject.updateLine(current);
             };
-            document.onmouseup = function (current) {
+            svgPanel.onmouseup = function (current) {
                 newObject.updateAttributes();
                 if (current.ctrlKey) {
-                    newObject.removeLine();
-                    completed = true;
-                    document.onmousemove = null;
+                    newObject.completePolyline();
                 }
             };
         }

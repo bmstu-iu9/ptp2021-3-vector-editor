@@ -8,6 +8,7 @@ let svgPanelCoords = getCoords(svgPanel),
   scrollcoords = getCoords(scrollPanel),
   curX, curY; //cursor coordinates
 let scaleСoef = 1;
+let pointRadius = 4;
 
 //CURRENT COLOR
 function getCurrentColor() {

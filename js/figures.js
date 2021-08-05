@@ -88,3 +88,33 @@ line.onclick = function () {
         }
     };
 }
+
+//POLYLINE
+pathTool = document.getElementById("pathTool");
+let completed = true;
+
+pathTool.onclick = function () {
+    wasPressed = "pathTool";
+    svgPanel.style.cursor = "default";
+    svgPanel.onmousedown = function (current) {
+        if (wasPressed == "pathTool" && completed) {
+            updateCursorCoords(current);
+            let newObject = new polyline();
+            completed = false;
+
+            document.onmousemove = function (current) {
+                if (wasPressed != "pathTool") {
+                    newObject.completePolyline();
+                }
+                updateCursorCoords(current);
+                newObject.updateLine(current);
+            };
+            svgPanel.onmouseup = function (current) {
+                newObject.updateAttributes();
+                if (current.ctrlKey) {
+                    newObject.completePolyline();
+                }
+            };
+        }
+    };
+};

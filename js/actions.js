@@ -34,7 +34,7 @@ document.addEventListener('keydown', function(event) {
 });*/
 
 //CREATE 
-create = document.getElementById("create"); 
+create = document.getElementById("create");
 
 function deleteChild(node, parent) {
     for (var i = 0; i < node.childNodes.length;)
@@ -55,32 +55,32 @@ create.onclick = function () {
     let width = prompt('Введите ширину нового холста в пикселях:', 512);
     let height = prompt('Введите высоту нового холста в пикселях:', 512);
 
-    if (width < 1 || height < 1){
+    if (width < 1 || height < 1) {
         alert("Недопустимый размер холста!")
         return;
     }
 
     deleteAllChildren(svgPanel);
 
-    svgPanel.setAttribute('viewBox', '0 0 ' + String(width) + ' ' + String(height)); 
+    svgPanel.setAttribute('viewBox', '0 0 ' + String(width) + ' ' + String(height));
     svgPanel.setAttribute('width', width);
     svgPanel.setAttribute('height', height);
     scrollcoords, svgPanelCoords = getCoords(svgPanel);
 }
 
 //OPEN
-open = document.getElementById("open"); 
+open = document.getElementById("open");
 
-open.onclick = function() {
-    document.getElementById("file-selector").click(); 
+open.onclick = function () {
+    document.getElementById("file-selector").click();
 }
 
 function readFile(object) {
-    let file = object.target.files[0]; 
+    let file = object.target.files[0];
     let reader = new FileReader();
     reader.onload = function (event) {
         let result = confirm("Вы действительно хотите открыть новый файл? Все изменения в текущем файле будут удалены.");
-        if (!result) 
+        if (!result)
             return;
         svgPanel.outerHTML = event.target.result;
         let divs = document.querySelector("#draw_panel");
@@ -90,14 +90,14 @@ function readFile(object) {
         }
         if (first.getAttribute('width') || first.getAttribute('height') == null) {
             first.setAttribute('width', 512);
-            first.setAttribute('height', 512); 
+            first.setAttribute('height', 512);
             first.setAttribute('viewBox', '0 0 512 512');
         }
         first.setAttribute('style', 'background-color: #fff; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);');
         svgPanel = document.getElementById(first.id);
         scrollcoords, svgPanelCoords = getCoords(svgPanel);
     };
-    reader.readAsText(file); 
+    reader.readAsText(file);
 }
 
 document.getElementById("file-selector").addEventListener("change", readFile);
@@ -174,7 +174,10 @@ frontObject = document.getElementById("frontObject");
 
 frontObject.onclick = function () {
     if (currentObject != null) {
-        svgPanel.append(currentObject);
+        svgPanel.append(currentObject.svgElement);
+        for (let i = 0; i < currentObject.pointsArray.length; i++) {
+            svgPanel.append(currentObject.pointsArray[i].circle);
+        }
     }
 }
 
@@ -182,6 +185,9 @@ backObject = document.getElementById("backObject");
 
 backObject.onclick = function () {
     if (currentObject != null) {
-        svgPanel.prepend(currentObject);
+        for (let i = currentObject.pointsArray.length - 1; i >= 0; i--) {
+            svgPanel.prepend(currentObject.pointsArray[i].circle);
+        }
+        svgPanel.prepend(currentObject.svgElement);
     }
 }

@@ -134,9 +134,6 @@ pathTool.onclick = function () {
             completed = false;
 
             document.onmousemove = function (current) {
-                if (wasPressed != "pathTool") {
-                    newObject.completePolyline();
-                }
                 updateCursorCoords(current);
                 newObject.updateLine(current);
             };
@@ -146,6 +143,11 @@ pathTool.onclick = function () {
                     newObject.completePolyline();
                 }
             };
+            document.onclick = function () {
+                if (wasPressed != "pathTool") {
+                    newObject.completePolyline();
+                }
+            }
         }
     };
 };

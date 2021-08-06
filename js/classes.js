@@ -234,6 +234,7 @@ class polyline extends object {
             this.hidePoints();
             document.onmousemove = null;
             svgPanel.onmouseup = null;
+            document.onclick = null;
         }
     }
 }

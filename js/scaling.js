@@ -3,7 +3,7 @@ scale = document.getElementById("scale");
 scale.onclick = function () {
   wasPressed = "scale";
   svgPanel.style.cursor = "zoom-in";
-  svgPanel.onmouseup = function (event) {
+  svgPanel.onclick = function (event) {
     if (wasPressed == "scale") {
       if (event.ctrlKey) {
         sizeCoef = 2 / 3;

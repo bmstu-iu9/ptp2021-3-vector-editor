@@ -169,3 +169,19 @@ zoomOut.onclick = function () {
     scaleСoef /= 1.5;
     svgPanelCoords = getCoords(svgPanel);
 }
+
+frontObject = document.getElementById("frontObject");
+
+frontObject.onclick = function () {
+    if (currentObject != null) {
+        svgPanel.append(currentObject);
+    }
+}
+
+backObject = document.getElementById("backObject");
+
+backObject.onclick = function () {
+    if (currentObject != null) {
+        svgPanel.prepend(currentObject);
+    }
+}

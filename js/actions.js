@@ -3,13 +3,13 @@ deleteObject = document.getElementById("deleteObject");
 
 deleteObject.onclick = function () {
     if (currentObject != null) {
-        svgPanel.removeChild(currentObject);
+        currentObject.remove();
         currentObject = null;
     }
 }
 document.addEventListener('keydown', function (event) {
     if (event.code == 'Delete' && currentObject != null) {
-        svgPanel.removeChild(currentObject);
+        currentObject.remove();
         currentObject = null;
     }
 });

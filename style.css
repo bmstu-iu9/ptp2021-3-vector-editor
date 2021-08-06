@@ -12,7 +12,6 @@ body {
 #logo {
   font-size: 5.2vh;
   margin-left: 1.5vw;
-  margin-top: 2vh;
 }
 
 header {
@@ -23,17 +22,22 @@ header {
   background-color: #310000;
   position: fixed;
   z-index: 2;
+  display: flex;
+  align-items: center;
 }
 
 /*MENU*/
 
 #menu_bar {
-  top: 0vh;
-  height: 10vh;
-  width: 100%;
-  margin-left: 13vh;
-  position: fixed;
-  background-color: #310000;
+  margin-left: 1.5vw;
+  width: initial;
+  display: flex;
+  align-items: center;
+}
+
+.container {
+  width: initial;
+  background-color: #4d2929;
   font-size: 3vh;
 }
 
@@ -58,6 +62,15 @@ header {
   background-color: #bb9292;
   box-shadow: 1px 5px 10px -5px black;
   transition: all 0.3s ease;
+}
+
+#functions {
+  top: 0vh;
+  margin-left: auto;
+  margin-right: 1.5vw;
+  background-color: #4d2929;
+  display: flex;
+  align-items: center;
 }
 
 /*SUB MENU*/
@@ -91,7 +104,7 @@ header {
 }
 
 /*scrolling*/
-.layer {
+#scroll_panel {
   overflow: scroll;
   width: 88vw;
   height: 80vh;
@@ -119,11 +132,24 @@ header {
   margin: 0.5vw;
   width: 4vw;
   height: 4vw;
-  border-radius: 10%;
   background-size: cover;
   background-color: #ffdbdb;
   border-color: rgb(141, 94, 94);
+  border-radius: 10%;
   border-width: medium;
+}
+
+.func_button {
+  width: 4vh;
+  height: 4vh;
+  margin: 0.4vw;
+  background-size: cover;
+  background-color: transparent;
+  border-width: 0;
+}
+
+.func_button:hover {
+  background-color: #4d4040;
 }
 
 .active {

@@ -48,6 +48,14 @@
         </ul>
       </div>
     </nav>
+    <div id="functions">
+      <button title="Отменить" class=func_button id="undo" style="background-image: url(img/undo.svg)"></button>
+      <button title="Вернуть" class=func_button id="redo" style="background-image: url(img/redo.svg)"></button>
+      <button title="На передний план" class=func_button id="frontObject"
+        style="background-image: url(img/to_front.svg)"></button>
+      <button title="На задний план" class=func_button id="backObject"
+        style="background-image: url(img/to_back.svg)"></button>
+    </div>
   </header>
   <main>
     <div id="vertical_panel">
@@ -72,9 +80,9 @@
         <input id="colorpicker" type="color" value="#000000">
       </div>
     </div>
-    <div class="layer" id="main_panel">
+    <div id="scroll_panel">
       <div id="draw_panel"><svg id="svg_panel" width="800" height="550" viewBox="0 0 800 550"
-          xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+          xmlns="http://www.w3.org/2000/svg">
         </svg>
       </div>
     </div>

@@ -1,3 +1,30 @@
+//PENCIL
+pencilButton = document.getElementById("pencil");
+
+pencilButton.onclick = function () {
+    wasPressed = "pencil";
+    svgPanel.style.cursor = "default";
+    svgPanel.onmousedown = function (current) {
+        if (wasPressed == "pencil") {
+            updateCursorCoords(current);
+            let newObject = new pencil();
+
+            svgPanel.onmousemove = function (current) {
+                updateCursorCoords(current);
+                newObject.updateAttributes();
+            };
+            document.onmouseup = function () {
+                svgPanel.onmousemove = null;
+                document.onmouseup = null;
+            };
+            svgPanel.onmouseenter = function (current) {
+                updateCursorCoords(current);
+                newObject = new pencil();
+            };
+        }
+    };
+};
+
 //RECTANGLE
 rectangleButton = document.getElementById("rectangle");
 
@@ -15,6 +42,7 @@ rectangleButton.onclick = function () {
             };
             document.onmouseup = function () {
                 document.onmousemove = null;
+                document.onmouseup = null;
             };
         }
     };
@@ -37,6 +65,7 @@ ellipseButton.onclick = function () {
             };
             document.onmouseup = function () {
                 document.onmousemove = null;
+                document.onmouseup = null;
             };
         }
     };
@@ -61,6 +90,7 @@ polygonButton.onclick = function () {
             };
             document.onmouseup = function () {
                 document.onmousemove = null;
+                document.onmouseup = null;
                 newObject.removeHotKeys();
             };
         }
@@ -84,6 +114,7 @@ line.onclick = function () {
             };
             document.onmouseup = function () {
                 document.onmousemove = null;
+                document.onmouseup = null;
             };
         }
     };
@@ -103,9 +134,6 @@ pathTool.onclick = function () {
             completed = false;
 
             document.onmousemove = function (current) {
-                if (wasPressed != "pathTool") {
-                    newObject.completePolyline();
-                }
                 updateCursorCoords(current);
                 newObject.updateLine(current);
             };
@@ -115,6 +143,11 @@ pathTool.onclick = function () {
                     newObject.completePolyline();
                 }
             };
+            document.onclick = function () {
+                if (wasPressed != "pathTool") {
+                    newObject.completePolyline();
+                }
+            }
         }
     };
 };

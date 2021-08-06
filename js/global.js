@@ -1,6 +1,6 @@
 svgPanel = document.getElementById("svg_panel");
 drawPanel = document.getElementById("draw_panel");
-scrollPanel = document.getElementById("main_panel");
+scrollPanel = document.getElementById("scroll_panel");
 let isSelected = false //для курсора
 let wasPressed, currentObject = null,
   strokeColor = "black",
@@ -13,12 +13,16 @@ let pointRadius = 4;
 
 //CURRENT COLOR
 function getCurrentColor() {
-  return document.getElementById("colorpicker").value;
+  return document.getElementById("fillColor").value;
+}
+
+function getStrokeColor() {
+  return document.getElementById("strokeColor").value;
 }
 
 //ACTIVE TOOL
-var vertical_panel = document.getElementById("vertical_panel");
-var buttons = vertical_panel.getElementsByClassName("tool_button");
+var left_panel = document.getElementById("left_panel");
+var buttons = left_panel.getElementsByClassName("tool_button");
 for (var i = 0; i < buttons.length; i++) {
   buttons[i].addEventListener("click", function () {
     var current = document.getElementsByClassName("tool_button active");

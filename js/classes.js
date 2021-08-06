@@ -3,29 +3,38 @@ class object {
         this.svgElement = document.createElementNS("http://www.w3.org/2000/svg", name);
         svgPanel.appendChild(this.svgElement);
         this.type = name;
+        this.isCompleted = false;
+        this.arePointsAndFrameShowing = true;
         this.x0 = curX;
         this.y0 = curY;
         this.pointsArray = [];
+        this.frame = [];
         this.svgElement.setAttribute('fill', getCurrentColor());
-
-        this.svgElement.addEventListener("click", function () {
+        this.addActions();
+    }
+    addActions() {
+        //select and hide
+        const select = (() => {
             if (wasPressed == "cursor") {
+                isSelected = true;
                 if (currentObject != null) {
-                    currentObject.setAttribute('stroke', strokeColor);
-                    currentObject.setAttribute('stroke-width', "1");
+                    currentObject.hideFrameAndPoints();
                 }
-                strokeColor = this.getAttribute('fill');
-                this.setAttribute('stroke', "red");
-                this.setAttribute('stroke-width', "3");
+                this.showFrameAndPoints();
                 currentObject = this;
             }
+        }).bind(this);
+        this.svgElement.addEventListener("mousedown", select);
+        this.svgElement.addEventListener("mouseout", function () {
+            isSelected = false;
         });
-    }
-    remove() {
-        svgPanel.removeChild(this.svgElement);
-        for (let i = 0; i < this.pointsArray.length; i++) {
-            this.pointsArray[i].remove();
-        }
+        svgPanel.addEventListener("mousedown", function () {
+            if (!isSelected) {
+                if (currentObject != null) {
+                    currentObject.hideFrameAndPoints();
+                }
+            }
+        });
     }
     setElementAttribute(attributeName, value) {
         this.svgElement.setAttribute(attributeName, value);

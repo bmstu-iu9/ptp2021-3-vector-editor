@@ -1,6 +1,7 @@
 svgPanel = document.getElementById("svg_panel");
 drawPanel = document.getElementById("draw_panel");
 scrollPanel = document.getElementById("main_panel");
+let isSelected = false //для курсора
 let wasPressed, currentObject = null,
   strokeColor = "black",
   objects = [];

@@ -3,7 +3,7 @@ scale = document.getElementById("scale");
 scale.onclick = function () {
   wasPressed = "scale";
   svgPanel.style.cursor = "zoom-in";
-  svgPanel.onmouseup = function (event) {
+  svgPanel.onclick = function (event) {
     if (wasPressed == "scale") {
       if (event.ctrlKey) {
         sizeCoef = 2 / 3;
@@ -30,12 +30,12 @@ scale.onclick = function () {
     }
   };
   document.addEventListener("keydown", function (event) {
-    if (event.ctrlKey) {
+    if (event.ctrlKey && wasPressed == "scale") {
       svgPanel.style.cursor = "zoom-out";
     }
   });
   document.addEventListener("keyup", function (event) {
-    if (event.key == "Control") {
+    if (event.key == "Control" && wasPressed == "scale") {
       svgPanel.style.cursor = "zoom-in";
     }
   });

@@ -14,7 +14,7 @@ rectangleButton.onclick = function () {
                 newObject.updateAttributes(current);
             };
             document.onmouseup = function () {
-                document.onmousemove = null;
+                newObject.complete();
             };
         }
     };
@@ -36,7 +36,7 @@ ellipseButton.onclick = function () {
                 newObject.updateAttributes(current);
             };
             document.onmouseup = function () {
-                document.onmousemove = null;
+                newObject.complete();
             };
         }
     };
@@ -53,19 +53,43 @@ polygonButton.onclick = function () {
         if (wasPressed == "polygon") {
             updateCursorCoords(current);
             let newObject = new polygon();
-            newObject.addHotKeys();
 
             document.onmousemove = function (current) {
                 updateCursorCoords(current);
                 newObject.updateAttributes(current);
             };
             document.onmouseup = function () {
-                document.onmousemove = null;
-                newObject.removeHotKeys();
+                newObject.complete();
             };
         }
     };
 }
+
+//PENCIL
+pencilButton = document.getElementById("pencil");
+
+pencilButton.onclick = function () {
+    wasPressed = "pencil";
+    svgPanel.style.cursor = "default";
+    svgPanel.onmousedown = function (current) {
+        if (wasPressed == "pencil") {
+            updateCursorCoords(current);
+            let newObject = new pencil();
+
+            svgPanel.onmousemove = function (current) {
+                updateCursorCoords(current);
+                newObject.updateAttributes();
+            };
+            document.onmouseup = function () {
+                newObject.complete();
+            };
+            svgPanel.onmouseenter = function (current) {
+                updateCursorCoords(current);
+                newObject = new pencil();
+            };
+        }
+    };
+};
 
 //LINE
 line = document.getElementById("line");
@@ -83,7 +107,7 @@ line.onclick = function () {
                 newObject.updateAttributes(current);
             };
             document.onmouseup = function () {
-                document.onmousemove = null;
+                newObject.complete();
             };
         }
     };
@@ -91,30 +115,32 @@ line.onclick = function () {
 
 //POLYLINE
 pathTool = document.getElementById("pathTool");
-let completed = true;
+let polylineIsСompleted = true;
 
 pathTool.onclick = function () {
     wasPressed = "pathTool";
     svgPanel.style.cursor = "default";
     svgPanel.onmousedown = function (current) {
-        if (wasPressed == "pathTool" && completed) {
+        if (wasPressed == "pathTool" && polylineIsСompleted) {
             updateCursorCoords(current);
             let newObject = new polyline();
-            completed = false;
+            polylineIsСompleted = false;
 
             document.onmousemove = function (current) {
-                if (wasPressed != "pathTool") {
-                    newObject.completePolyline();
-                }
                 updateCursorCoords(current);
                 newObject.updateLine(current);
             };
             svgPanel.onmouseup = function (current) {
                 newObject.updateAttributes();
                 if (current.ctrlKey) {
-                    newObject.completePolyline();
+                    newObject.complete();
                 }
             };
+            document.onclick = function () {
+                if (wasPressed != "pathTool") {
+                    newObject.complete();
+                }
+            }
         }
     };
 };

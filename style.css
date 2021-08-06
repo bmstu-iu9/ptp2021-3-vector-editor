@@ -3,16 +3,11 @@
   padding: 0;
 }
 
-body {
-  background: rgb(236, 221, 221);
-}
-
 /*HEADER*/
 
 #logo {
   font-size: 5.2vh;
   margin-left: 1.5vw;
-  margin-top: 2vh;
 }
 
 header {
@@ -21,19 +16,23 @@ header {
   font-family: Courier;
   color: rgb(255, 255, 255);
   background-color: #310000;
-  position: fixed;
   z-index: 2;
+  display: flex;
+  align-items: center;
 }
 
 /*MENU*/
 
 #menu_bar {
-  top: 0vh;
-  height: 10vh;
-  width: 100%;
-  margin-left: 13vh;
-  position: fixed;
-  background-color: #310000;
+  margin-left: 1.5vw;
+  width: initial;
+  display: flex;
+  align-items: center;
+}
+
+.container {
+  width: initial;
+  background-color: #4d2929;
   font-size: 3vh;
 }
 
@@ -60,6 +59,15 @@ header {
   transition: all 0.3s ease;
 }
 
+#functions {
+  top: 0vh;
+  margin-left: auto;
+  margin-right: 1.5vw;
+  background-color: #4d2929;
+  display: flex;
+  align-items: center;
+}
+
 /*SUB MENU*/
 
 .container li ul {
@@ -73,6 +81,8 @@ header {
   padding: 1.8vh 1vw 1.8vh 1vw;
   text-transform: none;
   background-color: #310000;
+  position: relative;
+  z-index: 3;
 }
 
 .container li:hover>ul {
@@ -81,21 +91,36 @@ header {
 
 /*MAIN*/
 
-#vertical_panel {
-  width: 5vw;
-  height: 90vh;
+main {
+  height: 100%;
+  width: 100%;
+  background-color: rgb(236, 221, 221);
+  position: fixed;
+}
+
+#left_panel {
+  width: 4vw;
+  height: 100%;
   background-color: #bb9292;
   position: fixed;
-  top: 10vh;
   z-index: 2;
 }
 
+#right_panel {
+  width: 8vw;
+  height: 100%;
+  background-color: #bb9292;
+  z-index: 2;
+  margin-left: auto;
+  margin-right: 0;
+}
+
 /*scrolling*/
-.layer {
+#scroll_panel {
   overflow: scroll;
-  width: 88vw;
+  width: 80vw;
   height: 80vh;
-  position: relative;
+  position: fixed;
   top: 14vh;
   left: 8vw;
   background: rgb(231, 204, 204);
@@ -117,13 +142,26 @@ header {
 
 .tool_button {
   margin: 0.5vw;
-  width: 4vw;
-  height: 4vw;
-  border-radius: 10%;
+  width: 3vw;
+  height: 3vw;
   background-size: cover;
   background-color: #ffdbdb;
   border-color: rgb(141, 94, 94);
+  border-radius: 10%;
   border-width: medium;
+}
+
+.func_button {
+  width: 4vh;
+  height: 4vh;
+  margin: 0.4vw;
+  background-size: cover;
+  background-color: transparent;
+  border-width: 0;
+}
+
+.func_button:hover {
+  background-color: #4d4040;
 }
 
 .active {
@@ -168,12 +206,12 @@ header {
   border-style: solid;
   border-color: rgb(49, 0, 0);
   border-image: initial;
-  border-width: 6px 0px 0px;
+  border-width: 0px 0px 6px;
 }
 
-#colorpicker {
-  width: 4vw;
-  height: 4vw;
+.colorpicker {
+  width: 3vw;
+  height: 3vw;
   margin: 0.3vw;
   border-radius: 10%;
 }

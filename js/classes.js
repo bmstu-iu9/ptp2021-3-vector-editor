@@ -10,6 +10,7 @@ class object {
         this.pointsArray = [];
         this.frame = [];
         this.svgElement.setAttribute('fill', getCurrentColor());
+        this.svgElement.setAttribute('stroke', getStrokeColor());
         this.addActions();
     }
     addActions() {
@@ -234,7 +235,6 @@ class pencil extends object {
         super('polyline');
         this.path = this.x0 + " " + this.y0;
         this.svgElement.setAttribute('fill', "none");
-        this.svgElement.setAttribute('stroke', getCurrentColor());
         this.svgElement.setAttribute('points', this.path);
         this.minX = this.x0;
         this.minY = this.y0;
@@ -272,7 +272,7 @@ class line extends object {
         this.svgElement.setAttribute('y2', y2);
         this.x2 = x2;
         this.y2 = y2;
-        this.svgElement.setAttribute('stroke', getCurrentColor());
+        this.svgElement.setAttribute('fill', "none");
         this.inPolyline = inPolyline;
     }
     updateAttributes(current) {
@@ -316,8 +316,6 @@ class polyline extends object {
     constructor() {
         super('polyline');
         this.points = this.x0 + " " + this.y0;
-        this.svgElement.setAttribute('fill', getCurrentColor());
-        this.svgElement.setAttribute('stroke', getCurrentColor());
         this.svgElement.setAttribute('points', this.points);
         this.pointsArray.push(new point(this.x0, this.y0, this));
         this.pointsArray[0].setPointAttribute('fill', "blue");

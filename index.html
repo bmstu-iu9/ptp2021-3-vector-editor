@@ -57,8 +57,9 @@
         style="background-image: url(img/to_back.svg)"></button>
     </div>
   </header>
+
   <main>
-    <div id="vertical_panel">
+    <div id="left_panel">
       <button title="Курсор" class="tool_button" id="cursor" style="background-image: url(img/cursor.svg)"></button>
       <button title="Рука" class="tool_button" id="hand" style="background-image: url(img/hand.svg)"></button>
       <button title="Масштабирование
@@ -76,10 +77,16 @@
       <button title="Текст" class="tool_button" id="text" style="background-image: url(img/text.svg)"></button>
       <button title="Перо" class="tool_button" id="pathTool" style="background-image: url(img/path_tool.svg)"></button>
       <!--<button title="Пипетка" class="tool_button" id="pipette" style="background-image: url(img/pipette.svg)"></button>-->
+    </div>
+
+    <div id="right_panel">
       <div id="palette">
-        <input id="colorpicker" type="color" value="#000000">
+        <input class="colorpicker" id="strokeColor" type="color" title="Цвет для контура фигур,
+    карандаша и кисти" value="#000000">
+        <input class="colorpicker" id="fillColor" type="color" title="Цвет для заливки фигур" value="#ffffff">
       </div>
     </div>
+
     <div id="scroll_panel">
       <div id="draw_panel"><svg id="svg_panel" width="800" height="550" viewBox="0 0 800 550"
           xmlns="http://www.w3.org/2000/svg">
@@ -97,5 +104,4 @@
   <script src="js/figures.js"></script>
   <script src="js/classes.js"></script>
 </body>
-
 </html>

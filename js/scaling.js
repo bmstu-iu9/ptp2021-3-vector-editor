@@ -30,12 +30,12 @@ scale.onclick = function () {
     }
   };
   document.addEventListener("keydown", function (event) {
-    if (event.ctrlKey) {
+    if (event.ctrlKey && wasPressed == "scale") {
       svgPanel.style.cursor = "zoom-out";
     }
   });
   document.addEventListener("keyup", function (event) {
-    if (event.key == "Control") {
+    if (event.key == "Control" && wasPressed == "scale") {
       svgPanel.style.cursor = "zoom-in";
     }
   });

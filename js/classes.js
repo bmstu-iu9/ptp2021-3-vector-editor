@@ -23,6 +23,9 @@ class object {
     }
     remove() {
         svgPanel.removeChild(this.svgElement);
+        for (let i = 0; i < this.pointsArray.length; i++) {
+            this.pointsArray[i].remove();
+        }
     }
     setElementAttribute(attributeName, value) {
         this.svgElement.setAttribute(attributeName, value);
@@ -203,10 +206,6 @@ class polyline extends object {
         this.line.remove();
     }
     updateAttributes() {
-        if (wasPressed != "pathTool") {
-            this.completePolyline();
-            return;
-        }
         const x = Number(this.line.getElementAttribute('x2')),
             y = Number(this.line.getElementAttribute('y2'));
         if (Math.pow(x - this.x0, 2) + Math.pow(y - this.y0, 2) <= Math.pow(pointRadius, 2) && this.pointsArray.length > 1) {
@@ -226,7 +225,7 @@ class polyline extends object {
     completePolyline() {
         if (!completed) {
             if (this.pointsArray.length < 2) {
-                svgPanel.removeChild(this.svgElement);
+                this.remove();
             }
             this.line.remove();
             this.points += ", " + this.x0 + " " + this.y0;
@@ -234,6 +233,7 @@ class polyline extends object {
             completed = true;
             this.hidePoints();
             document.onmousemove = null;
+            svgPanel.onmouseup = null;
         }
     }
 }
@@ -256,6 +256,9 @@ class point {
     hide() {
         this.circle.setAttribute('fill-opacity', 0);
         this.circle.setAttribute('stroke-opacity', 0);
+    }
+    remove() {
+        svgPanel.removeChild(this.circle);
     }
     show() {
         this.circle.setAttribute('fill-opacity', 1);

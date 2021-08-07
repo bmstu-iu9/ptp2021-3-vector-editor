@@ -195,3 +195,14 @@ backObject.onclick = function () {
         svgPanel.prepend(currentObject.svgElement);
     }
 }
+
+//SHOW RULERS 
+showRulers = document.getElementById("showRulers"); 
+showRulers.onclick = function () {
+    if (rulers.style.display == "none") {
+        rulers.style.display = "block";
+        updateRulers();
+    } else {
+        rulers.style.display = "none";
+    }
+}

@@ -65,7 +65,9 @@ create.onclick = function () {
     svgPanel.setAttribute('viewBox', '0 0 ' + String(width) + ' ' + String(height));
     svgPanel.setAttribute('width', width);
     svgPanel.setAttribute('height', height);
-    scrollcoords, svgPanelCoords = getCoords(svgPanel);
+    scrollcoords = getCoords(scrollPanel);
+    svgPanelCoords = getCoords(svgPanel);
+    updateRulers();
 }
 
 //OPEN
@@ -95,7 +97,9 @@ function readFile(object) {
         }
         first.setAttribute('style', 'background-color: #fff; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);');
         svgPanel = document.getElementById(first.id);
-        scrollcoords, svgPanelCoords = getCoords(svgPanel);
+        scrollcoords = getCoords(scrollPanel);
+        svgPanelCoords = getCoords(svgPanel);
+        updateRulers();
     };
     reader.readAsText(file);
 }

@@ -20,6 +20,7 @@ hand.onclick = function () {
         document.onmouseup = null;
         svgPanel.style.cursor = "grab";
         svgPanelCoords = getCoords(svgPanel);
+        updateRulers();
       };
     }
   };

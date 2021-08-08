@@ -1,215 +1,288 @@
+@import url('https://fonts.googleapis.com/css2?family=Marcellus+SC&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
+
 * {
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+  overflow-y: scroll;
 }
 
 /*HEADER*/
 
 #logo {
-  font-size: 5.2vh;
-  margin-left: 1.5vw;
+    font-size: 5vh;
+    margin-left: 1vh;
+    padding-left: 7.2vh;
+    font-family: 'Marcellus SC', serif;
+    background-image: url(img/logo.svg);
+    background-size: auto 100%;
+    background-position: left top;
+    background-repeat: no-repeat;
+    background-size: auto 100%;
 }
 
 header {
-  width: 100vw;
-  height: 10vh;
-  font-family: Courier;
-  color: rgb(255, 255, 255);
-  background-color: #310000;
-  z-index: 2;
-  display: flex;
-  align-items: center;
+    width: 100vw;
+    height: 8vh;
+    font-family: 'Roboto', sans-serif;
+    color: #fff;
+    background-color: #333;
+    z-index: 2;
+    display: flex;
+    align-items: center;
 }
 
 /*MENU*/
 
 #menu_bar {
-  margin-left: 1.5vw;
-  width: initial;
-  display: flex;
-  align-items: center;
+    margin-left: 1.5vw;
+    width: initial;
+    display: flex;
+    align-items: center;
 }
 
 .container {
-  width: initial;
-  background-color: #4d2929;
-  font-size: 3vh;
+    width: initial;
+    background-color: #333;
+    font-size: 3vh;
 }
 
-.container>ul {
-  display: flex;
-  list-style: none;
+.container > ul {
+    display: flex;
+    list-style: none;
 }
 
-.container>ul li a {
-  display: block;
-  text-decoration: none;
-  padding: 3.3vh 1.4vw 3.3vh 1.6vw;
-  color: rgb(255, 255, 255);
-  transition: all 0.3s ease;
+.container > ul li a {
+    display: block;
+    text-decoration: none;
+    padding: 3vh 1.5vw;
+    color: #fff;
+    transition: all 0.3s ease;
 }
 
-.container>ul li {
-  position: relative;
+.container > ul li {
+    position: relative;
 }
 
-.container ul>li a:hover {
-  background-color: #bb9292;
-  box-shadow: 1px 5px 10px -5px black;
-  transition: all 0.3s ease;
+.container ul > li a:hover {
+    background-color: #555;
+    transition: all 0.3s ease;
 }
 
 #functions {
-  top: 0vh;
-  margin-left: auto;
-  margin-right: 1.5vw;
-  background-color: #4d2929;
-  display: flex;
-  align-items: center;
+    top: 0vh;
+    margin-left: auto;
+    margin-right: 1.5vw;
+    display: flex;
+    align-items: center;
+}
+
+.func_button:hover {
+    background-color: #555;
 }
 
 /*SUB MENU*/
 
 .container li ul {
-  position: absolute;
-  display: none;
-  list-style: none;
+    top: 8.8vh;
+    position: absolute;
+    display: none;
+    list-style: none;
 }
 
-.container li>ul li a {
-  font-size: 2vh;
-  padding: 1.8vh 1vw 1.8vh 1vw;
-  text-transform: none;
-  background-color: #310000;
-  position: relative;
-  z-index: 3;
+.container li > ul li a {
+    font-size: 2vh;
+    padding: 1.8vh 1vw;
+    text-transform: none;
+    background-color: #333;
+    position: relative;
+    z-index: 3;
 }
 
-.container li:hover>ul {
-  display: block;
+.container li:hover > ul {
+    display: block;
 }
 
 /*MAIN*/
 
 main {
-  height: 100%;
-  width: 100%;
-  background-color: rgb(236, 221, 221);
-  position: fixed;
+    height: 100%;
+    width: 100%;
+    background-color: #222;
+    position: fixed;
 }
 
 #left_panel {
-  width: 4vw;
-  height: 100%;
-  background-color: #bb9292;
-  position: fixed;
-  z-index: 2;
+    width: 4vw;
+    height: 100%;
+    background-color: #333;
+    position: fixed;
+    z-index: 2;
 }
 
 #right_panel {
-  width: 8vw;
-  height: 100%;
-  background-color: #bb9292;
-  z-index: 2;
-  margin-left: auto;
-  margin-right: 0;
+    width: 8vw;
+    height: 100%;
+    background-color: #333;
+    z-index: 2;
+    margin-left: auto;
+    margin-right: 0;
 }
 
 /*scrolling*/
 #scroll_panel {
-  overflow: scroll;
-  width: 80vw;
-  height: 80vh;
+    overflow: scroll;
+    width: 80vw;
+    height: 80vh;
+    position: fixed;
+    top: 14vh;
+    left: 8vw;
+    background: #222;
+    z-index: 1;
+}
+
+/*rulers*/
+#rulers {
+  z-index: 2;
+  display: block;
+  position: relative;
+  font-size: 11px;
+  font-family: Courier;
+  font-weight: bold;
+  user-select: none;
+  opacity: .9;
+}
+
+#rulers_corner {
+  width: 14px;
+  height: 14px;
+  display: block;
+  text-align: center;
   position: fixed;
-  top: 14vh;
-  left: 8vw;
-  background: rgb(231, 204, 204);
+  background-color: #bb9292;
+  border-right: 1px solid #666666;
+  border-bottom: 1px solid #666666;
   z-index: 1;
+  will-change:transform;
+}
+
+#ruler_x {
+  width: 512px;
+  height: 15px;
+  left: 15px;
+  top: 0px;
+}
+
+#ruler_x pattern rect, #ruler_y pattern rect {
+  fill: #bb9292;
+}
+
+#ruler_x, #ruler_y {
+  position: absolute;
+  display: block;
+  overflow: hidden;
+  -webkit-transform:  translateZ(0)
+}
+
+#ruler_x pattern line, #ruler_y pattern line {
+  stroke: black;
+  stroke-opacity: .6;
+  stroke-width: 1px;
+}
+
+#ruler_x_text text, #ruler_y_text text {
+  opacity: .6;
+}
+
+#ruler_y {
+  width: 15px;
+  height: 512px;
+  top: 15px;
+  left: 0px;
 }
 
 /*холст*/
 #svg_panel {
-  /*width: 40vw;
+    /*width: 40vw;
   height: 70vh;*/
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgb(255, 255, 255);
-  box-shadow: 0 0 10px #828282;
-  z-index: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgb(255, 255, 255);
+    box-shadow: 0 0 10px #828282;
+    z-index: 1;
 }
 
 .tool_button {
-  margin: 0.5vw;
-  width: 3vw;
-  height: 3vw;
-  background-size: cover;
-  background-color: #ffdbdb;
-  border-color: rgb(141, 94, 94);
-  border-radius: 10%;
-  border-width: medium;
+    margin: 0.5vw;
+    width: 3vw;
+    height: 3vw;
+    background-size: cover;
+    background-color: #333;
+    border-color: #fff;
+    border-radius: 10%;
+    border-width: medium;
 }
 
 .func_button {
-  width: 4vh;
-  height: 4vh;
-  margin: 0.4vw;
-  background-size: cover;
-  background-color: transparent;
-  border-width: 0;
-}
-
-.func_button:hover {
-  background-color: #4d4040;
+    width: 4vh;
+    height: 4vh;
+    margin: 0.4vw;
+    background-size: cover;
+    background-color: transparent;
+    border-width: 0;
 }
 
 .active {
-  border-width: thick;
+    border-width: thick;
 }
 
 .tool_button:hover {
-  background-color: #966d6d;
+    background-color: #555;
 }
 
 /*VERT MENU*/
 #figures:hover {
-  background-color: #ffdbdb;
+    background-color: #555;
 }
 
 .vertical_menu {
-  position: absolute;
-  list-style: none;
-  width: 100%;
-  left: 95%;
-  opacity: 0;
+    position: absolute;
+    list-style: none;
+    width: 100%;
+    left: 95%;
+    opacity: 0;
 }
 
 .vertical_menu a {
-  font-size: 150%;
-  background-color: #ffdbdb;
-  text-decoration: none;
-  color: rgb(104, 70, 70)
+    font-size: 150%;
+    background-color: #333;
+    text-decoration: none;
+    color: #fff;
 }
 
 .vertical_menu a:hover {
-  background-color: #966d6d;
+    background-color: #555;
 }
 
 #figures:hover .vertical_menu {
-  opacity: 1;
+    opacity: 1;
 }
 
 /*PALETTE*/
 hr {
-  border: none;
-  background: #310000;
-  height: 0.6vh;
+    border: none;
+    background: #222;
+    height: 0.6vh;
 }
 
 .colorpicker {
-  width: 3vw;
-  height: 3vw;
-  margin: 0.3vw;
-  border-radius: 10%;
+    width: 3vw;
+    height: 3vw;
+    margin: 0.3vw;
+    border-radius: 10%;
 }

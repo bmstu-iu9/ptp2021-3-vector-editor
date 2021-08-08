@@ -51,3 +51,7 @@ window.onresize = function () {
   svgPanelCoords = getCoords(svgPanel);
   scrollcoords = getCoords(scrollPanel);
 }
+
+scrollPanel.onscroll = function () {
+  svgPanelCoords = getCoords(svgPanel);
+};

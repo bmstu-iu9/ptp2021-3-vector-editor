@@ -201,12 +201,10 @@ main {
 }
 
 /*PALETTE*/
-#palette {
-  text-align: center;
-  border-style: solid;
-  border-color: rgb(49, 0, 0);
-  border-image: initial;
-  border-width: 0px 0px 6px;
+hr {
+  border: none;
+  background: #310000;
+  height: 0.6vh;
 }
 
 .colorpicker {

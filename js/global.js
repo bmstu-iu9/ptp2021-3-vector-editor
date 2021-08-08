@@ -1,7 +1,7 @@
 svgPanel = document.getElementById("svg_panel");
 drawPanel = document.getElementById("draw_panel");
 scrollPanel = document.getElementById("scroll_panel");
-let isSelected = false //для курсора
+let isSomeObjectSelected = false //для курсора
 let wasPressed, currentObject = null,
   strokeColor = "black",
   objects = [];
@@ -12,11 +12,11 @@ let scaleСoef = 1;
 let pointRadius = 4;
 
 //CURRENT COLOR
-function getCurrentColor() {
+function getCurrentFillColor() {
   return document.getElementById("fillColor").value;
 }
 
-function getStrokeColor() {
+function getCurrentStrokeColor() {
   return document.getElementById("strokeColor").value;
 }
 

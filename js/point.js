@@ -1,10 +1,11 @@
 class point {
-    constructor(x, y, object) {
+    constructor(x, y, object, type) {
         this.circle = document.createElementNS("http://www.w3.org/2000/svg", 'ellipse');
         svgPanel.appendChild(this.circle);
         this.x = x;
         this.y = y;
         this.object = object;
+        this.type = type;
         this.circle.setAttribute('fill', "white");
         this.circle.setAttribute('stroke', "black");
         this.circle.setAttribute('cx', x);

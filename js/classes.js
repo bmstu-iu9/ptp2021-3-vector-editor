@@ -5,23 +5,27 @@ class object {
         this.type = name;
         this.isCompleted = false;
         this.arePointsAndFrameShowing = true;
+        this.isSelected = false;
+        this.isMoving = false;
         this.x0 = curX;
         this.y0 = curY;
         this.pointsArray = [];
         this.frame = [];
-        this.svgElement.setAttribute('fill', getCurrentColor());
-        this.svgElement.setAttribute('stroke', getStrokeColor());
+        this.svgElement.setAttribute('fill', getCurrentFillColor());
+        this.svgElement.setAttribute('stroke', getCurrentStrokeColor());
         this.addActions();
     }
     addActions() {
-        //select and hide
+        //select
         const select = (() => {
             if (wasPressed == "cursor") {
-                isSelected = true;
+                isSomeObjectSelected = true;
                 if (currentObject != null) {
                     currentObject.hideFrameAndPoints();
+                    currentObject.isSelected = false;
                 }
                 this.showFrameAndPoints();
+                this.isSelected = true;
                 currentObject = this;
             }
             if (wasPressed == "fill" && this.type != 'pencil') {
@@ -30,16 +34,43 @@ class object {
         }).bind(this);
         this.svgElement.addEventListener("mousedown", select);
         this.svgElement.addEventListener("mouseout", function () {
-            isSelected = false;
+            isSomeObjectSelected = false;
         });
+        //hide
         svgPanel.addEventListener("mousedown", function () {
-            if (!isSelected) {
+            if (!isSomeObjectSelected) {
                 if (currentObject != null) {
                     currentObject.hideFrameAndPoints();
+                    currentObject.isSelected = false;
                     currentObject = null
                 }
             }
         });
+        //move
+        const move = ((current) => {
+            if (this.isCompleted && this.isSelected && this.isMoving) {
+                updateCursorCoords(current);
+                this.move();
+            }
+        }).bind(this);
+        document.addEventListener("mousemove", move);
+        const startMoving = ((current) => {
+            if (this.isCompleted && this.isSelected) {
+                this.isMoving = true;
+                updateCursorCoords(current);
+                this.startX = curX;
+                this.startY = curY;
+            }
+        }).bind(this);
+        svgPanel.addEventListener("mousedown", startMoving);
+        const stopMoving = ((current) => {
+            if (this.isSelected && this.isMoving) {
+                this.isMoving = false;
+                updateCursorCoords(current);
+                this.stopMove();
+            }
+        }).bind(this);
+        svgPanel.addEventListener("mouseup", stopMoving);
     }
     setElementAttribute(attributeName, value) {
         this.svgElement.setAttribute(attributeName, value);
@@ -78,17 +109,19 @@ class object {
         }
         this.arePointsAndFrameShowing = true;
     }
-    setFrameAndPoints() {
+    updateFrameAndPoints() {
         for (let i = 0; i < this.frame.length; i++) {
             this.frame[i].setElementAttribute('stroke-opacity', "0.3");
-            this.frame[i].setElementAttribute('stroke', "blue");
+            this.frame[i].setElementAttribute('stroke', "red");
         }
     }
     addHotKeys() {}
     removeHotKeys() {}
+    move() {}
+    stopMove() {}
     complete() {
         this.isCompleted = true;
-        this.setFrameAndPoints();
+        this.updateFrameAndPoints();
         this.hideFrameAndPoints();
         this.removeHotKeys();
         svgPanel.onmousemove = null;

@@ -72,3 +72,7 @@ function updateRulersPos() {
   rulerX.style.top = scrollPanel.scrollTop;
   rulerY.style.left = scrollPanel.scrollLeft;
 }
+
+scrollPanel.onscroll = function () {
+  svgPanelCoords = getCoords(svgPanel);
+};

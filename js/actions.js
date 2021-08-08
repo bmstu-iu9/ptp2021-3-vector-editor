@@ -206,3 +206,20 @@ showRulers.onclick = function () {
         rulers.style.display = "none";
     }
 }
+
+//COLOR CHANGE
+strokeColor = document.getElementById("strokeColor");
+
+strokeColor.onchange = function () {
+    if (currentObject != null) {
+        currentObject.svgElement.setAttribute('stroke', strokeColor.value);
+    }
+}
+
+fillColor = document.getElementById("fillColor");
+
+fillColor.onchange = function () {
+    if (currentObject != null && currentObject.type != 'pencil') {
+        currentObject.svgElement.setAttribute('fill', fillColor.value);
+    }
+}

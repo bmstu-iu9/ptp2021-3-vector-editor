@@ -24,6 +24,9 @@ class object {
                 this.showFrameAndPoints();
                 currentObject = this;
             }
+            if (wasPressed == "fill" && this.type != 'pencil') {
+                this.svgElement.setAttribute('fill', getCurrentColor());
+            }
         }).bind(this);
         this.svgElement.addEventListener("mousedown", select);
         this.svgElement.addEventListener("mouseout", function () {
@@ -33,6 +36,7 @@ class object {
             if (!isSelected) {
                 if (currentObject != null) {
                     currentObject.hideFrameAndPoints();
+                    currentObject = null
                 }
             }
         });
@@ -233,6 +237,7 @@ class polygon extends object {
 class pencil extends object {
     constructor() {
         super('polyline');
+        this.type = 'pencil';
         this.path = this.x0 + " " + this.y0;
         this.svgElement.setAttribute('fill', "none");
         this.svgElement.setAttribute('points', this.path);

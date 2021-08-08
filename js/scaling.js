@@ -27,6 +27,7 @@ scale.onclick = function () {
       svgPanel.style.top = svgPanelY + shiftY * shiftCoef;
       //svgPanel.style.top == svgPanelY
       svgPanelCoords = getCoords(svgPanel);
+      updateRulers();
     }
   };
   document.addEventListener("keydown", function (event) {

@@ -5,23 +5,27 @@ class object {
         this.type = name;
         this.isCompleted = false;
         this.arePointsAndFrameShowing = true;
+        this.isSelected = false;
+        this.isMoving = false;
         this.x0 = curX;
         this.y0 = curY;
         this.pointsArray = [];
         this.frame = [];
-        this.svgElement.setAttribute('fill', getCurrentColor());
-        this.svgElement.setAttribute('stroke', getStrokeColor());
+        this.svgElement.setAttribute('fill', getCurrentFillColor());
+        this.svgElement.setAttribute('stroke', getCurrentStrokeColor());
         this.addActions();
     }
     addActions() {
-        //select and hide
+        //select
         const select = (() => {
             if (wasPressed == "cursor") {
-                isSelected = true;
+                isSomeObjectSelected = true;
                 if (currentObject != null) {
                     currentObject.hideFrameAndPoints();
+                    currentObject.isSelected = false;
                 }
                 this.showFrameAndPoints();
+                this.isSelected = true;
                 currentObject = this;
             }
             if (wasPressed == "fill" && this.type != 'pencil') {
@@ -30,16 +34,43 @@ class object {
         }).bind(this);
         this.svgElement.addEventListener("mousedown", select);
         this.svgElement.addEventListener("mouseout", function () {
-            isSelected = false;
+            isSomeObjectSelected = false;
         });
+        //hide
         svgPanel.addEventListener("mousedown", function () {
-            if (!isSelected) {
+            if (!isSomeObjectSelected) {
                 if (currentObject != null) {
                     currentObject.hideFrameAndPoints();
+                    currentObject.isSelected = false;
                     currentObject = null
                 }
             }
         });
+        //move
+        const move = ((current) => {
+            if (this.isCompleted && this.isSelected && this.isMoving) {
+                updateCursorCoords(current);
+                this.move();
+            }
+        }).bind(this);
+        document.addEventListener("mousemove", move);
+        const startMoving = ((current) => {
+            if (this.isCompleted && this.isSelected) {
+                this.isMoving = true;
+                updateCursorCoords(current);
+                this.startX = curX;
+                this.startY = curY;
+            }
+        }).bind(this);
+        svgPanel.addEventListener("mousedown", startMoving);
+        const stopMoving = ((current) => {
+            if (this.isSelected && this.isMoving) {
+                this.isMoving = false;
+                updateCursorCoords(current);
+                this.stopMove();
+            }
+        }).bind(this);
+        svgPanel.addEventListener("mouseup", stopMoving);
     }
     setElementAttribute(attributeName, value) {
         this.svgElement.setAttribute(attributeName, value);
@@ -78,17 +109,19 @@ class object {
         }
         this.arePointsAndFrameShowing = true;
     }
-    setFrameAndPoints() {
+    updateFrameAndPoints() {
         for (let i = 0; i < this.frame.length; i++) {
             this.frame[i].setElementAttribute('stroke-opacity', "0.3");
-            this.frame[i].setElementAttribute('stroke', "blue");
+            this.frame[i].setElementAttribute('stroke', "red");
         }
     }
     addHotKeys() {}
     removeHotKeys() {}
+    move() {}
+    stopMove() {}
     complete() {
         this.isCompleted = true;
-        this.setFrameAndPoints();
+        this.updateFrameAndPoints();
         this.hideFrameAndPoints();
         this.removeHotKeys();
         svgPanel.onmousemove = null;
@@ -125,13 +158,24 @@ class rectangle extends object {
         this.svgElement.setAttribute('height', this.height);
         this.svgElement.setAttribute('x', this.x);
         this.svgElement.setAttribute('y', this.y);
+        this.updatePoints(this.width, this.height, this.x, this.y)
+    }
+    updatePoints(width, height, x, y) {
         this.removeFrameAndPoints();
-        this.pointsArray = [new point(this.x + this.width / 2, this.y + this.height / 2, this),
-            new point(this.x, this.y, this),
-            new point(this.x + this.width, this.y, this),
-            new point(this.x + this.width, this.y + this.height, this),
-            new point(this.x, this.y + this.height, this),
+        this.pointsArray = [new point(x, y, this),
+            new point(x + width, y, this),
+            new point(x + width, y + height, this),
+            new point(x, y + height, this),
         ];
+    }
+    move() {
+        this.svgElement.setAttribute('x', this.x + (curX - this.startX));
+        this.svgElement.setAttribute('y', this.y + (curY - this.startY));
+        this.updatePoints(this.width, this.height, this.x + (curX - this.startX), this.y + (curY - this.startY));
+    }
+    stopMove() {
+        this.x += (curX - this.startX);
+        this.y += (curY - this.startY);
     }
 }
 
@@ -163,25 +207,34 @@ class ellipse extends object {
         this.svgElement.setAttribute('ry', this.ry);
         this.svgElement.setAttribute('cx', this.cx);
         this.svgElement.setAttribute('cy', this.cy);
-        this.removeFrameAndPoints();
-        this.pointsArray = [new point(this.cx, this.cy, this),
-            new point(this.cx, this.cy - this.ry, this),
-            new point(this.cx + this.rx, this.cy, this),
-            new point(this.cx, this.cy + this.ry, this),
-            new point(this.cx - this.rx, this.cy, this),
-        ];
+        this.updateFrameAndPoints(this.rx, this.ry, this.cx, this.cy);
     }
-    setFrameAndPoints() {
-        this.pointsArray.push(new point(this.cx - this.rx, this.cy + this.ry, this));
-        this.pointsArray.push(new point(this.cx + this.rx, this.cy + this.ry, this));
-        this.pointsArray.push(new point(this.cx + this.rx, this.cy - this.ry, this));
-        this.pointsArray.push(new point(this.cx - this.rx, this.cy - this.ry, this));
-        this.frame = [new line(this.cx - this.rx, this.cy + this.ry, this.cx + this.rx, this.cy + this.ry),
-            new line(this.cx + this.rx, this.cy + this.ry, this.cx + this.rx, this.cy - this.ry),
-            new line(this.cx + this.rx, this.cy - this.ry, this.cx - this.rx, this.cy - this.ry),
-            new line(this.cx - this.rx, this.cy - this.ry, this.cx - this.rx, this.cy + this.ry)
+    updateFrameAndPoints(rx = this.rx, ry = this.ry, cx = this.cx, cy = this.cy) {
+        this.removeFrameAndPoints();
+        this.frame = [new line(cx - rx, cy + ry, cx + rx, cy + ry, false),
+            new line(cx + rx, cy + ry, cx + rx, cy - ry, false),
+            new line(cx + rx, cy - ry, cx - rx, cy - ry, false),
+            new line(cx - rx, cy - ry, cx - rx, cy + ry, false)
         ];
-        super.setFrameAndPoints();
+        this.pointsArray = [new point(cx, cy - ry, this),
+            new point(cx + rx, cy, this),
+            new point(cx, cy + ry, this),
+            new point(cx - rx, cy, this),
+            new point(cx - rx, cy + ry, this),
+            new point(cx + rx, cy + ry, this),
+            new point(cx + rx, cy - ry, this),
+            new point(cx - rx, cy - ry, this)
+        ];
+        super.updateFrameAndPoints();
+    }
+    move() {
+        this.svgElement.setAttribute('cx', this.cx + (curX - this.startX));
+        this.svgElement.setAttribute('cy', this.cy + (curY - this.startY));
+        this.updateFrameAndPoints(this.rx, this.ry, this.cx + (curX - this.startX), this.cy + (curY - this.startY));
+    }
+    stopMove() {
+        this.cx += (curX - this.startX);
+        this.cy += (curY - this.startY);
     }
 }
 
@@ -189,35 +242,42 @@ class ellipse extends object {
 class polygon extends object {
     constructor() {
         super('polygon');
+        this.r = 0;
+        this.phi = 0;
         this.vertNum = curVertNum;
         this.points = "";
+        this.rotationIsFixed = false;
+        this.fixRotation = this.fixRotation.bind(this);
+        this.freeRotation = this.freeRotation.bind(this);
         this.updateVertNum = this.updateVertNum.bind(this);
         this.addHotKeys();
     }
-    updateAttributes(current) {
+    updateAttributes() {
         let dx = curX - this.x0,
-            dy = curY - this.y0,
-            r = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)),
-            phi = 0;
-        if (current.shiftKey) phi = (this.vertNum - 2) * Math.PI / (this.vertNum * 2);
-        else if (r > 0) phi = dy > 0 ? Math.acos(dx / r) : -Math.acos(dx / r);
+            dy = curY - this.y0;
+        this.r = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+        if (this.rotationIsFixed) this.phi = (this.vertNum - 2) * Math.PI / (this.vertNum * 2);
+        else if (this.r > 0) this.phi = dy > 0 ? Math.acos(dx / this.r) : -Math.acos(dx / this.r);
         this.removeFrameAndPoints();
-        this.pointsArray = [new point(this.x0, this.y0, this)];
+        this.pointsArray = [];
         for (let i = 0; i < this.vertNum; i++) {
-            let x = this.x0 + r * Math.cos(phi + 2 * Math.PI * i / this.vertNum);
-            let y = this.y0 + r * Math.sin(phi + 2 * Math.PI * i / this.vertNum);
+            let x = this.x0 + this.r * Math.cos(this.phi + 2 * Math.PI * i / this.vertNum);
+            let y = this.y0 + this.r * Math.sin(this.phi + 2 * Math.PI * i / this.vertNum);
             if (i == 0) this.points = x + " " + y;
             else this.points += ", " + x + " " + y;
             this.pointsArray.push(new point(x, y, this));
         }
         this.svgElement.setAttribute('points', this.points);
-
     }
     addHotKeys() {
         document.addEventListener('keydown', this.updateVertNum);
+        document.addEventListener('keydown', this.fixRotation);
+        document.addEventListener('keyup', this.freeRotation);
     }
     removeHotKeys() {
         document.removeEventListener('keydown', this.updateVertNum);
+        document.removeEventListener('keydown', this.fixRotation);
+        document.removeEventListener('keyup', this.freeRotation);
     }
     updateVertNum(current) {
         if (current.code == 'ArrowUp') {
@@ -230,6 +290,37 @@ class polygon extends object {
             this.vertNum--;
             this.updateAttributes(current);
         }
+    }
+    fixRotation(event) {
+        if (event.key == 'Shift') {
+            this.rotationIsFixed = true;
+            this.updateAttributes();
+        }
+    }
+    freeRotation(event) {
+        if (event.key == 'Shift') {
+            this.rotationIsFixed = false;
+            this.updateAttributes();
+        }
+    }
+    updatePosition(x0, y0) {
+        this.removeFrameAndPoints();
+        this.pointsArray = [];
+        for (let i = 0; i < this.vertNum; i++) {
+            let x = x0 + this.r * Math.cos(this.phi + 2 * Math.PI * i / this.vertNum);
+            let y = y0 + this.r * Math.sin(this.phi + 2 * Math.PI * i / this.vertNum);
+            if (i == 0) this.points = x + " " + y;
+            else this.points += ", " + x + " " + y;
+            this.pointsArray.push(new point(x, y, this));
+        }
+        this.svgElement.setAttribute('points', this.points);
+    }
+    move() {
+        this.updatePosition(this.x0 + (curX - this.startX), this.y0 + (curY - this.startY));
+    }
+    stopMove() {
+        this.x0 += (curX - this.startX);
+        this.y0 += (curY - this.startY);
     }
 }
 

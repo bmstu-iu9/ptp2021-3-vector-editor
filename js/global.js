@@ -1,6 +1,7 @@
 svgPanel = document.getElementById("svg_panel");
 drawPanel = document.getElementById("draw_panel");
 scrollPanel = document.getElementById("scroll_panel");
+let isSomeObjectSelected = false //для курсора
 rulerX = document.getElementById("ruler_x");
 rulerY = document.getElementById("ruler_y");
 ruler_x_pattern = document.getElementById("ruler_x_pattern");
@@ -9,7 +10,6 @@ ruler_x_text = document.getElementById("ruler_x_text");
 ruler_y_text = document.getElementById("ruler_y_text");
 ruler_x_line = document.getElementById("ruler_x_line");
 ruler_y_line = document.getElementById("ruler_y_line");
-let isSelected = false //для курсора
 let wasPressed, currentObject = null,
   strokeColor = "black",
   objects = [];
@@ -20,11 +20,11 @@ let scaleСoef = 1;
 let pointRadius = 4;
 
 //CURRENT COLOR
-function getCurrentColor() {
+function getCurrentFillColor() {
   return document.getElementById("fillColor").value;
 }
 
-function getStrokeColor() {
+function getCurrentStrokeColor() {
   return document.getElementById("strokeColor").value;
 }
 

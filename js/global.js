@@ -66,7 +66,6 @@ window.onload = function () {
 }
 
 //updateRulersPos
-scrollPanel.addEventListener("scroll", updateRulersPos); 
 
 function updateRulersPos() {
   rulerX.style.top = scrollPanel.scrollTop;
@@ -75,4 +74,5 @@ function updateRulersPos() {
 
 scrollPanel.onscroll = function () {
   svgPanelCoords = getCoords(svgPanel);
+  updateRulersPos();
 };

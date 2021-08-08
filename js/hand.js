@@ -13,14 +13,14 @@ hand.onclick = function () {
         svgPanel.style.transform = "translate(0, 0)";
         svgPanel.style.top = current.pageY - shiftY + "px";
         svgPanel.style.left = current.pageX - shiftX + "px";
+        svgPanelCoords = getCoords(svgPanel);
+        updateRulers();
       };
 
       document.onmouseup = function () {
         svgPanel.onmousemove = null;
         document.onmouseup = null;
         svgPanel.style.cursor = "grab";
-        svgPanelCoords = getCoords(svgPanel);
-        updateRulers();
       };
     }
   };

@@ -29,7 +29,7 @@ class object {
                 currentObject = this;
             }
             if (wasPressed == "fill" && this.type != 'pencil') {
-                this.svgElement.setAttribute('fill', getCurrentColor());
+                this.svgElement.setAttribute('fill', getCurrentFillColor());
             }
         }).bind(this);
         this.svgElement.addEventListener("mousedown", select);
@@ -58,8 +58,10 @@ class object {
             if (this.isCompleted && this.isSelected) {
                 this.isMoving = true;
                 updateCursorCoords(current);
-                this.startX = curX;
-                this.startY = curY;
+                this.start = {
+                    x: curX,
+                    y: curY
+                }
             }
         }).bind(this);
         svgPanel.addEventListener("mousedown", startMoving);
@@ -168,14 +170,14 @@ class rectangle extends object {
             new point(x, y + height, this),
         ];
     }
-    move() {
-        this.svgElement.setAttribute('x', this.x + (curX - this.startX));
-        this.svgElement.setAttribute('y', this.y + (curY - this.startY));
-        this.updatePoints(this.width, this.height, this.x + (curX - this.startX), this.y + (curY - this.startY));
+    move(startX = this.start.x, startY = this.start.y) {
+        this.svgElement.setAttribute('x', this.x + (curX - startX));
+        this.svgElement.setAttribute('y', this.y + (curY - startY));
+        this.updatePoints(this.width, this.height, this.x + (curX - startX), this.y + (curY - startY));
     }
-    stopMove() {
-        this.x += (curX - this.startX);
-        this.y += (curY - this.startY);
+    stopMove(startX = this.start.x, startY = this.start.y) {
+        this.x += (curX - startX);
+        this.y += (curY - startY);
     }
 }
 
@@ -227,14 +229,14 @@ class ellipse extends object {
         ];
         super.updateFrameAndPoints();
     }
-    move() {
-        this.svgElement.setAttribute('cx', this.cx + (curX - this.startX));
-        this.svgElement.setAttribute('cy', this.cy + (curY - this.startY));
-        this.updateFrameAndPoints(this.rx, this.ry, this.cx + (curX - this.startX), this.cy + (curY - this.startY));
+    move(startX = this.start.x, startY = this.start.y) {
+        this.svgElement.setAttribute('cx', this.cx + (curX - startX));
+        this.svgElement.setAttribute('cy', this.cy + (curY - startY));
+        this.updateFrameAndPoints(this.rx, this.ry, this.cx + (curX - startX), this.cy + (curY - startY));
     }
-    stopMove() {
-        this.cx += (curX - this.startX);
-        this.cy += (curY - this.startY);
+    stopMove(startX = this.start.x, startY = this.start.y) {
+        this.cx += (curX - startX);
+        this.cy += (curY - startY);
     }
 }
 
@@ -315,12 +317,12 @@ class polygon extends object {
         }
         this.svgElement.setAttribute('points', this.points);
     }
-    move() {
-        this.updatePosition(this.x0 + (curX - this.startX), this.y0 + (curY - this.startY));
+    move(startX = this.start.x, startY = this.start.y) {
+        this.updatePosition(this.x0 + (curX - startX), this.y0 + (curY - startY));
     }
-    stopMove() {
-        this.x0 += (curX - this.startX);
-        this.y0 += (curY - this.startY);
+    stopMove(startX = this.start.x, startY = this.start.y) {
+        this.x0 += (curX - startX);
+        this.y0 += (curY - startY);
     }
 }
 

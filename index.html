@@ -10,6 +10,7 @@
   <meta name="authors" content="">
   <title>Pentagram - svg-редактор</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="css/right.css" />
 </head>
 
 <body>
@@ -84,6 +85,22 @@
         <input class="colorpicker" id="strokeColor" type="color" title="Цвет для контура фигур,
     карандаша и кисти" value="#000000">
         <input class="colorpicker" id="fillColor" type="color" title="Цвет для заливки фигур" value="#ffffff">
+
+        <div class="styleListBox">
+          <button class="styleChoise" id="strokeChoise">Контур</button>
+          <ul class="styleList" id="strokeStyle">
+            <li><a href="#" id="style0">Без контура </a></li>
+            <li><a href="#" id="style1">Сплошной цвет</a></li>
+          </ul>
+        </div>
+        <div class="styleListBox">
+          <button class="styleChoise" id="fillChoise">Заливка</button>
+          <ul class="styleList" id="fillStyle">
+            <li><a href="#">Без заливки</a></li>
+            <li><a href="#">Сплошной цвет</a></li>
+          </ul>
+        </div>
+
       </div>
       <hr>
     </div>
@@ -132,6 +149,7 @@
   <script src="js/figures.js"></script>
   <script src="js/classes.js"></script>
   <script src="js/point.js"></script>
+  <script src="js/color.js"></script>
 </body>
 
 </html>

@@ -1,0 +1,71 @@
+/*PALETTE*/
+#palette {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+hr {
+    border: none;
+    background: #222;
+    height: 0.6vh;
+}
+
+.colorpicker {
+    width: 3vw;
+    height: 3vw;
+    margin: 0.3vw;
+    border-radius: 10%;
+}
+
+/*stroke & fill style*/
+
+.styleListBox {
+    width: 7vw;
+    margin: 1px;
+}
+
+.styleChoise {
+    border: none;
+    background: transparent;
+    width: inherit;
+    text-align: left;
+    color: #fff;
+    font-family: 'Roboto', sans-serif;
+    font-weight:bold;
+    cursor: pointer;
+    
+}
+
+.styleChoise:hover {
+    background-image: url(../img/down.svg);
+    background-position:right;
+    background-repeat: no-repeat;
+    background-size: auto 80%;
+}
+
+.styleList {
+    display: none;
+    position: absolute;
+    list-style: none;
+    font-size: 14px;
+    z-index: 3;
+    background-color: #555;
+}
+
+.styleList a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.styleList li:hover {
+    background-color: #828282;
+}
+
+#fillStyle {
+    right: 0.3vw;
+}
+
+/*.styleButton:checked ~ .styleList {
+    display:block;
+}*/

@@ -164,6 +164,7 @@ zoomIn.onclick = function () {
     svgPanel.style.height = svgPanel.clientHeight * 1.5 + "px";
     scaleСoef *= 1.5;
     svgPanelCoords = getCoords(svgPanel);
+    updateRulers();
 }
 
 zoomOut = document.getElementById("zoomOut");
@@ -172,6 +173,7 @@ zoomOut.onclick = function () {
     svgPanel.style.height = svgPanel.clientHeight / 1.5 + "px";
     scaleСoef /= 1.5;
     svgPanelCoords = getCoords(svgPanel);
+    updateRulers();
 }
 
 frontObject = document.getElementById("frontObject");

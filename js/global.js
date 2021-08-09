@@ -19,15 +19,6 @@ let svgPanelCoords = getCoords(svgPanel),
 let scaleСoef = 1;
 let pointRadius = 4;
 
-//CURRENT COLOR
-function getCurrentFillColor() {
-  return document.getElementById("fillColor").value;
-}
-
-function getCurrentStrokeColor() {
-  return document.getElementById("strokeColor").value;
-}
-
 //ACTIVE TOOL
 var left_panel = document.getElementById("left_panel");
 var buttons = left_panel.getElementsByClassName("tool_button");

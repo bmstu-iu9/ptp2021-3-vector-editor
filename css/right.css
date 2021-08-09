@@ -51,19 +51,18 @@ hr {
     font-size: 14px;
     z-index: 3;
     background-color: #555;
+    width: 8%;
+    right: 0.3vw;
 }
 
-.styleList a {
+.styleList li label{
     color: #fff;
     text-decoration: none;
+    cursor: pointer;
 }
 
 .styleList li:hover {
     background-color: #828282;
-}
-
-#fillStyle {
-    right: 0.3vw;
 }
 
 /*.styleButton:checked ~ .styleList {

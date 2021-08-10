@@ -199,7 +199,7 @@ backObject.onclick = function () {
 }
 
 //SHOW RULERS 
-showRulers = document.getElementById("showRulers"); 
+showRulers = document.getElementById("showRulers");
 showRulers.onclick = function () {
     if (rulers.style.display == "none") {
         rulers.style.display = "block";

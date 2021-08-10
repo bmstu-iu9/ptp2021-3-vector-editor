@@ -190,6 +190,27 @@ class object {
 class rectangle extends object {
     constructor() {
         super('rect');
+        this.width = 0;
+        this.height = 0;
+        this.x = curX;
+        this.y = curY;
+    }
+    createClone() {
+        let clone = new rectangle();
+        this.clone = clone;
+        super.createClone();
+        clone.width = this.width;
+        clone.height = this.height;
+        clone.x = this.x;
+        clone.y = this.y;
+        clone.svgElement.setAttribute('width', this.width);
+        clone.svgElement.setAttribute('height', this.height);
+        clone.svgElement.setAttribute('x', this.x);
+        clone.svgElement.setAttribute('y', this.y);
+        clone.removeHotKeys();
+        clone.move(50, 50);
+        clone.stopMoving(50, 50);
+        return clone;
     }
     updateAttributes(current) {
         let w = curX - this.x0;
@@ -240,6 +261,23 @@ class ellipse extends object {
         this.ry = curY;
         this.cx = 0;
         this.cy = 0;
+    }
+    createClone() {
+        let clone = new ellipse();
+        this.clone = clone;
+        super.createClone();
+        clone.rx = this.rx;
+        clone.ry = this.ry;
+        clone.cx = this.cx;
+        clone.cy = this.cy;
+        clone.svgElement.setAttribute('rx', this.rx);
+        clone.svgElement.setAttribute('ry', this.ry);
+        clone.svgElement.setAttribute('cx', this.cx);
+        clone.svgElement.setAttribute('cy', this.cy);
+        clone.removeHotKeys();
+        clone.move(50, 50);
+        clone.stopMoving(50, 50);
+        return clone;
     }
     updateAttributes(current) {
         let w = (curX - this.x0) / 2;
@@ -300,11 +338,27 @@ class polygon extends object {
         this.phi = 0;
         this.vertNum = curVertNum;
         this.points = "";
+        this.pointsArray = [];
         this.rotationIsFixed = false;
         this.fixRotation = this.fixRotation.bind(this);
         this.freeRotation = this.freeRotation.bind(this);
         this.updateVertNum = this.updateVertNum.bind(this);
         this.addHotKeys();
+    }
+    createClone() {
+        let clone = new polygon();
+        this.clone = clone;
+        super.createClone();
+        clone.r = this.r;
+        clone.phi = this.phi;
+        clone.vertNum = this.vertNum;
+        clone.points = this.points;
+        clone.rotationIsFixed = this.rotationIsFixed;
+        clone.svgElement.setAttribute('points', clone.points);
+        clone.removeHotKeys();
+        clone.move(50, 50);
+        clone.stopMoving(50, 50);
+        return clone;
     }
     updateAttributes() {
         let dx = curX - this.x0,

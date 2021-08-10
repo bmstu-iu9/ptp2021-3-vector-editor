@@ -13,6 +13,7 @@ class object {
         this.frame = [];
         this.svgElement.setAttribute('fill', getCurrentFillColor());
         this.svgElement.setAttribute('stroke', getCurrentStrokeColor());
+        this.svgElement.setAttribute('stroke-width', strokeWidth.value);
         this.addActions();
     }
     addActions() {

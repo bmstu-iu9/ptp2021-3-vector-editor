@@ -1,3 +1,5 @@
+strokeWidth=document.getElementById("strokeWidth");
+
 //COLOR CHANGE
 strokeColor = document.getElementById("strokeColor");
 

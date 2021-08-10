@@ -8,7 +8,6 @@
 body {
     height: 100%;
     width: 100%;
-    background-color: #222;
     position: fixed;
 }
 
@@ -110,7 +109,6 @@ header {
 main {
     height: 93%;
     width: 100%;
-    background-color: #222;
     position: fixed;
 }
 
@@ -205,8 +203,6 @@ main {
 
 /*холст*/
 #svg_panel {
-    /*width: 40vw;
-  height: 70vh;*/
     position: absolute;
     top: 50%;
     left: 50%;

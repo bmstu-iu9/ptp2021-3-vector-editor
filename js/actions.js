@@ -14,24 +14,36 @@ document.addEventListener('keydown', function (event) {
     }
 });
 
-//CANCEL
-/*cancel = document.getElementById("cancel");
-
-cancel.onclick = function () {
-    if (objects.length != 0) {
-        temp = objects.pop()
-        svgPanel.removeChild(temp);
-        temp = null;
+//COPY
+copy = document.getElementById("copy");
+copy.onclick = function () {
+    if (currentObject != null) {
+        objectToClone = currentObject;
     }
 }
-
-document.addEventListener('keydown', function(event) {
-    if (event.code == 'KeyZ' && event.ctrlKey && objects.length != 0) {
-        temp = objects.pop();
-        svgPanel.removeChild(temp);
-        temp = null;
+document.addEventListener('keydown', function (event) {
+    if (event.code == 'KeyC' && (event.ctrlKey || event.metaKey) && currentObject != null) {
+        objectToClone = currentObject;
     }
-});*/
+});
+//PASTE
+paste = document.getElementById("paste");
+paste.onclick = function () {
+    if (objectToClone != null) {
+        currentObject.hideFrameAndPoints();
+        let clone = objectToClone.createClone();
+        currentObject = clone;
+        objectToClone = clone;
+    }
+}
+document.addEventListener('keydown', function (event) {
+    if (event.code == 'KeyV' && (event.ctrlKey || event.metaKey) && objectToClone != null) {
+        currentObject.hideFrameAndPoints();
+        let clone = objectToClone.createClone();
+        currentObject = clone;
+        objectToClone = clone;
+    }
+});
 
 //CREATE 
 create = document.getElementById("create");
@@ -174,6 +186,7 @@ zoomOut.onclick = function () {
     svgPanelCoords = getCoords(svgPanel);
 }
 
+//LAYERS
 frontObject = document.getElementById("frontObject");
 
 frontObject.onclick = function () {
@@ -181,6 +194,9 @@ frontObject.onclick = function () {
         svgPanel.append(currentObject.svgElement);
         for (let i = 0; i < currentObject.pointsArray.length; i++) {
             svgPanel.append(currentObject.pointsArray[i].circle);
+        }
+        for (let i = 0; i < currentObject.frame.length; i++) {
+            svgPanel.append(currentObject.frame[i].svgElement);
         }
     }
 }
@@ -191,6 +207,9 @@ backObject.onclick = function () {
     if (currentObject != null) {
         for (let i = currentObject.pointsArray.length - 1; i >= 0; i--) {
             svgPanel.prepend(currentObject.pointsArray[i].circle);
+        }
+        for (let i = 0; i < currentObject.frame.length; i++) {
+            svgPanel.prepend(currentObject.frame[i].svgElement);
         }
         svgPanel.prepend(currentObject.svgElement);
     }

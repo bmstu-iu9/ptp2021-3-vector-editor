@@ -4,7 +4,6 @@ class object {
         svgPanel.appendChild(this.svgElement);
         this.type = name;
         this.isCompleted = false;
-        this.arePointsAndFrameShowing = true;
         this.isSelected = false;
         this.isMoving = false;
         this.x0 = curX;
@@ -15,6 +14,26 @@ class object {
         this.svgElement.setAttribute('stroke', getCurrentStrokeColor());
         this.addActions();
     }
+    createClone() {
+        let clone = this.clone;
+        clone.type = this.type;
+        clone.isCompleted = true;
+        clone.isSelected = true;
+        clone.isMoving = false;
+        clone.x0 = this.x0;
+        clone.y0 = this.y0;
+        clone.removeFrameAndPoints();
+        for (let i = 0; i < this.pointsArray.length; i++) {
+            clone.pointsArray[i] = this.pointsArray[i].createClone(clone);
+        }
+        clone.frame = [];
+        for (let i = 0; i < this.frame.length; i++) {
+            clone.frame[i] = this.frame[i].createClone();
+        }
+        clone.svgElement.setAttribute('fill', this.svgElement.getAttribute('fill'));
+        clone.svgElement.setAttribute('stroke', this.svgElement.getAttribute('stroke'));
+        this.removeHotKeys();
+    }
     addActions() {
         //select
         const select = (() => {
@@ -22,10 +41,8 @@ class object {
                 isSomeObjectSelected = true;
                 if (currentObject != null) {
                     currentObject.hideFrameAndPoints();
-                    currentObject.isSelected = false;
                 }
                 this.showFrameAndPoints();
-                this.isSelected = true;
                 currentObject = this;
             }
             if (wasPressed == "fill" && this.type != 'pencil') {
@@ -41,7 +58,6 @@ class object {
             if (!isSomeObjectSelected) {
                 if (currentObject != null) {
                     currentObject.hideFrameAndPoints();
-                    currentObject.isSelected = false;
                     currentObject = null
                 }
             }
@@ -69,7 +85,7 @@ class object {
             if (this.isSelected && this.isMoving) {
                 this.isMoving = false;
                 updateCursorCoords(current);
-                this.stopMove();
+                this.stopMoving();
             }
         }).bind(this);
         svgPanel.addEventListener("mouseup", stopMoving);
@@ -83,6 +99,8 @@ class object {
     remove() {
         svgPanel.removeChild(this.svgElement);
         this.svgElement = null;
+        this.isSelected = false;
+        this.isMoving = false;
         this.removeFrameAndPoints();
     }
     removeFrameAndPoints() {
@@ -92,6 +110,30 @@ class object {
         for (let i = 0; i < this.frame.length; i++) {
             this.frame[i].remove();
         }
+        this.pointsArray = [];
+        this.frame = [];
+    }
+    hide() {
+        this.svgElement.setAttribute('fill-opacity', 0);
+        this.svgElement.setAttribute('stroke-opacity', 0);
+        for (let i = 0; i < this.frame.length; i++) {
+            this.frame[i].hide();
+        }
+        for (let i = 0; i < this.pointsArray.length; i++) {
+            this.pointsArray[i].hide();
+        }
+        this.isSelected = false;
+    }
+    show() {
+        this.svgElement.setAttribute('fill-opacity', 1);
+        this.svgElement.setAttribute('stroke-opacity', 1);
+        for (let i = 0; i < this.frame.length; i++) {
+            this.frame[i].show();
+        }
+        for (let i = 0; i < this.pointsArray.length; i++) {
+            this.pointsArray[i].show();
+        }
+        this.isSelected = true;
     }
     hideFrameAndPoints() {
         for (let i = 0; i < this.frame.length; i++) {
@@ -100,7 +142,7 @@ class object {
         for (let i = 0; i < this.pointsArray.length; i++) {
             this.pointsArray[i].hide();
         }
-        this.arePointsAndFrameShowing = false;
+        this.isSelected = false;
     }
     showFrameAndPoints() {
         for (let i = 0; i < this.frame.length; i++) {
@@ -109,7 +151,7 @@ class object {
         for (let i = 0; i < this.pointsArray.length; i++) {
             this.pointsArray[i].show();
         }
-        this.arePointsAndFrameShowing = true;
+        this.isSelected = true;
     }
     updateFrameAndPoints() {
         for (let i = 0; i < this.frame.length; i++) {
@@ -119,8 +161,16 @@ class object {
     }
     addHotKeys() {}
     removeHotKeys() {}
-    move() {}
-    stopMove() {}
+    move() {
+        svgPanel.append(this.svgElement);
+        for (let i = 0; i < this.pointsArray.length; i++) {
+            svgPanel.append(this.pointsArray[i].circle);
+        }
+        for (let i = 0; i < this.frame.length; i++) {
+            svgPanel.append(this.frame[i].svgElement);
+        }
+    }
+    stopMoving() {}
     complete() {
         this.isCompleted = true;
         this.updateFrameAndPoints();
@@ -170,14 +220,15 @@ class rectangle extends object {
             new point(x, y + height, this),
         ];
     }
-    move(startX = this.start.x, startY = this.start.y) {
-        this.svgElement.setAttribute('x', this.x + (curX - startX));
-        this.svgElement.setAttribute('y', this.y + (curY - startY));
-        this.updatePoints(this.width, this.height, this.x + (curX - startX), this.y + (curY - startY));
+    move(dx = curX - this.start.x, dy = curY - this.start.y) {
+        this.svgElement.setAttribute('x', this.x + dx);
+        this.svgElement.setAttribute('y', this.y + dy);
+        this.updatePoints(this.width, this.height, this.x + dx, this.y + dy);
+        super.move();
     }
-    stopMove(startX = this.start.x, startY = this.start.y) {
-        this.x += (curX - startX);
-        this.y += (curY - startY);
+    stopMoving(dx = curX - this.start.x, dy = curY - this.start.y) {
+        this.x += dx;
+        this.y += dy;
     }
 }
 
@@ -229,14 +280,15 @@ class ellipse extends object {
         ];
         super.updateFrameAndPoints();
     }
-    move(startX = this.start.x, startY = this.start.y) {
-        this.svgElement.setAttribute('cx', this.cx + (curX - startX));
-        this.svgElement.setAttribute('cy', this.cy + (curY - startY));
-        this.updateFrameAndPoints(this.rx, this.ry, this.cx + (curX - startX), this.cy + (curY - startY));
+    move(dx = curX - this.start.x, dy = curY - this.start.y) {
+        this.svgElement.setAttribute('cx', this.cx + dx);
+        this.svgElement.setAttribute('cy', this.cy + dy);
+        this.updateFrameAndPoints(this.rx, this.ry, this.cx + dx, this.cy + dy);
+        super.move();
     }
-    stopMove(startX = this.start.x, startY = this.start.y) {
-        this.cx += (curX - startX);
-        this.cy += (curY - startY);
+    stopMoving(dx = curX - this.start.x, dy = curY - this.start.y) {
+        this.cx += dx;
+        this.cy += dy;
     }
 }
 
@@ -317,12 +369,13 @@ class polygon extends object {
         }
         this.svgElement.setAttribute('points', this.points);
     }
-    move(startX = this.start.x, startY = this.start.y) {
-        this.updatePosition(this.x0 + (curX - startX), this.y0 + (curY - startY));
+    move(dx = curX - this.start.x, dy = curY - this.start.y) {
+        this.updatePosition(this.x0 + dx, this.y0 + dy);
+        super.move();
     }
-    stopMove(startX = this.start.x, startY = this.start.y) {
-        this.x0 += (curX - startX);
-        this.y0 += (curY - startY);
+    stopMoving(dx = curX - this.start.x, dy = curY - this.start.y) {
+        this.x0 += dx;
+        this.y0 += dy;
     }
 }
 

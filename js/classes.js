@@ -29,7 +29,7 @@ class object {
                 currentObject = this;
             }
             if (wasPressed == "fill" && this.type != 'pencil') {
-                this.svgElement.setAttribute('fill', getCurrentColor());
+                this.svgElement.setAttribute('fill', getCurrentFillColor());
             }
         }).bind(this);
         this.svgElement.addEventListener("mousedown", select);

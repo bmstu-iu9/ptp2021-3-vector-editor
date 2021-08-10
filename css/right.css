@@ -1,7 +1,7 @@
 /*PALETTE*/
 #palette {
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
     flex-wrap: wrap;
 }
 
@@ -12,59 +12,66 @@ hr {
 }
 
 .colorpicker {
-    width: 3vw;
-    height: 3vw;
-    margin: 0.3vw;
+    width: 2.5vw;
+    height: 2.5vw;
+    margin: 0.5vw;
     border-radius: 10%;
 }
 
 /*stroke & fill style*/
 
-.styleListBox {
-    width: 7vw;
-    margin: 1px;
-}
-
-.styleChoise {
-    border: none;
-    background: transparent;
-    width: inherit;
-    text-align: left;
-    color: #fff;
+.checkbox label {
+    color: #e5e5e5;
+    font-size: 0.65vw;
     font-family: 'Roboto', sans-serif;
-    font-weight:bold;
+    width: 4vw;
+    height: 0.7vw;
+    display: flex;
+    justify-content: space-evenly;
     cursor: pointer;
-    
 }
 
-.styleChoise:hover {
-    background-image: url(../img/down.svg);
-    background-position:right;
-    background-repeat: no-repeat;
-    background-size: auto 80%;
+.styleListBox label>img {
+    width: 100%;
+}
+
+.styleListBox label {
+    width: 2vw;
+    height: 2vw;
+    margin: 1vh 0;
+    display: block;
+    cursor: pointer;
 }
 
 .styleList {
     display: none;
     position: absolute;
     list-style: none;
-    font-size: 14px;
     z-index: 3;
-    background-color: #555;
-    width: 8%;
-    right: 0.3vw;
+    margin-left: -4px;
+    background-color: #444;
+    padding: 4px;
+    box-shadow: 4px 4px rgba(39, 39, 39, 0.5);
+    width: 2vw;
 }
 
-.styleList li label{
-    color: #fff;
-    text-decoration: none;
+.styleList li label {
+    width: inherit;
+    height: initial;
+    display: flex;
+}
+
+#lines li label {
     cursor: pointer;
+    width: inherit;
+    height: initial;
+    padding: 7px 0;
 }
 
 .styleList li:hover {
     background-color: #828282;
 }
 
-/*.styleButton:checked ~ .styleList {
-    display:block;
-}*/
+input:checked~ul {
+    display: block;
+}

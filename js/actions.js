@@ -60,6 +60,21 @@ function pasteFunc() {
     buffer.hide();
 }
 
+//CUT
+cut = document.getElementById("cut");
+cut.onclick = function () {
+    if (currentObject != null) {
+        copyFunc();
+        deleteFunc();
+    }
+}
+document.addEventListener('keydown', function (event) {
+    if (event.code == 'KeyX' && (event.ctrlKey || event.metaKey) && currentObject != null) {
+        copyFunc();
+        deleteFunc();
+    }
+});
+
 //CREATE 
 create = document.getElementById("create");
 

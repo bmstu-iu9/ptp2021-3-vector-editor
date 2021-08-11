@@ -3,47 +3,62 @@ deleteObject = document.getElementById("deleteObject");
 
 deleteObject.onclick = function () {
     if (currentObject != null) {
-        currentObject.remove();
-        currentObject = null;
+        deleteFunc();
     }
 }
 document.addEventListener('keydown', function (event) {
     if (event.code == 'Delete' && currentObject != null) {
-        currentObject.remove();
-        currentObject = null;
+        deleteFunc();
     }
 });
+
+function deleteFunc() {
+    currentObject.remove();
+    currentObject = null;
+}
 
 //COPY
 copy = document.getElementById("copy");
 copy.onclick = function () {
     if (currentObject != null) {
-        objectToClone = currentObject;
+        copyFunc();
     }
 }
 document.addEventListener('keydown', function (event) {
     if (event.code == 'KeyC' && (event.ctrlKey || event.metaKey) && currentObject != null) {
-        objectToClone = currentObject;
+        copyFunc();
     }
 });
+
+function copyFunc() {
+    buffer = currentObject.createClone();
+    buffer.moveTo(0, 0);
+    buffer.hide();
+}
+
 //PASTE
 paste = document.getElementById("paste");
 paste.onclick = function () {
-    if (objectToClone != null) {
-        currentObject.hideFrameAndPoints();
-        let clone = objectToClone.createClone();
-        currentObject = clone;
-        objectToClone = clone;
+    if (buffer != null) {
+        pasteFunc();
     }
 }
 document.addEventListener('keydown', function (event) {
-    if (event.code == 'KeyV' && (event.ctrlKey || event.metaKey) && objectToClone != null) {
-        currentObject.hideFrameAndPoints();
-        let clone = objectToClone.createClone();
-        currentObject = clone;
-        objectToClone = clone;
+    if (event.code == 'KeyV' && (event.ctrlKey || event.metaKey) && buffer != null) {
+        pasteFunc();
     }
 });
+
+function pasteFunc() {
+    if (currentObject != null) currentObject.hideFrameAndPoints();
+    buffer.isCompleted = true;
+    buffer.show();
+    currentObject = buffer;
+    buffer = buffer.createClone();
+    buffer.move(50, 50);
+    buffer.stopMoving(50, 50);
+    buffer.hide();
+}
 
 //CREATE 
 create = document.getElementById("create");

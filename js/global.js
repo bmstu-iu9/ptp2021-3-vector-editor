@@ -5,8 +5,7 @@ let isSomeObjectSelected = false; //для курсора
 let wasPressed, currentObject = null,
 	strokeColor = "black",
 	objects = [];
-let objectToClone = null,
-	buffer = null; //для копирования
+let buffer = null; //для копирования
 let svgPanelCoords = getCoords(svgPanel),
 	scrollcoords = getCoords(scrollPanel),
 	curX, curY; //cursor coordinates

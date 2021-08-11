@@ -17,7 +17,7 @@ class object {
     createClone() {
         let clone = this.clone;
         clone.type = this.type;
-        clone.isCompleted = true;
+        clone.isCompleted = false;
         clone.isSelected = true;
         clone.isMoving = false;
         clone.x0 = this.x0;
@@ -42,8 +42,10 @@ class object {
                 if (currentObject != null) {
                     currentObject.hideFrameAndPoints();
                 }
-                this.showFrameAndPoints();
-                currentObject = this;
+                if (this.isCompleted) {
+                    this.showFrameAndPoints();
+                    currentObject = this;
+                }
             }
             if (wasPressed == "fill" && this.type != 'pencil') {
                 this.svgElement.setAttribute('fill', getCurrentFillColor());
@@ -114,19 +116,17 @@ class object {
         this.frame = [];
     }
     hide() {
-        this.svgElement.setAttribute('fill-opacity', 0);
-        this.svgElement.setAttribute('stroke-opacity', 0);
         for (let i = 0; i < this.frame.length; i++) {
             this.frame[i].hide();
         }
         for (let i = 0; i < this.pointsArray.length; i++) {
             this.pointsArray[i].hide();
         }
+        svgPanel.removeChild(this.svgElement);
         this.isSelected = false;
     }
     show() {
-        this.svgElement.setAttribute('fill-opacity', 1);
-        this.svgElement.setAttribute('stroke-opacity', 1);
+        svgPanel.appendChild(this.svgElement);
         for (let i = 0; i < this.frame.length; i++) {
             this.frame[i].show();
         }
@@ -153,12 +153,7 @@ class object {
         }
         this.isSelected = true;
     }
-    updateFrameAndPoints() {
-        for (let i = 0; i < this.frame.length; i++) {
-            this.frame[i].setElementAttribute('stroke-opacity', "0.3");
-            this.frame[i].setElementAttribute('stroke', "red");
-        }
-    }
+    updateFrameAndPoints() {}
     addHotKeys() {}
     removeHotKeys() {}
     move() {
@@ -209,8 +204,6 @@ class rectangle extends object {
         clone.svgElement.setAttribute('x', this.x);
         clone.svgElement.setAttribute('y', this.y);
         clone.removeHotKeys();
-        clone.move(50, 50);
-        clone.stopMoving(50, 50);
         return clone;
     }
     updateAttributes(current) {
@@ -282,8 +275,6 @@ class ellipse extends object {
         clone.svgElement.setAttribute('cx', this.cx);
         clone.svgElement.setAttribute('cy', this.cy);
         clone.removeHotKeys();
-        clone.move(50, 50);
-        clone.stopMoving(50, 50);
         return clone;
     }
     updateAttributes(current) {
@@ -323,7 +314,6 @@ class ellipse extends object {
             new point(cx + rx, cy - ry, this),
             new point(cx - rx, cy - ry, this)
         ];
-        super.updateFrameAndPoints();
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.svgElement.setAttribute('cx', this.cx + dx);
@@ -369,14 +359,12 @@ class polygon extends object {
         clone.rotationIsFixed = this.rotationIsFixed;
         clone.svgElement.setAttribute('points', clone.points);
         clone.removeHotKeys();
-        clone.move(50, 50);
-        clone.stopMoving(50, 50);
         return clone;
     }
     updateAttributes() {
         let dx = curX - this.x0,
             dy = curY - this.y0;
-        this.r = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+        this.r = Math.sqrt(dx ** 2 + dy ** 2);
         if (this.rotationIsFixed) this.phi = (this.vertNum - 2) * Math.PI / (this.vertNum * 2);
         else if (this.r > 0) this.phi = dy > 0 ? Math.acos(dx / this.r) : -Math.acos(dx / this.r);
         this.removeFrameAndPoints();

@@ -33,12 +33,10 @@ class point {
         }
     }
     hide() {
-        this.circle.setAttribute('fill-opacity', 0);
-        this.circle.setAttribute('stroke-opacity', 0);
+        svgPanel.removeChild(this.circle);
     }
     show() {
-        this.circle.setAttribute('fill-opacity', 1);
-        this.circle.setAttribute('stroke-opacity', 1);
+        svgPanel.appendChild(this.circle);
     }
     remove() {
         svgPanel.removeChild(this.circle);

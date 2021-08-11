@@ -171,6 +171,7 @@ class object {
         }
     }
     stopMoving() {}
+    moveTo() {}
     complete() {
         this.isCompleted = true;
         this.updateFrameAndPoints();
@@ -251,6 +252,12 @@ class rectangle extends object {
         this.x += dx;
         this.y += dy;
     }
+    moveTo(x, y) {
+        let dx = x + pointRadius - this.x,
+            dy = y + pointRadius - this.y;
+        this.move(dx, dy);
+        this.stopMoving(dx, dy);
+    }
 }
 
 //ELLIPSE
@@ -327,6 +334,12 @@ class ellipse extends object {
     stopMoving(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.cx += dx;
         this.cy += dy;
+    }
+    moveTo(x, y) {
+        let dx = x + pointRadius - (this.cx - this.rx),
+            dy = y + pointRadius - (this.cy - this.ry);
+        this.move(dx, dy);
+        this.stopMoving(dx, dy);
     }
 }
 
@@ -430,6 +443,12 @@ class polygon extends object {
     stopMoving(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.x0 += dx;
         this.y0 += dy;
+    }
+    moveTo(x, y) {
+        let dx = x + pointRadius - (this.x0 - this.r),
+            dy = y + pointRadius - (this.y0 - this.r);
+        this.move(dx, dy);
+        this.stopMoving(dx, dy);
     }
 }
 

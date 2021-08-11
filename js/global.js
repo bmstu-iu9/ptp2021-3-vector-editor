@@ -10,8 +10,6 @@ let svgPanelCoords = getCoords(svgPanel),
   curX, curY; //cursor coordinates
 let scaleСoef = 1;
 let pointRadius = 4;
-
-//RULER
 rulerX = document.getElementById("ruler_x");
 rulerY = document.getElementById("ruler_y");
 ruler_x_pattern = document.getElementById("ruler_x_pattern");
@@ -20,15 +18,6 @@ ruler_x_text = document.getElementById("ruler_x_text");
 ruler_y_text = document.getElementById("ruler_y_text");
 ruler_x_line = document.getElementById("ruler_x_line");
 ruler_y_line = document.getElementById("ruler_y_line");
-
-//CURRENT COLOR
-function getCurrentFillColor() {
-  return document.getElementById("fillColor").value;
-}
-
-function getCurrentStrokeColor() {
-  return document.getElementById("strokeColor").value;
-}
 
 //ACTIVE TOOL
 var left_panel = document.getElementById("left_panel");

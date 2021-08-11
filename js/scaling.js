@@ -23,8 +23,8 @@ scale.onclick = function () {
       svgPanelY = svgPanelCoords.top - scrollcoords.top;
 
       svgPanel.style.transform = "translate(0, 0)";
-      svgPanel.style.left = svgPanelX + shiftX * shiftCoef;
-      svgPanel.style.top = svgPanelY + shiftY * shiftCoef;
+      svgPanel.style.left = svgPanelX + shiftX * shiftCoef + scrollPanel.scrollLeft;
+      svgPanel.style.top = svgPanelY + shiftY * shiftCoef + scrollPanel.scrollTop;
       //svgPanel.style.top == svgPanelY
       svgPanelCoords = getCoords(svgPanel);
       updateRulers();

@@ -164,6 +164,7 @@ zoomIn.onclick = function () {
     svgPanel.style.height = svgPanel.clientHeight * 1.5 + "px";
     scaleСoef *= 1.5;
     svgPanelCoords = getCoords(svgPanel);
+    updateRulers();
 }
 
 zoomOut = document.getElementById("zoomOut");
@@ -172,6 +173,7 @@ zoomOut.onclick = function () {
     svgPanel.style.height = svgPanel.clientHeight / 1.5 + "px";
     scaleСoef /= 1.5;
     svgPanelCoords = getCoords(svgPanel);
+    updateRulers();
 }
 
 frontObject = document.getElementById("frontObject");
@@ -204,22 +206,5 @@ showRulers.onclick = function () {
         updateRulers();
     } else {
         rulers.style.display = "none";
-    }
-}
-
-//COLOR CHANGE
-strokeColor = document.getElementById("strokeColor");
-
-strokeColor.onchange = function () {
-    if (currentObject != null) {
-        currentObject.svgElement.setAttribute('stroke', strokeColor.value);
-    }
-}
-
-fillColor = document.getElementById("fillColor");
-
-fillColor.onchange = function () {
-    if (currentObject != null && currentObject.type != 'pencil') {
-        currentObject.svgElement.setAttribute('fill', fillColor.value);
     }
 }

@@ -12,7 +12,7 @@ class object {
         this.pointsArray = [];
         this.frame = [];
         this.svgElement.setAttribute('fill', getCurrentFillColor());
-        this.svgElement.setAttribute('stroke', getCurrentStrokeColor());
+        updateStroke(this.svgElement);
         this.addActions();
     }
     addActions() {

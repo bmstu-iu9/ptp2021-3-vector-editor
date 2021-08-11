@@ -10,6 +10,7 @@
   <meta name="authors" content="">
   <title>Pentagram - svg-редактор</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="css/right.css" />
 </head>
 
 <body>
@@ -74,7 +75,7 @@
       <button title="Текст" class="tool_button" id="text" style="background-image: url(img/text.svg)"></button>
       <button title="Перо" class="tool_button" id="pathTool" style="background-image: url(img/path_tool.svg)"></button>
       <!--<button title="Пипетка" class="tool_button" id="pipette" style="background-image: url(img/pipette.svg)"></button>-->
-      <button title="Заливка" class="tool_button" id="fill" style="background-image: url(img/fill.svg)"></button>
+      <button title="Заливка" class="tool_button" id="filling" style="background-image: url(img/fill.svg)"></button>
     </div>
 
     <div id="right_panel">
@@ -82,6 +83,62 @@
         <input class="colorpicker" id="strokeColor" type="color" title="Цвет для контура фигур,
     карандаша и кисти" value="#000000">
         <input class="colorpicker" id="fillColor" type="color" title="Цвет для заливки фигур" value="#ffffff">
+
+        <div class="checkbox">
+          <input type="checkbox" id="stroke" hidden><label for="stroke"><img id="sImg"
+              src="img/stroke/yes.svg"><span>Контур</span></label>
+        </div>
+        <div class="checkbox">
+          <input type="checkbox" id="fill" hidden><label for="fill"><img id="fImg"
+              src="img/stroke/yes.svg"><span>Заливка</span></label>
+        </div>
+
+        <div id="widthBox"><img src="img/stroke/width.svg"><input type="number" id="strokeWidth" min="0" max="100" value="2"></div>
+
+        <div class="styleListBox">
+          <input type="checkbox" name="stroke" id="dash" hidden><label for="dash"><img
+              src="img/stroke/lines.svg"></label>
+          <ul class="styleList" id="lines">
+            <li><input type="radio" name="dash" id="d0" hidden><label for="d0"><img src="img/stroke/line0.svg"></label>
+            </li>
+            <li><input type="radio" name="dash" id="d1" hidden><label for="d1"><img src="img/stroke/line1.svg"></label>
+            </li>
+            <li><input type="radio" name="dash" id="d2" hidden><label for="d2"><img src="img/stroke/line2.svg"></label>
+            </li>
+            <li><input type="radio" name="dash" id="d3" hidden><label for="d3"><img src="img/stroke/line3.svg"></label>
+            </li>
+            <li><input type="radio" name="dash" id="d4" hidden><label for="d4"><img src="img/stroke/line4.svg"></label>
+            </li>
+            <li><input type="radio" name="dash" id="d5" hidden><label for="d5"><img src="img/stroke/line5.svg"></label>
+            </li>
+          </ul>
+        </div>
+
+        <div class="styleListBox">
+          <input type="checkbox" name="stroke" id="join" hidden><label for="join"><img
+              src="img/stroke/join0.svg"></label>
+          <ul class="styleList">
+            <li><input type="radio" name="join" id="j0" hidden><label for="j0"><img src="img/stroke/join0.svg"></label>
+            </li>
+            <li><input type="radio" name="join" id="j1" hidden><label for="j1"><img src="img/stroke/join1.svg"></label>
+            </li>
+            <li><input type="radio" name="join" id="j2" hidden><label for="j2"><img src="img/stroke/join2.svg"></label>
+            </li>
+          </ul>
+        </div>
+
+        <div class="styleListBox">
+          <input type="checkbox" name="stroke" id="cap" hidden><label for="cap"><img src="img/stroke/cap0.svg"></label>
+          <ul class="styleList">
+            <li><input type="radio" name="cap" id="c0" hidden><label for="c0"><img src="img/stroke/cap0.svg"></label>
+            </li>
+            <li><input type="radio" name="cap" id="c1" hidden><label for="c1"><img src="img/stroke/cap1.svg"></label>
+            </li>
+            <li><input type="radio" name="cap" id="c2" hidden><label for="c2"><img src="img/stroke/cap2.svg"></label>
+            </li>
+          </ul>
+        </div>
+
       </div>
       <hr>
     </div>
@@ -130,6 +187,7 @@
   <script src="js/figures.js"></script>
   <script src="js/classes.js"></script>
   <script src="js/point.js"></script>
+  <script src="js/color.js"></script>
 </body>
 
 </html>

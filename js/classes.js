@@ -11,7 +11,8 @@ class object {
         this.pointsArray = [];
         this.frame = [];
         this.svgElement.setAttribute('fill', getCurrentFillColor());
-        updateStroke(this.svgElement);
+        this.strokeWidth = 1;
+        updateStroke(this);
         this.addActions();
     }
     createClone() {
@@ -32,6 +33,10 @@ class object {
         }
         clone.svgElement.setAttribute('fill', this.svgElement.getAttribute('fill'));
         clone.svgElement.setAttribute('stroke', this.svgElement.getAttribute('stroke'));
+        clone.svgElement.setAttribute('stroke-width', this.svgElement.getAttribute('stroke-width'));
+        clone.svgElement.setAttribute('stroke-dasharray', this.svgElement.getAttribute('stroke-dasharray'));
+        clone.svgElement.setAttribute('stroke-linejoin', this.svgElement.getAttribute('stroke-linejoin'));
+        clone.svgElement.setAttribute('stroke-linecap', this.svgElement.getAttribute('stroke-linecap'));
         this.removeHotKeys();
     }
     addActions() {
@@ -60,7 +65,7 @@ class object {
             if (!isSomeObjectSelected) {
                 if (currentObject != null) {
                     currentObject.hideFrameAndPoints();
-                    currentObject = null
+                    currentObject = null;
                 }
             }
         });
@@ -144,15 +149,7 @@ class object {
     updateFrameAndPoints() {}
     addHotKeys() {}
     removeHotKeys() {}
-    move() {
-        svgPanel.append(this.svgElement);
-        for (let i = 0; i < this.pointsArray.length; i++) {
-            svgPanel.append(this.pointsArray[i].circle);
-        }
-        for (let i = 0; i < this.frame.length; i++) {
-            svgPanel.append(this.frame[i].svgElement);
-        }
-    }
+    move() {}
     stopMoving() {}
     moveTo() {}
     complete() {
@@ -213,10 +210,20 @@ class rectangle extends object {
         this.svgElement.setAttribute('height', this.height);
         this.svgElement.setAttribute('x', this.x);
         this.svgElement.setAttribute('y', this.y);
-        this.updatePoints(this.width, this.height, this.x, this.y)
+        this.updateFrameAndPoints()
     }
-    updatePoints(width, height, x, y) {
+    updateFrameAndPoints(width = this.width, height = this.height, x = this.x, y = this.y) {
         this.removeFrameAndPoints();
+        let w = Number(this.strokeWidth) / 2 + 1;
+        x -= w;
+        y -= w;
+        width += w * 2;
+        height += w * 2;
+        this.frame = [new line(x, y + height, x + width, y + height, false),
+            new line(x + width, y + height, x + width, y, false),
+            new line(x + width, y, x, y, false),
+            new line(x, y, x, y + height, false)
+        ];
         this.pointsArray = [new point(x, y, this),
             new point(x + width, y, this),
             new point(x + width, y + height, this),
@@ -226,7 +233,7 @@ class rectangle extends object {
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.svgElement.setAttribute('x', this.x + dx);
         this.svgElement.setAttribute('y', this.y + dy);
-        this.updatePoints(this.width, this.height, this.x + dx, this.y + dy);
+        this.updateFrameAndPoints(this.width, this.height, this.x + dx, this.y + dy);
         super.move();
     }
     stopMoving(dx = curX - this.start.x, dy = curY - this.start.y) {
@@ -284,10 +291,13 @@ class ellipse extends object {
         this.svgElement.setAttribute('ry', this.ry);
         this.svgElement.setAttribute('cx', this.cx);
         this.svgElement.setAttribute('cy', this.cy);
-        this.updateFrameAndPoints(this.rx, this.ry, this.cx, this.cy);
+        this.updateFrameAndPoints();
     }
     updateFrameAndPoints(rx = this.rx, ry = this.ry, cx = this.cx, cy = this.cy) {
         this.removeFrameAndPoints();
+        let w = Number(this.strokeWidth) / 2 + 1;
+        rx += w;
+        ry += w;
         this.frame = [new line(cx - rx, cy + ry, cx + rx, cy + ry, false),
             new line(cx + rx, cy + ry, cx + rx, cy - ry, false),
             new line(cx + rx, cy - ry, cx - rx, cy - ry, false),
@@ -555,8 +565,10 @@ class line extends object {
         this.svgElement.setAttribute('fill', "none");
         this.isFree = isFree;
         if (!isFree) {
-            this.svgElement.setAttribute('stroke-opacity', "0.3");
+            this.svgElement.setAttribute('stroke-opacity', "0.5");
             this.svgElement.setAttribute('stroke', "red");
+            this.svgElement.setAttribute('stroke-width', "2");
+            this.svgElement.setAttribute('stroke-dasharray', "8");
         }
     }
     createClone() {
@@ -639,7 +651,8 @@ class line extends object {
         this.svgElement.setAttribute('stroke-opacity', 0);
     }
     show() {
-        this.svgElement.setAttribute('stroke-opacity', 0.3);
+        svgPanel.append(this.svgElement);
+        this.svgElement.setAttribute('stroke-opacity', 0.5);
     }
 }
 

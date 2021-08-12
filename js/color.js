@@ -1,7 +1,7 @@
 //COLOR CHANGE
 function changeStroke() {
   if (currentObject != null) {
-    updateStroke(currentObject.svgElement);
+    updateStroke(currentObject);
   }
 }
 
@@ -25,13 +25,25 @@ fImg = document.getElementById("fImg");
 s.onchange = () => {
   if (s.checked) {
     sImg.src = "img/stroke/no.svg";
+    f.checked = false;
+    fImg.src = "img/stroke/yes.svg";
+    changeFill();
   } else sImg.src = "img/stroke/yes.svg";
   changeStroke();
+  if (currentObject != null) {
+    currentObject.updateFrameAndPoints();
+  }
 }
 
 f.onchange = () => {
   if (f.checked) {
     fImg.src = "img/stroke/no.svg";
+    s.checked = false;
+    sImg.src = "img/stroke/yes.svg";
+    changeStroke()
+    if (currentObject != null) {
+      currentObject.updateFrameAndPoints();
+    }
   } else fImg.src = "img/stroke/yes.svg";
   changeFill();
 }
@@ -39,7 +51,7 @@ f.onchange = () => {
 //CURRENT COLOR
 function getCurrentFillColor() {
   if (f.checked) {
-    return "none";
+    return "transparent";
   }
   return fillColor.value;
 }
@@ -53,16 +65,24 @@ cap = document.querySelectorAll('input[type=radio][name="cap"]');
 cap.forEach(s => s.addEventListener('change', () => changeStroke()));
 
 strokeWidth = document.getElementById("strokeWidth");
-strokeWidth.onchange = changeStroke;
+strokeWidth.onchange = () => {
+  changeStroke();
+  if (currentObject != null) {
+    currentObject.updateFrameAndPoints();
+  }
+}
 
-function updateStroke(obj) {
+function updateStroke(object) {
+  obj = object.svgElement;
   if (s.checked) {
-    obj.setAttribute('stroke', "none");
+    obj.removeAttribute('stroke');
+    object.strokeWidth = 0;
     return;
   }
   obj.setAttribute('stroke', strokeColor.value);
   let w = strokeWidth.value;
   obj.setAttribute('stroke-width', w);
+  object.strokeWidth = w;
   switch (true) {
     case dashs[0].checked:
       obj.removeAttribute('stroke-dasharray');

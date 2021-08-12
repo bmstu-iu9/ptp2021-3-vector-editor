@@ -38,7 +38,7 @@ class point {
         this.circle.setAttribute('fill-opacity', 0);
     }
     show() {
-        //svgPanel.appendChild(this.circle);
+        svgPanel.appendChild(this.circle);
         this.circle.setAttribute('stroke-opacity', 1);
         this.circle.setAttribute('fill-opacity', 1);
     }

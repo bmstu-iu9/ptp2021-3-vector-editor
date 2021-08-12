@@ -132,7 +132,7 @@ function readFile(object) {
         if (first.id == "") {
             first.setAttribute('id', 'svg_panel');
         }
-        if (first.getAttribute('width') || first.getAttribute('height') == null) {
+        if (first.getAttribute('width') == null || first.getAttribute('height') == null) {
             first.setAttribute('width', 512);
             first.setAttribute('height', 512);
             first.setAttribute('viewBox', '0 0 512 512');
@@ -152,10 +152,14 @@ document.getElementById("file-selector").addEventListener("change", readFile);
 save = document.getElementById("save");
 
 save.onclick = function () {
-    let svgData = draw_panel.innerHTML.toString();
     let fileName = prompt('Введите имя файла без расширения:');
     if (fileName == null)
         return;
+    if (currentObject != null) {
+        currentObject.removeFrameAndPoints();
+        currentObject = null;
+    }
+    let svgData = draw_panel.innerHTML.toString();
     let blob = new Blob([svgData], {
         type: "image/svg+xml;charset=utf-8"
     });
@@ -174,10 +178,14 @@ save.onclick = function () {
 savePng = document.getElementById("savePng");
 
 savePng.onclick = function () {
-    let svgData = draw_panel.innerHTML.toString();
     let fileName = prompt('Введите имя файла без расширения:');
     if (fileName == null)
         return;
+    if (currentObject != null) {
+        currentObject.removeFrameAndPoints();
+        currentObject = null;
+    }
+    let svgData = draw_panel.innerHTML.toString();
     let blob = new Blob([svgData], {
         type: "image/svg+xml;charset=utf-8"
     });
@@ -224,11 +232,11 @@ frontObject = document.getElementById("frontObject");
 frontObject.onclick = function () {
     if (currentObject != null) {
         svgPanel.append(currentObject.svgElement);
-        for (let i = 0; i < currentObject.pointsArray.length; i++) {
-            svgPanel.append(currentObject.pointsArray[i].circle);
-        }
         for (let i = 0; i < currentObject.frame.length; i++) {
             svgPanel.append(currentObject.frame[i].svgElement);
+        }
+        for (let i = 0; i < currentObject.pointsArray.length; i++) {
+            svgPanel.append(currentObject.pointsArray[i].circle);
         }
     }
 }
@@ -237,12 +245,6 @@ backObject = document.getElementById("backObject");
 
 backObject.onclick = function () {
     if (currentObject != null) {
-        for (let i = currentObject.pointsArray.length - 1; i >= 0; i--) {
-            svgPanel.prepend(currentObject.pointsArray[i].circle);
-        }
-        for (let i = 0; i < currentObject.frame.length; i++) {
-            svgPanel.prepend(currentObject.frame[i].svgElement);
-        }
         svgPanel.prepend(currentObject.svgElement);
     }
 }

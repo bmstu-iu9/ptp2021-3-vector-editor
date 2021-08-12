@@ -85,6 +85,7 @@ pencilButton.onclick = function () {
             };
             svgPanel.onmouseenter = function (current) {
                 updateCursorCoords(current);
+                newObject.completeFirstObject();
                 newObject = new pencil();
             };
         }
@@ -115,16 +116,16 @@ line.onclick = function () {
 
 //POLYLINE
 pathTool = document.getElementById("pathTool");
-let polylineIsСompleted = true;
+let polylineIsCompleted = true;
 
 pathTool.onclick = function () {
     wasPressed = "pathTool";
     svgPanel.style.cursor = "default";
     svgPanel.onmousedown = function (current) {
-        if (wasPressed == "pathTool" && polylineIsСompleted) {
+        if (wasPressed == "pathTool" && polylineIsCompleted) {
             updateCursorCoords(current);
             let newObject = new polyline();
-            polylineIsСompleted = false;
+            polylineIsCompleted = false;
 
             document.onmousemove = function (current) {
                 updateCursorCoords(current);

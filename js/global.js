@@ -11,6 +11,8 @@ let svgPanelCoords = getCoords(svgPanel),
 	curX, curY; //cursor coordinates
 let scaleСoef = 1;
 let pointRadius = 4;
+
+//RULER
 rulerX = document.getElementById("ruler_x");
 rulerY = document.getElementById("ruler_y");
 ruler_x_pattern = document.getElementById("ruler_x_pattern");

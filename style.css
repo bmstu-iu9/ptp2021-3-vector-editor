@@ -49,12 +49,12 @@ header {
     font-size: 3vh;
 }
 
-.container>ul {
+.container > ul {
     display: flex;
     list-style: none;
 }
 
-.container>ul li a {
+.container > ul li a {
     display: block;
     text-decoration: none;
     padding: 1.7vh 1.5vw;
@@ -62,11 +62,11 @@ header {
     transition: all 0.3s ease;
 }
 
-.container>ul li {
+.container > ul li {
     position: relative;
 }
 
-.container ul>li a:hover {
+.container ul > li a:hover {
     background-color: #555;
     transition: all 0.3s ease;
 }
@@ -91,7 +91,7 @@ header {
     list-style: none;
 }
 
-.container li>ul li a {
+.container li > ul li a {
     font-size: 2vh;
     padding: 1.8vh 1vw;
     text-transform: none;
@@ -100,7 +100,7 @@ header {
     z-index: 3;
 }
 
-.container li:hover>ul {
+.container li:hover > ul {
     display: block;
 }
 
@@ -115,7 +115,7 @@ main {
 #left_panel {
     width: 4%;
     height: 100%;
-    background-color: #333;
+    background-color: #444;
     position: fixed;
     z-index: 2;
 }
@@ -123,7 +123,7 @@ main {
 #right_panel {
     width: 9%;
     height: 100%;
-    background-color: #333;
+    background-color: #444;
     z-index: 2;
     margin-left: auto;
     margin-right: 0;
@@ -133,7 +133,7 @@ main {
 #scroll_panel {
     overflow: scroll;
     width: 87%;
-    height:100%;
+    height: 100%;
     position: absolute;
     top: 0;
     left: 4%;
@@ -150,7 +150,7 @@ main {
     font-family: Courier;
     font-weight: bold;
     user-select: none;
-    opacity: .9;
+    opacity: .6;
 }
 
 #rulers_corner {
@@ -159,11 +159,11 @@ main {
     display: block;
     text-align: center;
     position: fixed;
-    background-color: #bb9292;
-    border-right: 1px solid #666666;
-    border-bottom: 1px solid #666666;
+    background-color: #555;
+    border: 1px solid #fff;
     z-index: 1;
     will-change: transform;
+    color: #fff;
 }
 
 #ruler_x {
@@ -175,7 +175,7 @@ main {
 
 #ruler_x pattern rect,
 #ruler_y pattern rect {
-    fill: #bb9292;
+    fill: #555;
 }
 
 #ruler_x,
@@ -188,14 +188,15 @@ main {
 
 #ruler_x pattern line,
 #ruler_y pattern line {
-    stroke: black;
-    stroke-opacity: .6;
+    stroke: #fff;
+    stroke-opacity: .8;
     stroke-width: 1px;
 }
 
 #ruler_x_text text,
 #ruler_y_text text {
-    opacity: .6;
+    fill: #fff;
+    opacity: .8;
 }
 
 #ruler_y {
@@ -221,7 +222,7 @@ main {
     width: 3vw;
     height: 3vw;
     background-size: cover;
-    background-color: #333;
+    background-color: #444;
     border-color: #fff;
     border-radius: 10%;
     border-width: medium;
@@ -252,7 +253,7 @@ main {
 }
 
 .vertical_menu {
-    position: absolute;
+    position: relative;
     list-style: none;
     width: 100%;
     left: 95%;

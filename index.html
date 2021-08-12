@@ -2,192 +2,187 @@
 <html lang="ru">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Векторный графический редактор, позволяющий пользователю создавать 
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Векторный графический редактор, позволяющий пользователю создавать 
     и редактировать векторные изображения">
-  <meta name="keywords" content="графический редактор, создать, удалить, переместить, объединить">
-  <meta name="authors" content="">
-  <title>Pentagram - svg-редактор</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="css/right.css" />
+    <meta name="keywords" content="графический редактор, создать, удалить, переместить, объединить">
+    <meta name="authors" content="">
+    <title>Pentagram - svg-редактор</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="css/right.css" />
 </head>
 
 <body>
-  <header>
-    <h1 id="logo">Pentagram</h1>
-    <nav id="menu_bar">
-      <div class="container">
-        <ul class="menu">
-          <li class="dropdown"> <a href="#"> <b> Файл </b> </a>
-            <ul class="sub_menu">
-              <li> <a href="#" id="create"> <b> Новый документ </b> </a> </li>
-              <input id="file-selector" type="file" accept="image/svg+xml" style="display: none;" />
-              <li> <a href="#" id="open"> <b> Открыть SVG-файл </b> </a> </li>
-              <li> <a href="#" id="save"> <b> Сохранить изображение </b> </a> </li>
-              <li> <a href="#" id="savePng"> <b> Сохранить как PNG </b> </a> </li>
-            </ul>
-          </li>
-          <li class="dropdown"> <a href="#"> <b> Редактировать </b> </a>
-            <ul class="sub_menu">
-              <li> <a href="#" id="cut"> <b> Вырезать </b> </a> </li>
-              <li> <a href="#" id="copy"> <b> Копировать </b> </a> </li>
-              <li> <a href="#" id="paste"> <b> Вставить </b> </a> </li>
-              <li> <a href="#" id="deleteObject"> <b> Удалить </b> </a> </li>
-            </ul>
-          </li>
-          <li class="dropdown"> <a href="#"> <b> Вид </b> </a>
-            <ul class="sub_menu">
-              <li> <a href="#" id="showRulers"> <b> Просмотр линеек </b> </a> </li>
-              <li> <a href="#" id="zoomIn"> <b> Увеличить масштаб </b> </a> </li>
-              <li> <a href="#" id="zoomOut"> <b> Уменьшить масштаб </b> </a> </li>
-            </ul>
-          </li>
-          <li class="dropdown"> <a href="#"> <b> Помощь </b> </a> </li>
-        </ul>
-      </div>
-    </nav>
-    <div id="functions">
-      <button title="Отменить" class=func_button id="undo" style="background-image: url(img/undo.svg)"></button>
-      <button title="Вернуть" class=func_button id="redo" style="background-image: url(img/redo.svg)"></button>
-      <button title="На передний план" class=func_button id="frontObject"
-        style="background-image: url(img/to_front.svg)"></button>
-      <button title="На задний план" class=func_button id="backObject"
-        style="background-image: url(img/to_back.svg)"></button>
-    </div>
-  </header>
+    <header>
+        <h1 id="logo">Pentagram</h1>
+        <nav id="menu_bar">
+            <div class="container">
+                <ul class="menu">
+                    <li class="dropdown"> <a href="#"> <b> Файл </b> </a>
+                        <ul class="sub_menu">
+                            <li> <a href="#" id="create"> <b> Новый документ </b> </a> </li>
+                            <input id="file-selector" type="file" accept="image/svg+xml" style="display: none;" />
+                            <li> <a href="#" id="open"> <b> Открыть SVG-файл </b> </a> </li>
+                            <li> <a href="#" id="save"> <b> Сохранить изображение </b> </a> </li>
+                            <li> <a href="#" id="savePng"> <b> Сохранить как PNG </b> </a> </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown"> <a href="#"> <b> Редактировать </b> </a>
+                        <ul class="sub_menu">
+                            <li> <a href="#" id="cut"> <b> Вырезать </b> </a> </li>
+                            <li> <a href="#" id="copy"> <b> Копировать </b> </a> </li>
+                            <li> <a href="#" id="paste"> <b> Вставить </b> </a> </li>
+                            <li> <a href="#" id="deleteObject"> <b> Удалить </b> </a> </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown"> <a href="#"> <b> Вид </b> </a>
+                        <ul class="sub_menu">
+                            <li> <a href="#" id="showRulers"> <b> Просмотр линеек </b> </a> </li>
+                            <li> <a href="#" id="zoomIn"> <b> Увеличить масштаб </b> </a> </li>
+                            <li> <a href="#" id="zoomOut"> <b> Уменьшить масштаб </b> </a> </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown"> <a href="#"> <b> Помощь </b> </a> </li>
+                </ul>
+            </div>
+        </nav>
+        <div id="functions">
+            <button title="Отменить" class=func_button id="undo" style="background-image: url(img/undo.svg)"></button>
+            <button title="Вернуть" class=func_button id="redo" style="background-image: url(img/redo.svg)"></button>
+            <button title="На передний план" class=func_button id="frontObject" style="background-image: url(img/to_front.svg)"></button>
+            <button title="На задний план" class=func_button id="backObject" style="background-image: url(img/to_back.svg)"></button>
+        </div>
+    </header>
 
-  <main>
-    <div id="left_panel">
-      <button title="Курсор" class="tool_button" id="cursor" style="background-image: url(img/cursor.svg)"></button>
-      <button title="Рука" class="tool_button" id="hand" style="background-image: url(img/hand.svg)"></button>
-      <button title="Масштабирование
+    <main>
+        <div id="left_panel">
+            <button title="Курсор" class="tool_button" id="cursor" style="background-image: url(img/cursor.svg)"></button>
+            <button title="Рука" class="tool_button" id="hand" style="background-image: url(img/hand.svg)"></button>
+            <button title="Масштабирование
 Приблизить/Отдалить(Ctrl)" class="tool_button" id="scale" style="background-image: url(img/scale.svg)"></button>
-      <button title="Карандаш" class="tool_button" id="pencil" style="background-image: url(img/pencil.svg)"></button>
-      <button title="Линия" class="tool_button" id="line" style="background-image: url(img/line.svg)"></button>
-      <button title="Фигуры" class="tool_button" id="figures" style="background-image: url(img/figures.svg)">
-        <ul class="vertical_menu">
-          <li><a href="#" id="rectangle">Прямоугольник</a></li>
-          <li><a href="#" id="ellipse">Эллипс</a></li>
-          <li><a href="#" id="polygon">Многоугольник</a></li>
-        </ul>
-      </button>
-      <button title="Текст" class="tool_button" id="text" style="background-image: url(img/text.svg)"></button>
-      <button title="Перо" class="tool_button" id="pathTool" style="background-image: url(img/path_tool.svg)"></button>
-      <!--<button title="Пипетка" class="tool_button" id="pipette" style="background-image: url(img/pipette.svg)"></button>-->
-      <button title="Заливка" class="tool_button" id="filling" style="background-image: url(img/fill.svg)"></button>
-    </div>
+            <button title="Карандаш" class="tool_button" id="pencil" style="background-image: url(img/pencil.svg)"></button>
+            <button title="Линия" class="tool_button" id="line" style="background-image: url(img/line.svg)"></button>
+            <button title="Фигуры" class="tool_button" id="figures" style="background-image: url(img/figures.svg)">
+                <ul class="vertical_menu">
+                    <li><a href="#" id="rectangle">Прямоугольник</a></li>
+                    <li><a href="#" id="ellipse">Эллипс</a></li>
+                    <li><a href="#" id="polygon">Многоугольник</a></li>
+                </ul>
+            </button>
+            <button title="Текст" class="tool_button" id="text" style="background-image: url(img/text.svg)"></button>
+            <button title="Перо" class="tool_button" id="pathTool" style="background-image: url(img/path_tool.svg)"></button>
+            <!--<button title="Пипетка" class="tool_button" id="pipette" style="background-image: url(img/pipette.svg)"></button>-->
+            <button title="Заливка" class="tool_button" id="filling" style="background-image: url(img/fill.svg)"></button>
+        </div>
 
-    <div id="right_panel">
-      <div id="palette">
-        <input class="colorpicker" id="strokeColor" type="color" title="Цвет для контура фигур,
+        <div id="right_panel">
+            <div id="palette">
+                <input class="colorpicker" id="strokeColor" type="color" title="Цвет для контура фигур,
     карандаша и кисти" value="#000000">
-        <input class="colorpicker" id="fillColor" type="color" title="Цвет для заливки фигур" value="#ffffff">
+                <input class="colorpicker" id="fillColor" type="color" title="Цвет для заливки фигур" value="#ffffff">
 
-        <div class="checkbox">
-          <input type="checkbox" id="stroke" hidden><label for="stroke"><img id="sImg"
-              src="img/stroke/yes.svg"><span>Контур</span></label>
+                <div class="checkbox">
+                    <input type="checkbox" id="stroke" hidden><label for="stroke"><img id="sImg" src="img/stroke/yes.svg"><span>Контур</span></label>
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" id="fill" hidden><label for="fill"><img id="fImg" src="img/stroke/yes.svg"><span>Заливка</span></label>
+                </div>
+
+                <div id="widthBox"><img src="img/stroke/width.svg"><input type="number" id="strokeWidth" min="0" max="100" value="2"></div>
+
+                <div class="styleListBox">
+                    <input type="checkbox" name="stroke" id="dash" hidden><label for="dash"><img src="img/stroke/lines.svg"></label>
+                    <ul class="styleList" id="lines">
+                        <li><input type="radio" name="dash" id="d0" hidden><label for="d0"><img src="img/stroke/line0.svg"></label>
+                        </li>
+                        <li><input type="radio" name="dash" id="d1" hidden><label for="d1"><img src="img/stroke/line1.svg"></label>
+                        </li>
+                        <li><input type="radio" name="dash" id="d2" hidden><label for="d2"><img src="img/stroke/line2.svg"></label>
+                        </li>
+                        <li><input type="radio" name="dash" id="d3" hidden><label for="d3"><img src="img/stroke/line3.svg"></label>
+                        </li>
+                        <li><input type="radio" name="dash" id="d4" hidden><label for="d4"><img src="img/stroke/line4.svg"></label>
+                        </li>
+                        <li><input type="radio" name="dash" id="d5" hidden><label for="d5"><img src="img/stroke/line5.svg"></label>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="styleListBox">
+                    <input type="checkbox" name="stroke" id="join" hidden><label for="join"><img src="img/stroke/join0.svg"></label>
+                    <ul class="styleList">
+                        <li><input type="radio" name="join" id="j0" hidden><label for="j0"><img src="img/stroke/join0.svg"></label>
+                        </li>
+                        <li><input type="radio" name="join" id="j1" hidden><label for="j1"><img src="img/stroke/join1.svg"></label>
+                        </li>
+                        <li><input type="radio" name="join" id="j2" hidden><label for="j2"><img src="img/stroke/join2.svg"></label>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="styleListBox">
+                    <input type="checkbox" name="stroke" id="cap" hidden><label for="cap"><img src="img/stroke/cap0.svg"></label>
+                    <ul class="styleList">
+                        <li><input type="radio" name="cap" id="c0" hidden><label for="c0"><img src="img/stroke/cap0.svg"></label>
+                        </li>
+                        <li><input type="radio" name="cap" id="c1" hidden><label for="c1"><img src="img/stroke/cap1.svg"></label>
+                        </li>
+                        <li><input type="radio" name="cap" id="c2" hidden><label for="c2"><img src="img/stroke/cap2.svg"></label>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+            <hr>
         </div>
-        <div class="checkbox">
-          <input type="checkbox" id="fill" hidden><label for="fill"><img id="fImg"
-              src="img/stroke/yes.svg"><span>Заливка</span></label>
+
+        <div id="scroll_panel">
+            <div id="rulers">
+                <div id="rulers_corner">px</div>
+                <svg id="ruler_x">
+                    <rect x="0" y="0" width="100%" height="1" fill="#fff"></rect>
+                    <rect id="ruler_x_line" x="0" y="1" width="100%" height="14" fill="url(#ruler_x_pattern)"></rect>
+                    <defs>
+                        <pattern id="ruler_x_pattern" patternUnits="userSpaceOnUse" x="0" y="0" width="50" height="15">
+                            <rect width="100%" height="100%"></rect>
+                            <line x1="0.5" y1="0" x2="0.5" y2="15"> </line>
+                        </pattern>
+                    </defs>
+                    <g id="ruler_x_text">
+                        <text x="252" y="10"> 0 </text>
+                    </g>
+                </svg>
+                <svg id="ruler_y">
+                    <rect x="0" y="0" width="1" height="100%" fill="#fff"></rect>
+                    <rect id="ruler_y_line" x="1" y="0" width="14" height="100%" fill="url(#ruler_y_pattern)"></rect>
+                    <defs>
+                        <pattern id="ruler_y_pattern" patternUnits="userSpaceOnUse" x="0" y="0" width="15" height="50">
+                            <rect width="100%" height="100%"></rect>
+                            <line x1="0" y1="0.5" x2="15" y2="0.5"> </line>
+                        </pattern>
+                    </defs>
+                    <g id="ruler_y_text">
+                        <text x="8" y="2" transform="rotate(-90 8 2)">0</text>
+                    </g>
+                </svg>
+            </div>
+            <div id="draw_panel"><svg id="svg_panel" width="800" height="550" viewBox="0 0 800 550" xmlns="http://www.w3.org/2000/svg">
+                </svg>
+            </div>
         </div>
-
-        <div id="widthBox"><img src="img/stroke/width.svg"><input type="number" id="strokeWidth" min="0" max="100" value="2"></div>
-
-        <div class="styleListBox">
-          <input type="checkbox" name="stroke" id="dash" hidden><label for="dash"><img
-              src="img/stroke/lines.svg"></label>
-          <ul class="styleList" id="lines">
-            <li><input type="radio" name="dash" id="d0" hidden><label for="d0"><img src="img/stroke/line0.svg"></label>
-            </li>
-            <li><input type="radio" name="dash" id="d1" hidden><label for="d1"><img src="img/stroke/line1.svg"></label>
-            </li>
-            <li><input type="radio" name="dash" id="d2" hidden><label for="d2"><img src="img/stroke/line2.svg"></label>
-            </li>
-            <li><input type="radio" name="dash" id="d3" hidden><label for="d3"><img src="img/stroke/line3.svg"></label>
-            </li>
-            <li><input type="radio" name="dash" id="d4" hidden><label for="d4"><img src="img/stroke/line4.svg"></label>
-            </li>
-            <li><input type="radio" name="dash" id="d5" hidden><label for="d5"><img src="img/stroke/line5.svg"></label>
-            </li>
-          </ul>
-        </div>
-
-        <div class="styleListBox">
-          <input type="checkbox" name="stroke" id="join" hidden><label for="join"><img
-              src="img/stroke/join0.svg"></label>
-          <ul class="styleList">
-            <li><input type="radio" name="join" id="j0" hidden><label for="j0"><img src="img/stroke/join0.svg"></label>
-            </li>
-            <li><input type="radio" name="join" id="j1" hidden><label for="j1"><img src="img/stroke/join1.svg"></label>
-            </li>
-            <li><input type="radio" name="join" id="j2" hidden><label for="j2"><img src="img/stroke/join2.svg"></label>
-            </li>
-          </ul>
-        </div>
-
-        <div class="styleListBox">
-          <input type="checkbox" name="stroke" id="cap" hidden><label for="cap"><img src="img/stroke/cap0.svg"></label>
-          <ul class="styleList">
-            <li><input type="radio" name="cap" id="c0" hidden><label for="c0"><img src="img/stroke/cap0.svg"></label>
-            </li>
-            <li><input type="radio" name="cap" id="c1" hidden><label for="c1"><img src="img/stroke/cap1.svg"></label>
-            </li>
-            <li><input type="radio" name="cap" id="c2" hidden><label for="c2"><img src="img/stroke/cap2.svg"></label>
-            </li>
-          </ul>
-        </div>
-
-      </div>
-      <hr>
-    </div>
-
-    <div id="scroll_panel">
-      <div id="rulers">
-        <div id="rulers_corner">px</div>
-        <svg id="ruler_x">
-          <rect id="ruler_x_line" x="0" y="0" width="512" height="15" fill="url(#ruler_x_pattern)"></rect>
-          <defs>
-            <pattern id="ruler_x_pattern" patternUnits="userSpaceOnUse" x="0" y="0" width="50" height="15">
-              <rect width="100%" height="100%"></rect>
-              <line x1="0.5" y1="0" x2="0.5" y2="15"> </line>
-            </pattern>
-          </defs>
-          <g id="ruler_x_text">
-            <text x="252" y="10"> 0 </text>
-          </g>
-        </svg>
-        <svg id="ruler_y">
-          <rect id="ruler_y_line" x="0" y="0" width="15" height="512" fill="url(#ruler_y_pattern)"></rect>
-          <defs>
-            <pattern id="ruler_y_pattern" patternUnits="userSpaceOnUse" x="0" y="0" width="15" height="50">
-              <rect width="100%" height="100%"></rect>
-              <line x1="0" y1="0.5" x2="15" y2="0.5"> </line>
-            </pattern>
-          </defs>
-          <g id="ruler_y_text">
-            <text x="8" y="2" transform="rotate(-90 8 2)">0</text>
-          </g>
-        </svg>
-      </div>
-      <div id="draw_panel"><svg id="svg_panel" width="800" height="550" viewBox="0 0 800 550"
-          xmlns="http://www.w3.org/2000/svg">
-        </svg>
-      </div>
-    </div>
-    <canvas id="canvas" width="800" height="550" style="display: none;"></canvas>
-  </main>
-  <script src="js/global.js"></script>
-  <script src="js/rulers.js"></script>
-  <script src="js/actions.js"></script>
-  <script src="js/cursor.js"></script>
-  <script src="js/hand.js"></script>
-  <script src="js/scaling.js"></script>
-  <script src="js/figures.js"></script>
-  <script src="js/classes.js"></script>
-  <script src="js/point.js"></script>
-  <script src="js/color.js"></script>
+        <canvas id="canvas" width="800" height="550" style="display: none;"></canvas>
+    </main>
+    <script src="js/global.js"></script>
+    <script src="js/rulers.js"></script>
+    <script src="js/actions.js"></script>
+    <script src="js/cursor.js"></script>
+    <script src="js/hand.js"></script>
+    <script src="js/scaling.js"></script>
+    <script src="js/figures.js"></script>
+    <script src="js/classes.js"></script>
+    <script src="js/point.js"></script>
+    <script src="js/color.js"></script>
 </body>
 
 </html>

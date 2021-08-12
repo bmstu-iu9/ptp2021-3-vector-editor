@@ -116,24 +116,12 @@ class object {
         this.frame = [];
     }
     hide() {
-        for (let i = 0; i < this.frame.length; i++) {
-            this.frame[i].hide();
-        }
-        for (let i = 0; i < this.pointsArray.length; i++) {
-            this.pointsArray[i].hide();
-        }
+        this.hideFrameAndPoints()
         svgPanel.removeChild(this.svgElement);
-        this.isSelected = false;
     }
     show() {
         svgPanel.appendChild(this.svgElement);
-        for (let i = 0; i < this.frame.length; i++) {
-            this.frame[i].show();
-        }
-        for (let i = 0; i < this.pointsArray.length; i++) {
-            this.pointsArray[i].show();
-        }
-        this.isSelected = true;
+        this.showFrameAndPoints()
     }
     hideFrameAndPoints() {
         for (let i = 0; i < this.frame.length; i++) {

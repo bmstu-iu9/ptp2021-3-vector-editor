@@ -12,7 +12,7 @@ class object {
         this.pointsArray = [];
         this.frame = [];
         this.svgElement.setAttribute('fill', getCurrentFillColor());
-        updateStroke(this.svgElement);
+        this.svgElement.setAttribute('stroke', getCurrentStrokeColor());
         this.addActions();
     }
     addActions() {
@@ -332,6 +332,7 @@ class pencil extends object {
         super('polyline');
         this.type = 'pencil';
         this.path = this.x0 + " " + this.y0;
+        this.pathPoints = [];
         this.svgElement.setAttribute('fill', "none");
         this.svgElement.setAttribute('points', this.path);
         this.minX = this.x0;
@@ -341,26 +342,77 @@ class pencil extends object {
     }
     updateAttributes() {
         this.path += ", " + curX + " " + curY;
+        this.pathPoints.push({
+            x: curX,
+            y: curY
+        });
         this.svgElement.setAttribute('points', this.path);
         this.minX = Math.min(this.minX, curX);
         this.minY = Math.min(this.minY, curY);
         this.maxX = Math.max(this.maxX, curX);
         this.maxY = Math.max(this.maxY, curY);
     }
-    setFrameAndPoints() {
-        this.pointsArray = [new point(this.minX + (this.maxX - this.minX) / 2, this.minY + (this.maxY - this.minY) / 2, this)];
-        this.frame = [new line(this.minX, this.maxY, this.maxX, this.maxY),
-            new line(this.maxX, this.maxY, this.maxX, this.minY),
-            new line(this.maxX, this.minY, this.minX, this.minY),
-            new line(this.minX, this.minY, this.minX, this.maxY)
+    updateFrameAndPoints(minX = this.minX, minY = this.minY, maxX = this.maxX, maxY = this.maxY) {
+        this.removeFrameAndPoints();
+        this.frame = [new line(minX, maxY, maxX, maxY, false),
+            new line(maxX, maxY, maxX, minY, false),
+            new line(maxX, minY, minX, minY, false),
+            new line(minX, minY, minX, maxY, false)
         ];
-        super.setFrameAndPoints();
+        this.pointsArray = [new point(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2, this)];
+        super.updateFrameAndPoints();
+    }
+    updatePosition(dx, dy) {
+        let newX0 = this.x0 + dx,
+            newY0 = this.y0 + dy;
+        this.path = newX0 + " " + newY0;
+        for (let i = 0; i < this.pathPoints.length; i++) {
+            let newX = this.pathPoints[i].x + dx,
+                newY = this.pathPoints[i].y + dy;
+            this.path += ", " + newX + " " + newY;
+        }
+        this.svgElement.setAttribute('points', this.path);
+    }
+    move(startX = this.start.x, startY = this.start.y) {
+        let dx = curX - startX,
+            dy = curY - startY;
+        this.updatePosition(dx, dy);
+        this.updateFrameAndPoints(this.minX + dx,
+            this.minY + dy,
+            this.maxX + dx,
+            this.maxY + dy
+        );
+    }
+    stopMove(startX = this.start.x, startY = this.start.y) {
+        let dx = curX - startX,
+            dy = curY - startY;
+        this.x0 += dx;
+        this.y0 += dy;
+        this.minX += dx;
+        this.minY += dy;
+        this.maxX += dx;
+        this.maxY += dy;
+        for (let i = 0; i < this.pathPoints.length; i++) {
+            this.pathPoints[i].x += dx;
+            this.pathPoints[i].y += dy;
+        }
+        this.path = "";
+    }
+    completeFirstObject() {
+        this.isCompleted = true;
+        this.updateFrameAndPoints();
+        this.hideFrameAndPoints();
+        this.removeHotKeys();
+    }
+    complete() {
+        super.complete();
+        this.path = "";
     }
 }
 
 //LINE
 class line extends object {
-    constructor(x1 = curX, y1 = curY, x2 = curX, y2 = curY, inPolyline = false) {
+    constructor(x1 = curX, y1 = curY, x2 = curX, y2 = curY, isFree = true) {
         super('line');
         this.x0 = x1;
         this.y0 = y1;
@@ -371,7 +423,7 @@ class line extends object {
         this.x2 = x2;
         this.y2 = y2;
         this.svgElement.setAttribute('fill', "none");
-        this.inPolyline = inPolyline;
+        this.isFree = isFree;
     }
     updateAttributes(current) {
         let w = curX - this.x0;
@@ -393,13 +445,33 @@ class line extends object {
         this.y2 = this.y0 + signH * absH;
         this.svgElement.setAttribute('x2', this.x2);
         this.svgElement.setAttribute('y2', this.y2);
-        if (!this.inPolyline) {
-            this.removeFrameAndPoints();
-            this.pointsArray = [new point(this.x0, this.y0, this),
-                new point(this.x0 + (this.x2 - this.x0) / 2, this.y0 + (this.y2 - this.y0) / 2, this),
-                new point(this.x2, this.y2, this)
-            ];
+        if (this.isFree) {
+            this.updatePoints(this.x0, this.y0, this.x2, this.y2);
         }
+    }
+    updatePoints(x0, y0, x2, y2) {
+        this.removeFrameAndPoints();
+        this.pointsArray = [new point(x0, y0, this),
+            new point(x0 + (x2 - x0) / 2, y0 + (y2 - y0) / 2, this),
+            new point(x2, y2, this)
+        ];
+    }
+    move(startX = this.start.x, startY = this.start.y) {
+        this.svgElement.setAttribute('x1', this.x0 + (curX - startX));
+        this.svgElement.setAttribute('y1', this.y0 + (curY - startY));
+        this.svgElement.setAttribute('x2', this.x2 + (curX - startX));
+        this.svgElement.setAttribute('y2', this.y2 + (curY - startY));
+        this.updatePoints(this.x0 + (curX - startX),
+            this.y0 + (curY - startY),
+            this.x2 + (curX - startX),
+            this.y2 + (curY - startY)
+        );
+    }
+    stopMove(startX = this.start.x, startY = this.start.y) {
+        this.x0 += (curX - startX);
+        this.y0 += (curY - startY);
+        this.x2 += (curX - startX);
+        this.y2 += (curY - startY);
     }
     hide() {
         this.svgElement.setAttribute('stroke-opacity', 0);
@@ -413,11 +485,12 @@ class line extends object {
 class polyline extends object {
     constructor() {
         super('polyline');
-        this.points = this.x0 + " " + this.y0;
-        this.svgElement.setAttribute('points', this.points);
+        this.path = this.x0 + " " + this.y0;
+        this.pathPoints = [];
+        this.svgElement.setAttribute('points', this.path);
         this.pointsArray.push(new point(this.x0, this.y0, this));
         this.pointsArray[0].setPointAttribute('fill', "blue");
-        this.line = new line(curX, curY, curX, curY, true);
+        this.line = new line(curX, curY, curX, curY, false);
     }
     updateLine(current) {
         this.line.updateAttributes(current);
@@ -438,26 +511,62 @@ class polyline extends object {
             return;
         }
         if (x != this.x0) {
-            this.points += ", " + x + " " + y;
-            this.svgElement.setAttribute('points', this.points);
+            this.path += ", " + x + " " + y;
+            this.pathPoints.push({
+                x: x,
+                y: y
+            });
+            this.svgElement.setAttribute('points', this.path);
             this.pointsArray.push(new point(x, y, this));
             this.line.remove();
-            this.line = new line(x, y, curX, curY, true);
+            this.line = new line(x, y, curX, curY, false);
             this.line.setElementAttribute('stroke-opacity', "0.3");
             this.line.setElementAttribute('stroke', this.svgElement.getAttribute('stroke'));
         }
     }
+    updatePositionAndPoints(dx, dy) {
+        this.removeFrameAndPoints();
+        let newX0 = this.x0 + dx,
+            newY0 = this.y0 + dy;
+        this.path = newX0 + " " + newY0;
+        this.pointsArray = [new point(newX0, newY0, this)];
+        for (let i = 0; i < this.pathPoints.length; i++) {
+            let newX = this.pathPoints[i].x + dx,
+                newY = this.pathPoints[i].y + dy;
+            this.path += ", " + newX + " " + newY;
+            this.pointsArray.push(new point(newX, newY, this))
+        }
+        this.path += ", " + newX0 + " " + newY0;
+        this.svgElement.setAttribute('points', this.path);
+    }
+    move(startX = this.start.x, startY = this.start.y) {
+        let dx = curX - startX,
+            dy = curY - startY;
+        this.updatePositionAndPoints(dx, dy);
+    }
+    stopMove(startX = this.start.x, startY = this.start.y) {
+        let dx = curX - startX,
+            dy = curY - startY;
+        this.x0 += dx;
+        this.y0 += dy;
+        for (let i = 0; i < this.pathPoints.length; i++) {
+            this.pathPoints[i].x += dx;
+            this.pathPoints[i].y += dy;
+        }
+        this.path = "";
+    }
     complete() {
-        if (!polylineIsСompleted) {
+        if (!polylineIsCompleted) {
             super.complete();
             if (this.pointsArray.length < 2) {
                 this.remove();
             }
             this.line.remove();
-            this.points += ", " + this.x0 + " " + this.y0;
-            this.svgElement.setAttribute('points', this.points);
+            this.path += ", " + this.x0 + " " + this.y0;
+            this.svgElement.setAttribute('points', this.path);
+            this.path = "";
             this.pointsArray[0].setPointAttribute('fill', "white");
-            polylineIsСompleted = true;
+            polylineIsCompleted = true;
         }
     }
 }

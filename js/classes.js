@@ -445,6 +445,8 @@ class pencil extends object {
         this.minY = this.y0;
         this.maxX = this.x0;
         this.maxY = this.y0;
+        this.svgElement.setAttribute('stroke-linejoin', "round");
+        this.svgElement.setAttribute('stroke-linecap', "round");
     }
     createClone() {
         let clone = new pencil();

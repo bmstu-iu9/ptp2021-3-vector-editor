@@ -1,6 +1,6 @@
 class point {
     constructor(x, y, object, type) {
-        this.circle = document.createElementNS("http://www.w3.org/2000/svg", 'ellipse');
+        this.circle = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
         svgPanel.appendChild(this.circle);
         this.x = x;
         this.y = y;
@@ -10,8 +10,7 @@ class point {
         this.circle.setAttribute('stroke', "black");
         this.circle.setAttribute('cx', x);
         this.circle.setAttribute('cy', y);
-        this.circle.setAttribute('rx', pointRadius);
-        this.circle.setAttribute('ry', pointRadius);
+        this.circle.setAttribute('r', pointRadius);
 
         //this.circle.addEventListener("mousedown", this.dispatchToObject.bind(this, "mousedown"));
         this.circle.addEventListener("mouseout", this.dispatchToObject.bind(this, "mouseout"));
@@ -49,7 +48,7 @@ class point {
 
 class frame {
     constructor(x1, y1, x2, y2, object) {
-        this.svgElement = document.createElementNS("http://www.w3.org/2000/svg", 'lineS');
+        this.svgElement = document.createElementNS("http://www.w3.org/2000/svg", 'line');
         svgPanel.appendChild(this.svgElement);
         this.x1 = x1;
         this.y1 = y1;

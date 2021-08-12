@@ -34,6 +34,14 @@ function copyFunc() {
     buffer = currentObject.createClone();
     buffer.moveTo(0, 0);
     buffer.hide();
+    paste.style.color = "#fff";
+    paste.style.cursor = "pointer";
+    paste.onmouseover = () => {
+        paste.style.background ="#555";
+    }
+    paste.onmouseout = () => {
+        paste.style.background ="#333";
+    }
 }
 
 //PASTE

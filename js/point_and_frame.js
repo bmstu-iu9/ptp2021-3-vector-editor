@@ -69,13 +69,6 @@ class frame {
         let clone = new point(this.x1, this.y1, this.x2, this.y2, newObject);
         return clone;
     }
-    updatePoints(x0, y0, x2, y2) {
-        this.removeFrameAndPoints();
-        this.pointsArray = [new point(x0, y0, this),
-            new point(x0 + (x2 - x0) / 2, y0 + (y2 - y0) / 2, this),
-            new point(x2, y2, this)
-        ];
-    }
     hide() {
         svgPanel.removeChild(this.svgElement);
     }

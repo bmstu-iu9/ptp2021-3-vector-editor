@@ -576,10 +576,6 @@ class line extends object {
         clone.svgElement.setAttribute('x', this.x2);
         clone.svgElement.setAttribute('y', this.y2);
         clone.svgElement.setAttribute('fill', "none");
-        if (this.isFree) {
-            clone.move(50, 50);
-            clone.stopMoving(50, 50);
-        }
         return clone;
     }
     updateAttributes(current) {

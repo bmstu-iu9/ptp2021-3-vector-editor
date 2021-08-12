@@ -9,7 +9,7 @@ class object {
         this.x0 = curX;
         this.y0 = curY;
         this.pointsArray = [];
-        this.frame = [];
+        this.frameArray = [];
         this.svgElement.setAttribute('fill', getCurrentFillColor());
         this.strokeWidth = 1;
         updateStroke(this);
@@ -27,9 +27,9 @@ class object {
         for (let i = 0; i < this.pointsArray.length; i++) {
             clone.pointsArray[i] = this.pointsArray[i].createClone(clone);
         }
-        clone.frame = [];
-        for (let i = 0; i < this.frame.length; i++) {
-            clone.frame[i] = this.frame[i].createClone();
+        clone.frameArray = [];
+        for (let i = 0; i < this.frameArray.length; i++) {
+            clone.frameArray[i] = this.frameArray[i].createClone();
         }
         clone.svgElement.setAttribute('fill', this.svgElement.getAttribute('fill'));
         clone.svgElement.setAttribute('stroke', this.svgElement.getAttribute('stroke'));
@@ -37,7 +37,7 @@ class object {
         clone.svgElement.setAttribute('stroke-dasharray', this.svgElement.getAttribute('stroke-dasharray'));
         clone.svgElement.setAttribute('stroke-linejoin', this.svgElement.getAttribute('stroke-linejoin'));
         clone.svgElement.setAttribute('stroke-linecap', this.svgElement.getAttribute('stroke-linecap'));
-        this.removeHotKeys();
+        clone.removeHotKeys();
     }
     addActions() {
         //select
@@ -114,11 +114,11 @@ class object {
         for (let i = 0; i < this.pointsArray.length; i++) {
             this.pointsArray[i].remove();
         }
-        for (let i = 0; i < this.frame.length; i++) {
-            this.frame[i].remove();
+        for (let i = 0; i < this.frameArray.length; i++) {
+            this.frameArray[i].remove();
         }
         this.pointsArray = [];
-        this.frame = [];
+        this.frameArray = [];
     }
     hide() {
         this.hideFrameAndPoints()
@@ -129,8 +129,8 @@ class object {
         this.showFrameAndPoints()
     }
     hideFrameAndPoints() {
-        for (let i = 0; i < this.frame.length; i++) {
-            this.frame[i].hide();
+        for (let i = 0; i < this.frameArray.length; i++) {
+            this.frameArray[i].hide();
         }
         for (let i = 0; i < this.pointsArray.length; i++) {
             this.pointsArray[i].hide();
@@ -138,8 +138,8 @@ class object {
         this.isSelected = false;
     }
     showFrameAndPoints() {
-        for (let i = 0; i < this.frame.length; i++) {
-            this.frame[i].show();
+        for (let i = 0; i < this.frameArray.length; i++) {
+            this.frameArray[i].show();
         }
         for (let i = 0; i < this.pointsArray.length; i++) {
             this.pointsArray[i].show();
@@ -188,7 +188,6 @@ class rectangle extends object {
         clone.svgElement.setAttribute('height', this.height);
         clone.svgElement.setAttribute('x', this.x);
         clone.svgElement.setAttribute('y', this.y);
-        clone.removeHotKeys();
         return clone;
     }
     updateAttributes(current) {
@@ -219,10 +218,10 @@ class rectangle extends object {
         y -= w;
         width += w * 2;
         height += w * 2;
-        this.frame = [new line(x, y + height, x + width, y + height, false),
-            new line(x + width, y + height, x + width, y, false),
-            new line(x + width, y, x, y, false),
-            new line(x, y, x, y + height, false)
+        this.frameArray = [new frame(x, y + height, x + width, y + height, this),
+            new frame(x + width, y + height, x + width, y, this),
+            new frame(x + width, y, x, y, this),
+            new frame(x, y, x, y + height, this)
         ];
         this.pointsArray = [new point(x, y, this),
             new point(x + width, y, this),
@@ -234,7 +233,6 @@ class rectangle extends object {
         this.svgElement.setAttribute('x', this.x + dx);
         this.svgElement.setAttribute('y', this.y + dy);
         this.updateFrameAndPoints(this.width, this.height, this.x + dx, this.y + dy);
-        super.move();
     }
     stopMoving(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.x += dx;
@@ -269,7 +267,6 @@ class ellipse extends object {
         clone.svgElement.setAttribute('ry', this.ry);
         clone.svgElement.setAttribute('cx', this.cx);
         clone.svgElement.setAttribute('cy', this.cy);
-        clone.removeHotKeys();
         return clone;
     }
     updateAttributes(current) {
@@ -298,10 +295,10 @@ class ellipse extends object {
         let w = Number(this.strokeWidth) / 2 + 1;
         rx += w;
         ry += w;
-        this.frame = [new line(cx - rx, cy + ry, cx + rx, cy + ry, false),
-            new line(cx + rx, cy + ry, cx + rx, cy - ry, false),
-            new line(cx + rx, cy - ry, cx - rx, cy - ry, false),
-            new line(cx - rx, cy - ry, cx - rx, cy + ry, false)
+        this.frameArray = [new frame(cx - rx, cy + ry, cx + rx, cy + ry, this),
+            new frame(cx + rx, cy + ry, cx + rx, cy - ry, this),
+            new frame(cx + rx, cy - ry, cx - rx, cy - ry, this),
+            new frame(cx - rx, cy - ry, cx - rx, cy + ry, this)
         ];
         this.pointsArray = [new point(cx, cy - ry, this),
             new point(cx + rx, cy, this),
@@ -317,7 +314,6 @@ class ellipse extends object {
         this.svgElement.setAttribute('cx', this.cx + dx);
         this.svgElement.setAttribute('cy', this.cy + dy);
         this.updateFrameAndPoints(this.rx, this.ry, this.cx + dx, this.cy + dy);
-        super.move();
     }
     stopMoving(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.cx += dx;
@@ -356,7 +352,6 @@ class polygon extends object {
         clone.points = this.points;
         clone.rotationIsFixed = this.rotationIsFixed;
         clone.svgElement.setAttribute('points', clone.points);
-        clone.removeHotKeys();
         return clone;
     }
     updateAttributes() {
@@ -424,7 +419,6 @@ class polygon extends object {
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.updatePosition(this.x0 + dx, this.y0 + dy);
-        super.move();
     }
     stopMoving(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.x0 += dx;
@@ -475,7 +469,6 @@ class pencil extends object {
         }
         this.svgElement.setAttribute('points', this.path);
         this.path = "";
-        clone.removeHotKeys();
         return clone;
     }
     updateAttributes() {
@@ -492,10 +485,10 @@ class pencil extends object {
     }
     updateFrameAndPoints(minX = this.minX, minY = this.minY, maxX = this.maxX, maxY = this.maxY) {
         this.removeFrameAndPoints();
-        this.frame = [new line(minX, maxY, maxX, maxY, false),
-            new line(maxX, maxY, maxX, minY, false),
-            new line(maxX, minY, minX, minY, false),
-            new line(minX, minY, minX, maxY, false)
+        this.frameArray = [new frame(minX, maxY, maxX, maxY, this),
+            new frame(maxX, maxY, maxX, minY, this),
+            new frame(maxX, minY, minX, minY, this),
+            new frame(minX, minY, minX, maxY, this)
         ];
         this.pointsArray = [new point(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2, this)];
     }
@@ -517,7 +510,6 @@ class pencil extends object {
             this.maxX + dx,
             this.maxY + dy
         );
-        super.move();
     }
     stopMoving(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.x0 += dx;
@@ -566,7 +558,6 @@ class line extends object {
         this.isFree = isFree;
         if (!isFree) {
             this.svgElement.setAttribute('stroke-opacity', "0.5");
-            this.svgElement.setAttribute('stroke', "red");
             this.svgElement.setAttribute('stroke-width', "2");
             this.svgElement.setAttribute('stroke-dasharray', "8");
         }
@@ -585,7 +576,6 @@ class line extends object {
         clone.svgElement.setAttribute('x', this.x2);
         clone.svgElement.setAttribute('y', this.y2);
         clone.svgElement.setAttribute('fill', "none");
-        clone.removeHotKeys();
         if (this.isFree) {
             clone.move(50, 50);
             clone.stopMoving(50, 50);
@@ -633,7 +623,6 @@ class line extends object {
             this.x2 + dx,
             this.y2 + dy
         );
-        super.move();
     }
     stopMoving(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.x0 += dx;
@@ -647,13 +636,6 @@ class line extends object {
         this.move(dx, dy);
         this.stopMoving(dx, dy);
     }
-    hide() {
-        this.svgElement.setAttribute('stroke-opacity', 0);
-    }
-    show() {
-        svgPanel.append(this.svgElement);
-        this.svgElement.setAttribute('stroke-opacity', 0.5);
-    }
 }
 
 //POLYLINE
@@ -666,7 +648,6 @@ class polyline extends object {
         this.pointsArray.push(new point(this.x0, this.y0, this));
         this.pointsArray[0].setPointAttribute('fill', "blue");
         this.line = new line(curX, curY, curX, curY, false);
-        this.line.setElementAttribute('stroke-opacity', "0.3");
         this.line.setElementAttribute('stroke', this.svgElement.getAttribute('stroke'));
         this.minX = this.x0;
         this.minY = this.y0;
@@ -696,7 +677,6 @@ class polyline extends object {
         clone.path += ", " + clone.pathPoints[0].x + " " + clone.pathPoints[0].y;
         clone.svgElement.setAttribute('points', this.path);
         clone.path = "";
-        clone.removeHotKeys();
         return clone;
     }
     updateLine(current) {
@@ -728,7 +708,6 @@ class polyline extends object {
             this.pointsArray.push(new point(x, y, this));
             this.line.remove();
             this.line = new line(x, y, curX, curY, false);
-            this.line.setElementAttribute('stroke-opacity', "0.3");
             this.line.setElementAttribute('stroke', this.svgElement.getAttribute('stroke'));
         }
     }
@@ -749,7 +728,6 @@ class polyline extends object {
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.updatePositionAndPoints(dx, dy);
-        super.move();
     }
     stopMoving(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.x0 += dx;

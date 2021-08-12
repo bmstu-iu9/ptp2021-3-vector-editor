@@ -18,6 +18,10 @@ class point {
         this.circle.addEventListener("mouseover", this.setColor.bind(this, "red"));
         this.circle.addEventListener("mouseout", this.setColor.bind(this, "white"));
     }
+    createClone(newObject) {
+        let clone = new point(this.x, this.y, newObject, this.type);
+        return clone;
+    }
     dispatchToObject(event) {
         if (this.object.isCompleted) {
             this.object.svgElement.dispatchEvent(new Event(event));
@@ -29,12 +33,10 @@ class point {
         }
     }
     hide() {
-        this.circle.setAttribute('fill-opacity', 0);
-        this.circle.setAttribute('stroke-opacity', 0);
+        svgPanel.removeChild(this.circle);
     }
     show() {
-        this.circle.setAttribute('fill-opacity', 1);
-        this.circle.setAttribute('stroke-opacity', 1);
+        svgPanel.appendChild(this.circle);
     }
     remove() {
         svgPanel.removeChild(this.circle);

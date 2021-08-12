@@ -3,35 +3,77 @@ deleteObject = document.getElementById("deleteObject");
 
 deleteObject.onclick = function () {
     if (currentObject != null) {
-        currentObject.remove();
-        currentObject = null;
+        deleteFunc();
     }
 }
 document.addEventListener('keydown', function (event) {
     if (event.code == 'Delete' && currentObject != null) {
-        currentObject.remove();
-        currentObject = null;
+        deleteFunc();
     }
 });
 
-//CANCEL
-/*cancel = document.getElementById("cancel");
-
-cancel.onclick = function () {
-    if (objects.length != 0) {
-        temp = objects.pop()
-        svgPanel.removeChild(temp);
-        temp = null;
-    }
+function deleteFunc() {
+    currentObject.remove();
+    currentObject = null;
 }
 
-document.addEventListener('keydown', function(event) {
-    if (event.code == 'KeyZ' && event.ctrlKey && objects.length != 0) {
-        temp = objects.pop();
-        svgPanel.removeChild(temp);
-        temp = null;
+//COPY
+copy = document.getElementById("copy");
+copy.onclick = function () {
+    if (currentObject != null) {
+        copyFunc();
     }
-});*/
+}
+document.addEventListener('keydown', function (event) {
+    if (event.code == 'KeyC' && (event.ctrlKey || event.metaKey) && currentObject != null) {
+        copyFunc();
+    }
+});
+
+function copyFunc() {
+    buffer = currentObject.createClone();
+    buffer.moveTo(0, 0);
+    buffer.hide();
+}
+
+//PASTE
+paste = document.getElementById("paste");
+paste.onclick = function () {
+    if (buffer != null) {
+        pasteFunc();
+    }
+}
+document.addEventListener('keydown', function (event) {
+    if (event.code == 'KeyV' && (event.ctrlKey || event.metaKey) && buffer != null) {
+        pasteFunc();
+    }
+});
+
+function pasteFunc() {
+    if (currentObject != null) currentObject.hideFrameAndPoints();
+    buffer.isCompleted = true;
+    buffer.show();
+    currentObject = buffer;
+    buffer = buffer.createClone();
+    buffer.move(50, 50);
+    buffer.stopMoving(50, 50);
+    buffer.hide();
+}
+
+//CUT
+cut = document.getElementById("cut");
+cut.onclick = function () {
+    if (currentObject != null) {
+        copyFunc();
+        deleteFunc();
+    }
+}
+document.addEventListener('keydown', function (event) {
+    if (event.code == 'KeyX' && (event.ctrlKey || event.metaKey) && currentObject != null) {
+        copyFunc();
+        deleteFunc();
+    }
+});
 
 //CREATE 
 create = document.getElementById("create");
@@ -176,6 +218,7 @@ zoomOut.onclick = function () {
     updateRulers();
 }
 
+//LAYERS
 frontObject = document.getElementById("frontObject");
 
 frontObject.onclick = function () {
@@ -183,6 +226,9 @@ frontObject.onclick = function () {
         svgPanel.append(currentObject.svgElement);
         for (let i = 0; i < currentObject.pointsArray.length; i++) {
             svgPanel.append(currentObject.pointsArray[i].circle);
+        }
+        for (let i = 0; i < currentObject.frame.length; i++) {
+            svgPanel.append(currentObject.frame[i].svgElement);
         }
     }
 }
@@ -193,6 +239,9 @@ backObject.onclick = function () {
     if (currentObject != null) {
         for (let i = currentObject.pointsArray.length - 1; i >= 0; i--) {
             svgPanel.prepend(currentObject.pointsArray[i].circle);
+        }
+        for (let i = 0; i < currentObject.frame.length; i++) {
+            svgPanel.prepend(currentObject.frame[i].svgElement);
         }
         svgPanel.prepend(currentObject.svgElement);
     }

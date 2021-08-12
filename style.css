@@ -49,12 +49,12 @@ header {
     font-size: 3vh;
 }
 
-.container > ul {
+.container>ul {
     display: flex;
     list-style: none;
 }
 
-.container > ul li a {
+.container>ul li a {
     display: block;
     text-decoration: none;
     padding: 1.7vh 1.5vw;
@@ -62,11 +62,11 @@ header {
     transition: all 0.3s ease;
 }
 
-.container > ul li {
+.container>ul li {
     position: relative;
 }
 
-.container ul > li a:hover {
+.container ul>li a:hover {
     background-color: #555;
     transition: all 0.3s ease;
 }
@@ -91,7 +91,7 @@ header {
     list-style: none;
 }
 
-.container li > ul li a {
+.container li>ul li a {
     font-size: 2vh;
     padding: 1.8vh 1vw;
     text-transform: none;
@@ -100,7 +100,7 @@ header {
     z-index: 3;
 }
 
-.container li:hover > ul {
+.container li:hover>ul {
     display: block;
 }
 
@@ -143,62 +143,66 @@ main {
 
 /*rulers*/
 #rulers {
-  z-index: 2;
-  display: block;
-  position: relative;
-  font-size: 11px;
-  font-family: Courier;
-  font-weight: bold;
-  user-select: none;
-  opacity: .9;
+    z-index: 2;
+    display: block;
+    position: relative;
+    font-size: 11px;
+    font-family: Courier;
+    font-weight: bold;
+    user-select: none;
+    opacity: .9;
 }
 
 #rulers_corner {
-  width: 14px;
-  height: 14px;
-  display: block;
-  text-align: center;
-  position: fixed;
-  background-color: #bb9292;
-  border-right: 1px solid #666666;
-  border-bottom: 1px solid #666666;
-  z-index: 1;
-  will-change:transform;
+    width: 14px;
+    height: 14px;
+    display: block;
+    text-align: center;
+    position: fixed;
+    background-color: #bb9292;
+    border-right: 1px solid #666666;
+    border-bottom: 1px solid #666666;
+    z-index: 1;
+    will-change: transform;
 }
 
 #ruler_x {
-  width: 512px;
-  height: 15px;
-  left: 15px;
-  top: 0px;
+    width: 512px;
+    height: 15px;
+    left: 15px;
+    top: 0px;
 }
 
-#ruler_x pattern rect, #ruler_y pattern rect {
-  fill: #bb9292;
+#ruler_x pattern rect,
+#ruler_y pattern rect {
+    fill: #bb9292;
 }
 
-#ruler_x, #ruler_y {
-  position: absolute;
-  display: block;
-  overflow: hidden;
-  -webkit-transform:  translateZ(0)
+#ruler_x,
+#ruler_y {
+    position: absolute;
+    display: block;
+    overflow: hidden;
+    -webkit-transform: translateZ(0)
 }
 
-#ruler_x pattern line, #ruler_y pattern line {
-  stroke: black;
-  stroke-opacity: .6;
-  stroke-width: 1px;
+#ruler_x pattern line,
+#ruler_y pattern line {
+    stroke: black;
+    stroke-opacity: .6;
+    stroke-width: 1px;
 }
 
-#ruler_x_text text, #ruler_y_text text {
-  opacity: .6;
+#ruler_x_text text,
+#ruler_y_text text {
+    opacity: .6;
 }
 
 #ruler_y {
-  width: 15px;
-  height: 512px;
-  top: 15px;
-  left: 0px;
+    width: 15px;
+    height: 512px;
+    top: 15px;
+    left: 0px;
 }
 
 /*холст*/

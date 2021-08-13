@@ -61,11 +61,14 @@ window.onload = function () {
 
 //updateRulersPos
 function updateRulersPos() {
-	rulerX.style.top = scrollPanel.scrollTop;
-	rulerY.style.left = scrollPanel.scrollLeft;
+	rulerX.style.top = scrollPanel.scrollTop + "px";
+  rulerX.style.left = scrollPanel.scrollLeft + 15 + "px";
+  rulerY.style.top = scrollPanel.scrollTop + 15 + "px";
+	rulerY.style.left = scrollPanel.scrollLeft + "px";
 }
 
 scrollPanel.onscroll = function () {
 	svgPanelCoords = getCoords(svgPanel);
 	updateRulersPos();
+  updateRulers();
 };

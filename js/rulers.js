@@ -1,8 +1,8 @@
 function updateRulers() {
-  rulerX.style.width = scrollPanel.scrollWidth - 16;
-  rulerY.style.height = scrollPanel.scrollHeight - 16;
-  ruler_x_line.setAttribute("width", scrollPanel.scrollWidth - 16);
-  ruler_y_line.setAttribute("height", scrollPanel.scrollHeight - 16);
+  rulerX.style.width = scrollPanel.clientWidth - 16 + "px";
+  rulerY.style.height = scrollPanel.clientHeight - 15 + "px";
+  ruler_x_line.setAttribute("width", scrollPanel.clientWidth - 16);
+  ruler_y_line.setAttribute("height", scrollPanel.clientHeight - 15);
   rulerXcoords = getCoords(rulerX);
   rulerYcoords = getCoords(rulerY);
   ruler_x_pattern.setAttribute("x", svgPanelCoords.left - rulerXcoords.left);

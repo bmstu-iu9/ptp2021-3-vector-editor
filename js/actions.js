@@ -245,7 +245,7 @@ frontObject = document.getElementById("frontObject");
 
 frontObject.onclick = function () {
     if (currentObject != null) {
-        svgPanel.append(currentObject.svgElement);
+        currentLayer.append(currentObject.svgElement);
         for (let i = 0; i < currentObject.frame.length; i++) {
             svgPanel.append(currentObject.frame[i].svgElement);
         }
@@ -259,7 +259,7 @@ backObject = document.getElementById("backObject");
 
 backObject.onclick = function () {
     if (currentObject != null) {
-        svgPanel.prepend(currentObject.svgElement);
+        currentLayer.prepend(currentObject.svgElement);
     }
 }
 

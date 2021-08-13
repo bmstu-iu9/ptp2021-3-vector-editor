@@ -123,7 +123,7 @@ main {
 
 #left_panel {
     width: 4%;
-    height: 100%;
+    height: 93%;
     background-color: #333;
     position: fixed;
     z-index: 2;
@@ -233,7 +233,7 @@ main {
     background-color: #333;
     border-color: #fff;
     border-radius: 10%;
-    border-width: medium;
+    border-width: 3px;
     cursor: pointer;
 }
 
@@ -248,7 +248,7 @@ main {
 }
 
 .active {
-    border-width: thick;
+    border-width: 6px;
 }
 
 .tool_button:hover {

@@ -29,7 +29,7 @@ hr {
 }
 
 #strokeWidth {
-    font-size: 2vh;
+    font-size: medium;
     padding-left: 10px;
     color: #e5e5e5;
     background: transparent;
@@ -38,16 +38,11 @@ hr {
     padding: 0 2px 0 10px;
 }
 
-/*#strokeWidth::-webkit-inner-spin-button { 
-    opacity: 1;
-    background: tomato;
-}*/
-
 /*stroke & fill style*/
 
 .checkbox label {
     color: #e5e5e5;
-    font-size: 1.5vh;
+    font-size: small;
     font-family: 'Roboto', sans-serif;
     width: 4vw;
     height: 1.8vh;
@@ -58,6 +53,10 @@ hr {
 
 .styleListBox label>img {
     width: 100%;
+}
+
+img{
+    height: 100%;
 }
 
 .styleListBox label {
@@ -103,4 +102,55 @@ li input:checked~label {
 
 input:checked~ul {
     display: block;
+}
+
+/*LAYERS*/
+
+#layers_header {
+    height: 3vh;
+    color: #e5e5e5;
+    font-family: "Roboto", sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0.8vw;
+    border-style: solid;
+    border-color: #444;
+    border-image: initial;
+    border-width: 0 0px 0.4vh;
+}
+
+#new_layer:hover {
+    cursor: pointer;
+    background: #444;
+}
+
+#layers_panel {
+    height: 70%;
+    overflow-y: auto;
+}
+
+.layer {
+    height: 50px;
+    color: #e5e5e5;
+    font-family: "Roboto", sans-serif;
+    font-size: small;
+    background: #444;
+    margin: 0.3vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.layer_buttons {
+    background: #555;
+    width: 95%;
+    height: 50%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.layer_buttons img {
+    cursor: pointer;
 }

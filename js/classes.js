@@ -104,7 +104,7 @@ class object {
         return this.svgElement.getAttribute(attributeName);
     }
     remove() {
-        svgPanel.removeChild(this.svgElement);
+        currentLayer.removeChild(this.svgElement);
         this.svgElement = null;
         this.isSelected = false;
         this.isMoving = false;
@@ -122,10 +122,10 @@ class object {
     }
     hide() {
         this.hideFrameAndPoints()
-        svgPanel.removeChild(this.svgElement);
+        currentLayer.removeChild(this.svgElement);
     }
     show() {
-        svgPanel.appendChild(this.svgElement);
+        currentLayer.appendChild(this.svgElement);
         this.showFrameAndPoints()
     }
     hideFrameAndPoints() {

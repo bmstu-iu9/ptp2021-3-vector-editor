@@ -65,7 +65,7 @@ class frame {
         this.line.setAttribute('stroke-dasharray', "8");
     }
     createClone(newObject) {
-        let clone = new point(this.x1, this.y1, this.x2, this.y2, newObject);
+        let clone = new frame(this.x1, this.y1, this.x2, this.y2, newObject);
         return clone;
     }
     hide() {
@@ -80,5 +80,38 @@ class frame {
     }
     setFrameAttribute(attributeName, value) {
         this.line.setAttribute(attributeName, value);
+    }
+}
+class pencilShadow {
+    constructor(path, color, width, object) {
+        this.polyline = document.createElementNS("http://www.w3.org/2000/svg", 'polyline');
+        svgPanel.appendChild(this.polyline);
+        this.path = path;
+        this.color = color;
+        this.width = width;
+        this.object = object;
+        this.polyline.setAttribute('points', path);
+        this.polyline.setAttribute('stroke-opacity', "0.5");
+        this.polyline.setAttribute('stroke', color);
+        this.polyline.setAttribute('stroke-width', width);
+        this.polyline.setAttribute('stroke-dasharray', "8");
+        this.polyline.setAttribute('fill', "none");
+    }
+    createClone(newObject) {
+        let clone = new pencilShadow(this.path, this.color, this.width, newObject);
+        return clone;
+    }
+    hide() {
+        svgPanel.removeChild(this.polyline);
+    }
+    show() {
+        svgPanel.appendChild(this.polyline);
+    }
+    remove() {
+        svgPanel.removeChild(this.polyline);
+        this.polyline = null;
+    }
+    setFrameAttribute(attributeName, value) {
+        this.polyline.setAttribute(attributeName, value);
     }
 }

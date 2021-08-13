@@ -37,10 +37,10 @@ function copyFunc() {
     paste.style.color = "#fff";
     paste.style.cursor = "pointer";
     paste.onmouseover = () => {
-        paste.style.background ="#555";
+        paste.style.background = "#555";
     }
     paste.onmouseout = () => {
-        paste.style.background ="#333";
+        paste.style.background = "#333";
     }
 }
 
@@ -240,8 +240,8 @@ frontObject = document.getElementById("frontObject");
 frontObject.onclick = function () {
     if (currentObject != null) {
         svgPanel.append(currentObject.svgElement);
-        for (let i = 0; i < currentObject.frame.length; i++) {
-            svgPanel.append(currentObject.frame[i].svgElement);
+        for (let i = 0; i < currentObject.frameArray.length; i++) {
+            svgPanel.append(currentObject.frameArray[i].svgElement);
         }
         for (let i = 0; i < currentObject.pointsArray.length; i++) {
             svgPanel.append(currentObject.pointsArray[i].circle);

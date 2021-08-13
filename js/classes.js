@@ -512,14 +512,15 @@ class pencil extends object {
             this.path += ", " + newX + " " + newY;
         }
         this.svgElement.setAttribute('points', this.path);
+        this.frameArray.push(new pencilShadow(this.path, this.svgElement.getAttribute('stroke'), this.strokeWidth, this));
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
-        this.updatePosition(dx, dy);
         this.updateFrameAndPoints(this.minX + dx,
             this.minY + dy,
             this.maxX + dx,
             this.maxY + dy
         );
+        this.updatePosition(dx, dy);
     }
     stopMoving(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.x0 += dx;
@@ -548,6 +549,7 @@ class pencil extends object {
     }
     complete() {
         super.complete();
+        this.frameArray.push(new pencilShadow(this.path, this.svgElement.getAttribute('stroke'), this.strokeWidth, this));
         this.path = "";
     }
 }

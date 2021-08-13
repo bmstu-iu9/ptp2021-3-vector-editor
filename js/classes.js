@@ -31,6 +31,7 @@ class object {
         for (let i = 0; i < this.frameArray.length; i++) {
             clone.frameArray[i] = this.frameArray[i].createClone();
         }
+        clone.strokeWidth = this.strokeWidth;
         clone.svgElement.setAttribute('fill', this.svgElement.getAttribute('fill'));
         clone.svgElement.setAttribute('stroke', this.svgElement.getAttribute('stroke'));
         clone.svgElement.setAttribute('stroke-width', this.svgElement.getAttribute('stroke-width'));
@@ -213,7 +214,7 @@ class rectangle extends object {
     }
     updateFrameAndPoints(width = this.width, height = this.height, x = this.x, y = this.y) {
         this.removeFrameAndPoints();
-        let w = Number(this.strokeWidth) / 2 + 1;
+        let w = (Number(this.strokeWidth) + pointRadius) / 2;
         x -= w;
         y -= w;
         width += w * 2;
@@ -292,7 +293,7 @@ class ellipse extends object {
     }
     updateFrameAndPoints(rx = this.rx, ry = this.ry, cx = this.cx, cy = this.cy) {
         this.removeFrameAndPoints();
-        let w = Number(this.strokeWidth) / 2 + 1;
+        let w = (Number(this.strokeWidth) + pointRadius) / 2;
         rx += w;
         ry += w;
         this.frameArray = [new frame(cx - rx, cy + ry, cx + rx, cy + ry, this),
@@ -334,8 +335,7 @@ class polygon extends object {
         this.r = 0;
         this.phi = 0;
         this.vertNum = curVertNum;
-        this.points = "";
-        this.pointsArray = [];
+        this.vertices = "";
         this.rotationIsFixed = false;
         this.fixRotation = this.fixRotation.bind(this);
         this.freeRotation = this.freeRotation.bind(this);
@@ -349,9 +349,9 @@ class polygon extends object {
         clone.r = this.r;
         clone.phi = this.phi;
         clone.vertNum = this.vertNum;
-        clone.points = this.points;
+        clone.vertices = this.vertices;
         clone.rotationIsFixed = this.rotationIsFixed;
-        clone.svgElement.setAttribute('points', clone.points);
+        clone.svgElement.setAttribute('points', this.vertices);
         return clone;
     }
     updateAttributes() {
@@ -360,16 +360,39 @@ class polygon extends object {
         this.r = Math.sqrt(dx ** 2 + dy ** 2);
         if (this.rotationIsFixed) this.phi = (this.vertNum - 2) * Math.PI / (this.vertNum * 2);
         else if (this.r > 0) this.phi = dy > 0 ? Math.acos(dx / this.r) : -Math.acos(dx / this.r);
+        this.updateFrameAndPoints(); //включает обновление атрибута
+    }
+    updateFrameAndPoints(x0 = this.x0, y0 = this.y0) {
         this.removeFrameAndPoints();
         this.pointsArray = [];
+        this.frameArray = [];
+        let prevX, prevY, firstX, firstY, w = Number(this.strokeWidth) + pointRadius;
         for (let i = 0; i < this.vertNum; i++) {
-            let x = this.x0 + this.r * Math.cos(this.phi + 2 * Math.PI * i / this.vertNum);
-            let y = this.y0 + this.r * Math.sin(this.phi + 2 * Math.PI * i / this.vertNum);
-            if (i == 0) this.points = x + " " + y;
-            else this.points += ", " + x + " " + y;
+            let x = x0 + this.r * Math.cos(this.phi + 2 * Math.PI * i / this.vertNum);
+            let y = y0 + this.r * Math.sin(this.phi + 2 * Math.PI * i / this.vertNum);
+            if (i == 0) {
+                this.vertices = x + " " + y;
+            } else {
+                this.vertices += ", " + x + " " + y;
+            }
+            x += w * Math.cos(this.phi + 2 * Math.PI * i / this.vertNum);
+            y += w * Math.sin(this.phi + 2 * Math.PI * i / this.vertNum);
+            if (i == 0) {
+                firstX = x;
+                firstY = y;
+            } else {
+                this.frameArray.push(new frame(prevX, prevY, x, y, this));
+            }
+            prevX = x;
+            prevY = y;
+        }
+        this.frameArray.push(new frame(firstX, firstY, prevX, prevY, this));
+        for (let i = 0; i < this.vertNum; i++) {
+            let x = x0 + (this.r + w) * Math.cos(this.phi + 2 * Math.PI * i / this.vertNum);
+            let y = y0 + (this.r + w) * Math.sin(this.phi + 2 * Math.PI * i / this.vertNum);
             this.pointsArray.push(new point(x, y, this));
         }
-        this.svgElement.setAttribute('points', this.points);
+        this.svgElement.setAttribute('points', this.vertices);
     }
     addHotKeys() {
         document.addEventListener('keydown', this.updateVertNum);
@@ -405,20 +428,8 @@ class polygon extends object {
             this.updateAttributes();
         }
     }
-    updatePosition(x0, y0) {
-        this.removeFrameAndPoints();
-        this.pointsArray = [];
-        for (let i = 0; i < this.vertNum; i++) {
-            let x = x0 + this.r * Math.cos(this.phi + 2 * Math.PI * i / this.vertNum);
-            let y = y0 + this.r * Math.sin(this.phi + 2 * Math.PI * i / this.vertNum);
-            if (i == 0) this.points = x + " " + y;
-            else this.points += ", " + x + " " + y;
-            this.pointsArray.push(new point(x, y, this));
-        }
-        this.svgElement.setAttribute('points', this.points);
-    }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
-        this.updatePosition(this.x0 + dx, this.y0 + dy);
+        this.updateFrameAndPoints(this.x0 + dx, this.y0 + dy);
     }
     stopMoving(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.x0 += dx;
@@ -438,7 +449,7 @@ class pencil extends object {
         super('polyline');
         this.type = 'pencil';
         this.path = this.x0 + " " + this.y0;
-        this.pathPoints = [];
+        this.pathCoords = [];
         this.svgElement.setAttribute('fill', "none");
         this.svgElement.setAttribute('points', this.path);
         this.minX = this.x0;
@@ -458,24 +469,21 @@ class pencil extends object {
         clone.maxY = this.maxY;
         clone.svgElement.setAttribute('fill', "none");
         clone.path = "";
-        clone.pathPoints = [];
-        for (let i = 0; i < this.pathPoints.length; i++) {
-            clone.pathPoints[i] = {
+        clone.pathCoords = [];
+        for (let i = 0; i < this.pathCoords.length; i++) {
+            clone.pathCoords[i] = {
                 x: 0,
                 y: 0
             }
-            clone.pathPoints[i].x = this.pathPoints[i].x;
-            clone.pathPoints[i].y = this.pathPoints[i].y;
-            if (i == 0) this.path = this.pathPoints[i].x + " " + this.pathPoints[i].y;
-            else this.path += ", " + this.pathPoints[i].x + " " + this.pathPoints[i].y;
+            clone.pathCoords[i].x = this.pathCoords[i].x;
+            clone.pathCoords[i].y = this.pathCoords[i].y;
         }
-        this.svgElement.setAttribute('points', this.path);
-        this.path = "";
+        clone.svgElement.setAttribute('points', this.path);
         return clone;
     }
     updateAttributes() {
         this.path += ", " + curX + " " + curY;
-        this.pathPoints.push({
+        this.pathCoords.push({
             x: curX,
             y: curY
         });
@@ -492,15 +500,15 @@ class pencil extends object {
             new frame(maxX, minY, minX, minY, this),
             new frame(minX, minY, minX, maxY, this)
         ];
-        this.pointsArray = [new point(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2, this)];
+        this.pointsArray = [new point(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2, this, "move")];
     }
     updatePosition(dx, dy) {
         let newX0 = this.x0 + dx,
             newY0 = this.y0 + dy;
         this.path = newX0 + " " + newY0;
-        for (let i = 0; i < this.pathPoints.length; i++) {
-            let newX = this.pathPoints[i].x + dx,
-                newY = this.pathPoints[i].y + dy;
+        for (let i = 0; i < this.pathCoords.length; i++) {
+            let newX = this.pathCoords[i].x + dx,
+                newY = this.pathCoords[i].y + dy;
             this.path += ", " + newX + " " + newY;
         }
         this.svgElement.setAttribute('points', this.path);
@@ -520,9 +528,9 @@ class pencil extends object {
         this.minY += dy;
         this.maxX += dx;
         this.maxY += dy;
-        for (let i = 0; i < this.pathPoints.length; i++) {
-            this.pathPoints[i].x += dx;
-            this.pathPoints[i].y += dy;
+        for (let i = 0; i < this.pathCoords.length; i++) {
+            this.pathCoords[i].x += dx;
+            this.pathCoords[i].y += dy;
         }
         this.path = "";
     }
@@ -559,7 +567,6 @@ class line extends object {
         this.svgElement.setAttribute('fill', "none");
         this.isFree = isFree;
         if (!isFree) {
-            this.svgElement.setAttribute('stroke', "black");
             this.svgElement.setAttribute('stroke-opacity', "0.5");
             this.svgElement.setAttribute('stroke-width', "2");
             this.svgElement.setAttribute('stroke-dasharray', "8");
@@ -608,7 +615,7 @@ class line extends object {
     updatePoints(x0, y0, x2, y2) {
         this.removeFrameAndPoints();
         this.pointsArray = [new point(x0, y0, this),
-            new point(x0 + (x2 - x0) / 2, y0 + (y2 - y0) / 2, this),
+            new point(x0 + (x2 - x0) / 2, y0 + (y2 - y0) / 2, this, "move"),
             new point(x2, y2, this)
         ];
     }
@@ -642,11 +649,12 @@ class polyline extends object {
     constructor() {
         super('polyline');
         this.path = this.x0 + " " + this.y0;
-        this.pathPoints = [];
+        this.pathCoords = [];
         this.svgElement.setAttribute('points', this.path);
         this.pointsArray.push(new point(this.x0, this.y0, this));
         this.pointsArray[0].setPointAttribute('fill', "blue");
         this.line = new line(curX, curY, curX, curY, false);
+        this.line.setElementAttribute('stroke', this.svgElement.getAttribute('stroke'));
         this.minX = this.x0;
         this.minY = this.y0;
         this.maxX = this.x0;
@@ -661,20 +669,17 @@ class polyline extends object {
         clone.minY = this.minY;
         clone.maxX = this.maxX;
         clone.maxY = this.maxY;
-        clone.path = this.x0 + " " + this.y0;
-        clone.pathPoints = [];
-        for (let i = 0; i < this.pathPoints.length; i++) {
-            clone.pathPoints[i] = {
+        clone.path = "";
+        clone.pathCoords = [];
+        for (let i = 0; i < this.pathCoords.length; i++) {
+            clone.pathCoords[i] = {
                 x: 0,
                 y: 0
             }
-            clone.pathPoints[i].x = this.pathPoints[i].x;
-            clone.pathPoints[i].y = this.pathPoints[i].y;
-            clone.path += ", " + this.pathPoints[i].x + " " + this.pathPoints[i].y;
+            clone.pathCoords[i].x = this.pathCoords[i].x;
+            clone.pathCoords[i].y = this.pathCoords[i].y;
         }
-        clone.path += ", " + clone.pathPoints[0].x + " " + clone.pathPoints[0].y;
         clone.svgElement.setAttribute('points', this.path);
-        clone.path = "";
         return clone;
     }
     updateLine(current) {
@@ -698,7 +703,7 @@ class polyline extends object {
         this.maxY = Math.max(this.maxY, y);
         if (x != this.x0) {
             this.path += ", " + x + " " + y;
-            this.pathPoints.push({
+            this.pathCoords.push({
                 x: x,
                 y: y
             });
@@ -706,6 +711,7 @@ class polyline extends object {
             this.pointsArray.push(new point(x, y, this));
             this.line.remove();
             this.line = new line(x, y, curX, curY, false);
+            this.line.setElementAttribute('stroke', this.svgElement.getAttribute('stroke'));
         }
     }
     updatePositionAndPoints(dx, dy) {
@@ -714,9 +720,9 @@ class polyline extends object {
             newY0 = this.y0 + dy;
         this.path = newX0 + " " + newY0;
         this.pointsArray = [new point(newX0, newY0, this)];
-        for (let i = 0; i < this.pathPoints.length; i++) {
-            let newX = this.pathPoints[i].x + dx,
-                newY = this.pathPoints[i].y + dy;
+        for (let i = 0; i < this.pathCoords.length; i++) {
+            let newX = this.pathCoords[i].x + dx,
+                newY = this.pathCoords[i].y + dy;
             this.path += ", " + newX + " " + newY;
             this.pointsArray.push(new point(newX, newY, this))
         }
@@ -733,9 +739,9 @@ class polyline extends object {
         this.minY += dy;
         this.maxX += dx;
         this.maxY += dy;
-        for (let i = 0; i < this.pathPoints.length; i++) {
-            this.pathPoints[i].x += dx;
-            this.pathPoints[i].y += dy;
+        for (let i = 0; i < this.pathCoords.length; i++) {
+            this.pathCoords[i].x += dx;
+            this.pathCoords[i].y += dy;
         }
         this.path = "";
     }

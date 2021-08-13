@@ -609,22 +609,28 @@ class line extends object {
         this.svgElement.setAttribute('x2', this.x2);
         this.svgElement.setAttribute('y2', this.y2);
         if (this.isFree) {
-            this.updatePoints(this.x0, this.y0, this.x2, this.y2);
+            this.updateFrameAndPoints(this.x0, this.y0, this.x2, this.y2);
         }
     }
-    updatePoints(x0, y0, x2, y2) {
+    updateFrameAndPoints(x0 = this.x0, y0 = this.y0, x2 = this.x2, y2 = this.y2) {
         this.removeFrameAndPoints();
-        this.pointsArray = [new point(x0, y0, this),
+        this.frameArray = [new frame(x0, y0, x2, y2, this)]
+        let phi = (x2 - x0) != 0 ? Math.atan((y2 - y0) / (x2 - x0)) : Math.PI / 2;
+        let dx = x2 >= x0 ? pointRadius * Math.cos(phi) : -pointRadius * Math.cos(phi);
+        let dy = x2 >= x0 ? pointRadius * Math.sin(phi) : -pointRadius * Math.sin(phi);
+        this.pointsArray = [new point(x0 - dx, y0 - dy, this),
             new point(x0 + (x2 - x0) / 2, y0 + (y2 - y0) / 2, this, "move"),
-            new point(x2, y2, this)
+            new point(x2 + dx, y2 + dy, this)
         ];
+        this.frameArray[0].setFrameAttribute('stroke', this.svgElement.getAttribute('stroke'));
+        this.frameArray[0].setFrameAttribute('stroke-width', this.svgElement.getAttribute('stroke-width'));
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.svgElement.setAttribute('x1', this.x0 + dx);
         this.svgElement.setAttribute('y1', this.y0 + dy);
         this.svgElement.setAttribute('x2', this.x2 + dx);
         this.svgElement.setAttribute('y2', this.y2 + dy);
-        this.updatePoints(this.x0 + dx,
+        this.updateFrameAndPoints(this.x0 + dx,
             this.y0 + dy,
             this.x2 + dx,
             this.y2 + dy

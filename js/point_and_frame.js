@@ -23,7 +23,7 @@ class point {
     }
     dispatchToObject(event) {
         if (this.object.isCompleted) {
-            this.object.line.dispatchEvent(new Event(event));
+            this.object.svgElement.dispatchEvent(new Event(event));
         }
     }
     setColor(color) {
@@ -78,7 +78,7 @@ class frame {
         svgPanel.removeChild(this.line);
         this.line = null;
     }
-    setPointAttribute(attributeName, value) {
+    setFrameAttribute(attributeName, value) {
         this.line.setAttribute(attributeName, value);
     }
 }

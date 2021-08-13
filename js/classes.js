@@ -1,7 +1,7 @@
 class object {
     constructor(name) {
         this.svgElement = document.createElementNS("http://www.w3.org/2000/svg", name);
-        svgPanel.appendChild(this.svgElement);
+        currentLayer.appendChild(this.svgElement);
         this.type = name;
         this.isCompleted = false;
         this.isSelected = false;

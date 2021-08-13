@@ -3,7 +3,6 @@ drawPanel = document.getElementById("draw_panel");
 scrollPanel = document.getElementById("scroll_panel");
 let isSomeObjectSelected = false; //для курсора
 let wasPressed, currentObject = null,
-	strokeColor = "black",
 	objects = [];
 let buffer = null; //для копирования
 let svgPanelCoords = getCoords(svgPanel),

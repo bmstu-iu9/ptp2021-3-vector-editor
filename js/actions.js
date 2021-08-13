@@ -37,10 +37,10 @@ function copyFunc() {
     paste.style.color = "#fff";
     paste.style.cursor = "pointer";
     paste.onmouseover = () => {
-        paste.style.background ="#555";
+        paste.style.background = "#555";
     }
     paste.onmouseout = () => {
-        paste.style.background ="#333";
+        paste.style.background = "#333";
     }
 }
 
@@ -218,19 +218,25 @@ savePng.onclick = function () {
 //SCALING
 zoomIn = document.getElementById("zoomIn");
 zoomIn.onclick = function () {
+    svgPanelCoords = getCoords(svgPanel);
+    svgPanel.style.transform = "translate(0, 0)";
+    svgPanel.style.left = svgPanelCoords.left - scrollcoords.left;
+    svgPanel.style.top= svgPanelCoords.top - scrollcoords.top;
     svgPanel.style.width = svgPanel.clientWidth * 1.5 + "px";
     svgPanel.style.height = svgPanel.clientHeight * 1.5 + "px";
     scaleСoef *= 1.5;
-    svgPanelCoords = getCoords(svgPanel);
     updateRulers();
 }
 
 zoomOut = document.getElementById("zoomOut");
 zoomOut.onclick = function () {
+    svgPanelCoords = getCoords(svgPanel);
+    svgPanel.style.transform = "translate(0, 0)";
+    svgPanel.style.left = svgPanelCoords.left - scrollcoords.left;
+    svgPanel.style.top= svgPanelCoords.top - scrollcoords.top;
     svgPanel.style.width = svgPanel.clientWidth / 1.5 + "px";
     svgPanel.style.height = svgPanel.clientHeight / 1.5 + "px";
     scaleСoef /= 1.5;
-    svgPanelCoords = getCoords(svgPanel);
     updateRulers();
 }
 

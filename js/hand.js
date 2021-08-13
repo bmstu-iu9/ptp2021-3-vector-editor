@@ -11,10 +11,19 @@ hand.onclick = function () {
 
       svgPanel.onmousemove = function (current) {
         svgPanel.style.transform = "translate(0, 0)";
-        svgPanel.style.top = current.pageY - shiftY + "px";
-        svgPanel.style.left = current.pageX - shiftX + "px";
+        if (current.pageX - shiftX > 0) {
+          svgPanel.style.left = current.pageX - shiftX + "px";
+          updateRulers();
+        } else {
+          svgPanel.style.left = 0;
+        }
+        if (current.pageY - shiftY > 0) {
+          svgPanel.style.top = current.pageY - shiftY + "px";
+          updateRulers();
+        } else {
+          svgPanel.style.top = 0;
+        }
         svgPanelCoords = getCoords(svgPanel);
-        updateRulers();
       };
 
       document.onmouseup = function () {

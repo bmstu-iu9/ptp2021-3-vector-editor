@@ -559,6 +559,7 @@ class line extends object {
         this.svgElement.setAttribute('fill', "none");
         this.isFree = isFree;
         if (!isFree) {
+            this.svgElement.setAttribute('stroke', "black");
             this.svgElement.setAttribute('stroke-opacity', "0.5");
             this.svgElement.setAttribute('stroke-width', "2");
             this.svgElement.setAttribute('stroke-dasharray', "8");
@@ -646,7 +647,6 @@ class polyline extends object {
         this.pointsArray.push(new point(this.x0, this.y0, this));
         this.pointsArray[0].setPointAttribute('fill', "blue");
         this.line = new line(curX, curY, curX, curY, false);
-        this.line.setElementAttribute('stroke', this.svgElement.getAttribute('stroke'));
         this.minX = this.x0;
         this.minY = this.y0;
         this.maxX = this.x0;
@@ -706,7 +706,6 @@ class polyline extends object {
             this.pointsArray.push(new point(x, y, this));
             this.line.remove();
             this.line = new line(x, y, curX, curY, false);
-            this.line.setElementAttribute('stroke', this.svgElement.getAttribute('stroke'));
         }
     }
     updatePositionAndPoints(dx, dy) {

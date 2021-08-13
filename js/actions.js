@@ -34,6 +34,14 @@ function copyFunc() {
     buffer = currentObject.createClone();
     buffer.moveTo(0, 0);
     buffer.hide();
+    paste.style.color = "#fff";
+    paste.style.cursor = "pointer";
+    paste.onmouseover = () => {
+        paste.style.background = "#555";
+    }
+    paste.onmouseout = () => {
+        paste.style.background = "#333";
+    }
 }
 
 //PASTE
@@ -132,7 +140,7 @@ function readFile(object) {
         if (first.id == "") {
             first.setAttribute('id', 'svg_panel');
         }
-        if (first.getAttribute('width') || first.getAttribute('height') == null) {
+        if (first.getAttribute('width') == null || first.getAttribute('height') == null) {
             first.setAttribute('width', 512);
             first.setAttribute('height', 512);
             first.setAttribute('viewBox', '0 0 512 512');
@@ -152,10 +160,14 @@ document.getElementById("file-selector").addEventListener("change", readFile);
 save = document.getElementById("save");
 
 save.onclick = function () {
-    let svgData = draw_panel.innerHTML.toString();
     let fileName = prompt('Введите имя файла без расширения:');
     if (fileName == null)
         return;
+    if (currentObject != null) {
+        currentObject.removeFrameAndPoints();
+        currentObject = null;
+    }
+    let svgData = draw_panel.innerHTML.toString();
     let blob = new Blob([svgData], {
         type: "image/svg+xml;charset=utf-8"
     });
@@ -174,10 +186,14 @@ save.onclick = function () {
 savePng = document.getElementById("savePng");
 
 savePng.onclick = function () {
-    let svgData = draw_panel.innerHTML.toString();
     let fileName = prompt('Введите имя файла без расширения:');
     if (fileName == null)
         return;
+    if (currentObject != null) {
+        currentObject.removeFrameAndPoints();
+        currentObject = null;
+    }
+    let svgData = draw_panel.innerHTML.toString();
     let blob = new Blob([svgData], {
         type: "image/svg+xml;charset=utf-8"
     });
@@ -202,19 +218,25 @@ savePng.onclick = function () {
 //SCALING
 zoomIn = document.getElementById("zoomIn");
 zoomIn.onclick = function () {
+    svgPanelCoords = getCoords(svgPanel);
+    svgPanel.style.transform = "translate(0, 0)";
+    svgPanel.style.left = svgPanelCoords.left - scrollcoords.left;
+    svgPanel.style.top= svgPanelCoords.top - scrollcoords.top;
     svgPanel.style.width = svgPanel.clientWidth * 1.5 + "px";
     svgPanel.style.height = svgPanel.clientHeight * 1.5 + "px";
     scaleСoef *= 1.5;
-    svgPanelCoords = getCoords(svgPanel);
     updateRulers();
 }
 
 zoomOut = document.getElementById("zoomOut");
 zoomOut.onclick = function () {
+    svgPanelCoords = getCoords(svgPanel);
+    svgPanel.style.transform = "translate(0, 0)";
+    svgPanel.style.left = svgPanelCoords.left - scrollcoords.left;
+    svgPanel.style.top= svgPanelCoords.top - scrollcoords.top;
     svgPanel.style.width = svgPanel.clientWidth / 1.5 + "px";
     svgPanel.style.height = svgPanel.clientHeight / 1.5 + "px";
     scaleСoef /= 1.5;
-    svgPanelCoords = getCoords(svgPanel);
     updateRulers();
 }
 
@@ -224,11 +246,11 @@ frontObject = document.getElementById("frontObject");
 frontObject.onclick = function () {
     if (currentObject != null) {
         svgPanel.append(currentObject.svgElement);
-        for (let i = 0; i < currentObject.pointsArray.length; i++) {
-            svgPanel.append(currentObject.pointsArray[i].circle);
-        }
         for (let i = 0; i < currentObject.frame.length; i++) {
             svgPanel.append(currentObject.frame[i].svgElement);
+        }
+        for (let i = 0; i < currentObject.pointsArray.length; i++) {
+            svgPanel.append(currentObject.pointsArray[i].circle);
         }
     }
 }
@@ -237,12 +259,6 @@ backObject = document.getElementById("backObject");
 
 backObject.onclick = function () {
     if (currentObject != null) {
-        for (let i = currentObject.pointsArray.length - 1; i >= 0; i--) {
-            svgPanel.prepend(currentObject.pointsArray[i].circle);
-        }
-        for (let i = 0; i < currentObject.frame.length; i++) {
-            svgPanel.prepend(currentObject.frame[i].svgElement);
-        }
         svgPanel.prepend(currentObject.svgElement);
     }
 }

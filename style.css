@@ -15,8 +15,8 @@ body {
 
 #logo {
     /*font-size: 5vh;*/
-    margin-left: 1vh;
-    padding-left: 7.2vh;
+    margin-left: 0.9vw;
+    padding-left: 3.2vw;
     font-family: 'Marcellus SC', serif;
     background-image: url(img/logo.svg);
     background-size: auto 100%;
@@ -102,6 +102,15 @@ header {
 
 .container li:hover>ul {
     display: block;
+}
+
+#paste {
+    color: #999;
+    cursor: default;
+}
+
+#paste:hover {
+    background: #333;
 }
 
 /*MAIN*/
@@ -212,7 +221,7 @@ main {
     left: 50%;
     transform: translate(-50%, -50%);
     background: rgb(255, 255, 255);
-    box-shadow: 0 0 10px #828282;
+    box-shadow: 0 0 10px #000000;
     z-index: 1;
 }
 

@@ -97,7 +97,7 @@ function deleteChild(node, parent) {
 }
 
 function deleteAllChildren(node) {
-    for (var i = 0; i < node.childNodes.length;)
+    for (var i = 2; i < node.childNodes.length;)
         deleteChild(node.childNodes[i], node);
 }
 
@@ -118,6 +118,7 @@ create.onclick = function () {
     scrollcoords = getCoords(scrollPanel);
     svgPanelCoords = getCoords(svgPanel);
     updateRulers();
+    updateGrid();
 }
 
 //OPEN
@@ -134,12 +135,14 @@ function readFile(object) {
         let result = confirm("Вы действительно хотите открыть новый файл? Все изменения в текущем файле будут удалены.");
         if (!result)
             return;
+        let clone = svgGrid.cloneNode(true);
         svgPanel.outerHTML = event.target.result;
+        clone.setAttribute("id", "svg_grid");
         let divs = document.querySelector("#draw_panel");
         let first = divs.firstElementChild;
-        if (first.id == "") {
-            first.setAttribute('id', 'svg_panel');
-        }
+        first.setAttribute("id", "svg_panel");
+        svgPanel = document.getElementById(first.id);
+        svgPanel.insertBefore(clone, svgPanel.firstElementChild);
         if (first.getAttribute('width') == null || first.getAttribute('height') == null) {
             first.setAttribute('width', 512);
             first.setAttribute('height', 512);
@@ -150,6 +153,7 @@ function readFile(object) {
         scrollcoords = getCoords(scrollPanel);
         svgPanelCoords = getCoords(svgPanel);
         updateRulers();
+        updateGrid();
     };
     reader.readAsText(file);
 }
@@ -160,9 +164,17 @@ document.getElementById("file-selector").addEventListener("change", readFile);
 save = document.getElementById("save");
 
 save.onclick = function () {
+    let flag = false;
+    if (isGridEnabled) {
+        flag = true;
+        showGrid.click();
+    } 
     let fileName = prompt('Введите имя файла без расширения:');
-    if (fileName == null)
+    if (fileName == null) {
+       if (flag)
+            showGrid.click(); 
         return;
+    }
     if (currentObject != null) {
         currentObject.removeFrameAndPoints();
         currentObject = null;
@@ -180,15 +192,25 @@ save.onclick = function () {
     a.click();
 
     window.URL.revokeObjectURL(url);
+    if (flag) 
+        showGrid.click();
 }
 
 //SAVEPNG
 savePng = document.getElementById("savePng");
 
 savePng.onclick = function () {
+    let flag = false;
+    if (isGridEnabled) {
+        flag = true;
+        showGrid.click();
+    } 
     let fileName = prompt('Введите имя файла без расширения:');
-    if (fileName == null)
+    if (fileName == null) {
+       if (flag)
+            showGrid.click(); 
         return;
+    }
     if (currentObject != null) {
         currentObject.removeFrameAndPoints();
         currentObject = null;
@@ -213,6 +235,8 @@ savePng.onclick = function () {
         window.URL.revokeObjectURL(url);
     }
     img.src = url;
+    if (flag) 
+        showGrid.click();
 }
 
 //SCALING
@@ -271,5 +295,17 @@ showRulers.onclick = function () {
         updateRulers();
     } else {
         rulers.style.display = "none";
+    }
+}
+
+//SHOW GRID 
+showGrid = document.getElementById("showGrid"); 
+showGrid.onclick = function () {
+    if (!isGridEnabled) {
+        isGridEnabled = true;
+        svgBackground.setAttribute("fill", "url(#grid_pattern)"); 
+    } else {
+        isGridEnabled = false;
+        svgBackground.setAttribute("fill", "rgb(255, 255, 255)");
     }
 }

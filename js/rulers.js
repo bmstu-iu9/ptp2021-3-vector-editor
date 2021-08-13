@@ -1,7 +1,7 @@
 function updateRulers() {
-  rulerX.style.width = scrollPanel.clientWidth - 16 + "px";
+  rulerX.style.width = scrollPanel.clientWidth - 15 + "px";
   rulerY.style.height = scrollPanel.clientHeight - 15 + "px";
-  ruler_x_line.setAttribute("width", scrollPanel.clientWidth - 16);
+  ruler_x_line.setAttribute("width", scrollPanel.clientWidth - 15);
   ruler_y_line.setAttribute("height", scrollPanel.clientHeight - 15);
   rulerXcoords = getCoords(rulerX);
   rulerYcoords = getCoords(rulerY);

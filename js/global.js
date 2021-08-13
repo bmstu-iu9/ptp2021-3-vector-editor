@@ -22,6 +22,11 @@ ruler_y_text = document.getElementById("ruler_y_text");
 ruler_x_line = document.getElementById("ruler_x_line");
 ruler_y_line = document.getElementById("ruler_y_line");
 
+//GRID 
+svgGrid = document.getElementById("svg_grid");
+svgBackground = document.getElementById("svg_background");
+let isGridEnabled = false;
+
 //ACTIVE TOOL
 var left_panel = document.getElementById("left_panel");
 var buttons = left_panel.getElementsByClassName("tool_button");

@@ -159,20 +159,21 @@ main {
     font-family: Courier;
     font-weight: bold;
     user-select: none;
-    opacity: .9;
 }
 
 #rulers_corner {
-    width: 14px;
-    height: 14px;
+    width: 15px;
+    height: 15px;
     display: block;
     text-align: center;
     position: fixed;
-    background-color: #bb9292;
+    background-color: rgb(255, 255, 255);
+    background: linear-gradient(to top, #fff 0%, #f0f0f0 100%);
     border-right: 1px solid #666666;
     border-bottom: 1px solid #666666;
     z-index: 1;
     will-change: transform;
+    opacity: .7;
 }
 
 #ruler_x {
@@ -182,9 +183,12 @@ main {
     top: 0px;
 }
 
-#ruler_x pattern rect,
+#ruler_x pattern rect {
+    fill: url(#ruler_x_gradient);
+}
+
 #ruler_y pattern rect {
-    fill: #bb9292;
+    fill: url(#ruler_y_gradient);
 }
 
 #ruler_x,

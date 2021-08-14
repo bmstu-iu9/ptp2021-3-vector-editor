@@ -55,7 +55,7 @@ hr {
     width: 100%;
 }
 
-img{
+img {
     height: 100%;
 }
 
@@ -126,8 +126,9 @@ input:checked~ul {
 }
 
 #layers_panel {
-    height: 70%;
-    overflow-y: auto;
+    height: 100%;
+    overflow-y:auto;
+    flex: grow;
 }
 
 .layer {
@@ -144,7 +145,6 @@ input:checked~ul {
 }
 
 .layer_buttons {
-    background: #555;
     width: 95%;
     height: 50%;
     display: flex;

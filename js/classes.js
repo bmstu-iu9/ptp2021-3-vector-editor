@@ -1,7 +1,7 @@
 class object {
     constructor(name) {
         this.svgElement = document.createElementNS("http://www.w3.org/2000/svg", name);
-        currentLayer.appendChild(this.svgElement);
+        currentLayer.group.appendChild(this.svgElement);
         this.type = name;
         this.isCompleted = false;
         this.isSelected = false;
@@ -104,7 +104,7 @@ class object {
         return this.svgElement.getAttribute(attributeName);
     }
     remove() {
-        currentLayer.removeChild(this.svgElement);
+        currentLayer.group.removeChild(this.svgElement);
         this.svgElement = null;
         this.isSelected = false;
         this.isMoving = false;
@@ -122,10 +122,10 @@ class object {
     }
     hide() {
         this.hideFrameAndPoints()
-        currentLayer.removeChild(this.svgElement);
+        currentLayer.group.removeChild(this.svgElement);
     }
     show() {
-        currentLayer.appendChild(this.svgElement);
+        currentLayer.group.appendChild(this.svgElement);
         this.showFrameAndPoints()
     }
     hideFrameAndPoints() {
@@ -209,7 +209,7 @@ class rectangle extends object {
         this.svgElement.setAttribute('height', this.height);
         this.svgElement.setAttribute('x', this.x);
         this.svgElement.setAttribute('y', this.y);
-        this.updateFrameAndPoints()
+        this.updateFrameAndPoints();
     }
     updateFrameAndPoints(width = this.width, height = this.height, x = this.x, y = this.y) {
         this.removeFrameAndPoints();

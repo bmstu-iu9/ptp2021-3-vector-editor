@@ -2,12 +2,12 @@
 deleteObject = document.getElementById("deleteObject");
 
 deleteObject.onclick = function () {
-    if (currentObject != null) {
+    if (currentObject != null && !isSomePointSelected) {
         deleteFunc();
     }
 }
 document.addEventListener('keydown', function (event) {
-    if (event.code == 'Delete' && currentObject != null) {
+    if (event.code == 'Delete' && currentObject != null && !isSomePointSelected) {
         deleteFunc();
     }
 });
@@ -219,7 +219,7 @@ savePng.onclick = function () {
         return;
     }
     if (currentObject != null) {
-        currentObject.removeFrameAndPoints();
+        currentObject.hideFrameAndPoints();
         currentObject = null;
     }
     let svgData = draw_panel.innerHTML.toString();

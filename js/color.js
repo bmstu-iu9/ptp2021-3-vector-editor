@@ -30,9 +30,6 @@ s.onchange = () => {
     changeFill();
   } else sImg.src = "img/stroke/yes.svg";
   changeStroke();
-  if (currentObject != null) {
-    currentObject.updateFrameAndPoints();
-  }
 }
 
 f.onchange = () => {
@@ -41,9 +38,6 @@ f.onchange = () => {
     s.checked = false;
     sImg.src = "img/stroke/yes.svg";
     changeStroke()
-    if (currentObject != null) {
-      currentObject.updateFrameAndPoints();
-    }
   } else fImg.src = "img/stroke/yes.svg";
   changeFill();
 }
@@ -67,9 +61,6 @@ caps.forEach(s => s.addEventListener('change', () => changeStroke()));
 strokeWidth = document.getElementById("strokeWidth");
 strokeWidth.onchange = () => {
   changeStroke();
-  if (currentObject != null) {
-    currentObject.updateFrameAndPoints();
-  }
 }
 
 function updateStroke(object) {
@@ -128,6 +119,7 @@ function updateStroke(object) {
       obj.setAttribute('stroke-linejoin', "bevel");
       break;
   }
+  if (object.isCompleted) object.updateFrameAndPoints();
 }
 
 //fill tool

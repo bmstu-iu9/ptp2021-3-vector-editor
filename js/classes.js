@@ -537,7 +537,7 @@ class pencil extends object {
             this.pathCoords[i].x += dx;
             this.pathCoords[i].y += dy;
         }
-        this.path = "";
+        //this.path = "";
     }
     moveTo(x, y) {
         let dx = x + pointRadius - this.minX,
@@ -553,7 +553,7 @@ class pencil extends object {
     }
     complete() {
         super.complete();
-        this.path = "";
+        //this.path = "";
     }
 }
 

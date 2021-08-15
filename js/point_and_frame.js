@@ -13,6 +13,7 @@ class point {
         this.circle.setAttribute('r', pointRadius);
         this.deletePoint = ((event) => {
             if (event.code == 'Delete') {
+                isSomePointSelected = false;
                 this.object.deletePoint(Number(this.type[this.type.length - 1]));
                 document.removeEventListener("keydown", this.deletePoint);
             }

@@ -125,6 +125,7 @@ function updateStroke(object) {
       obj.setAttribute('stroke-linecap', "round");
       break;
   }
+  if (object.isCompleted) object.updateFrameAndPoints();
 }
 
 //fill tool

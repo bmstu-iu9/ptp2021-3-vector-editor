@@ -497,17 +497,8 @@ class pencil extends object {
         this.maxX = Math.max(this.maxX, curX);
         this.maxY = Math.max(this.maxY, curY);
     }
-    updateFrameAndPoints(minX = this.minX, minY = this.minY, maxX = this.maxX, maxY = this.maxY) {
-        this.removeFrameAndPoints();
-        this.frameArray = [new frame(minX, maxY, maxX, maxY, this),
-            new frame(maxX, maxY, maxX, minY, this),
-            new frame(maxX, minY, minX, minY, this),
-            new frame(minX, minY, minX, maxY, this),
-            new pencilShadow(this.path, this)
-        ];
-        this.pointsArray = [new point(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2, this, "move")];
-    }
-    updatePosition(dx, dy) {
+    updateFrameAndPoints(dx = 0, dy = 0, minX = this.minX, minY = this.minY, maxX = this.maxX, maxY = this.maxY) {
+        //включает обновление атрибута
         let newX0 = this.x0 + dx,
             newY0 = this.y0 + dy;
         this.path = newX0 + " " + newY0;
@@ -517,14 +508,22 @@ class pencil extends object {
             this.path += ", " + newX + " " + newY;
         }
         this.svgElement.setAttribute('points', this.path);
+        this.removeFrameAndPoints();
+        this.frameArray = [new frame(minX, maxY, maxX, maxY, this),
+            new frame(maxX, maxY, maxX, minY, this),
+            new frame(maxX, minY, minX, minY, this),
+            new frame(minX, minY, minX, maxY, this),
+            new pencilShadow(this.path, this)
+        ];
+        this.pointsArray = [new point(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2, this, "move")];
+        this.path = "";
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
-        this.updateFrameAndPoints(this.minX + dx,
+        this.updateFrameAndPoints(dx, dy, this.minX + dx,
             this.minY + dy,
             this.maxX + dx,
             this.maxY + dy
         );
-        this.updatePosition(dx, dy);
     }
     stopMoving(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.x0 += dx;
@@ -537,7 +536,6 @@ class pencil extends object {
             this.pathCoords[i].x += dx;
             this.pathCoords[i].y += dy;
         }
-        //this.path = "";
     }
     moveTo(x, y) {
         let dx = x + pointRadius - this.minX,
@@ -553,7 +551,7 @@ class pencil extends object {
     }
     complete() {
         super.complete();
-        //this.path = "";
+        this.path = "";
     }
 }
 
@@ -764,7 +762,6 @@ class polyline extends object {
             this.pathCoords[i].x += dx;
             this.pathCoords[i].y += dy;
         }
-        this.path = "";
     }
     moveTo(x, y) {
         let dx = x + pointRadius - this.minX,

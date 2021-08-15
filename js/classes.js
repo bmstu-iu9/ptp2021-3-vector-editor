@@ -225,9 +225,13 @@ class rectangle extends object {
             new frame(x, y, x, y + height, this)
         ];
         this.pointsArray = [new point(x, y, this),
+            new point(x + width / 2, y, this),
             new point(x + width, y, this),
+            new point(x + width, y + height / 2, this),
             new point(x + width, y + height, this),
+            new point(x + width / 2, y + height, this),
             new point(x, y + height, this),
+            new point(x, y + height / 2, this),
         ];
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
@@ -498,7 +502,8 @@ class pencil extends object {
         this.frameArray = [new frame(minX, maxY, maxX, maxY, this),
             new frame(maxX, maxY, maxX, minY, this),
             new frame(maxX, minY, minX, minY, this),
-            new frame(minX, minY, minX, maxY, this)
+            new frame(minX, minY, minX, maxY, this),
+            new pencilShadow(this.path, this)
         ];
         this.pointsArray = [new point(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2, this, "move")];
     }
@@ -512,7 +517,6 @@ class pencil extends object {
             this.path += ", " + newX + " " + newY;
         }
         this.svgElement.setAttribute('points', this.path);
-        this.frameArray.push(new pencilShadow(this.path, this.svgElement.getAttribute('stroke'), this.strokeWidth, this));
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.updateFrameAndPoints(this.minX + dx,
@@ -549,7 +553,6 @@ class pencil extends object {
     }
     complete() {
         super.complete();
-        this.frameArray.push(new pencilShadow(this.path, this.svgElement.getAttribute('stroke'), this.strokeWidth, this));
         this.path = "";
     }
 }
@@ -626,6 +629,10 @@ class line extends object {
         ];
         this.frameArray[0].setFrameAttribute('stroke', this.svgElement.getAttribute('stroke'));
         this.frameArray[0].setFrameAttribute('stroke-width', this.svgElement.getAttribute('stroke-width'));
+        if (this.svgElement.getAttribute('stroke-dasharray') == null) this.frameArray[0].setFrameAttribute('stroke-dasharray', "8");
+        else this.frameArray[0].setFrameAttribute('stroke-dasharray', this.svgElement.getAttribute('stroke-dasharray'));
+        this.frameArray[0].setFrameAttribute('stroke-linejoin', this.svgElement.getAttribute('stroke-linejoin'));
+        this.frameArray[0].setFrameAttribute('stroke-linecap', this.svgElement.getAttribute('stroke-linecap'));
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.svgElement.setAttribute('x1', this.x0 + dx);
@@ -657,9 +664,12 @@ class polyline extends object {
     constructor() {
         super('polyline');
         this.path = this.x0 + " " + this.y0;
-        this.pathCoords = [];
+        this.pathCoords = [{
+            x: this.x0,
+            y: this.y0
+        }];
         this.svgElement.setAttribute('points', this.path);
-        this.pointsArray.push(new point(this.x0, this.y0, this));
+        this.pointsArray.push(new point(this.x0, this.y0, this, "polyline0"));
         this.pointsArray[0].setPointAttribute('fill', "blue");
         this.line = new line(curX, curY, curX, curY, false);
         this.line.setElementAttribute('stroke', this.svgElement.getAttribute('stroke'));
@@ -710,35 +720,38 @@ class polyline extends object {
         this.maxX = Math.max(this.maxX, x);
         this.maxY = Math.max(this.maxY, y);
         if (x != this.x0) {
-            this.path += ", " + x + " " + y;
             this.pathCoords.push({
                 x: x,
                 y: y
             });
+            this.path += ", " + x + " " + y;
             this.svgElement.setAttribute('points', this.path);
-            this.pointsArray.push(new point(x, y, this));
+            let type = "polyline" + (this.pathCoords.length - 1);
+            this.pointsArray.push(new point(x, y, this, type));
             this.line.remove();
             this.line = new line(x, y, curX, curY, false);
             this.line.setElementAttribute('stroke', this.svgElement.getAttribute('stroke'));
         }
     }
-    updatePositionAndPoints(dx, dy) {
+    updateFrameAndPoints(dx = 0, dy = 0) {
+        //включает обновление атрибута
         this.removeFrameAndPoints();
-        let newX0 = this.x0 + dx,
-            newY0 = this.y0 + dy;
-        this.path = newX0 + " " + newY0;
-        this.pointsArray = [new point(newX0, newY0, this)];
+        this.pointsArray = [];
+        this.frameArray = [];
         for (let i = 0; i < this.pathCoords.length; i++) {
-            let newX = this.pathCoords[i].x + dx,
-                newY = this.pathCoords[i].y + dy;
-            this.path += ", " + newX + " " + newY;
-            this.pointsArray.push(new point(newX, newY, this))
+            let x = this.pathCoords[i].x + dx,
+                y = this.pathCoords[i].y + dy;
+            if (i == 0) this.path = x + " " + y;
+            else this.path += ", " + x + " " + y;
+            let type = "polyline" + i;
+            this.pointsArray.push(new point(x, y, this, type))
         }
-        this.path += ", " + newX0 + " " + newY0;
+        this.path += ", " + (this.pathCoords[0].x + dx) + " " + (this.pathCoords[0].y + dy);
         this.svgElement.setAttribute('points', this.path);
+        this.path = "";
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
-        this.updatePositionAndPoints(dx, dy);
+        this.updateFrameAndPoints(dx, dy);
     }
     stopMoving(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.x0 += dx;
@@ -759,16 +772,17 @@ class polyline extends object {
         this.move(dx, dy);
         this.stopMoving(dx, dy);
     }
+    deletePoint(ind) {
+        if (this.pathCoords.length == 2) deleteFunc(); //actions.js
+        else {
+            this.pathCoords.splice(ind, 1);
+            this.updateFrameAndPoints();
+        }
+    }
     complete() {
         if (!polylineIsCompleted) {
             super.complete();
-            if (this.pointsArray.length < 2) {
-                this.remove();
-            }
             this.line.remove();
-            this.path += ", " + this.x0 + " " + this.y0;
-            this.svgElement.setAttribute('points', this.path);
-            this.path = "";
             this.pointsArray[0].setPointAttribute('fill', "white");
             polylineIsCompleted = true;
         }

@@ -23,7 +23,7 @@ sImg = document.getElementById("sImg");
 fImg = document.getElementById("fImg");
 
 s.onchange = () => {
-  if (s.checked && (currentObject == null || (currentObject.type!='pencil' && currentObject.type!='line'))) {
+  if (s.checked && (currentObject == null || (currentObject.type != 'pencil' && currentObject.type != 'line'))) {
     sImg.src = "img/stroke/no.svg";
     f.checked = false;
     fImg.src = "img/stroke/yes.svg";
@@ -74,7 +74,7 @@ strokeWidth.onchange = () => {
 
 function updateStroke(object) {
   obj = object.svgElement;
-  if (s.checked && (currentObject == null || (currentObject.type!='pencil' && currentObject.type!='line'))) {
+  if (s.checked && (currentObject == null || (currentObject.type != 'pencil' && currentObject.type != 'line'))) {
     obj.removeAttribute('stroke');
     object.strokeWidth = 0;
     return;

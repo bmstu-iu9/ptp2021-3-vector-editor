@@ -25,15 +25,15 @@ scale.onclick = function () {
       svgPanel.style.transform = "translate(0, 0)";
       let left = svgPanelX + shiftX * shiftCoef + scrollPanel.scrollLeft;
       let top = svgPanelY + shiftY * shiftCoef + scrollPanel.scrollTop;
-      if (left > 0) {
+      if (left > 15) {
         svgPanel.style.left = left;
       } else {
-        svgPanel.style.left = 0;
+        svgPanel.style.left = 15;
       }
-      if (top > 0) {
+      if (top > 15) {
         svgPanel.style.top = top;
       } else {
-        svgPanel.style.top = 0;
+        svgPanel.style.top = 15;
       }
       //svgPanel.style.top == svgPanelY
       svgPanelCoords = getCoords(svgPanel);

@@ -1,7 +1,7 @@
 class layer {
     constructor() {
         this.group = document.createElementNS("http://www.w3.org/2000/svg", 'g');
-        svgPanel.append(this.group);
+        svgcontent.append(this.group);
         this.group.style.pointerEvents = "all";
         this.name = "Cлой " + layersNum;
         this.group.id = this.name;
@@ -36,18 +36,18 @@ class layer {
         }
         this.del.onclick = () => {
             this.delete();
-            this.panel.onclick = null;
         }
     }
     delete() {
         if (this == currentLayer) {
             let next = this.group.nextSibling;
             if (next == null) next = this.group.previousSibling;
-            if (next == svgGrid) return;
+            if (next == null) return;
             currentLayer = layers[next.id];
             currentLayer.activeLayer();
         }
-        svgPanel.removeChild(this.group);
+        this.panel.onclick = null;
+        svgcontent.removeChild(this.group);
         layersPanel.removeChild(this.panel);
         if (currentObject != null) {
             currentObject.hideFrameAndPoints();
@@ -59,9 +59,17 @@ class layer {
         this.panel.style.background = "#555";
     }
 }
-layersNum = 1;
-const layers = new Map();
-layers["Cлой " + layersNum] = new layer();
+
+createFirstLayer();
+
+function createFirstLayer() {
+    svgcontent = document.createElementNS("http://www.w3.org/2000/svg", 'g');
+    svgPanel.append(svgcontent);
+    layersNum = 1;
+    layers = new Map();
+    layers["Cлой " + layersNum] = new layer();
+}
+
 newLayer = document.getElementById("new_layer");
 newLayer.onclick = () => {
     currentLayer.group.style.pointerEvents = "none";

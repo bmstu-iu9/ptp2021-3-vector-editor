@@ -447,6 +447,9 @@ class pencil extends object {
         this.maxY = this.y0;
         this.svgElement.setAttribute('stroke-linejoin', "round");
         this.svgElement.setAttribute('stroke-linecap', "round");
+        caps[2].checked = true;
+        join[1].checked = true;
+        updateStroke(this);
     }
     createClone() {
         let clone = new pencil();
@@ -541,6 +544,8 @@ class pencil extends object {
     complete() {
         super.complete();
         this.path = "";
+        caps[2].checked = false;
+        join[1].checked = false;
     }
 }
 

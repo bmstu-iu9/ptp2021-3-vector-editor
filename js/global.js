@@ -2,7 +2,8 @@ svgPanel = document.getElementById("svg_panel");
 drawPanel = document.getElementById("draw_panel");
 scrollPanel = document.getElementById("scroll_panel");
 let isSomeObjectSelected = false, //для курсора
-	isSomePointSelected = false; //для удаления
+	cursorOverPolylinePoint = false,
+	isSomePointSelected = false;
 let wasPressed, currentObject = null,
 	strokeColor = "black",
 	objects = [];
@@ -68,13 +69,13 @@ window.onload = function () {
 //updateRulersPos
 function updateRulersPos() {
 	rulerX.style.top = scrollPanel.scrollTop + "px";
-  rulerX.style.left = scrollPanel.scrollLeft + 15 + "px";
-  rulerY.style.top = scrollPanel.scrollTop + 15 + "px";
+	rulerX.style.left = scrollPanel.scrollLeft + 15 + "px";
+	rulerY.style.top = scrollPanel.scrollTop + 15 + "px";
 	rulerY.style.left = scrollPanel.scrollLeft + "px";
 }
 
 scrollPanel.onscroll = function () {
 	svgPanelCoords = getCoords(svgPanel);
 	updateRulersPos();
-  updateRulers();
+	updateRulers();
 };

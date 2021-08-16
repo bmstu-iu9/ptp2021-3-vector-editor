@@ -63,7 +63,7 @@ class object {
         });
         //hide
         svgPanel.addEventListener("mousedown", function () {
-            if (!isSomeObjectSelected) {
+            if (!isSomeObjectSelected && !isSomePointSelected) {
                 if (currentObject != null) {
                     currentObject.hideFrameAndPoints();
                     currentObject = null;
@@ -88,7 +88,7 @@ class object {
                 }
             }
         }).bind(this);
-        svgPanel.addEventListener("mousedown", startMoving);
+        this.svgElement.addEventListener("mousedown", startMoving);
         const stopMoving = ((current) => {
             if (this.isSelected && this.isMoving) {
                 this.isMoving = false;
@@ -156,7 +156,6 @@ class object {
     complete() {
         this.isCompleted = true;
         this.updateFrameAndPoints();
-        this.hideFrameAndPoints();
         this.removeHotKeys();
         svgPanel.onmousemove = null;
         svgPanel.onmouseup = null;
@@ -165,6 +164,15 @@ class object {
         document.onmouseup = null;
         document.onclick = null;
         document.onmouseenter = null;
+
+        this.hideFrameAndPoints();
+        /*isSomeObjectSelected = true;
+        if (currentObject != null) {
+            currentObject.hideFrameAndPoints();   показывать рамку после создания объекта
+            currentObject = null;
+        }
+        currentObject = this;
+        this.isSelected = true;*/
     }
 }
 
@@ -255,10 +263,10 @@ class rectangle extends object {
 class ellipse extends object {
     constructor() {
         super('ellipse');
-        this.rx = curX;
-        this.ry = curY;
-        this.cx = 0;
-        this.cy = 0;
+        this.rx = 0;
+        this.ry = 0;
+        this.cx = curX;
+        this.cy = curY;
     }
     createClone() {
         let clone = new ellipse();
@@ -668,7 +676,7 @@ class polyline extends object {
             y: this.y0
         }];
         this.svgElement.setAttribute('points', this.path);
-        this.pointsArray.push(new point(this.x0, this.y0, this, "polyline0"));
+        this.pointsArray.push(new point(this.x0, this.y0, this, "polyline"));
         this.pointsArray[0].setPointAttribute('fill', "blue");
         this.line = new line(curX, curY, curX, curY, false);
         this.minX = this.x0;
@@ -724,8 +732,7 @@ class polyline extends object {
             });
             this.path += ", " + x + " " + y;
             this.svgElement.setAttribute('points', this.path);
-            let type = "polyline" + (this.pathCoords.length - 1);
-            this.pointsArray.push(new point(x, y, this, type));
+            this.pointsArray.push(new point(x, y, this, "polyline"));
             this.line.remove();
             this.line = new line(x, y, curX, curY, false);
         }
@@ -740,8 +747,7 @@ class polyline extends object {
                 y = this.pathCoords[i].y + dy;
             if (i == 0) this.path = x + " " + y;
             else this.path += ", " + x + " " + y;
-            let type = "polyline" + i;
-            this.pointsArray.push(new point(x, y, this, type))
+            this.pointsArray.push(new point(x, y, this, "polyline"))
         }
         this.path += ", " + (this.pathCoords[0].x + dx) + " " + (this.pathCoords[0].y + dy);
         this.svgElement.setAttribute('points', this.path);
@@ -768,10 +774,15 @@ class polyline extends object {
         this.move(dx, dy);
         this.stopMoving(dx, dy);
     }
-    deletePoint(ind) {
+    deletePoint(x, y) {
         if (this.pathCoords.length == 2) deleteFunc(); //actions.js
         else {
-            this.pathCoords.splice(ind, 1);
+            for (let i = 0; i < this.pathCoords.length; i++) {
+                if (this.pathCoords[i].x == x && this.pathCoords[i].y == y) {
+                    this.pathCoords.splice(i, 1);
+                    break;
+                }
+            }
             this.updateFrameAndPoints();
         }
     }

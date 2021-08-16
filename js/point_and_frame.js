@@ -13,8 +13,8 @@ class point {
         this.circle.setAttribute('r', pointRadius);
         this.deletePoint = ((event) => {
             if (event.code == 'Delete') {
-                isSomePointSelected = false;
-                this.object.deletePoint(Number(this.type[this.type.length - 1]));
+                cursorOverPolylinePoint = false;
+                this.object.deletePoint(this.x, this.y);
                 document.removeEventListener("keydown", this.deletePoint);
             }
         })
@@ -22,23 +22,43 @@ class point {
         this.addHotKeys();
     }
     addActions() {
-        this.circle.addEventListener("mouseover", this.setColor.bind(this, "red"));
-        this.circle.addEventListener("mouseout", this.setColor.bind(this, "white"));
-        if (this.type == "move") this.circle.addEventListener("mousedown", this.dispatchToObject.bind(this, "mousedown"));
-        this.circle.addEventListener("mouseout", this.dispatchToObject.bind(this, "mouseout"));
+        this.circle.addEventListener("mousedown", function () {
+            isSomePointSelected = true;
+        });
+        this.circle.addEventListener("mouseover", function () {
+            this.setColor("red");
+            //cursorOverPoint = true;
+        }.bind(this));
+        this.circle.addEventListener("mouseout", function () {
+            this.setColor("white");
+            isSomePointSelected = false;
+            //cursorOverPoint = false;
+        }.bind(this));
+        //move
+        if (this.type == "move") {
+            const startMoving = ((current) => {
+                this.object.isMoving = true;
+                updateCursorCoords(current);
+                this.object.start = {
+                    x: curX,
+                    y: curY
+                }
+            }).bind(this);
+            this.circle.addEventListener("mousedown", startMoving);
+        }
     }
     addHotKeys() {
         //удаление точки пера
-        if (this.type != null && this.type.indexOf("polyline") != -1) {
+        if (this.type == "polyline") {
             this.circle.addEventListener("mouseover", function () {
                 if (this.object.isCompleted) {
-                    isSomePointSelected = true;
+                    cursorOverPolylinePoint = true;
                     document.addEventListener("keydown", this.deletePoint);
                 }
             }.bind(this));
             this.circle.addEventListener("mouseout", function () {
                 if (this.object.isCompleted) {
-                    isSomePointSelected = false;
+                    cursorOverPolylinePoint = false;
                     document.removeEventListener("keydown", this.deletePoint);
                 }
             }.bind(this));
@@ -46,17 +66,12 @@ class point {
     }
     removeHotKeys() {
         //удаление точки пера
-        isSomePointSelected = false;
+        cursorOverPolylinePoint = false;
         document.removeEventListener("keydown", this.deletePoint);
     }
     createClone(newObject) {
         let clone = new point(this.x, this.y, newObject, this.type);
         return clone;
-    }
-    dispatchToObject(event) {
-        if (this.object.isCompleted) {
-            this.object.svgElement.dispatchEvent(new Event(event));
-        }
     }
     setColor(color) {
         if (this.object.isCompleted) {
@@ -96,7 +111,7 @@ class frame {
         this.line.setAttribute('y2', y2);
         this.line.setAttribute('stroke-opacity', "0.5");
         this.line.setAttribute('stroke', "red");
-        this.line.setAttribute('stroke-width', "4");
+        this.line.setAttribute('stroke-width', pointRadius);
         this.line.setAttribute('stroke-dasharray', "8");
     }
     createClone(newObject) {

@@ -2,12 +2,12 @@
 deleteObject = document.getElementById("deleteObject");
 
 deleteObject.onclick = function () {
-    if (currentObject != null && !isSomePointSelected) {
+    if (currentObject != null && !cursorOverPolylinePoint) {
         deleteFunc();
     }
 }
 document.addEventListener('keydown', function (event) {
-    if (event.code == 'Delete' && currentObject != null && !isSomePointSelected) {
+    if (event.code == 'Delete' && currentObject != null && !cursorOverPolylinePoint) {
         deleteFunc();
     }
 });
@@ -168,11 +168,11 @@ save.onclick = function () {
     if (isGridEnabled) {
         flag = true;
         showGrid.click();
-    } 
+    }
     let fileName = prompt('Введите имя файла без расширения:');
     if (fileName == null) {
-       if (flag)
-            showGrid.click(); 
+        if (flag)
+            showGrid.click();
         return;
     }
     if (currentObject != null) {
@@ -192,7 +192,7 @@ save.onclick = function () {
     a.click();
 
     window.URL.revokeObjectURL(url);
-    if (flag) 
+    if (flag)
         showGrid.click();
 }
 
@@ -204,11 +204,11 @@ savePng.onclick = function () {
     if (isGridEnabled) {
         flag = true;
         showGrid.click();
-    } 
+    }
     let fileName = prompt('Введите имя файла без расширения:');
     if (fileName == null) {
-       if (flag)
-            showGrid.click(); 
+        if (flag)
+            showGrid.click();
         return;
     }
     if (currentObject != null) {
@@ -235,7 +235,7 @@ savePng.onclick = function () {
         window.URL.revokeObjectURL(url);
     }
     img.src = url;
-    if (flag) 
+    if (flag)
         showGrid.click();
 }
 
@@ -245,7 +245,7 @@ zoomIn.onclick = function () {
     svgPanelCoords = getCoords(svgPanel);
     svgPanel.style.transform = "translate(0, 0)";
     svgPanel.style.left = svgPanelCoords.left - scrollcoords.left;
-    svgPanel.style.top= svgPanelCoords.top - scrollcoords.top;
+    svgPanel.style.top = svgPanelCoords.top - scrollcoords.top;
     svgPanel.style.width = svgPanel.clientWidth * 1.5 + "px";
     svgPanel.style.height = svgPanel.clientHeight * 1.5 + "px";
     scaleСoef *= 1.5;
@@ -257,7 +257,7 @@ zoomOut.onclick = function () {
     svgPanelCoords = getCoords(svgPanel);
     svgPanel.style.transform = "translate(0, 0)";
     svgPanel.style.left = svgPanelCoords.left - scrollcoords.left;
-    svgPanel.style.top= svgPanelCoords.top - scrollcoords.top;
+    svgPanel.style.top = svgPanelCoords.top - scrollcoords.top;
     svgPanel.style.width = svgPanel.clientWidth / 1.5 + "px";
     svgPanel.style.height = svgPanel.clientHeight / 1.5 + "px";
     scaleСoef /= 1.5;
@@ -299,11 +299,11 @@ showRulers.onclick = function () {
 }
 
 //SHOW GRID 
-showGrid = document.getElementById("showGrid"); 
+showGrid = document.getElementById("showGrid");
 showGrid.onclick = function () {
     if (!isGridEnabled) {
         isGridEnabled = true;
-        svgBackground.setAttribute("fill", "url(#grid_pattern)"); 
+        svgBackground.setAttribute("fill", "url(#grid_pattern)");
     } else {
         isGridEnabled = false;
         svgBackground.setAttribute("fill", "rgb(255, 255, 255)");

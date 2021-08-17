@@ -37,7 +37,7 @@ f.onchange = () => {
     fImg.src = "img/stroke/no.svg";
     s.checked = false;
     sImg.src = "img/stroke/yes.svg";
-    changeStroke()
+    changeStroke();
   } else fImg.src = "img/stroke/yes.svg";
   changeFill();
 }

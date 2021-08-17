@@ -633,7 +633,7 @@ class line extends object {
         ];
         this.frameArray[0].setFrameAttribute('stroke', this.svgElement.getAttribute('stroke'));
         this.frameArray[0].setFrameAttribute('stroke-width', this.svgElement.getAttribute('stroke-width'));
-        if (this.svgElement.getAttribute('stroke-dasharray') == null) this.frameArray[0].setFrameAttribute('stroke-dasharray', "8");
+        if (this.svgElement.getAttribute('stroke-dasharray') == null) this.frameArray[0].setFrameAttribute('stroke-dasharray', this.strokeWidth * 4);
         else this.frameArray[0].setFrameAttribute('stroke-dasharray', this.svgElement.getAttribute('stroke-dasharray'));
         this.frameArray[0].setFrameAttribute('stroke-linejoin', this.svgElement.getAttribute('stroke-linejoin'));
         this.frameArray[0].setFrameAttribute('stroke-linecap', this.svgElement.getAttribute('stroke-linecap'));

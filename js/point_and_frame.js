@@ -11,17 +11,10 @@ class point {
         this.circle.setAttribute('cx', x);
         this.circle.setAttribute('cy', y);
         this.circle.setAttribute('r', pointRadius);
-        this.deletePoint = ((event) => {
-            if (event.code == 'Delete') {
-                cursorOverPolylinePoint = false;
-                this.object.deletePoint(this.type.attr);
-                document.removeEventListener("keydown", this.deletePoint);
-            }
-        })
         this.addActions();
-        this.addHotKeys();
     }
     addActions() {
+        //select
         this.circle.addEventListener("mousedown", function () {
             isSomePointSelected = true;
             this.isSelected = true;
@@ -48,9 +41,11 @@ class point {
         }
         //movePoint
         const move = ((current) => {
-            updateCursorCoords(current);
-            if (this.type != null && this.type.action == "resize") {
-                this.object.resize(this.type.attr);
+            if (this.isMoving && currentObject == this.object) {
+                updateCursorCoords(current);
+                if (this.type != null && (this.type.action == "resize" || this.type.action == "polyline")) {
+                    this.object.resize(this.type.attr);
+                }
             }
         }).bind(this);
         const startMoving = (() => {
@@ -67,28 +62,14 @@ class point {
             }
         }).bind(this);
         svgPanel.addEventListener("mouseup", stopMoving);
-    }
-    addHotKeys() {
         //удаление точки пера
-        if (this.type != null && this.type.action == "polyline") {
-            this.circle.addEventListener("mouseover", function () {
-                if (this.object.isCompleted) {
-                    cursorOverPolylinePoint = true;
-                    document.addEventListener("keydown", this.deletePoint);
-                }
-            }.bind(this));
-            this.circle.addEventListener("mouseout", function () {
-                if (this.object.isCompleted) {
-                    cursorOverPolylinePoint = false;
-                    document.removeEventListener("keydown", this.deletePoint);
-                }
-            }.bind(this));
+        const deletePoint = ((event) => {
+            event.preventDefault();
+            this.object.deletePoint(this.type.attr);
+        })
+        if (this.type.action == "polyline") {
+            this.circle.addEventListener("contextmenu", deletePoint);
         }
-    }
-    removeHotKeys() {
-        //удаление точки пера
-        cursorOverPolylinePoint = false;
-        document.removeEventListener("keydown", this.deletePoint);
     }
     createClone(newObject) {
         let clone = new point(this.x, this.y, newObject, this.type);
@@ -102,15 +83,14 @@ class point {
     hide() {
         svgPanel.removeChild(this.circle);
         this.setColor("white");
-        this.removeHotKeys();
     }
     show() {
         svgPanel.appendChild(this.circle);
-        this.addHotKeys();
     }
     remove() {
         svgPanel.removeChild(this.circle);
         this.circle = null;
+        this.isSelected = false;
     }
     setPointAttribute(attributeName, value) {
         this.circle.setAttribute(attributeName, value);
@@ -118,7 +98,7 @@ class point {
 }
 
 class frame {
-    constructor(x1, y1, x2, y2, object) {
+    constructor(x1, y1, x2, y2, object, red = false) {
         this.line = document.createElementNS("http://www.w3.org/2000/svg", 'line');
         svgPanel.appendChild(this.line);
         this.x1 = x1;
@@ -131,9 +111,11 @@ class frame {
         this.line.setAttribute('x2', x2);
         this.line.setAttribute('y2', y2);
         this.line.setAttribute('stroke-opacity', "0.5");
-        this.line.setAttribute('stroke', object.getElementAttribute('stroke'));
-        this.line.setAttribute('stroke-width', object.getElementAttribute('stroke-width'));
-        if (object.getElementAttribute('stroke-dasharray') == null) this.line.setAttribute('stroke-dasharray', "8");
+        if (red) this.line.setAttribute('stroke', "red");
+        else this.line.setAttribute('stroke', object.getElementAttribute('stroke'));
+        if (red) this.line.setAttribute('stroke-width', pointRadius);
+        else this.line.setAttribute('stroke-width', object.getElementAttribute('stroke-width'));
+        if (red || object.getElementAttribute('stroke-dasharray') == null) this.line.setAttribute('stroke-dasharray', "8");
         else this.line.setAttribute('stroke-dasharray', object.getElementAttribute('stroke-dasharray'));
         this.line.setAttribute('stroke-linejoin', object.getElementAttribute('stroke-linejoin'));
         this.line.setAttribute('stroke-linecap', object.getElementAttribute('stroke-linecap'));

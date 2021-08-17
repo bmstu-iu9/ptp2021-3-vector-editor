@@ -29,7 +29,7 @@ class object {
         }
         clone.frameArray = [];
         for (let i = 0; i < this.frameArray.length; i++) {
-            clone.frameArray[i] = this.frameArray[i].createClone();
+            clone.frameArray[i] = this.frameArray[i].createClone(clone);
         }
         clone.strokeWidth = this.strokeWidth;
         clone.svgElement.setAttribute('fill', this.svgElement.getAttribute('fill'));
@@ -77,6 +77,7 @@ class object {
                 this.move();
             }
         }).bind(this);
+        document.addEventListener("mousemove", move);
         const startMoving = ((current) => {
             if (this.isCompleted && this.isSelected) {
                 this.isMoving = true;
@@ -85,7 +86,6 @@ class object {
                     x: curX,
                     y: curY
                 }
-                document.addEventListener("mousemove", move);
             }
         }).bind(this);
         this.svgElement.addEventListener("mousedown", startMoving);
@@ -95,7 +95,6 @@ class object {
                 updateCursorCoords(current);
                 this.stopMoving();
             }
-            document.removeEventListener("mousemove", move);
         }).bind(this);
         svgPanel.addEventListener("mouseup", stopMoving);
     }
@@ -301,10 +300,10 @@ class ellipse extends object {
     }
     updateFrameAndPoints(rx = this.rx, ry = this.ry, cx = this.cx, cy = this.cy) {
         this.removeFrameAndPoints();
-        this.frameArray = [new frame(cx - rx, cy + ry, cx + rx, cy + ry, this),
-            new frame(cx + rx, cy + ry, cx + rx, cy - ry, this),
-            new frame(cx + rx, cy - ry, cx - rx, cy - ry, this),
-            new frame(cx - rx, cy - ry, cx - rx, cy + ry, this)
+        this.frameArray = [new frame(cx - rx, cy + ry, cx + rx, cy + ry, this, true),
+            new frame(cx + rx, cy + ry, cx + rx, cy - ry, this, true),
+            new frame(cx + rx, cy - ry, cx - rx, cy - ry, this, true),
+            new frame(cx - rx, cy - ry, cx - rx, cy + ry, this, true)
         ];
         this.pointsArray = [new point(cx, cy - ry, this),
             new point(cx + rx, cy, this),
@@ -370,8 +369,6 @@ class polygon extends object {
     updateFrameAndPoints(x0 = this.x0, y0 = this.y0) {
         //включает обновление атрибута
         this.removeFrameAndPoints();
-        this.pointsArray = [];
-        this.frameArray = [];
         let prevX, prevY, firstX, firstY;
         for (let i = 0; i < this.vertNum; i++) {
             let x = x0 + this.r * Math.cos(this.phi + 2 * Math.PI * i / this.vertNum);
@@ -515,10 +512,10 @@ class pencil extends object {
         }
         this.svgElement.setAttribute('points', this.path);
         this.removeFrameAndPoints();
-        this.frameArray = [new frame(minX, maxY, maxX, maxY, this),
-            new frame(maxX, maxY, maxX, minY, this),
-            new frame(maxX, minY, minX, minY, this),
-            new frame(minX, minY, minX, maxY, this),
+        this.frameArray = [new frame(minX, maxY, maxX, maxY, this, true),
+            new frame(maxX, maxY, maxX, minY, this, true),
+            new frame(maxX, minY, minX, minY, this, true),
+            new frame(minX, minY, minX, maxY, this, true),
             new pencilFrame(this.path, this)
         ];
         this.pointsArray = [new point(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2, this, {
@@ -734,19 +731,17 @@ class polyline extends object {
             });
             this.path += ", " + x + " " + y;
             this.svgElement.setAttribute('points', this.path);
+            this.line.remove();
+            this.line = new line(x, y, curX, curY, false);
             this.pointsArray.push(new point(x, y, this, {
                 action: "polyline",
                 attr: this.pathCoords.length - 1
             }));
-            this.line.remove();
-            this.line = new line(x, y, curX, curY, false);
         }
     }
     updateFrameAndPoints(dx = 0, dy = 0) {
         //включает обновление атрибута
         this.removeFrameAndPoints();
-        this.pointsArray = [];
-        this.frameArray = [];
         for (let i = 0; i < this.pathCoords.length; i++) {
             let x = this.pathCoords[i].x + dx,
                 y = this.pathCoords[i].y + dy;
@@ -788,6 +783,11 @@ class polyline extends object {
             this.pathCoords.splice(ind, 1);
             this.updateFrameAndPoints();
         }
+    }
+    resize(ind) {
+        this.pathCoords[ind].x = curX;
+        this.pathCoords[ind].y = curY;
+        this.updateFrameAndPoints();
     }
     complete() {
         if (!polylineIsCompleted) {

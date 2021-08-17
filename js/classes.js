@@ -63,7 +63,7 @@ class object {
         });
         //hide
         svgPanel.addEventListener("mousedown", function () {
-            if (!isSomeObjectSelected) {
+            if (!isSomeObjectSelected && !isSomePointSelected) {
                 if (currentObject != null) {
                     currentObject.hideFrameAndPoints();
                     currentObject = null;
@@ -88,7 +88,7 @@ class object {
                 }
             }
         }).bind(this);
-        svgPanel.addEventListener("mousedown", startMoving);
+        this.svgElement.addEventListener("mousedown", startMoving);
         const stopMoving = ((current) => {
             if (this.isSelected && this.isMoving) {
                 this.isMoving = false;
@@ -97,6 +97,39 @@ class object {
             }
         }).bind(this);
         svgPanel.addEventListener("mouseup", stopMoving);
+        //rotate
+        document.addEventListener("mousemove", rotate);
+        const startRotating = ((current) => {
+            if (this.isCompleted && this.isSelected) {
+                this.isRotating = true;
+                updateCursorCoords(current);
+                this.rPoint = {
+                    x: this.getNewCoords(this.x + this.width / 2, this.y - 20, this.angle).x,
+                    y: this.getNewCoords(this.x + this.width / 2, this.y - 20, this.angle).y
+                }
+            }
+        }).bind(this);
+        const update_rPoint = ((current) => {
+            if (rotatePoint != null && !this.isMoving && !this.isRotating) {
+                rotatePoint = this.pointsArray[this.pointsArray.length - 1];
+                rotatePoint.circle.addEventListener("mousedown", startRotating);
+                rotatePoint.circle.addEventListener("mouseover", function () {
+                    svgPanel.style.cursor = "url(img/rotate.svg) 10 10, pointer"; 
+                });
+                rotatePoint.circle.addEventListener("mouseout", function () {
+                    svgPanel.style.cursor = "default"; 
+                });
+            }
+        }).bind(this);
+        document.addEventListener("mousemove", update_rPoint); 
+        const stopRotating = ((current) => {
+            if (this.isSelected && this.isRotating) {
+                this.isRotating = false;
+                updateCursorCoords(current);
+                this.stopRotating();
+            }
+        }).bind(this);
+        svgPanel.addEventListener("mouseup", stopRotating); 
     }
     setElementAttribute(attributeName, value) {
         this.svgElement.setAttribute(attributeName, value);
@@ -153,6 +186,9 @@ class object {
     move() {}
     stopMoving() {}
     moveTo() {}
+    rotate() {}
+    stopRotating() {}
+    getNewCoords() {} //преобразование координат ключевых точек при повороте фигуры
     complete() {
         this.isCompleted = true;
         this.updateFrameAndPoints();

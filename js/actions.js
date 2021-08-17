@@ -83,23 +83,18 @@ document.addEventListener('keydown', function (event) {
     }
 });
 
+function centralLocation(width, height) {
+    svgPanel.setAttribute('style', 'top: 50%; left: 50%; transform: translate(-50%, -50%);');
+    if (scrollPanel.clientWidth - 15 < width)
+        svgPanel.setAttribute('style', 'transform: translate(0, -50%); left: 15px;');
+    if (scrollPanel.clientHeight - 15 < height)
+        svgPanel.setAttribute('style', 'transform: translate(-50%, 0); top: 15px;');
+    if (scrollPanel.clientWidth - 15 < width && scrollPanel.clientHeight - 15 < height)
+        svgPanel.style.transform = "translate(0, 0)";
+}
+
 //CREATE 
 create = document.getElementById("create");
-
-function deleteChild(node, parent) {
-    for (var i = 0; i < node.childNodes.length;)
-        deleteChild(node.childNodes[i], node);
-
-    if (node.childNodes.length == 0) {
-        parent.removeChild(node);
-        return;
-    }
-}
-
-function deleteAllChildren(node) {
-    for (var i = 2; i < node.childNodes.length;)
-        deleteChild(node.childNodes[i], node);
-}
 
 create.onclick = function () {
     let width = prompt('Введите ширину нового холста в пикселях:', 512);
@@ -110,8 +105,12 @@ create.onclick = function () {
         return;
     }
 
-    deleteAllChildren(svgPanel);
+    for (var i = 2; i < svgPanel.childNodes.length;)
+        svgPanel.removeChild(svgPanel.childNodes[i]);
+    for (var i = 0; i < layersPanel.childNodes.length;)
+        layersPanel.removeChild(layersPanel.childNodes[i]);
 
+    centralLocation(width, height);
     svgPanel.setAttribute('viewBox', '0 0 ' + String(width) + ' ' + String(height));
     svgPanel.setAttribute('width', width);
     svgPanel.setAttribute('height', height);
@@ -119,6 +118,7 @@ create.onclick = function () {
     svgPanelCoords = getCoords(svgPanel);
     updateRulers();
     updateGrid();
+    createFirstLayer();
 }
 
 //OPEN
@@ -143,17 +143,24 @@ function readFile(object) {
         first.setAttribute("id", "svg_panel");
         svgPanel = document.getElementById(first.id);
         svgPanel.insertBefore(clone, svgPanel.firstElementChild);
-        if (first.getAttribute('width') == null || first.getAttribute('height') == null) {
+        let width = first.getAttribute('width');
+        let height = first.getAttribute('height')
+        if (width == null || height == null) {
             first.setAttribute('width', 512);
             first.setAttribute('height', 512);
             first.setAttribute('viewBox', '0 0 512 512');
         }
-        first.setAttribute('style', 'background-color: #fff; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);');
+
         svgPanel = document.getElementById(first.id);
+        svgPanel.setAttribute('style', 'background-color: #fff; position: absolute;');
+        centralLocation(width, height);
         scrollcoords = getCoords(scrollPanel);
         svgPanelCoords = getCoords(svgPanel);
         updateRulers();
         updateGrid();
+        for (var i = 0; i < layersPanel.childNodes.length;)
+            layersPanel.removeChild(layersPanel.childNodes[i]);
+        createFirstLayer();
     };
     reader.readAsText(file);
 }
@@ -168,11 +175,11 @@ save.onclick = function () {
     if (isGridEnabled) {
         flag = true;
         showGrid.click();
-    } 
+    }
     let fileName = prompt('Введите имя файла без расширения:');
     if (fileName == null) {
-       if (flag)
-            showGrid.click(); 
+        if (flag)
+            showGrid.click();
         return;
     }
     if (currentObject != null) {
@@ -192,7 +199,7 @@ save.onclick = function () {
     a.click();
 
     window.URL.revokeObjectURL(url);
-    if (flag) 
+    if (flag)
         showGrid.click();
 }
 
@@ -204,11 +211,11 @@ savePng.onclick = function () {
     if (isGridEnabled) {
         flag = true;
         showGrid.click();
-    } 
+    }
     let fileName = prompt('Введите имя файла без расширения:');
     if (fileName == null) {
-       if (flag)
-            showGrid.click(); 
+        if (flag)
+            showGrid.click();
         return;
     }
     if (currentObject != null) {
@@ -235,7 +242,7 @@ savePng.onclick = function () {
         window.URL.revokeObjectURL(url);
     }
     img.src = url;
-    if (flag) 
+    if (flag)
         showGrid.click();
 }
 
@@ -245,7 +252,7 @@ zoomIn.onclick = function () {
     svgPanelCoords = getCoords(svgPanel);
     svgPanel.style.transform = "translate(0, 0)";
     svgPanel.style.left = svgPanelCoords.left - scrollcoords.left;
-    svgPanel.style.top= svgPanelCoords.top - scrollcoords.top;
+    svgPanel.style.top = svgPanelCoords.top - scrollcoords.top;
     svgPanel.style.width = svgPanel.clientWidth * 1.5 + "px";
     svgPanel.style.height = svgPanel.clientHeight * 1.5 + "px";
     scaleСoef *= 1.5;
@@ -257,7 +264,7 @@ zoomOut.onclick = function () {
     svgPanelCoords = getCoords(svgPanel);
     svgPanel.style.transform = "translate(0, 0)";
     svgPanel.style.left = svgPanelCoords.left - scrollcoords.left;
-    svgPanel.style.top= svgPanelCoords.top - scrollcoords.top;
+    svgPanel.style.top = svgPanelCoords.top - scrollcoords.top;
     svgPanel.style.width = svgPanel.clientWidth / 1.5 + "px";
     svgPanel.style.height = svgPanel.clientHeight / 1.5 + "px";
     scaleСoef /= 1.5;
@@ -269,7 +276,7 @@ frontObject = document.getElementById("frontObject");
 
 frontObject.onclick = function () {
     if (currentObject != null) {
-        svgPanel.append(currentObject.svgElement);
+        currentLayer.group.append(currentObject.svgElement);
         for (let i = 0; i < currentObject.frameArray.length; i++) {
             svgPanel.append(currentObject.frameArray[i].svgElement);
         }
@@ -283,7 +290,7 @@ backObject = document.getElementById("backObject");
 
 backObject.onclick = function () {
     if (currentObject != null) {
-        svgPanel.prepend(currentObject.svgElement);
+        currentLayer.group.prepend(currentObject.svgElement);
     }
 }
 
@@ -299,11 +306,11 @@ showRulers.onclick = function () {
 }
 
 //SHOW GRID 
-showGrid = document.getElementById("showGrid"); 
+showGrid = document.getElementById("showGrid");
 showGrid.onclick = function () {
     if (!isGridEnabled) {
         isGridEnabled = true;
-        svgBackground.setAttribute("fill", "url(#grid_pattern)"); 
+        svgBackground.setAttribute("fill", "url(#grid_pattern)");
     } else {
         isGridEnabled = false;
         svgBackground.setAttribute("fill", "rgb(255, 255, 255)");

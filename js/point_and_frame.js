@@ -127,7 +127,7 @@ class pencilShadow {
         this.polyline.setAttribute('stroke-opacity', "0.5");
         this.polyline.setAttribute('stroke', object.getElementAttribute('stroke'));
         this.polyline.setAttribute('stroke-width', object.getElementAttribute('stroke-width'));
-        if (object.getElementAttribute('stroke-dasharray') == null) this.polyline.setAttribute('stroke-dasharray', "8");
+        if (object.getElementAttribute('stroke-dasharray') == null) this.polyline.setAttribute('stroke-dasharray', object.strokeWidth*4);
         else this.polyline.setAttribute('stroke-dasharray', object.getElementAttribute('stroke-dasharray'));
         this.polyline.setAttribute('stroke-linejoin', object.getElementAttribute('stroke-linejoin'));
         this.polyline.setAttribute('stroke-linecap', object.getElementAttribute('stroke-linecap'));

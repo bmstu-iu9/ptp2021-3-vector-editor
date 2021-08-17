@@ -14,7 +14,7 @@ class point {
         this.deletePoint = ((event) => {
             if (event.code == 'Delete') {
                 cursorOverPolylinePoint = false;
-                this.object.deletePoint(this.x, this.y);
+                this.object.deletePoint(this.type.attr);
                 document.removeEventListener("keydown", this.deletePoint);
             }
         })
@@ -24,18 +24,18 @@ class point {
     addActions() {
         this.circle.addEventListener("mousedown", function () {
             isSomePointSelected = true;
-        });
-        this.circle.addEventListener("mouseover", function () {
-            this.setColor("red");
-            //cursorOverPoint = true;
+            this.isSelected = true;
         }.bind(this));
+        this.circle.addEventListener("mouseup", function () {
+            this.isSelected = false;
+        }.bind(this));
+        this.circle.addEventListener("mouseover", this.setColor.bind(this, "red"));
         this.circle.addEventListener("mouseout", function () {
             this.setColor("white");
             isSomePointSelected = false;
-            //cursorOverPoint = false;
         }.bind(this));
-        //move
-        if (this.type == "move") {
+        //moveObject
+        if (this.type != null && this.type.action == "move") {
             const startMoving = ((current) => {
                 this.object.isMoving = true;
                 updateCursorCoords(current);
@@ -46,10 +46,31 @@ class point {
             }).bind(this);
             this.circle.addEventListener("mousedown", startMoving);
         }
+        //movePoint
+        const move = ((current) => {
+            updateCursorCoords(current);
+            if (this.type != null && this.type.action == "resize") {
+                this.object.resize(this.type.attr);
+            }
+        }).bind(this);
+        const startMoving = (() => {
+            if (this.isSelected) {
+                this.isMoving = true;
+                document.addEventListener("mousemove", move);
+            }
+        }).bind(this);
+        this.circle.addEventListener("mousedown", startMoving);
+        const stopMoving = (() => {
+            if (this.isMoving) {
+                this.isMoving = false;
+                document.removeEventListener("mousemove", move);
+            }
+        }).bind(this);
+        svgPanel.addEventListener("mouseup", stopMoving);
     }
     addHotKeys() {
         //удаление точки пера
-        if (this.type == "polyline") {
+        if (this.type != null && this.type.action == "polyline") {
             this.circle.addEventListener("mouseover", function () {
                 if (this.object.isCompleted) {
                     cursorOverPolylinePoint = true;
@@ -110,9 +131,12 @@ class frame {
         this.line.setAttribute('x2', x2);
         this.line.setAttribute('y2', y2);
         this.line.setAttribute('stroke-opacity', "0.5");
-        this.line.setAttribute('stroke', "red");
-        this.line.setAttribute('stroke-width', pointRadius);
-        this.line.setAttribute('stroke-dasharray', "8");
+        this.line.setAttribute('stroke', object.getElementAttribute('stroke'));
+        this.line.setAttribute('stroke-width', object.getElementAttribute('stroke-width'));
+        if (object.getElementAttribute('stroke-dasharray') == null) this.line.setAttribute('stroke-dasharray', "8");
+        else this.line.setAttribute('stroke-dasharray', object.getElementAttribute('stroke-dasharray'));
+        this.line.setAttribute('stroke-linejoin', object.getElementAttribute('stroke-linejoin'));
+        this.line.setAttribute('stroke-linecap', object.getElementAttribute('stroke-linecap'));
     }
     createClone(newObject) {
         let clone = new frame(this.x1, this.y1, this.x2, this.y2, newObject);
@@ -132,7 +156,7 @@ class frame {
         this.line.setAttribute(attributeName, value);
     }
 }
-class pencilShadow {
+class pencilFrame {
     constructor(path, object) {
         this.polyline = document.createElementNS("http://www.w3.org/2000/svg", 'polyline');
         svgPanel.appendChild(this.polyline);
@@ -149,7 +173,7 @@ class pencilShadow {
         this.polyline.setAttribute('fill', "none");
     }
     createClone(newObject) {
-        let clone = new pencilShadow(this.path, newObject);
+        let clone = new pencilFrame(this.path, newObject);
         return clone;
     }
     hide() {

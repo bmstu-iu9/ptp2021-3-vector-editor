@@ -871,6 +871,20 @@ class line extends object {
             this.svgElement.setAttribute('stroke-opacity', "0.5");
             this.svgElement.setAttribute('stroke-width', "2");
             this.svgElement.setAttribute('stroke-dasharray', "8");
+        } else {
+            this.frameArray = [new frame(this.x0, this.y0, this.x2, this.y2, this)]
+            this.pointsArray = [new point(this.x0, this.y0, this, {
+                    action: "resize",
+                    attr: "1"
+                }),
+                new point(this.x0 + (this.x2 - this.x0) / 2, this.y0 + (this.y2 - this.y0) / 2, this, {
+                    action: "move"
+                }),
+                new point(this.x2, this.y2, this, {
+                    action: "resize",
+                    attr: "2"
+                })
+            ];
         }
     }
     createClone() {
@@ -914,23 +928,10 @@ class line extends object {
         }
     }
     updateFrameAndPoints(x0 = this.x0, y0 = this.y0, x2 = this.x2, y2 = this.y2) {
-        this.removeFrameAndPoints();
-        this.frameArray = [new frame(x0, y0, x2, y2, this)]
-        let phi = (x2 - x0) != 0 ? Math.atan((y2 - y0) / (x2 - x0)) : Math.PI / 2;
-        let dx = x2 >= x0 ? pointRadius * Math.cos(phi) : -pointRadius * Math.cos(phi);
-        let dy = x2 >= x0 ? pointRadius * Math.sin(phi) : -pointRadius * Math.sin(phi);
-        this.pointsArray = [new point(x0 - dx, y0 - dy, this),
-            new point(x0 + (x2 - x0) / 2, y0 + (y2 - y0) / 2, this, {
-                action: "move"
-            }),
-            new point(x2 + dx, y2 + dy, this)
-        ];
-        this.frameArray[0].setFrameAttribute('stroke', this.svgElement.getAttribute('stroke'));
-        this.frameArray[0].setFrameAttribute('stroke-width', this.svgElement.getAttribute('stroke-width'));
-        if (this.svgElement.getAttribute('stroke-dasharray') == null) this.frameArray[0].setFrameAttribute('stroke-dasharray', "8");
-        else this.frameArray[0].setFrameAttribute('stroke-dasharray', this.svgElement.getAttribute('stroke-dasharray'));
-        this.frameArray[0].setFrameAttribute('stroke-linejoin', this.svgElement.getAttribute('stroke-linejoin'));
-        this.frameArray[0].setFrameAttribute('stroke-linecap', this.svgElement.getAttribute('stroke-linecap'));
+        this.frameArray[0].update(x0, y0, x2, y2);
+        this.pointsArray[0].update(x0, y0);
+        this.pointsArray[1].update(x0 + (x2 - x0) / 2, y0 + (y2 - y0) / 2);
+        this.pointsArray[2].update(x2, y2);
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.svgElement.setAttribute('x1', this.x0 + dx);
@@ -954,6 +955,23 @@ class line extends object {
             dy = y + pointRadius - Math.min(this.y0, this.y2);
         this.move(dx, dy);
         this.stopMoving(dx, dy);
+    }
+    resize() {
+        switch (currentResizeType) {
+            case "1":
+                this.x0 = curX;
+                this.y0 = curY;
+                break;
+            case "2":
+                this.x2 = curX;
+                this.y2 = curY;
+                break;
+        }
+        this.svgElement.setAttribute('x1', this.x0);
+        this.svgElement.setAttribute('y1', this.y0);
+        this.svgElement.setAttribute('x2', this.x2);
+        this.svgElement.setAttribute('y2', this.y2);
+        this.updateFrameAndPoints();
     }
 }
 

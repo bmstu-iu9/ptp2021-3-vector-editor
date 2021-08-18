@@ -332,7 +332,7 @@ class rectangle extends object {
         }
         if (n.width < 0) {
             n.width = 0;
-            if (this.x + this.width < curX) n.x = this.x + this.width
+            if (this.x + this.width < curX) n.x = this.x + this.width;
             switch (currentResizeType) {
                 case "ltc":
                     currentResizeType = "rtc";
@@ -356,7 +356,7 @@ class rectangle extends object {
         }
         if (n.height < 0) {
             n.height = 0;
-            if (this.y + this.height < curY) n.y = this.y + this.height
+            if (this.y + this.height < curY) n.y = this.y + this.height;
             switch (currentResizeType) {
                 case "ltc":
                     currentResizeType = "lbc";
@@ -398,6 +398,44 @@ class ellipse extends object {
         this.ry = 0;
         this.cx = curX;
         this.cy = curY;
+        this.frameArray = [new frame(this.cx - this.rx, this.cy + this.ry, this.cx + this.rx, this.cy + this.ry, this, true),
+            new frame(this.cx + this.rx, this.cy + this.ry, this.cx + this.rx, this.cy - this.ry, this, true),
+            new frame(this.cx + this.rx, this.cy - this.ry, this.cx - this.rx, this.cy - this.ry, this, true),
+            new frame(this.cx - this.rx, this.cy - this.ry, this.cx - this.rx, this.cy + this.ry, this, true)
+        ];
+        this.pointsArray = [new point(this.cx - this.rx, this.cy - this.ry, this, {
+                action: "resize",
+                attr: "ltc"
+            }),
+            new point(this.cx, this.cy - this.ry, this, {
+                action: "resize",
+                attr: "t"
+            }),
+            new point(this.cx + this.rx, this.cy - this.ry, this, {
+                action: "resize",
+                attr: "rtc"
+            }),
+            new point(this.cx + this.rx, this.cy, this, {
+                action: "resize",
+                attr: "r"
+            }),
+            new point(this.cx + this.rx, this.cy + this.ry, this, {
+                action: "resize",
+                attr: "rbc"
+            }),
+            new point(this.cx, this.cy + this.ry, this, {
+                action: "resize",
+                attr: "b"
+            }),
+            new point(this.cx - this.rx, this.cy + this.ry, this, {
+                action: "resize",
+                attr: "lbc"
+            }),
+            new point(this.cx - this.rx, this.cy, this, {
+                action: "resize",
+                attr: "l"
+            })
+        ];
     }
     createClone() {
         let clone = new ellipse();
@@ -435,21 +473,18 @@ class ellipse extends object {
         this.updateFrameAndPoints();
     }
     updateFrameAndPoints(rx = this.rx, ry = this.ry, cx = this.cx, cy = this.cy) {
-        this.removeFrameAndPoints();
-        this.frameArray = [new frame(cx - rx, cy + ry, cx + rx, cy + ry, this, true),
-            new frame(cx + rx, cy + ry, cx + rx, cy - ry, this, true),
-            new frame(cx + rx, cy - ry, cx - rx, cy - ry, this, true),
-            new frame(cx - rx, cy - ry, cx - rx, cy + ry, this, true)
-        ];
-        this.pointsArray = [new point(cx, cy - ry, this),
-            new point(cx + rx, cy, this),
-            new point(cx, cy + ry, this),
-            new point(cx - rx, cy, this),
-            new point(cx - rx, cy + ry, this),
-            new point(cx + rx, cy + ry, this),
-            new point(cx + rx, cy - ry, this),
-            new point(cx - rx, cy - ry, this)
-        ];
+        this.frameArray[0].update(cx - rx, cy + ry, cx + rx, cy + ry);
+        this.frameArray[1].update(cx + rx, cy + ry, cx + rx, cy - ry);
+        this.frameArray[2].update(cx + rx, cy - ry, cx - rx, cy - ry);
+        this.frameArray[3].update(cx - rx, cy - ry, cx - rx, cy + ry);
+        this.pointsArray[0].update(cx - rx, cy - ry);
+        this.pointsArray[1].update(cx, cy - ry);
+        this.pointsArray[2].update(cx + rx, cy - ry);
+        this.pointsArray[3].update(cx + rx, cy);
+        this.pointsArray[4].update(cx + rx, cy + ry);
+        this.pointsArray[5].update(cx, cy + ry);
+        this.pointsArray[6].update(cx - rx, cy + ry);
+        this.pointsArray[7].update(cx - rx, cy);
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.svgElement.setAttribute('cx', this.cx + dx);
@@ -465,6 +500,127 @@ class ellipse extends object {
             dy = y + pointRadius - (this.cy - this.ry);
         this.move(dx, dy);
         this.stopMoving(dx, dy);
+    }
+    resize() {
+        let n = {
+            cx: this.cx,
+            cy: this.cy,
+            rx: this.rx,
+            ry: this.ry
+        };
+        switch (currentResizeType) {
+            case "ltc":
+                n.rx = (this.cx + this.rx - curX) / 2;
+                n.ry = (this.cy + this.ry - curY) / 2;
+                n.cx = curX + n.rx;
+                n.cy = curY + n.ry;
+                break;
+            case "t":
+                n.ry = (this.cy + this.ry - curY) / 2;
+                n.cy = curY + n.ry;
+                break;
+            case "rtc":
+                n.rx += (curX - (this.cx + this.rx)) / 2;
+                n.ry += (this.cy - this.ry - curY) / 2;
+                n.cx = curX - n.rx;
+                n.cy = curY + n.ry;
+                break;
+            case "r":
+                n.rx += (curX - (this.cx + this.rx)) / 2;
+                n.cx = curX - n.rx;
+                break;
+            case "rbc":
+                n.rx += (curX - (this.cx + this.rx)) / 2;
+                n.ry += (curY - (this.cy + this.ry)) / 2;
+                n.cx = curX - n.rx;
+                n.cy = curY - n.ry;
+                break;
+            case "b":
+                n.ry += (curY - (this.cy + this.ry)) / 2;
+                n.cy = curY - n.ry;
+                break;
+            case "lbc":
+                n.rx = (this.cx + this.rx - curX) / 2;
+                n.ry += (curY - (this.cy + this.ry)) / 2;
+                n.cx = curX + n.rx;
+                n.cy = curY - n.ry;
+                break;
+            case "l":
+                n.rx = (this.cx + this.rx - curX) / 2;
+                n.cx = curX + n.rx;
+                break;
+        }
+        if (n.rx < 0) {
+            n.rx = 0;
+            if (this.cx + this.rx < curX) {
+                n.cx = this.cx + 2 * this.rx;
+                n.rx = this.rx;
+            }
+            if (this.cx + this.rx > curX) {
+                n.cx = this.cx - 2 * this.rx;
+                n.rx = this.rx;
+            }
+            switch (currentResizeType) {
+                case "ltc":
+                    currentResizeType = "rtc";
+                    break;
+                case "lbc":
+                    currentResizeType = "rbc";
+                    break;
+                case "rtc":
+                    currentResizeType = "ltc";
+                    break;
+                case "rbc":
+                    currentResizeType = "lbc";
+                    break;
+                case "l":
+                    currentResizeType = "r";
+                    break;
+                case "r":
+                    currentResizeType = "l";
+                    break;
+            }
+        }
+        if (n.ry < 0) {
+            n.ry = 0;
+            if (this.cy + this.ry < curY) {
+                n.cy = this.cy + 2 * this.ry;
+                n.ry = this.ry;
+            }
+            if (this.cy + this.ry > curY) {
+                n.cy = this.cy - 2 * this.ry;
+                n.ry = this.ry;
+            }
+            switch (currentResizeType) {
+                case "ltc":
+                    currentResizeType = "lbc";
+                    break;
+                case "lbc":
+                    currentResizeType = "ltc";
+                    break;
+                case "rtc":
+                    currentResizeType = "rbc";
+                    break;
+                case "rbc":
+                    currentResizeType = "rtc";
+                    break;
+                case "t":
+                    currentResizeType = "b";
+                    break;
+                case "b":
+                    currentResizeType = "t";
+                    break;
+            }
+        }
+        this.cx = n.cx;
+        this.cy = n.cy;
+        this.rx = n.rx;
+        this.ry = n.ry;
+        this.svgElement.setAttribute('cx', n.cx);
+        this.svgElement.setAttribute('cy', n.cy);
+        this.svgElement.setAttribute('rx', n.rx);
+        this.svgElement.setAttribute('ry', n.ry);
+        this.updateFrameAndPoints();
     }
 }
 

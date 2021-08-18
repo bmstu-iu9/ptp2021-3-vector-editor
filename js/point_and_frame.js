@@ -21,12 +21,10 @@ class point {
         }.bind(this));
         this.circle.addEventListener("mouseup", function () {
             this.isSelected = false;
-        }.bind(this));
-        this.circle.addEventListener("mouseover", this.setColor.bind(this, "red"));
-        this.circle.addEventListener("mouseout", function () {
-            this.setColor("white");
             isSomePointSelected = false;
         }.bind(this));
+        this.circle.addEventListener("mouseover", this.setColor.bind(this, "red"));
+        this.circle.addEventListener("mouseout", this.setColor.bind(this, "white"));
         //moveObject
         if (this.type != null && this.type.action == "move") {
             const startMoving = ((current) => {
@@ -52,7 +50,6 @@ class point {
             if (this.isSelected) {
                 this.isMoving = true;
                 currentResizeType = this.type.attr;
-                this.circle.setAttribute('fill', "red");
                 document.addEventListener("mousemove", move);
             }
         }).bind(this);
@@ -61,7 +58,6 @@ class point {
             if (this.isMoving) {
                 this.isMoving = false;
                 currentResizeType = null;
-                this.circle.setAttribute('fill', "white");
                 document.removeEventListener("mousemove", move);
             }
         }).bind(this);
@@ -81,7 +77,7 @@ class point {
         return clone;
     }
     setColor(color) {
-        if (!this.isMoving && this.object.isCompleted) {
+        if (this.object.isCompleted) {
             this.circle.setAttribute('fill', color);
         }
     }
@@ -96,7 +92,6 @@ class point {
         svgPanel.removeChild(this.circle);
         this.circle = null;
         this.isSelected = false;
-        this.isMoving = false;
     }
     setPointAttribute(attributeName, value) {
         this.circle.setAttribute(attributeName, value);

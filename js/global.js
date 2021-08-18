@@ -1,9 +1,12 @@
 svgPanel = document.getElementById("svg_panel");
 drawPanel = document.getElementById("draw_panel");
 scrollPanel = document.getElementById("scroll_panel");
-let isSomeObjectSelected = false; //для курсора
+layersPanel = document.getElementById("layers_panel");
+
+let isSomeObjectSelected = false, //для курсора
+	isSomePointSelected = false; //для удаления
 let wasPressed, currentObject = null,
-	strokeColor = "black",
+	currentLayer,
 	objects = [];
 let buffer = null; //для копирования
 let svgPanelCoords = getCoords(svgPanel),
@@ -21,6 +24,11 @@ ruler_x_text = document.getElementById("ruler_x_text");
 ruler_y_text = document.getElementById("ruler_y_text");
 ruler_x_line = document.getElementById("ruler_x_line");
 ruler_y_line = document.getElementById("ruler_y_line");
+
+//GRID 
+svgGrid = document.getElementById("svg_grid");
+svgBackground = document.getElementById("svg_background");
+let isGridEnabled = false;
 
 //ACTIVE TOOL
 var left_panel = document.getElementById("left_panel");
@@ -61,11 +69,14 @@ window.onload = function () {
 
 //updateRulersPos
 function updateRulersPos() {
-	rulerX.style.top = scrollPanel.scrollTop;
-	rulerY.style.left = scrollPanel.scrollLeft;
+	rulerX.style.top = scrollPanel.scrollTop + "px";
+	rulerX.style.left = scrollPanel.scrollLeft + 15 + "px";
+	rulerY.style.top = scrollPanel.scrollTop + 15 + "px";
+	rulerY.style.left = scrollPanel.scrollLeft + "px";
 }
 
 scrollPanel.onscroll = function () {
 	svgPanelCoords = getCoords(svgPanel);
 	updateRulersPos();
+	updateRulers();
 };

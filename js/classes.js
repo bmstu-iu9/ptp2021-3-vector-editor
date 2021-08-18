@@ -156,6 +156,7 @@ class object {
     complete() {
         this.isCompleted = true;
         this.updateFrameAndPoints();
+        this.hideFrameAndPoints();
         this.removeHotKeys();
         svgPanel.onmousemove = null;
         svgPanel.onmouseup = null;
@@ -165,7 +166,6 @@ class object {
         document.onclick = null;
         document.onmouseenter = null;
 
-        this.hideFrameAndPoints();
         /*isSomeObjectSelected = true;
         if (currentObject != null) {
             currentObject.hideFrameAndPoints();   показывать рамку после создания объекта
@@ -184,6 +184,44 @@ class rectangle extends object {
         this.height = 0;
         this.x = curX;
         this.y = curY;
+        this.frameArray = [new frame(this.x, this.y + this.height, this.x + this.width, this.y + this.height, this),
+            new frame(this.x + this.width, this.y + this.height, this.x + this.width, this.y, this),
+            new frame(this.x + this.width, this.y, this.x, this.y, this),
+            new frame(this.x, this.y, this.x, this.y + this.height, this)
+        ];
+        this.pointsArray = [new point(this.x, this.y, this, {
+                action: "resize",
+                attr: "ltc"
+            }),
+            new point(this.x + this.width / 2, this.y, this, {
+                action: "resize",
+                attr: "t"
+            }),
+            new point(this.x + this.width, this.y, this, {
+                action: "resize",
+                attr: "rtc"
+            }),
+            new point(this.x + this.width, this.y + this.height / 2, this, {
+                action: "resize",
+                attr: "r"
+            }),
+            new point(this.x + this.width, this.y + this.height, this, {
+                action: "resize",
+                attr: "rbc"
+            }),
+            new point(this.x + this.width / 2, this.y + this.height, this, {
+                action: "resize",
+                attr: "b"
+            }),
+            new point(this.x, this.y + this.height, this, {
+                action: "resize",
+                attr: "lbc"
+            }),
+            new point(this.x, this.y + this.height / 2, this, {
+                action: "resize",
+                attr: "l"
+            }),
+        ];
     }
     createClone() {
         let clone = new rectangle();
@@ -221,21 +259,18 @@ class rectangle extends object {
         this.updateFrameAndPoints()
     }
     updateFrameAndPoints(width = this.width, height = this.height, x = this.x, y = this.y) {
-        this.removeFrameAndPoints();
-        this.frameArray = [new frame(x, y + height, x + width, y + height, this),
-            new frame(x + width, y + height, x + width, y, this),
-            new frame(x + width, y, x, y, this),
-            new frame(x, y, x, y + height, this)
-        ];
-        this.pointsArray = [new point(x, y, this),
-            new point(x + width / 2, y, this),
-            new point(x + width, y, this),
-            new point(x + width, y + height / 2, this),
-            new point(x + width, y + height, this),
-            new point(x + width / 2, y + height, this),
-            new point(x, y + height, this),
-            new point(x, y + height / 2, this),
-        ];
+        this.frameArray[0].update(x, y + height, x + width, y + height);
+        this.frameArray[1].update(x + width, y + height, x + width, y);
+        this.frameArray[2].update(x + width, y, x, y);
+        this.frameArray[3].update(x, y, x, y + height);
+        this.pointsArray[0].update(x, y);
+        this.pointsArray[1].update(x + width / 2, y);
+        this.pointsArray[2].update(x + width, y);
+        this.pointsArray[3].update(x + width, y + height / 2);
+        this.pointsArray[4].update(x + width, y + height);
+        this.pointsArray[5].update(x + width / 2, y + height);
+        this.pointsArray[6].update(x, y + height);
+        this.pointsArray[7].update(x, y + height / 2);
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.svgElement.setAttribute('x', this.x + dx);
@@ -251,6 +286,107 @@ class rectangle extends object {
             dy = y + pointRadius - this.y;
         this.move(dx, dy);
         this.stopMoving(dx, dy);
+    }
+    resize() {
+        let n = {
+            x: this.x,
+            y: this.y,
+            height: this.height,
+            width: this.width
+        };
+        switch (currentResizeType) {
+            case "ltc":
+                n.width += this.x - curX;
+                n.height += this.y - curY;
+                n.x = curX;
+                n.y = curY;
+                break;
+            case "t":
+                n.height += this.y - curY;
+                n.y = curY;
+                break;
+            case "rtc":
+                n.width = curX - this.x;
+                n.height += this.y - curY;
+                n.y += curY - this.y;
+                break;
+            case "r":
+                n.width = curX - this.x;
+                break;
+            case "rbc":
+                n.width = curX - this.x;
+                n.height = curY - this.y;
+                break;
+            case "b":
+                n.height = curY - this.y;
+                break;
+            case "lbc":
+                n.width += this.x - curX;
+                n.height = curY - this.y;
+                n.x = curX;
+                break;
+            case "l":
+                n.width += this.x - curX;
+                n.x = curX;
+                break;
+        }
+        if (n.width < 0) {
+            n.width = 0;
+            if (this.x + this.width < curX) n.x = this.x + this.width
+            switch (currentResizeType) {
+                case "ltc":
+                    currentResizeType = "rtc";
+                    break;
+                case "lbc":
+                    currentResizeType = "rbc";
+                    break;
+                case "rtc":
+                    currentResizeType = "ltc";
+                    break;
+                case "rbc":
+                    currentResizeType = "lbc";
+                    break;
+                case "l":
+                    currentResizeType = "r";
+                    break;
+                case "r":
+                    currentResizeType = "l";
+                    break;
+            }
+        }
+        if (n.height < 0) {
+            n.height = 0;
+            if (this.y + this.height < curY) n.y = this.y + this.height
+            switch (currentResizeType) {
+                case "ltc":
+                    currentResizeType = "lbc";
+                    break;
+                case "lbc":
+                    currentResizeType = "ltc";
+                    break;
+                case "rtc":
+                    currentResizeType = "rbc";
+                    break;
+                case "rbc":
+                    currentResizeType = "rtc";
+                    break;
+                case "t":
+                    currentResizeType = "b";
+                    break;
+                case "b":
+                    currentResizeType = "t";
+                    break;
+            }
+        }
+        this.x = n.x;
+        this.y = n.y;
+        this.width = n.width;
+        this.height = n.height;
+        this.svgElement.setAttribute('x', n.x);
+        this.svgElement.setAttribute('y', n.y);
+        this.svgElement.setAttribute('width', n.width);
+        this.svgElement.setAttribute('height', n.height);
+        this.updateFrameAndPoints();
     }
 }
 
@@ -441,7 +577,7 @@ class polygon extends object {
         this.move(dx, dy);
         this.stopMoving(dx, dy);
     }
-    resize(resizeType) {
+    resize() {
         let dx = curX - this.x0,
             dy = curY - this.y0;
         this.r = Math.sqrt(dx ** 2 + dy ** 2);
@@ -784,9 +920,9 @@ class polyline extends object {
             this.updateFrameAndPoints();
         }
     }
-    resize(ind) {
-        this.pathCoords[ind].x = curX;
-        this.pathCoords[ind].y = curY;
+    resize() {
+        this.pathCoords[currentResizeType].x = curX;
+        this.pathCoords[currentResizeType].y = curY;
         this.updateFrameAndPoints();
     }
     complete() {

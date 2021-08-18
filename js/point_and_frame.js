@@ -44,13 +44,15 @@ class point {
             if (this.isMoving && currentObject == this.object) {
                 updateCursorCoords(current);
                 if (this.type != null && (this.type.action == "resize" || this.type.action == "polyline")) {
-                    this.object.resize(this.type.attr);
+                    this.object.resize();
                 }
             }
         }).bind(this);
         const startMoving = (() => {
             if (this.isSelected) {
                 this.isMoving = true;
+                currentResizeType = this.type.attr;
+                this.circle.setAttribute('fill', "red");
                 document.addEventListener("mousemove", move);
             }
         }).bind(this);
@@ -58,6 +60,8 @@ class point {
         const stopMoving = (() => {
             if (this.isMoving) {
                 this.isMoving = false;
+                currentResizeType = null;
+                this.circle.setAttribute('fill', "white");
                 document.removeEventListener("mousemove", move);
             }
         }).bind(this);
@@ -66,8 +70,9 @@ class point {
         const deletePoint = ((event) => {
             event.preventDefault();
             this.object.deletePoint(this.type.attr);
+            isSomePointSelected = false;
         })
-        if (this.type.action == "polyline") {
+        if (this.type != null && this.type.action == "polyline") {
             this.circle.addEventListener("contextmenu", deletePoint);
         }
     }
@@ -76,7 +81,7 @@ class point {
         return clone;
     }
     setColor(color) {
-        if (this.object.isCompleted) {
+        if (!this.isMoving && this.object.isCompleted) {
             this.circle.setAttribute('fill', color);
         }
     }
@@ -91,9 +96,16 @@ class point {
         svgPanel.removeChild(this.circle);
         this.circle = null;
         this.isSelected = false;
+        this.isMoving = false;
     }
     setPointAttribute(attributeName, value) {
         this.circle.setAttribute(attributeName, value);
+    }
+    update(x, y) {
+        this.x = x;
+        this.y = y;
+        this.circle.setAttribute('cx', x);
+        this.circle.setAttribute('cy', y);
     }
 }
 
@@ -136,6 +148,16 @@ class frame {
     }
     setFrameAttribute(attributeName, value) {
         this.line.setAttribute(attributeName, value);
+    }
+    update(x1, y1, x2, y2) {
+        this.x1 = x1;
+        this.y1 = y1;
+        this.x2 = x2;
+        this.y2 = y2;
+        this.line.setAttribute('x1', x1);
+        this.line.setAttribute('y1', y1);
+        this.line.setAttribute('x2', x2);
+        this.line.setAttribute('y2', y2);
     }
 }
 class pencilFrame {

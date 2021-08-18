@@ -80,3 +80,10 @@ scrollPanel.onscroll = function () {
 	updateRulersPos();
 	updateRulers();
 };
+
+function resetCurrentObject() {
+	if (currentObject != null) {
+		currentObject.hideFrameAndPoints();
+		currentObject = null;
+	}
+}

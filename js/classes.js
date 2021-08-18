@@ -45,9 +45,8 @@ class object {
         const select = (() => {
             if (wasPressed == "cursor") {
                 isSomeObjectSelected = true;
-                if (currentObject != null) {
-                    currentObject.hideFrameAndPoints();
-                }
+                resetCurrentObject()
+
                 if (this.isCompleted) {
                     this.showFrameAndPoints();
                     currentObject = this;
@@ -64,10 +63,7 @@ class object {
         //hide
         svgPanel.addEventListener("mousedown", function () {
             if (!isSomeObjectSelected) {
-                if (currentObject != null) {
-                    currentObject.hideFrameAndPoints();
-                    currentObject = null;
-                }
+                resetCurrentObject();
             }
         });
         //move

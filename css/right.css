@@ -75,7 +75,7 @@ hr {
     list-style: none;
     z-index: 3;
     margin-left: -4px;
-    background-color: #444;
+    background-color: rgb(60, 60, 60);
     padding: 4px;
     box-shadow: 4px 4px rgba(39, 39, 39, 0.5);
     width: 2vw;
@@ -94,7 +94,7 @@ hr {
 }
 
 .styleList li:hover {
-    background-color: #777;
+    background-color: #666;
 }
 
 li input:checked~label {
@@ -232,19 +232,23 @@ input[type=range] {
 
 .layers_menu {
     height: 100%;
-    position: relative;
+    width: 22%;
     background: url(../img/layers/menu.svg);
     background-size: auto 100%;
     background-repeat: no-repeat;
-    width: 22%;
 }
 
 .layers_menu ul {
     left: auto;
-    right: 0.3vw;
-    top: 40%;
+    top: auto;
+    right: 0.4vw;
     width: auto;
-    position: absolute;
+    white-space: nowrap;
+    font-size: 14.5px;
+}
+
+.layers_menu ul li {
+    padding: 2.5px;
     cursor: pointer;
 }
 

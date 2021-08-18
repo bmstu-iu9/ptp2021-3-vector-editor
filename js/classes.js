@@ -24,6 +24,7 @@ class object {
         clone.isMoving = false;
         clone.x0 = this.x0;
         clone.y0 = this.y0;
+        clone.rotatePoint = this.rotatePoint;
         clone.removeFrameAndPoints();
         for (let i = 0; i < this.pointsArray.length; i++) {
             clone.pointsArray[i] = this.pointsArray[i].createClone(clone);
@@ -86,7 +87,7 @@ class object {
                 this.start = {
                     x: curX,
                     y: curY
-                }
+                };
             }
         }).bind(this);
         this.svgElement.addEventListener("mousedown", startMoving);
@@ -109,6 +110,7 @@ class object {
         const startRotating = ((current) => {
             if (this.isCompleted && this.isSelected) {
                 this.isRotating = true;
+                this.isMoving = false;
                 updateCursorCoords(current);
                 this.startRotating();
             }
@@ -656,6 +658,12 @@ class pencil extends object {
         this.minY = this.y0;
         this.maxX = this.x0;
         this.maxY = this.y0;
+        this.cPoint = {
+            x: this.minX + (this.maxX - this.minX) / 2,
+            y: this.minY + (this.maxY - this.minY) / 2
+        }
+        this.angle = 0;
+        this.newAngle = 0; //для посчёта нового угла вращения
         this.svgElement.setAttribute('stroke-linejoin', "round");
         this.svgElement.setAttribute('stroke-linecap', "round");
         caps[2].checked = true;
@@ -670,6 +678,9 @@ class pencil extends object {
         clone.minY = this.minY;
         clone.maxX = this.maxX;
         clone.maxY = this.maxY;
+        clone.cPoint = this.cPoint;
+        clone.angle = this.angle;
+        clone.newAngle = this.newAngle;
         clone.svgElement.setAttribute('fill', "none");
         clone.path = "";
         clone.pathCoords = [];
@@ -695,33 +706,61 @@ class pencil extends object {
         this.minY = Math.min(this.minY, curY);
         this.maxX = Math.max(this.maxX, curX);
         this.maxY = Math.max(this.maxY, curY);
+        this.minAngleX = this.minX; 
+        this.maxAngleX = this.maxX; 
+        this.minAngleY = this.minY; 
+        this.maxAngleY = this.maxY;
+        this.cPoint = {
+            x: this.minX + (this.maxX - this.minX) / 2,
+            y: this.minY + (this.maxY - this.minY) / 2
+        }
     }
-    updateFrameAndPoints(dx = 0, dy = 0, minX = this.minX, minY = this.minY, maxX = this.maxX, maxY = this.maxY) {
+    updateFrameAndPoints(dx = 0, dy = 0, minX = this.minX, minY = this.minY, maxX = this.maxX, maxY = this.maxY, angle = this.angle) {
         //включает обновление атрибута
-        let newX0 = this.x0 + dx,
-            newY0 = this.y0 + dy;
+        let newX0 = this.getNewCoords(this.x0 + dx, this.y0 + dy, angle).x,
+            newY0 = this.getNewCoords(this.x0 + dx, this.y0 + dy, angle).y;
         this.path = newX0 + " " + newY0;
         for (let i = 0; i < this.pathCoords.length; i++) {
-            let newX = this.pathCoords[i].x + dx,
-                newY = this.pathCoords[i].y + dy;
+            let newX = this.getNewCoords(this.pathCoords[i].x + dx, this.pathCoords[i].y + dy, angle).x,
+                newY = this.getNewCoords(this.pathCoords[i].x + dx, this.pathCoords[i].y + dy, angle).y
             this.path += ", " + newX + " " + newY;
         }
         this.svgElement.setAttribute('points', this.path);
         this.removeFrameAndPoints();
-        this.frameArray = [new frame(minX, maxY, maxX, maxY, this),
-            new frame(maxX, maxY, maxX, minY, this),
-            new frame(maxX, minY, minX, minY, this),
-            new frame(minX, minY, minX, maxY, this),
+        this.frameArray = [new frame(this.getNewCoords(minX, maxY, angle).x, this.getNewCoords(minX, maxY, angle).y,
+         this.getNewCoords(maxX, maxY, angle).x, this.getNewCoords(maxX, maxY, angle).y, this),
+            new frame(this.getNewCoords(maxX, maxY, angle).x, this.getNewCoords(maxX, maxY, angle).y,
+             this.getNewCoords(maxX, minY, angle).x, this.getNewCoords(maxX, minY, angle).y, this),
+            new frame(this.getNewCoords(maxX, minY, angle).x, this.getNewCoords(maxX, minY, angle).y,
+             this.getNewCoords(minX, minY, angle).x, this.getNewCoords(minX, minY, angle).y, this),
+            new frame(this.getNewCoords(minX, minY, angle).x, this.getNewCoords(minX, minY, angle).y, 
+             this.getNewCoords(minX, maxY, angle).x, this.getNewCoords(minX, maxY, angle).y, this),
+            new frame(this.getNewCoords(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2, angle).x, this.getNewCoords(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2, angle).y,
+             this.getNewCoords(minX + (maxX - minX) / 2, minY - 20, angle).x, this.getNewCoords(minX + (maxX - minX) / 2, minY - 20, angle).y, this),
             new pencilShadow(this.path, this)
         ];
-        this.pointsArray = [new point(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2, this, "move")];
+        this.pointsArray = [new point(this.getNewCoords(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2, angle).x,
+         this.getNewCoords(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2, angle).y, this, "move"),
+            new point(this.getNewCoords(minX + (maxX - minX) / 2, minY - 20, angle).x, this.getNewCoords(minX + (maxX - minX) / 2, minY - 20, angle).y, this, "move")  
+        ];
         this.path = "";
+        this.rotatePoint = this.pointsArray[this.pointsArray.length - 1];
+        for (let i = 0; i < this.pointsArray.length; i++) {
+            this.pointsArray[i].circle.addEventListener("mouseover", function () {
+                isSomePointSelected = true;
+            });
+            this.pointsArray[i].circle.addEventListener("mouseout", function () {
+                isSomePointSelected = false;
+            });
+        }
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
-        this.updateFrameAndPoints(dx, dy, this.minX + dx,
-            this.minY + dy,
-            this.maxX + dx,
-            this.maxY + dy
+        this.updateFrameAndPoints(getRotateCoords(dx, dy, this.angle).x, getRotateCoords(dx, dy, this.angle).y, 
+            this.minX + getRotateCoords(dx, dy, this.angle).x,
+            this.minY + getRotateCoords(dx, dy, this.angle).y,
+            this.maxX + getRotateCoords(dx, dy, this.angle).x,
+            this.maxY + getRotateCoords(dx, dy, this.angle).y, 
+            this.angle
         );
     }
     stopMoving(dx = curX - this.start.x, dy = curY - this.start.y) {
@@ -730,7 +769,11 @@ class pencil extends object {
         this.minX += dx;
         this.minY += dy;
         this.maxX += dx;
-        this.maxY += dy;
+        this.maxY += dy; 
+        this.cPoint = {
+            x: this.minX + (this.maxX - this.minX) / 2,
+            y: this.minY + (this.maxY - this.minY) / 2
+        }
         for (let i = 0; i < this.pathCoords.length; i++) {
             this.pathCoords[i].x += dx;
             this.pathCoords[i].y += dy;
@@ -754,7 +797,33 @@ class pencil extends object {
         caps[2].checked = false;
         join[1].checked = false;
     }
-}
+    startRotating() {
+        this.rPoint = {
+            x: this.getNewCoords(this.minX + (this.maxX - this.minX) / 2, this.minY - 20, this.angle).x,
+            y: this.getNewCoords(this.minX + (this.maxX - this.minX) / 2, this.minY - 20, this.angle).y,
+        }
+    }
+    rotate(angle = this.angle) {
+        let firstSide = Math.sqrt(Math.pow(Math.abs(this.rPoint.x - this.cPoint.x), 2) + Math.pow(Math.abs(this.rPoint.y - this.cPoint.y), 2)),
+            secondSide = Math.sqrt(Math.pow(Math.abs(curX - this.cPoint.x), 2) + Math.pow(Math.abs(curY - this.cPoint.y), 2)),
+            thirdSide = (Math.sqrt(Math.pow(Math.abs(curX - this.rPoint.x), 2) + Math.pow(Math.abs(curY - this.rPoint.y), 2))), 
+            angleCos = (Math.pow(firstSide, 2) + Math.pow(secondSide, 2) - Math.pow(thirdSide, 2)) / (2 * firstSide * secondSide);
+            this.newAngle = getRotateCoords(curX, curY, angle).x >= getRotateCoords(this.cPoint.x, this.cPoint.y, angle).x ? 
+             Math.acos(angleCos) + angle : 2 * Math.PI - Math.acos(angleCos) + angle;
+        this.updateFrameAndPoints(0, 0, this.minX, this.minY, this.maxX, this.maxY, this.newAngle);
+    }
+    stopRotating() {
+        this.angle = this.newAngle;
+        this.angle = this.angle > 2 * Math.PI ? this.angle - 2 * Math.PI : this.angle; 
+        svgPanel.style.cursor = 'default';
+    }
+    getNewCoords(x = this.x0, y = this.y0, angle = this.angle) {
+        return {
+            x: (x - this.cPoint.x) * Math.cos(angle) - (y - this.cPoint.y) * Math.sin(angle) + this.cPoint.x, 
+            y: (x - this.cPoint.x) * Math.sin(angle) + (y - this.cPoint.y) * Math.cos(angle) + this.cPoint.y
+        }
+    }
+} 
 
 //LINE
 class line extends object {

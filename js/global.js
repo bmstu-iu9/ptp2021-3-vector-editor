@@ -1,10 +1,12 @@
 svgPanel = document.getElementById("svg_panel");
 drawPanel = document.getElementById("draw_panel");
 scrollPanel = document.getElementById("scroll_panel");
+layersPanel = document.getElementById("layers_panel");
+
 let isSomeObjectSelected = false, //для курсора
 	isSomePointSelected = false;
 let wasPressed, currentObject = null,
-	strokeColor = "black",
+	currentLayer,
 	objects = [];
 let buffer = null; //для копирования
 let svgPanelCoords = getCoords(svgPanel),

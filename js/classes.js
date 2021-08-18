@@ -1,7 +1,7 @@
 class object {
     constructor(name) {
         this.svgElement = document.createElementNS("http://www.w3.org/2000/svg", name);
-        svgPanel.appendChild(this.svgElement);
+        currentLayer.group.appendChild(this.svgElement);
         this.type = name;
         this.isCompleted = false;
         this.isSelected = false;
@@ -105,7 +105,7 @@ class object {
         return this.svgElement.getAttribute(attributeName);
     }
     remove() {
-        svgPanel.removeChild(this.svgElement);
+        currentLayer.group.removeChild(this.svgElement);
         this.svgElement = null;
         this.isSelected = false;
         this.isMoving = false;
@@ -123,10 +123,10 @@ class object {
     }
     hide() {
         this.hideFrameAndPoints()
-        svgPanel.removeChild(this.svgElement);
+        currentLayer.group.removeChild(this.svgElement);
     }
     show() {
-        svgPanel.appendChild(this.svgElement);
+        currentLayer.group.appendChild(this.svgElement);
         this.showFrameAndPoints()
     }
     hideFrameAndPoints() {
@@ -252,7 +252,7 @@ class rectangle extends object {
         this.svgElement.setAttribute('height', this.height);
         this.svgElement.setAttribute('x', this.x);
         this.svgElement.setAttribute('y', this.y);
-        this.updateFrameAndPoints()
+        this.updateFrameAndPoints();
     }
     updateFrameAndPoints(x = this.x, y = this.y, width = this.width, height = this.height) {
         this.frameArray[0].update(x, y, width, height);
@@ -755,6 +755,9 @@ class pencil extends object {
         this.maxY = this.y0;
         this.svgElement.setAttribute('stroke-linejoin', "round");
         this.svgElement.setAttribute('stroke-linecap', "round");
+        caps[2].checked = true;
+        join[1].checked = true;
+        updateStroke(this);
     }
     createClone() {
         let clone = new pencil();
@@ -852,6 +855,8 @@ class pencil extends object {
         })];
         super.complete();
         this.path = "";
+        caps[2].checked = false;
+        join[1].checked = false;
     }
 }
 

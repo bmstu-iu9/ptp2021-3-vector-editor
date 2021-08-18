@@ -184,11 +184,7 @@ class rectangle extends object {
         this.height = 0;
         this.x = curX;
         this.y = curY;
-        this.frameArray = [new frame(this.x, this.y + this.height, this.x + this.width, this.y + this.height, this),
-            new frame(this.x + this.width, this.y + this.height, this.x + this.width, this.y, this),
-            new frame(this.x + this.width, this.y, this.x, this.y, this),
-            new frame(this.x, this.y, this.x, this.y + this.height, this)
-        ];
+        this.frameArray = [new rectangleFrame(this.x, this.y, this.width, this.height, this)];
         this.pointsArray = [new point(this.x, this.y, this, {
                 action: "resize",
                 attr: "ltc"
@@ -258,11 +254,8 @@ class rectangle extends object {
         this.svgElement.setAttribute('y', this.y);
         this.updateFrameAndPoints()
     }
-    updateFrameAndPoints(width = this.width, height = this.height, x = this.x, y = this.y) {
-        this.frameArray[0].update(x, y + height, x + width, y + height);
-        this.frameArray[1].update(x + width, y + height, x + width, y);
-        this.frameArray[2].update(x + width, y, x, y);
-        this.frameArray[3].update(x, y, x, y + height);
+    updateFrameAndPoints(x = this.x, y = this.y, width = this.width, height = this.height) {
+        this.frameArray[0].update(x, y, width, height);
         this.pointsArray[0].update(x, y);
         this.pointsArray[1].update(x + width / 2, y);
         this.pointsArray[2].update(x + width, y);
@@ -275,7 +268,7 @@ class rectangle extends object {
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.svgElement.setAttribute('x', this.x + dx);
         this.svgElement.setAttribute('y', this.y + dy);
-        this.updateFrameAndPoints(this.width, this.height, this.x + dx, this.y + dy);
+        this.updateFrameAndPoints(this.x + dx, this.y + dy, this.width, this.height);
     }
     stopMoving(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.x += dx;
@@ -398,10 +391,11 @@ class ellipse extends object {
         this.ry = 0;
         this.cx = curX;
         this.cy = curY;
-        this.frameArray = [new frame(this.cx - this.rx, this.cy + this.ry, this.cx + this.rx, this.cy + this.ry, this, true),
-            new frame(this.cx + this.rx, this.cy + this.ry, this.cx + this.rx, this.cy - this.ry, this, true),
-            new frame(this.cx + this.rx, this.cy - this.ry, this.cx - this.rx, this.cy - this.ry, this, true),
-            new frame(this.cx - this.rx, this.cy - this.ry, this.cx - this.rx, this.cy + this.ry, this, true)
+        this.frameArray = [new lineFrame(this.cx - this.rx, this.cy + this.ry, this.cx + this.rx, this.cy + this.ry, this, true),
+            new lineFrame(this.cx + this.rx, this.cy + this.ry, this.cx + this.rx, this.cy - this.ry, this, true),
+            new lineFrame(this.cx + this.rx, this.cy - this.ry, this.cx - this.rx, this.cy - this.ry, this, true),
+            new lineFrame(this.cx - this.rx, this.cy - this.ry, this.cx - this.rx, this.cy + this.ry, this, true),
+            new ellipseFrame(this.cx, this.cy, this.rx, this.ry, this)
         ];
         this.pointsArray = [new point(this.cx - this.rx, this.cy - this.ry, this, {
                 action: "resize",
@@ -477,6 +471,7 @@ class ellipse extends object {
         this.frameArray[1].update(cx + rx, cy + ry, cx + rx, cy - ry);
         this.frameArray[2].update(cx + rx, cy - ry, cx - rx, cy - ry);
         this.frameArray[3].update(cx - rx, cy - ry, cx - rx, cy + ry);
+        this.frameArray[4].update(cx, cy, rx, ry);
         this.pointsArray[0].update(cx - rx, cy - ry);
         this.pointsArray[1].update(cx, cy - ry);
         this.pointsArray[2].update(cx + rx, cy - ry);
@@ -637,6 +632,7 @@ class polygon extends object {
         this.freeRotation = this.freeRotation.bind(this);
         this.updateVertNum = this.updateVertNum.bind(this);
         this.addHotKeys();
+        this.frameArray = [new polygonFrame(this.vertices, this)]
     }
     createClone() {
         let clone = new polygon();
@@ -660,8 +656,7 @@ class polygon extends object {
     }
     updateFrameAndPoints(x0 = this.x0, y0 = this.y0) {
         //включает обновление атрибута
-        this.removeFrameAndPoints();
-        let prevX, prevY, firstX, firstY;
+        let firstX, firstY;
         for (let i = 0; i < this.vertNum; i++) {
             let x = x0 + this.r * Math.cos(this.phi + 2 * Math.PI * i / this.vertNum);
             let y = y0 + this.r * Math.sin(this.phi + 2 * Math.PI * i / this.vertNum);
@@ -671,12 +666,15 @@ class polygon extends object {
                 firstY = y;
             } else {
                 this.vertices += ", " + x + " " + y;
-                this.frameArray.push(new frame(prevX, prevY, x, y, this));
             }
-            prevX = x;
-            prevY = y;
         }
-        this.frameArray.push(new frame(firstX, firstY, prevX, prevY, this));
+        this.vertices += ", " + firstX + " " + firstY;
+        this.frameArray[0].update(this.vertices);
+
+        for (let i = 0; i < this.pointsArray.length; i++) {
+            this.pointsArray[i].remove();
+        }
+        this.pointsArray = [];
         for (let i = 0; i < this.vertNum; i++) {
             let x = x0 + this.r * Math.cos(this.phi + 2 * Math.PI * i / this.vertNum);
             let y = y0 + this.r * Math.sin(this.phi + 2 * Math.PI * i / this.vertNum);
@@ -803,16 +801,12 @@ class pencil extends object {
             this.path += ", " + newX + " " + newY;
         }
         this.svgElement.setAttribute('points', this.path);
-        this.removeFrameAndPoints();
-        this.frameArray = [new frame(minX, maxY, maxX, maxY, this, true),
-            new frame(maxX, maxY, maxX, minY, this, true),
-            new frame(maxX, minY, minX, minY, this, true),
-            new frame(minX, minY, minX, maxY, this, true),
-            new pencilFrame(this.path, this)
-        ];
-        this.pointsArray = [new point(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2, this, {
-            action: "move"
-        })];
+        this.frameArray[0].update(minX, maxY, maxX, maxY);
+        this.frameArray[1].update(maxX, maxY, maxX, minY);
+        this.frameArray[2].update(maxX, minY, minX, minY);
+        this.frameArray[3].update(minX, minY, minX, maxY);
+        this.frameArray[4].update(this.path);
+        this.pointsArray[0].update(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2);
         this.path = "";
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
@@ -847,6 +841,15 @@ class pencil extends object {
         this.removeHotKeys();
     }
     complete() {
+        this.frameArray = [new lineFrame(this.minX, this.maxY, this.maxX, this.maxY, this, true),
+            new lineFrame(this.maxX, this.maxY, this.maxX, this.minY, this, true),
+            new lineFrame(this.maxX, this.minY, this.minX, this.minY, this, true),
+            new lineFrame(this.minX, this.minY, this.minX, this.maxY, this, true),
+            new polylineFrame(this.path, this)
+        ];
+        this.pointsArray = [new point(this.minX + (this.maxX - this.minX) / 2, this.minY + (this.maxY - this.minY) / 2, this, {
+            action: "move"
+        })];
         super.complete();
         this.path = "";
     }
@@ -872,7 +875,7 @@ class line extends object {
             this.svgElement.setAttribute('stroke-width', "2");
             this.svgElement.setAttribute('stroke-dasharray', "8");
         } else {
-            this.frameArray = [new frame(this.x0, this.y0, this.x2, this.y2, this)]
+            this.frameArray = [new lineFrame(this.x0, this.y0, this.x2, this.y2, this)]
             this.pointsArray = [new point(this.x0, this.y0, this, {
                     action: "resize",
                     attr: "1"
@@ -985,13 +988,17 @@ class polyline extends object {
             y: this.y0
         }];
         this.svgElement.setAttribute('points', this.path);
-        this.pointsArray.push(new point(this.x0, this.y0, this, "polyline"));
+        this.pointsArray.push(new point(this.x0, this.y0, this, {
+            action: "polyline",
+            attr: 0
+        }));
         this.pointsArray[0].setPointAttribute('fill', "blue");
         this.line = new line(curX, curY, curX, curY, false);
         this.minX = this.x0;
         this.minY = this.y0;
         this.maxX = this.x0;
         this.maxY = this.y0;
+        this.frameArray = [new polylineFrame(this.path, this)]
     }
     createClone() {
         let clone = new polyline();
@@ -1051,18 +1058,15 @@ class polyline extends object {
     }
     updateFrameAndPoints(dx = 0, dy = 0) {
         //включает обновление атрибута
-        this.removeFrameAndPoints();
         for (let i = 0; i < this.pathCoords.length; i++) {
             let x = this.pathCoords[i].x + dx,
                 y = this.pathCoords[i].y + dy;
             if (i == 0) this.path = x + " " + y;
             else this.path += ", " + x + " " + y;
-            this.pointsArray.push(new point(x, y, this, {
-                action: "polyline",
-                attr: i
-            }));
+            this.pointsArray[i].update(x, y, i);
         }
         this.path += ", " + (this.pathCoords[0].x + dx) + " " + (this.pathCoords[0].y + dy);
+        this.frameArray[0].update(this.path);
         this.svgElement.setAttribute('points', this.path);
         this.path = "";
     }

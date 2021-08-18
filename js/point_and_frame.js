@@ -96,96 +96,159 @@ class point {
     setPointAttribute(attributeName, value) {
         this.circle.setAttribute(attributeName, value);
     }
-    update(x, y) {
+    update(x, y, attr = this.type.attr) {
         this.x = x;
         this.y = y;
         this.circle.setAttribute('cx', x);
         this.circle.setAttribute('cy', y);
+        this.type.attr = attr;
     }
 }
 
 class frame {
-    constructor(x1, y1, x2, y2, object, red = false) {
-        this.line = document.createElementNS("http://www.w3.org/2000/svg", 'line');
-        svgPanel.appendChild(this.line);
-        this.x1 = x1;
-        this.y1 = y1;
-        this.x2 = x2;
-        this.y2 = y2;
+    constructor(name, object, red = false) {
+        this.svgElement = document.createElementNS("http://www.w3.org/2000/svg", name);
+        svgPanel.appendChild(this.svgElement);
         this.object = object;
-        this.line.setAttribute('x1', x1);
-        this.line.setAttribute('y1', y1);
-        this.line.setAttribute('x2', x2);
-        this.line.setAttribute('y2', y2);
-        this.line.setAttribute('stroke-opacity', "0.5");
-        if (red) this.line.setAttribute('stroke', "red");
-        else this.line.setAttribute('stroke', object.getElementAttribute('stroke'));
-        if (red) this.line.setAttribute('stroke-width', pointRadius);
-        else this.line.setAttribute('stroke-width', object.getElementAttribute('stroke-width'));
-        if (red || object.getElementAttribute('stroke-dasharray') == null) this.line.setAttribute('stroke-dasharray', "8");
-        else this.line.setAttribute('stroke-dasharray', object.getElementAttribute('stroke-dasharray'));
-        this.line.setAttribute('stroke-linejoin', object.getElementAttribute('stroke-linejoin'));
-        this.line.setAttribute('stroke-linecap', object.getElementAttribute('stroke-linecap'));
+        this.svgElement.setAttribute('stroke-opacity', "0.5");
+        if (red) this.svgElement.setAttribute('stroke', "red");
+        else this.svgElement.setAttribute('stroke', object.getElementAttribute('stroke'));
+        if (red) this.svgElement.setAttribute('stroke-width', pointRadius);
+        else this.svgElement.setAttribute('stroke-width', object.getElementAttribute('stroke-width'));
+        if (red || object.getElementAttribute('stroke-dasharray') == null) this.svgElement.setAttribute('stroke-dasharray', "8");
+        else this.svgElement.setAttribute('stroke-dasharray', object.getElementAttribute('stroke-dasharray'));
+        this.svgElement.setAttribute('stroke-linejoin', object.getElementAttribute('stroke-linejoin'));
+        this.svgElement.setAttribute('stroke-linecap', object.getElementAttribute('stroke-linecap'));
+        this.svgElement.setAttribute('fill', "none");
     }
     createClone(newObject) {
         let clone = new frame(this.x1, this.y1, this.x2, this.y2, newObject);
         return clone;
     }
     hide() {
-        svgPanel.removeChild(this.line);
+        svgPanel.removeChild(this.svgElement);
     }
     show() {
-        svgPanel.appendChild(this.line);
+        svgPanel.appendChild(this.svgElement);
     }
     remove() {
-        svgPanel.removeChild(this.line);
-        this.line = null;
+        svgPanel.removeChild(this.svgElement);
+        this.svgElement = null;
     }
     setFrameAttribute(attributeName, value) {
-        this.line.setAttribute(attributeName, value);
+        this.svgElement.setAttribute(attributeName, value);
+    }
+    update() {}
+}
+class lineFrame extends frame {
+    constructor(x1, y1, x2, y2, object, red = false) {
+        super('line', object, red);
+        this.x1 = x1;
+        this.y1 = y1;
+        this.x2 = x2;
+        this.y2 = y2;
+        this.svgElement.setAttribute('x1', x1);
+        this.svgElement.setAttribute('y1', y1);
+        this.svgElement.setAttribute('x2', x2);
+        this.svgElement.setAttribute('y2', y2);
+        this.red = red;
+    }
+    createClone(newObject) {
+        let clone = new lineFrame(this.x1, this.y1, this.x2, this.y2, newObject, this.red);
+        return clone;
     }
     update(x1, y1, x2, y2) {
         this.x1 = x1;
         this.y1 = y1;
         this.x2 = x2;
         this.y2 = y2;
-        this.line.setAttribute('x1', x1);
-        this.line.setAttribute('y1', y1);
-        this.line.setAttribute('x2', x2);
-        this.line.setAttribute('y2', y2);
+        this.svgElement.setAttribute('x1', x1);
+        this.svgElement.setAttribute('y1', y1);
+        this.svgElement.setAttribute('x2', x2);
+        this.svgElement.setAttribute('y2', y2);
     }
 }
-class pencilFrame {
-    constructor(path, object) {
-        this.polyline = document.createElementNS("http://www.w3.org/2000/svg", 'polyline');
-        svgPanel.appendChild(this.polyline);
-        this.path = path;
-        this.object = object;
-        this.polyline.setAttribute('points', path);
-        this.polyline.setAttribute('stroke-opacity', "0.5");
-        this.polyline.setAttribute('stroke', object.getElementAttribute('stroke'));
-        this.polyline.setAttribute('stroke-width', object.getElementAttribute('stroke-width'));
-        if (object.getElementAttribute('stroke-dasharray') == null) this.polyline.setAttribute('stroke-dasharray', "8");
-        else this.polyline.setAttribute('stroke-dasharray', object.getElementAttribute('stroke-dasharray'));
-        this.polyline.setAttribute('stroke-linejoin', object.getElementAttribute('stroke-linejoin'));
-        this.polyline.setAttribute('stroke-linecap', object.getElementAttribute('stroke-linecap'));
-        this.polyline.setAttribute('fill', "none");
+class rectangleFrame extends frame {
+    constructor(x, y, width, height, object) {
+        super('rect', object);
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.svgElement.setAttribute('x', x);
+        this.svgElement.setAttribute('y', y);
+        this.svgElement.setAttribute('width', width);
+        this.svgElement.setAttribute('height', height);
     }
     createClone(newObject) {
-        let clone = new pencilFrame(this.path, newObject);
+        let clone = new rectangleFrame(this.x, this.y, this.width, this.height, newObject);
         return clone;
     }
-    hide() {
-        svgPanel.removeChild(this.polyline);
+    update(x, y, width, height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.svgElement.setAttribute('x', x);
+        this.svgElement.setAttribute('y', y);
+        this.svgElement.setAttribute('width', width);
+        this.svgElement.setAttribute('height', height);
     }
-    show() {
-        svgPanel.appendChild(this.polyline);
+}
+class ellipseFrame extends frame {
+    constructor(cx, cy, rx, ry, object) {
+        super('ellipse', object);
+        this.cx = cx;
+        this.cy = cy;
+        this.rx = rx;
+        this.ry = ry;
+        this.svgElement.setAttribute('cx', cx);
+        this.svgElement.setAttribute('cy', cy);
+        this.svgElement.setAttribute('rx', rx);
+        this.svgElement.setAttribute('ry', ry);
     }
-    remove() {
-        svgPanel.removeChild(this.polyline);
-        this.polyline = null;
+    createClone(newObject) {
+        let clone = new ellipseFrame(this.cx, this.cy, this.rx, this.ry, newObject);
+        return clone;
     }
-    setFrameAttribute(attributeName, value) {
-        this.polyline.setAttribute(attributeName, value);
+    update(cx, cy, rx, ry) {
+        this.cx = cx;
+        this.cy = cy;
+        this.rx = rx;
+        this.ry = ry;
+        this.svgElement.setAttribute('cx', cx);
+        this.svgElement.setAttribute('cy', cy);
+        this.svgElement.setAttribute('rx', rx);
+        this.svgElement.setAttribute('ry', ry);
+    }
+}
+class polygonFrame extends frame {
+    constructor(vertices, object) {
+        super('polygon', object);
+        this.vertices = vertices;
+        this.svgElement.setAttribute('points', vertices);
+    }
+    createClone(newObject) {
+        let clone = new polygonFrame(this.vertices, newObject);
+        return clone;
+    }
+    update(vertices) {
+        this.vertices = vertices;
+        this.svgElement.setAttribute('points', vertices);
+    }
+}
+class polylineFrame extends frame {
+    constructor(path, object) {
+        super('polyline', object);
+        this.path = path;
+        this.svgElement.setAttribute('points', path);
+    }
+    createClone(newObject) {
+        let clone = new polylineFrame(this.path, newObject);
+        return clone;
+    }
+    update(path) {
+        this.path = path;
+        this.svgElement.setAttribute('points', path);
     }
 }

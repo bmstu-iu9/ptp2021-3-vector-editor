@@ -109,14 +109,11 @@ class object {
             if (this.isCompleted && this.isSelected) {
                 this.isRotating = true;
                 updateCursorCoords(current);
-                this.rPoint = {
-                    x: this.getNewCoords(this.x + this.width / 2, this.y - 20, this.angle).x,
-                    y: this.getNewCoords(this.x + this.width / 2, this.y - 20, this.angle).y
-                }
+                this.startRotating();
             }
         }).bind(this);
         const update_rPoint = ((current) => {
-            if (rotatePoint != null && !this.isMoving && !this.isRotating) {
+            if (currentObject != null && rotatePoint != null && !this.isMoving && !this.isRotating) {
                 rotatePoint = this.pointsArray[this.pointsArray.length - 1];
                 rotatePoint.circle.addEventListener("mousedown", startRotating);
                 rotatePoint.circle.addEventListener("mouseover", function () {
@@ -193,6 +190,7 @@ class object {
     stopMoving() {}
     moveTo() {}
     rotate() {}
+    startRotating() {}
     stopRotating() {}
     getNewCoords() {} //преобразование координат ключевых точек при повороте фигуры
     complete() {
@@ -222,7 +220,9 @@ class rectangle extends object {
             x: curX,
             y: curY
         }
-        this.angle = 0; 
+        this.angle = 0;
+        this.angleX = curX; 
+        this.angleY = curY;
     }
     createClone() {
         let clone = new rectangle();
@@ -234,10 +234,13 @@ class rectangle extends object {
         clone.y = this.y;
         clone.cPoint = this.cPoint;
         clone.angle = this.angle;
+        clone.angleX = this.angleX; 
+        clone.angleY = this.angleY;
         clone.svgElement.setAttribute('width', this.width);
         clone.svgElement.setAttribute('height', this.height);
         clone.svgElement.setAttribute('x', this.x);
         clone.svgElement.setAttribute('y', this.y);
+        clone.svgElement.setAttribute('transform', this.svgElement.getAttribute('transform'));
         return clone;
     }
     updateAttributes(current) {
@@ -259,11 +262,13 @@ class rectangle extends object {
             x: this.x + this.width / 2,
             y: this.y + this.height / 2
         }
+        this.angleX = this.x; 
+        this.angleY = this.y;
         this.svgElement.setAttribute('width', this.width);
         this.svgElement.setAttribute('height', this.height);
         this.svgElement.setAttribute('x', this.x);
         this.svgElement.setAttribute('y', this.y);
-        this.updateFrameAndPoints();
+        this.updateFrameAndPoints()
     }
     updateFrameAndPoints(width = this.width, height = this.height, x = this.x, y = this.y, angle = this.angle) {
         this.removeFrameAndPoints();
@@ -281,7 +286,7 @@ class rectangle extends object {
             new frame(this.getNewCoords(x, y, angle).x, this.getNewCoords(x, y, angle).y,
              this.getNewCoords(x, y + height, angle).x, this.getNewCoords(x, y + height, angle).y, this), 
             new frame(this.getNewCoords(x + width / 2, y + height / 2, angle).x, this.getNewCoords(x + width / 2, y + height / 2, angle).y,
-             this.getNewCoords(x + width / 2, y - 20, angle).x, this.getNewCoords(x + width / 2, y - 20, angle).y, this)
+             this.getNewCoords(x + width / 2, y - 25, angle).x, this.getNewCoords(x + width / 2, y - 25, angle).y, this)
         ];
         this.pointsArray = [new point(this.getNewCoords(x, y, angle).x, this.getNewCoords(x, y, angle).y, this),
             new point(this.getNewCoords(x + width / 2, y, angle).x, this.getNewCoords(x + width / 2, y, angle).y, this),
@@ -292,7 +297,7 @@ class rectangle extends object {
             new point(this.getNewCoords(x, y + height, angle).x, this.getNewCoords(x, y + height, angle).y, this),
             new point(this.getNewCoords(x, y + height / 2, angle).x, this.getNewCoords(x, y + height / 2, angle).y, this),
             new point(this.cPoint.x, this.cPoint.y, this),
-            new point(this.getNewCoords(x + width / 2, y - 20, angle).x, this.getNewCoords(x + width / 2, y - 20, angle).y, this)
+            new point(this.getNewCoords(x + width / 2, y - 25, angle).x, this.getNewCoords(x + width / 2, y - 25, angle).y, this)
         ];
         rotatePoint = this.pointsArray[this.pointsArray.length - 1];
         for (let i = 0; i < this.pointsArray.length; i++) {
@@ -305,17 +310,27 @@ class rectangle extends object {
         }
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
-        this.svgElement.setAttribute('x', this.x + dx);
-        this.svgElement.setAttribute('y', this.y + dy);
+        let new_dx = getRotateCoords(dx, dy, this.angle).x, 
+            new_dy = getRotateCoords(dx, dy, this.angle).y; 
+        this.svgElement.setAttribute('x', this.angleX + new_dx);
+        this.svgElement.setAttribute('y', this.angleY + new_dy);
         this.cPoint = {
-            x: this.x + dx + this.width / 2,
+            x: this.x + dx + this.width / 2, 
             y: this.y + dy + this.height / 2
-        };
-        this.updateFrameAndPoints(this.width, this.height, this.x + dx, this.y + dy);
+        }
+        this.updateFrameAndPoints(this.width, this.height, this.x + dx, this.y + dy, this.angle);
     }
     stopMoving(dx = curX - this.start.x, dy = curY - this.start.y) {
+        let new_dx = getRotateCoords(dx, dy, this.angle).x, 
+            new_dy = getRotateCoords(dx, dy, this.angle).y; 
         this.x += dx;
         this.y += dy;
+        this.angleX += new_dx; 
+        this.angleY += new_dy;
+        this.cPoint = {
+            x: this.x + this.width / 2, 
+            y: this.y + this.height / 2
+        }
     }
     moveTo(x, y) {
         let dx = x + pointRadius - this.x,
@@ -323,25 +338,36 @@ class rectangle extends object {
         this.move(dx, dy);
         this.stopMoving(dx, dy);
     }
+    startRotating() {
+        this.rPoint = {
+            x: this.getNewCoords(this.x + this.width / 2, this.y - 20, this.angle).x,
+            y: this.getNewCoords(this.x + this.width / 2, this.y - 20, this.angle).y
+        }
+    }
     rotate(angle = this.angle) {
-        let firstSide = Math.sqrt(Math.pow(Math.abs(this.rPoint.x - this.cPoint.x), 2) + Math.pow(Math.abs(this.rPoint.y - this.cPoint.y), 2));
-        let secondSide = Math.sqrt(Math.pow(Math.abs(curX - this.cPoint.x), 2) + Math.pow(Math.abs(curY - this.cPoint.y), 2));
-        let thirdSide = (Math.sqrt(Math.pow(Math.abs(curX - this.rPoint.x), 2) + Math.pow(Math.abs(curY - this.rPoint.y), 2))); 
-        let angleCos = (Math.pow(firstSide, 2) + Math.pow(secondSide, 2) - Math.pow(thirdSide, 2)) / (2 * firstSide * secondSide);  
-        let newAngle = getRotateCoords(curX, curY, angle).x >= getRotateCoords(this.cPoint.x, this.cPoint.y, angle).x ? 
-            Math.acos(angleCos) + angle : 2 * Math.PI - Math.acos(angleCos) + angle;
+        let firstSide = Math.sqrt(Math.pow(Math.abs(this.rPoint.x - this.cPoint.x), 2) + Math.pow(Math.abs(this.rPoint.y - this.cPoint.y), 2)),
+            secondSide = Math.sqrt(Math.pow(Math.abs(curX - this.cPoint.x), 2) + Math.pow(Math.abs(curY - this.cPoint.y), 2)),
+            thirdSide = (Math.sqrt(Math.pow(Math.abs(curX - this.rPoint.x), 2) + Math.pow(Math.abs(curY - this.rPoint.y), 2))), 
+            angleCos = (Math.pow(firstSide, 2) + Math.pow(secondSide, 2) - Math.pow(thirdSide, 2)) / (2 * firstSide * secondSide),
+            newAngle = getRotateCoords(curX, curY, angle).x >= getRotateCoords(this.cPoint.x, this.cPoint.y, angle).x ? 
+             Math.acos(angleCos) + angle : 2 * Math.PI - Math.acos(angleCos) + angle;
+        if (this.svgElement.hasAttribute('transform')) {
+            this.svgElement.removeAttribute('transform');
+            this.svgElement.setAttribute('x', this.x); 
+            this.svgElement.setAttribute('y', this.y);
+        }
         this.svgElement.setAttribute('transform', 'rotate(' + newAngle * 180.0 / Math.PI  + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')'); 
         this.updateFrameAndPoints(this.width, this.height, this.x, this.y, newAngle);
     }
-    stopRotating(x = this.x, y = this.y) {
+    stopRotating() {
         let argss = this.svgElement.getAttribute('transform').split('(')[1],
-        args = argss.split(')')[0],
-        newAngle = args.split(' ')[0] * Math.PI / 180.0;
+            args = argss.split(')')[0],
+            newAngle = args.split(' ')[0] * Math.PI / 180.0;
         this.angle = newAngle;
         this.angle = this.angle > 2 * Math.PI ? this.angle - 2 * Math.PI : this.angle; 
+        this.angleX = this.x; 
+        this.angleY = this.y; 
         svgPanel.style.cursor = 'default';
-        /*this.x = this.getNewCoords(x, y, this.angle).x; 
-        this.y = this.getNewCoords(x, y, this.angle).y;*/ 
     }
     getNewCoords(x = this.x, y = this.y, angle = this.angle) {
         return {

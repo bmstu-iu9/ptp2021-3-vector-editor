@@ -14,49 +14,47 @@
 </head>
 
 <body>
-  <header>
-    <h1 id="logo">Pentagram</h1>
-    <nav id="menu_bar">
-      <div class="container">
-        <ul class="menu">
-          <li class="dropdown"> <a href="#"> <b> Файл </b> </a>
-            <ul class="sub_menu">
-              <li> <a href="#" id="create"> <b> Новый документ </b> </a> </li>
-              <input id="file-selector" type="file" accept="image/svg+xml" style="display: none;" />
-              <li> <a href="#" id="open"> <b> Открыть SVG-файл </b> </a> </li>
-              <li> <a href="#" id="save"> <b> Сохранить изображение </b> </a> </li>
-              <li> <a href="#" id="savePng"> <b> Сохранить как PNG </b> </a> </li>
-            </ul>
-          </li>
-          <li class="dropdown"> <a href="#"> <b> Редактировать </b> </a>
-            <ul class="sub_menu">
-              <li> <a href="#" id="cut"> <b> Вырезать </b> </a> </li>
-              <li> <a href="#" id="copy"> <b> Копировать </b> </a> </li>
-              <li> <a href="#" id="paste"> <b> Вставить </b> </a> </li>
-              <li> <a href="#" id="deleteObject"> <b> Удалить </b> </a> </li>
-            </ul>
-          </li>
-          <li class="dropdown"> <a href="#"> <b> Вид </b> </a>
-            <ul class="sub_menu">
-              <li> <a href="#" id="showRulers"> <b> Просмотр линеек </b> </a> </li>
-              <li> <a href="#" id="showGrid"> <b> Просмотр сетки </b> </a> </li>
-              <li> <a href="#" id="zoomIn"> <b> Увеличить масштаб </b> </a> </li>
-              <li> <a href="#" id="zoomOut"> <b> Уменьшить масштаб </b> </a> </li>
-            </ul>
-          </li>
-          <li class="dropdown"> <a href="#"> <b> Помощь </b> </a> </li>
-        </ul>
-      </div>
-    </nav>
-    <div id="functions">
-      <button title="Отменить" class=func_button id="undo" style="background-image: url(img/undo.svg)"></button>
-      <button title="Вернуть" class=func_button id="redo" style="background-image: url(img/redo.svg)"></button>
-      <button title="На передний план" class=func_button id="frontObject"
-        style="background-image: url(img/to_front.svg)"></button>
-      <button title="На задний план" class=func_button id="backObject"
-        style="background-image: url(img/to_back.svg)"></button>
-    </div>
-  </header>
+    <header>
+        <h1 id="logo">Pentagram</h1>
+        <nav id="menu_bar">
+            <div class="container">
+                <ul class="menu">
+                    <li class="dropdown"> <a href="#"> <b> Файл </b> </a>
+                        <ul class="sub_menu">
+                            <li> <a href="#" id="create"> <b> Новый документ </b> </a> </li>
+                            <input id="file-selector" type="file" accept="image/svg+xml" style="display: none;" />
+                            <li> <a href="#" id="open"> <b> Открыть SVG-файл </b> </a> </li>
+                            <li> <a href="#" id="save"> <b> Сохранить изображение </b> </a> </li>
+                            <li> <a href="#" id="savePng"> <b> Сохранить как PNG </b> </a> </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown"> <a href="#"> <b> Редактировать </b> </a>
+                        <ul class="sub_menu">
+                            <li> <a href="#" id="cut"> <b> Вырезать </b> </a> </li>
+                            <li> <a href="#" id="copy"> <b> Копировать </b> </a> </li>
+                            <li> <a href="#" id="paste"> <b> Вставить </b> </a> </li>
+                            <li> <a href="#" id="deleteObject"> <b> Удалить </b> </a> </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown"> <a href="#"> <b> Вид </b> </a>
+                        <ul class="sub_menu">
+                            <li> <a href="#" id="showRulers"> <b> Просмотр линеек </b> </a> </li>
+                            <li> <a href="#" id="showGrid"> <b> Просмотр сетки </b> </a> </li>
+                            <li> <a href="#" id="zoomIn"> <b> Увеличить масштаб </b> </a> </li>
+                            <li> <a href="#" id="zoomOut"> <b> Уменьшить масштаб </b> </a> </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown"> <a href="#"> <b> Помощь </b> </a> </li>
+                </ul>
+            </div>
+        </nav>
+        <div id="functions">
+            <button title="Отменить" class=func_button id="undo" style="background-image: url(img/undo.svg)"></button>
+            <button title="Вернуть" class=func_button id="redo" style="background-image: url(img/redo.svg)"></button>
+            <button title="На передний план" class=func_button id="frontObject" style="background-image: url(img/to_front.svg)"></button>
+            <button title="На задний план" class=func_button id="backObject" style="background-image: url(img/to_back.svg)"></button>
+        </div>
+    </header>
 
     <main>
         <div id="left_panel">
@@ -68,9 +66,11 @@
             <button title="Линия" class="tool_button" id="line" style="background-image: url(img/line.svg)"></button>
             <button title="Фигуры" class="tool_button" id="figures" style="background-image: url(img/figures.svg)">
                 <ul class="vertical_menu">
+
                     <li><a href="#" id="rectangle">Прямоугольник</a></li>
                     <li><a href="#" id="ellipse">Эллипс</a></li>
                     <li><a href="#" id="polygon">Многоугольник</a></li>
+
                 </ul>
             </button>
             <button title="Текст" class="tool_button" id="text" style="background-image: url(img/text.svg)"></button>
@@ -122,99 +122,101 @@
                     </ul>
                 </div>
 
-        <div class="styleListBox">
-          <input type="checkbox" name="stroke" id="cap" hidden><label for="cap"><img src="img/stroke/cap0.svg"></label>
-          <ul class="styleList">
-            <li><input type="radio" name="cap" id="c0" hidden><label for="c0"><img src="img/stroke/cap0.svg"></label>
-            </li>
-            <li><input type="radio" name="cap" id="c1" hidden><label for="c1"><img src="img/stroke/cap1.svg"></label>
-            </li>
-            <li><input type="radio" name="cap" id="c2" hidden><label for="c2"><img src="img/stroke/cap2.svg"></label>
-            </li>
-          </ul>
+                <div class="styleListBox">
+                    <input type="checkbox" name="stroke" id="cap" hidden><label for="cap"><img src="img/stroke/cap0.svg"></label>
+                    <ul class="styleList">
+                        <li><input type="radio" name="cap" id="c0" hidden><label for="c0"><img src="img/stroke/cap0.svg"></label>
+                        </li>
+                        <li><input type="radio" name="cap" id="c1" hidden><label for="c1"><img src="img/stroke/cap1.svg"></label>
+                        </li>
+                        <li><input type="radio" name="cap" id="c2" hidden><label for="c2"><img src="img/stroke/cap2.svg"></label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr>
+
+            <div id="layers_header">Слои<img id="new_layer" src="img/layers/new.svg" title="Новый слой"></div>
+            <div id="layers_panel">
+            </div>
         </div>
-      </div>
 
-      <hr>
-
-      <div id="layers_header">Слои<img id="new_layer" src="img/layers/new.svg" title="Новый слой"></div>
-      <div id="layers_panel">
-      </div>
-    </div>
-
-    <div id="scroll_panel">
-      <div id="rulers">
-        <div id="rulers_corner">px</div>
-        <svg id="ruler_x">
-          <rect x="0" y="0" width="100%" height="1" fill="#fff"></rect>
-          <rect id="ruler_x_line" x="0" y="0" width="512" height="15" fill="url(#ruler_x_pattern)"></rect>
-          <defs>
-            <!--
+        <div id="scroll_panel">
+            <div id="rulers">
+                <div id="rulers_corner">px</div>
+                <svg id="ruler_x">
+                    <rect x="0" y="0" width="100%" height="1" fill="#bbb"></rect>
+                    <rect id="ruler_x_line" x="0" y="1" width="100%" height="19" fill="url(#ruler_x_pattern)"></rect>
+                    <rect x="0" y="19" width="100%" height="1" fill="#bbb"></rect>
+                    <defs>
+                        <!--
             <linearGradient id="ruler_x_gradient" gradientTransform="rotate(90)">
               <stop offset="0%" stop-color="#fff" />
               <stop offset="100%" stop-color="#808080" />
             </linearGradient>
             -->
-            <pattern id="ruler_x_pattern" patternUnits="userSpaceOnUse" x="0" y="0" width="50" height="15">
-              <rect width="100%" height="100%"></rect>
-              <line x1="0.5" y1="0" x2="0.5" y2="15"> </line>
-            </pattern>
-          </defs>
-          <g id="ruler_x_text">
-            <text x="252" y="10"> 0 </text>
-          </g>
-        </svg>
-        <svg id="ruler_y">
-          <rect x="0" y="0" width="1" height="100%" fill="#fff"></rect>
-          <rect id="ruler_y_line" x="0" y="0" width="15" height="512" fill="url(#ruler_y_pattern)"></rect>
-          <defs>
-            <!--
+                        <pattern id="ruler_x_pattern" patternUnits="userSpaceOnUse" x="0" y="4" width="50" height="19">
+                            <rect width="100%" height="100%"></rect>
+                            <line x1="0.5" y1="0" x2="0.5" y2="15"> </line>
+                        </pattern>
+                    </defs>
+                    <g id="ruler_x_text">
+                        <text x="252" y="15"> 0 </text>
+                    </g>
+                </svg>
+                <svg id="ruler_y">
+                    <rect x="0" y="0" width="1" height="100%" fill="#bbb"></rect>
+                    <rect id="ruler_y_line" x="1" y="0" width="19" height="100%" fill="url(#ruler_y_pattern)"></rect>
+                    <rect x="19" y="0" width="1" height="100%" fill="#bbb"></rect>
+                    <defs>
+                        <!--
             <linearGradient id="ruler_y_gradient">
               <stop offset="0%" stop-color="#fff" />
               <stop offset="100%" stop-color="#808080" />
             </linearGradient>
             -->
-            <pattern id="ruler_y_pattern" patternUnits="userSpaceOnUse" x="0" y="0" width="15" height="50">
-              <rect width="100%" height="100%"></rect>
-              <line x1="0" y1="0.5" x2="15" y2="0.5"> </line>
-            </pattern>
-          </defs>
-          <g id="ruler_y_text">
-            <text x="8" y="2" transform="rotate(-90 8 2)">0</text>
-          </g>
-        </svg>
-      </div>
-      <div id="draw_panel">
-        <svg id="svg_panel" width="800" height="550" viewBox="0 0 800 550" xmlns="http://www.w3.org/2000/svg">
-          <g id="svg_grid" width="800" height="550" viewBox="0 0 800 550">
-            <defs>
-              <pattern id="square_pattern" width="10" height="10" patternUnits="userSpaceOnUse">
-                <path d="M 10 0 L 0 0 0 10" fill="none" stroke="silver" stroke-width="0.5" />
-              </pattern>
-              <pattern id="grid_pattern" width="100" height="100" patternUnits="userSpaceOnUse">
-                <rect width="100" height="100" fill="url(#square_pattern)" />
-                <path d="M 100 0 L 0 0 0 100" fill="none" stroke="gray" stroke-width="1" />
-              </pattern>
-            </defs>
-            <rect id="svg_background" width="100%" height="100%" fill="transparent">
-          </g>
-        </svg>
-      </div>
-    </div>
-    <canvas id="canvas" width="800" height="550" style="display: none;"></canvas>
-  </main>
-  <script src="js/global.js"></script>
-  <script src="js/rulers.js"></script>
-  <script src="js/grid.js"></script>
-  <script src="js/layer.js"></script>
-  <script src="js/actions.js"></script>
-  <script src="js/cursor.js"></script>
-  <script src="js/hand.js"></script>
-  <script src="js/scaling.js"></script>
-  <script src="js/figures.js"></script>
-  <script src="js/classes.js"></script>
-  <script src="js/point_and_frame.js"></script>
-  <script src="js/color.js"></script>
+                        <pattern id="ruler_y_pattern" patternUnits="userSpaceOnUse" x="4" y="0" width="19" height="50">
+                            <rect width="100%" height="100%"></rect>
+                            <line x1="0" y1="0.5" x2="15" y2="0.5"> </line>
+                        </pattern>
+                    </defs>
+                    <g id="ruler_y_text">
+                        <text x="8" y="2" transform="rotate(-90 8 2)">0</text>
+                    </g>
+                </svg>
+            </div>
+            <div id="draw_panel">
+                <svg id="svg_panel" width="800" height="550" viewBox="0 0 800 550" xmlns="http://www.w3.org/2000/svg">
+                    <g id="svg_grid" width="800" height="550" viewBox="0 0 800 550">
+                        <defs>
+                            <pattern id="square_pattern" width="10" height="10" patternUnits="userSpaceOnUse">
+                                <path d="M 10 0 L 0 0 0 10" fill="none" stroke="silver" stroke-width="0.5" />
+                            </pattern>
+                            <pattern id="grid_pattern" width="100" height="100" patternUnits="userSpaceOnUse">
+                                <rect width="100" height="100" fill="url(#square_pattern)" />
+                                <path d="M 100 0 L 0 0 0 100" fill="none" stroke="gray" stroke-width="1" />
+                            </pattern>
+                        </defs>
+                        <rect id="svg_background" width="100%" height="100%" fill="transparent">
+                    </g>
+                </svg>
+            </div>
+        </div>
+        <canvas id="canvas" width="800" height="550" style="display: none;"></canvas>
+    </main>
+    <script src="js/global.js"></script>
+    <script src="js/rulers.js"></script>
+    <script src="js/grid.js"></script>
+    <script src="js/layer.js"></script>
+    <script src="js/actions.js"></script>
+    <script src="js/cursor.js"></script>
+    <script src="js/hand.js"></script>
+    <script src="js/scaling.js"></script>
+    <script src="js/figures.js"></script>
+    <script src="js/classes.js"></script>
+    <script src="js/point_and_frame.js"></script>
+    <script src="js/color.js"></script>
 </body>
 
 </html>

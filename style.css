@@ -158,35 +158,34 @@ main {
     z-index: 2;
     display: block;
     position: relative;
-    font-size: 11px;
+    font-size: 15px;
     font-family: Courier;
     font-weight: bold;
     user-select: none;
-    opacity: .6;
 }
 
 #rulers_corner {
-    width: 15px;
-    height: 15px;
+    width: 18px;
+    height: 18px;
     display: block;
     text-align: center;
     position: fixed;
     background-color: #555;
-    border: 1px solid #fff;
+    border: 1px solid #bbb;
     z-index: 1;
     will-change: transform;
-    color: #fff;
+    color: #ccc;
 }
 
 #ruler_x {
-    width: 512px;
-    height: 15px;
-    left: 15px;
+    width: 100%;
+    height: 20px;
+    left: 20px;
     top: 0px;
 }
 
 #ruler_x pattern rect {
-    fill: url(#ruler_x_gradient);
+    fill: #555;
 }
 
 #ruler_y pattern rect {
@@ -198,7 +197,7 @@ main {
     position: absolute;
     display: block;
     overflow: hidden;
-    -webkit-transform: translateZ(0)
+    -webkit-transform: translateZ(0);
 }
 
 #ruler_x pattern line,
@@ -210,14 +209,13 @@ main {
 
 #ruler_x_text text,
 #ruler_y_text text {
-    fill: #fff;
-    opacity: .8;
+    fill: #ccc;
 }
 
 #ruler_y {
-    width: 15px;
-    height: 512px;
-    top: 15px;
+    width: 20px;
+    height: 100%;
+    top: 20px;
     left: 0px;
 }
 

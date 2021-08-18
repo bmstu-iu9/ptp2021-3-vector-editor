@@ -5,7 +5,7 @@ layersPanel = document.getElementById("layers_panel");
 
 let isSomeObjectSelected = false, //для курсора
 	isSomePointSelected = false; //для удаления
-let wasPressed, currentObject = null, rotatePoint = null,
+let wasPressed, currentObject = null,
 	currentLayer,
 	objects = [];
 let buffer = null; //для копирования

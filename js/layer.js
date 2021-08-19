@@ -61,11 +61,13 @@ class layer {
         this.del.textContent = "Удалить";
         this.dub = document.createElement('li');
         this.dub.textContent = "Дублировать";
+        this.merge = document.createElement('li');
+        this.merge.textContent = "Слить с нижним";
         this.up2 = document.createElement('li');
         this.up2.textContent = "На передний план";
         this.down2 = document.createElement('li');
         this.down2.textContent = "На задний план";
-        ul.append(this.rename, this.del, this.dub, this.up2, this.down2);
+        ul.append(this.rename, this.del, this.dub, this.merge, this.up2, this.down2);
     }
     addActions() {
         this.panel.onclick = (e) => {
@@ -110,7 +112,11 @@ class layer {
         this.opacity.onchange = () => {
             this.group.setAttribute('opacity', this.opacity.value);
         }
+        this.merge.onclick = () => {
+            this.mergeLayer();
+        }
     }
+    
     renameLayer() {
         this.text.textContent = "";
         let enter = document.createElement('input');
@@ -119,7 +125,7 @@ class layer {
         enter.setAttribute('maxlength', 14);
         this.text.appendChild(enter);
         enter.focus();
-        enter.onblur = (e) => {
+        enter.onblur = () => {
             this.updateName(enter);
         }
         enter.onkeyup = (e) => {
@@ -128,7 +134,6 @@ class layer {
             }
         }
     }
-
     updateName(enter) {
         console.log(layers.delete(this.name));
         layers[this.name] = null;
@@ -138,10 +143,10 @@ class layer {
         layers[this.name] = this;
         enter.remove();
     }
-
-    delete() {
+    delete(afterMerge = false) {
         if (this == currentLayer) {
             let next = this.group.nextSibling;
+            if (afterMerge) next = null;
             if (next == null) next = this.group.previousSibling;
             if (next == null) return;
             currentLayer = layers[next.id];
@@ -170,6 +175,16 @@ class layer {
             this.panel.nextSibling.after(this.panel);
         }
     }
+    mergeLayer() {
+        let prev = this.group.previousSibling;
+        if (prev == null) return;
+        let content = this.group.childNodes;
+        let n = content.length
+        for (i = 0; i < n; i++) {
+            prev.append(content[0]);
+        }
+        this.delete(true);
+    }
 }
 
 createFirstLayer();
@@ -189,4 +204,13 @@ newLayer.onclick = () => {
     currentLayer.panel.style.background = "#444";
     layersNum++;
     layers["Cлой " + layersNum] = new layer();
+}
+mergeLayers = document.getElementById("merge_layers");
+mergeLayers.onclick = () => {
+    layersNum = 1;
+    let allLayers = svgcontent.childNodes;
+    while (allLayers.length != 1) {
+        layers[svgcontent.lastChild.id].mergeLayer();
+    }
+
 }

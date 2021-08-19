@@ -30,6 +30,7 @@ class point {
             const startMoving = ((current) => {
                 this.object.isMoving = true;
                 updateCursorCoords(current);
+                currentPointTypeAttr = this.type.attr;
                 this.object.start = {
                     x: curX,
                     y: curY
@@ -38,32 +39,34 @@ class point {
             this.circle.addEventListener("mousedown", startMoving);
         }
         //movePoint
-        const move = ((current) => {
-            if (this.isMoving && currentObject == this.object) {
-                updateCursorCoords(current);
-                if (this.type != null && (this.type.action == "resize" || this.type.action == "polyline")) {
-                    this.object.resize();
+        if (this.type.action == "resize" || this.type.action == "polygon" || this.type.action == "polyline") {
+            const move = ((current) => {
+                if (this.isMoving && currentObject == this.object) {
+                    updateCursorCoords(current);
+                    this.object.resize(current);
                 }
-            }
-        }).bind(this);
-        const startMoving = (() => {
-            if (this.isSelected) {
-                this.isMoving = true;
-                currentResizeType = this.type.attr;
-                document.addEventListener("mousemove", move);
-            }
-        }).bind(this);
-        this.circle.addEventListener("mousedown", startMoving);
-        const stopMoving = (() => {
-            if (this.isMoving) {
-                this.isMoving = false;
-                currentResizeType = null;
-                this.circle.setAttribute('fill', "white");
-                isSomePointSelected = false;
-                document.removeEventListener("mousemove", move);
-            }
-        }).bind(this);
-        svgPanel.addEventListener("mouseup", stopMoving);
+            }).bind(this);
+            const startMoving = (() => {
+                if (this.isSelected) {
+                    this.isMoving = true;
+                    currentPointTypeAttr = this.type.attr;
+                    this.object.addHotKeys();
+                    document.addEventListener("mousemove", move);
+                }
+            }).bind(this);
+            this.circle.addEventListener("mousedown", startMoving);
+            const stopMoving = (() => {
+                if (this.isMoving) {
+                    this.isMoving = false;
+                    currentPointTypeAttr = null;
+                    this.object.removeHotKeys();
+                    if (this.circle != null) this.circle.setAttribute('fill', "white");
+                    isSomePointSelected = false;
+                    document.removeEventListener("mousemove", move);
+                }
+            }).bind(this);
+            svgPanel.addEventListener("mouseup", stopMoving);
+        }
         //удаление точки пера
         const deletePoint = ((event) => {
             event.preventDefault();
@@ -83,13 +86,13 @@ class point {
         return clone;
     }
     setColor(color) {
-        if (!isSomePointSelected && this.object.isCompleted) {
+        if ((!isSomePointSelected || this.type.action == "polygon") && this.object.isCompleted) {
             this.circle.setAttribute('fill', color);
         }
     }
     hide() {
-        svgPanel.removeChild(this.circle);
         this.setColor("white");
+        svgPanel.removeChild(this.circle);
     }
     show() {
         svgPanel.appendChild(this.circle);
@@ -103,7 +106,7 @@ class point {
         this.circle.setAttribute(attributeName, value);
     }
     update(x, y, attr = this.type.attr) {
-        if (currentResizeType == attr) this.circle.setAttribute('fill', "red");
+        if (currentPointTypeAttr != null && currentPointTypeAttr == attr) this.circle.setAttribute('fill', "red");
         else this.circle.setAttribute('fill', "white");
         this.x = x;
         this.y = y;
@@ -123,7 +126,7 @@ class frame {
         else this.svgElement.setAttribute('stroke', object.getElementAttribute('stroke'));
         if (red) this.svgElement.setAttribute('stroke-width', pointRadius);
         else this.svgElement.setAttribute('stroke-width', object.getElementAttribute('stroke-width'));
-        if (red || object.getElementAttribute('stroke-dasharray') == null) this.svgElement.setAttribute('stroke-dasharray', "8");
+        if (red || object.getElementAttribute('stroke-dasharray') == null) this.svgElement.setAttribute('stroke-dasharray', object.strokeWidth * 4);
         else this.svgElement.setAttribute('stroke-dasharray', object.getElementAttribute('stroke-dasharray'));
         if (red) this.svgElement.setAttribute('stroke-linejoin', "none");
         else this.svgElement.setAttribute('stroke-linejoin', object.getElementAttribute('stroke-linejoin'));

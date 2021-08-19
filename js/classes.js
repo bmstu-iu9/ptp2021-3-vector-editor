@@ -93,6 +93,7 @@ class object {
             if (this.isSelected && this.isMoving) {
                 this.isMoving = false;
                 updateCursorCoords(current);
+                currentPointTypeAttr = null;
                 this.stopMoving();
             }
         }).bind(this);
@@ -287,7 +288,7 @@ class rectangle extends object {
             height: this.height,
             width: this.width
         };
-        switch (currentResizeType) {
+        switch (currentPointTypeAttr) {
             case "ltc":
                 n.width += this.x - curX;
                 n.height += this.y - curY;
@@ -326,48 +327,48 @@ class rectangle extends object {
         if (n.width < 0) {
             n.width = 0;
             if (this.x + this.width < curX) n.x = this.x + this.width;
-            switch (currentResizeType) {
+            switch (currentPointTypeAttr) {
                 case "ltc":
-                    currentResizeType = "rtc";
+                    currentPointTypeAttr = "rtc";
                     break;
                 case "lbc":
-                    currentResizeType = "rbc";
+                    currentPointTypeAttr = "rbc";
                     break;
                 case "rtc":
-                    currentResizeType = "ltc";
+                    currentPointTypeAttr = "ltc";
                     break;
                 case "rbc":
-                    currentResizeType = "lbc";
+                    currentPointTypeAttr = "lbc";
                     break;
                 case "l":
-                    currentResizeType = "r";
+                    currentPointTypeAttr = "r";
                     break;
                 case "r":
-                    currentResizeType = "l";
+                    currentPointTypeAttr = "l";
                     break;
             }
         }
         if (n.height < 0) {
             n.height = 0;
             if (this.y + this.height < curY) n.y = this.y + this.height;
-            switch (currentResizeType) {
+            switch (currentPointTypeAttr) {
                 case "ltc":
-                    currentResizeType = "lbc";
+                    currentPointTypeAttr = "lbc";
                     break;
                 case "lbc":
-                    currentResizeType = "ltc";
+                    currentPointTypeAttr = "ltc";
                     break;
                 case "rtc":
-                    currentResizeType = "rbc";
+                    currentPointTypeAttr = "rbc";
                     break;
                 case "rbc":
-                    currentResizeType = "rtc";
+                    currentPointTypeAttr = "rtc";
                     break;
                 case "t":
-                    currentResizeType = "b";
+                    currentPointTypeAttr = "b";
                     break;
                 case "b":
-                    currentResizeType = "t";
+                    currentPointTypeAttr = "t";
                     break;
             }
         }
@@ -503,7 +504,7 @@ class ellipse extends object {
             rx: this.rx,
             ry: this.ry
         };
-        switch (currentResizeType) {
+        switch (currentPointTypeAttr) {
             case "ltc":
                 n.rx = (this.cx + this.rx - curX) / 2;
                 n.ry = (this.cy + this.ry - curY) / 2;
@@ -555,24 +556,24 @@ class ellipse extends object {
                 n.cx = this.cx - 2 * this.rx;
                 n.rx = this.rx;
             }
-            switch (currentResizeType) {
+            switch (currentPointTypeAttr) {
                 case "ltc":
-                    currentResizeType = "rtc";
+                    currentPointTypeAttr = "rtc";
                     break;
                 case "lbc":
-                    currentResizeType = "rbc";
+                    currentPointTypeAttr = "rbc";
                     break;
                 case "rtc":
-                    currentResizeType = "ltc";
+                    currentPointTypeAttr = "ltc";
                     break;
                 case "rbc":
-                    currentResizeType = "lbc";
+                    currentPointTypeAttr = "lbc";
                     break;
                 case "l":
-                    currentResizeType = "r";
+                    currentPointTypeAttr = "r";
                     break;
                 case "r":
-                    currentResizeType = "l";
+                    currentPointTypeAttr = "l";
                     break;
             }
         }
@@ -586,24 +587,24 @@ class ellipse extends object {
                 n.cy = this.cy - 2 * this.ry;
                 n.ry = this.ry;
             }
-            switch (currentResizeType) {
+            switch (currentPointTypeAttr) {
                 case "ltc":
-                    currentResizeType = "lbc";
+                    currentPointTypeAttr = "lbc";
                     break;
                 case "lbc":
-                    currentResizeType = "ltc";
+                    currentPointTypeAttr = "ltc";
                     break;
                 case "rtc":
-                    currentResizeType = "rbc";
+                    currentPointTypeAttr = "rbc";
                     break;
                 case "rbc":
-                    currentResizeType = "rtc";
+                    currentPointTypeAttr = "rtc";
                     break;
                 case "t":
-                    currentResizeType = "b";
+                    currentPointTypeAttr = "b";
                     break;
                 case "b":
-                    currentResizeType = "t";
+                    currentPointTypeAttr = "t";
                     break;
             }
         }
@@ -628,8 +629,10 @@ class polygon extends object {
         this.vertNum = curVertNum;
         this.vertices = "";
         this.rotationIsFixed = false;
-        this.fixRotation = this.fixRotation.bind(this);
-        this.freeRotation = this.freeRotation.bind(this);
+        this.angleIsFixed = false;
+        this.radiusIsFixed = false;
+        this.fix = this.fix.bind(this);
+        this.free = this.free.bind(this);
         this.updateVertNum = this.updateVertNum.bind(this);
         this.addHotKeys();
         this.frameArray = [new polygonFrame(this.vertices, this)]
@@ -642,16 +645,21 @@ class polygon extends object {
         clone.phi = this.phi;
         clone.vertNum = this.vertNum;
         clone.vertices = this.vertices;
-        clone.rotationIsFixed = this.rotationIsFixed;
         clone.svgElement.setAttribute('points', this.vertices);
         return clone;
     }
     updateAttributes() {
         let dx = curX - this.x0,
             dy = curY - this.y0;
-        this.r = Math.sqrt(dx ** 2 + dy ** 2);
-        if (this.rotationIsFixed) this.phi = (this.vertNum - 2) * Math.PI / (this.vertNum * 2);
-        else if (this.r > 0) this.phi = dy > 0 ? Math.acos(dx / this.r) : -Math.acos(dx / this.r);
+        if (!this.radiusIsFixed) this.r = Math.sqrt(dx ** 2 + dy ** 2);
+        else {
+            dx *= this.r / Math.sqrt(dx ** 2 + dy ** 2);
+            dy *= this.r / Math.sqrt(dx ** 2 + dy ** 2);
+        }
+        if (!this.angleIsFixed) {
+            if (this.rotationIsFixed) this.phi = (this.vertNum - 2) * Math.PI / (this.vertNum * 2);
+            else if (this.r > 0) this.phi = dy > 0 ? Math.acos(dx / this.r) : -Math.acos(dx / this.r);
+        }
         this.updateFrameAndPoints();
     }
     updateFrameAndPoints(x0 = this.x0, y0 = this.y0) {
@@ -679,42 +687,61 @@ class polygon extends object {
             let x = x0 + this.r * Math.cos(this.phi + 2 * Math.PI * i / this.vertNum);
             let y = y0 + this.r * Math.sin(this.phi + 2 * Math.PI * i / this.vertNum);
             this.pointsArray.push(new point(x, y, this, {
-                action: "resize"
+                action: "polygon"
             }));
         }
         this.svgElement.setAttribute('points', this.vertices);
     }
     addHotKeys() {
         document.addEventListener('keydown', this.updateVertNum);
-        document.addEventListener('keydown', this.fixRotation);
-        document.addEventListener('keyup', this.freeRotation);
+        document.addEventListener('keydown', this.fix);
+        document.addEventListener('keyup', this.free);
     }
     removeHotKeys() {
         document.removeEventListener('keydown', this.updateVertNum);
-        document.removeEventListener('keydown', this.fixRotation);
-        document.removeEventListener('keyup', this.freeRotation);
+        this.rotationIsFixed = false;
+        this.angleIsFixed = false;
+        this.radiusIsFixed = false;
+        document.removeEventListener('keydown', this.fix);
+        document.removeEventListener('keyup', this.free);
     }
     updateVertNum(current) {
         if (current.code == 'ArrowUp') {
             curVertNum++;
             this.vertNum++;
-            this.updateAttributes(current);
         }
         if (current.code == 'ArrowDown' && curVertNum > 3) {
             curVertNum--;
             this.vertNum--;
-            this.updateAttributes(current);
         }
+        this.updateAttributes();
     }
-    fixRotation(event) {
-        if (event.key == 'Shift') {
+    fix(event) {
+        event.preventDefault();
+        if (event.shiftKey) {
             this.rotationIsFixed = true;
             this.updateAttributes();
         }
+        if (event.altKey) {
+            this.angleIsFixed = true;
+            this.updateAttributes();
+        }
+        if (event.ctrlKey) {
+            this.radiusIsFixed = true;
+            this.updateAttributes();
+        }
     }
-    freeRotation(event) {
+    free(event) {
         if (event.key == 'Shift') {
             this.rotationIsFixed = false;
+            this.updateAttributes();
+        }
+        if (event.key == "Alt") {
+            this.angleIsFixed = false;
+            this.updateAttributes();
+        }
+        if (event.key == 'Control') {
+            this.radiusIsFixed = false;
             this.updateAttributes();
         }
     }
@@ -732,11 +759,7 @@ class polygon extends object {
         this.stopMoving(dx, dy);
     }
     resize() {
-        let dx = curX - this.x0,
-            dy = curY - this.y0;
-        this.r = Math.sqrt(dx ** 2 + dy ** 2);
-        if (this.r > 0) this.phi = dy > 0 ? Math.acos(dx / this.r) : -Math.acos(dx / this.r);
-        this.updateFrameAndPoints();
+        this.updateAttributes();
     }
 }
 
@@ -755,9 +778,6 @@ class pencil extends object {
         this.maxY = this.y0;
         this.svgElement.setAttribute('stroke-linejoin', "round");
         this.svgElement.setAttribute('stroke-linecap', "round");
-        caps[2].checked = true;
-        join[1].checked = true;
-        updateStroke(this);
     }
     createClone() {
         let clone = new pencil();
@@ -851,12 +871,11 @@ class pencil extends object {
             new polylineFrame(this.path, this)
         ];
         this.pointsArray = [new point(this.minX + (this.maxX - this.minX) / 2, this.minY + (this.maxY - this.minY) / 2, this, {
-            action: "move"
+            action: "move",
+            attr: "move"
         })];
         super.complete();
         this.path = "";
-        caps[2].checked = false;
-        join[1].checked = false;
     }
 }
 
@@ -886,7 +905,8 @@ class line extends object {
                     attr: "1"
                 }),
                 new point(this.x0 + (this.x2 - this.x0) / 2, this.y0 + (this.y2 - this.y0) / 2, this, {
-                    action: "move"
+                    action: "move",
+                    attr: "move"
                 }),
                 new point(this.x2, this.y2, this, {
                     action: "resize",
@@ -965,7 +985,7 @@ class line extends object {
         this.stopMoving(dx, dy);
     }
     resize() {
-        switch (currentResizeType) {
+        switch (currentPointTypeAttr) {
             case "1":
                 this.x0 = curX;
                 this.y0 = curY;
@@ -1106,8 +1126,8 @@ class polyline extends object {
         }
     }
     resize() {
-        this.pathCoords[currentResizeType].x = curX;
-        this.pathCoords[currentResizeType].y = curY;
+        this.pathCoords[currentPointTypeAttr].x = curX;
+        this.pathCoords[currentPointTypeAttr].y = curY;
         this.updateFrameAndPoints();
     }
     complete() {

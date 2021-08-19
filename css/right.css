@@ -140,10 +140,11 @@ input:checked~ul {
 .navigation {
     height: auto;
     width: 11%;
+    min-width: 11%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    margin: 3%;
+    padding: 3%;
 }
 
 .navigation img {
@@ -158,12 +159,20 @@ input:checked~ul {
     flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
+    font-size: small;
+}
+
+.layerName {
+    width: 100%;
+    height: 35%;
+    display: flex;
+    justify-content: center;
+    cursor: text;
+    align-items: flex-start;
 }
 
 .nameAndButtons input {
-    width: 70%;
-    height: 35%;
-    font-size: small;
+    width: 90%;
     text-align: center;
     color: #e5e5e5;
     background: transparent;

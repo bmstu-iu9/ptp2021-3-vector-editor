@@ -5,6 +5,7 @@ class layer {
         this.group.style.pointerEvents = "all";
         this.name = "Cлой " + layersNum;
         this.group.id = this.name;
+        this.group.setAttribute('opacity', 1);
         currentLayer = this;
         this.addPanel();
         this.addActions();
@@ -28,9 +29,9 @@ class layer {
         this.nameAndButtons = document.createElement('div');
         this.nameAndButtons.className = "nameAndButtons";
         this.panel.append(this.nameAndButtons);
-        this.text = document.createElement('input');
-        this.text.type = "text";
-        this.text.value = this.name;
+        this.text = document.createElement('div');
+        this.text.className = "layerName";
+        this.text.textContent = this.name; //14
         this.nameAndButtons.appendChild(this.text);
 
         this.buttons = document.createElement('div');
@@ -38,7 +39,10 @@ class layer {
         this.nameAndButtons.appendChild(this.buttons);
         this.opacity = document.createElement('input');
         this.opacity.type = "range";
-        this.opacity.value = "100";
+        this.opacity.min = 0;
+        this.opacity.max = 1;
+        this.opacity.step = 0.01;
+        this.opacity.value = 1;
         this.opacity.title = "Прозрачность";
         this.vis = document.createElement('img');
         this.vis.src = 'img/layers/visible.svg';
@@ -51,6 +55,8 @@ class layer {
         let ul = document.createElement('ul');
         ul.className = "styleList";
         menu.appendChild(ul);
+        this.rename = document.createElement('li');
+        this.rename.textContent = "Переименовать";
         this.del = document.createElement('li');
         this.del.textContent = "Удалить";
         this.dub = document.createElement('li');
@@ -59,16 +65,24 @@ class layer {
         this.up2.textContent = "На передний план";
         this.down2 = document.createElement('li');
         this.down2.textContent = "На задний план";
-        ul.append(this.del, this.dub, this.up2, this.down2);
+        ul.append(this.rename, this.del, this.dub, this.up2, this.down2);
     }
     addActions() {
         this.panel.onclick = (e) => {
-            if (e.target == this.navigation || e.target == this.nameAndButtons || e.target == this.buttons) {
+            if (e.target == this.navigation || e.target == this.nameAndButtons || e.target == this.text || e.target == this.buttons) {
                 currentLayer.group.style.pointerEvents = "none";
                 currentLayer.panel.style.background = "#444";
                 currentLayer = this;
                 this.activeLayer();
             }
+        }
+        this.text.onclick = (e) => {
+            if (e.ctrlKey) {
+                this.renameLayer();
+            }
+        }
+        this.rename.onclick = () => {
+            this.renameLayer();
         }
         this.del.onclick = () => {
             this.delete();
@@ -87,7 +101,44 @@ class layer {
             svgcontent.prepend(this.group);
             layersPanel.append(this.panel);
         }
+        this.vis.onclick = () => {
+            let value = this.group.getAttribute('opacity');
+            let newValue = value == 1 ? 0 : 1;
+            this.group.setAttribute('opacity', newValue);
+            this.vis.src = value == 1 ? 'img/layers/invisible.svg' : 'img/layers/visible.svg'
+        }
+        this.opacity.onchange = () => {
+            this.group.setAttribute('opacity', this.opacity.value);
+        }
     }
+    renameLayer() {
+        this.text.textContent = "";
+        let enter = document.createElement('input');
+        enter.type = "text";
+        enter.value = this.name;
+        enter.setAttribute('maxlength', 14);
+        this.text.appendChild(enter);
+        enter.focus();
+        enter.onblur = (e) => {
+            this.updateName(enter);
+        }
+        enter.onkeyup = (e) => {
+            if (e.key == 'Enter') {
+                this.updateName(enter);
+            }
+        }
+    }
+
+    updateName(enter) {
+        console.log(layers.delete(this.name));
+        layers[this.name] = null;
+        this.name = enter.value;
+        this.text.textContent = this.name;
+        this.group.id = this.name;
+        layers[this.name] = this;
+        enter.remove();
+    }
+
     delete() {
         if (this == currentLayer) {
             let next = this.group.nextSibling;
@@ -96,9 +147,9 @@ class layer {
             currentLayer = layers[next.id];
             currentLayer.activeLayer();
         }
+        layers[this.name] = null;
         svgcontent.removeChild(this.group);
         layersPanel.removeChild(this.panel);
-
     }
     activeLayer() {
         this.group.style.pointerEvents = "all";
@@ -133,6 +184,7 @@ function createFirstLayer() {
 
 newLayer = document.getElementById("new_layer");
 newLayer.onclick = () => {
+    resetCurrentObject();
     currentLayer.group.style.pointerEvents = "none";
     currentLayer.panel.style.background = "#444";
     layersNum++;

@@ -182,30 +182,34 @@ class lineFrame extends frame {
     }
 }
 class rectangleFrame extends frame {
-    constructor(x, y, width, height, object) {
+    constructor(x, y, width, height, trasform, object) {
         super('rect', object);
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        this.trasform = trasform;
         this.svgElement.setAttribute('x', x);
         this.svgElement.setAttribute('y', y);
         this.svgElement.setAttribute('width', width);
         this.svgElement.setAttribute('height', height);
+        this.svgElement.setAttribute('transform', trasform);
     }
     createClone(newObject) {
-        let clone = new rectangleFrame(this.x, this.y, this.width, this.height, newObject);
+        let clone = new rectangleFrame(this.x, this.y, this.width, this.height, this.trasform, newObject);
         return clone;
     }
-    update(x, y, width, height) {
+    update(x, y, width, height, trasform) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        this.trasform = trasform;
         this.svgElement.setAttribute('x', x);
         this.svgElement.setAttribute('y', y);
         this.svgElement.setAttribute('width', width);
         this.svgElement.setAttribute('height', height);
+        this.svgElement.setAttribute('transform', trasform);
     }
 }
 class ellipseFrame extends frame {
@@ -215,24 +219,28 @@ class ellipseFrame extends frame {
         this.cy = cy;
         this.rx = rx;
         this.ry = ry;
+        this.trasform = trasform;
         this.svgElement.setAttribute('cx', cx);
         this.svgElement.setAttribute('cy', cy);
         this.svgElement.setAttribute('rx', rx);
         this.svgElement.setAttribute('ry', ry);
+        this.svgElement.setAttribute('transform', trasform);
     }
     createClone(newObject) {
-        let clone = new ellipseFrame(this.cx, this.cy, this.rx, this.ry, newObject);
+        let clone = new ellipseFrame(this.cx, this.cy, this.rx, this.ry, this.trasform, newObject);
         return clone;
     }
-    update(cx, cy, rx, ry) {
+    update(cx, cy, rx, ry, trasform) {
         this.cx = cx;
         this.cy = cy;
         this.rx = rx;
         this.ry = ry;
+        this.trasform = trasform;
         this.svgElement.setAttribute('cx', cx);
         this.svgElement.setAttribute('cy', cy);
         this.svgElement.setAttribute('rx', rx);
         this.svgElement.setAttribute('ry', ry);
+        this.svgElement.setAttribute('transform', trasform);
     }
 }
 class polygonFrame extends frame {

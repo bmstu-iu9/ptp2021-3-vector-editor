@@ -1,3 +1,8 @@
+img {
+    cursor: pointer;
+    height: 100%;
+}
+
 /*PALETTE*/
 #palette {
     display: flex;
@@ -29,7 +34,7 @@ hr {
 }
 
 #strokeWidth {
-    font-size: 2vh;
+    font-size: medium;
     padding-left: 10px;
     color: #e5e5e5;
     background: transparent;
@@ -38,17 +43,14 @@ hr {
     padding: 0 2px 0 10px;
 }
 
-/*#strokeWidth::-webkit-inner-spin-button { 
-    opacity: 1;
-    background: tomato;
-}*/
+#widthBox img {
+    cursor: default;
+}
 
 /*stroke & fill style*/
 
 .checkbox label {
-    color: #e5e5e5;
     font-size: 1.5vh;
-    font-family: 'Roboto', sans-serif;
     width: 4vw;
     height: 1.8vh;
     display: flex;
@@ -65,7 +67,6 @@ hr {
     height: 2vw;
     margin: 1vh 0;
     display: block;
-    cursor: pointer;
 }
 
 .styleList {
@@ -87,7 +88,6 @@ hr {
 }
 
 #lines li label {
-    cursor: pointer;
     width: inherit;
     height: initial;
     padding: 7px 0;
@@ -102,5 +102,152 @@ li input:checked~label {
 }
 
 input:checked~ul {
+    display: block;
+}
+
+/*LAYERS*/
+
+#layers_header {
+    height: 3vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0.8vw;
+    border-style: solid;
+    border-color: #444;
+    border-image: initial;
+    border-width: 0 0px 0.4vh;
+}
+
+#new_layer:hover {
+    cursor: pointer;
+    background: #444;
+}
+
+#layers_panel {
+    height: 100%;
+    overflow-y: auto;
+    flex: grow;
+}
+
+.layer {
+    height: 50px;
+    background: #555;
+    margin: 0.3vw;
+    display: flex;
+}
+
+.navigation {
+    height: auto;
+    width: 11%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 3%;
+}
+
+.navigation img {
+    width: 100%;
+    height: auto;
+}
+
+.nameAndButtons {
+    width: 89%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.nameAndButtons input {
+    width: 70%;
+    height: 35%;
+    font-size: small;
+    text-align: center;
+    color: #e5e5e5;
+    background: transparent;
+    border: none;
+}
+
+.layer_buttons {
+    width: 100%;
+    height: 50%;
+    display: flex;
+    box-sizing: border-box;
+    padding: 2%;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.layer_buttons img {
+    width: 22%;
+}
+
+/*RANGE*/
+
+.layer_buttons input {
+    width: 50%;
+}
+
+input[type=range] {
+    -webkit-appearance: none;
+}
+
+::-webkit-slider-runnable-track {
+    margin-top: 1px;
+    background: #333;
+    height: 6px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+::-webkit-slider-thumb {
+    margin-top: -6px;
+    width: 13%;
+    height: 18px;
+    background: #be0000;
+    border-radius: 5px;
+    -webkit-appearance: none;
+}
+
+::-moz-range-track {
+    margin-top: 1px;
+    background: #333;
+    height: 6px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+::-moz-range-thumb {
+    margin-top: -6px;
+    width: 13%;
+    height: 18px;
+    background: #be0000;
+    border-radius: 5px;
+    border: none;
+}
+
+/*LAYERS MENU*/
+
+.layers_menu {
+    height: 100%;
+    position: relative;
+    background: url(../img/layers/menu.svg);
+    background-size: auto 100%;
+    background-repeat: no-repeat;
+    width: 22%;
+}
+
+.layers_menu ul {
+    left: auto;
+    right: 0.3vw;
+    top: 40%;
+    width: auto;
+    position: absolute;
+    cursor: pointer;
+}
+
+.layers_menu:hover ul {
     display: block;
 }

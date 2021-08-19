@@ -80,3 +80,12 @@ scrollPanel.onscroll = function () {
 	updateRulersPos();
 	updateRulers();
 };
+
+
+//преобразование декартовых координат при повороте системы координат
+function getRotateCoords(x, y, angle) {
+		return {
+			x: x * Math.cos(angle) + y * Math.sin(angle),
+			y: - x * Math.sin(angle) + y * Math.cos(angle)
+		}
+} 

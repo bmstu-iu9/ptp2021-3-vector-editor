@@ -58,6 +58,8 @@ class point {
             if (this.isMoving) {
                 this.isMoving = false;
                 currentResizeType = null;
+                this.circle.setAttribute('fill', "white");
+                isSomePointSelected = false;
                 document.removeEventListener("mousemove", move);
             }
         }).bind(this);
@@ -74,10 +76,14 @@ class point {
     }
     createClone(newObject) {
         let clone = new point(this.x, this.y, newObject, this.type);
+        clone.type = {
+            action: this.type.action,
+            attr: this.type.attr
+        }
         return clone;
     }
     setColor(color) {
-        if (this.object.isCompleted) {
+        if (!isSomePointSelected && this.object.isCompleted) {
             this.circle.setAttribute('fill', color);
         }
     }
@@ -97,6 +103,8 @@ class point {
         this.circle.setAttribute(attributeName, value);
     }
     update(x, y, attr = this.type.attr) {
+        if (currentResizeType == attr) this.circle.setAttribute('fill', "red");
+        else this.circle.setAttribute('fill', "white");
         this.x = x;
         this.y = y;
         this.circle.setAttribute('cx', x);
@@ -117,8 +125,10 @@ class frame {
         else this.svgElement.setAttribute('stroke-width', object.getElementAttribute('stroke-width'));
         if (red || object.getElementAttribute('stroke-dasharray') == null) this.svgElement.setAttribute('stroke-dasharray', "8");
         else this.svgElement.setAttribute('stroke-dasharray', object.getElementAttribute('stroke-dasharray'));
-        this.svgElement.setAttribute('stroke-linejoin', object.getElementAttribute('stroke-linejoin'));
-        this.svgElement.setAttribute('stroke-linecap', object.getElementAttribute('stroke-linecap'));
+        if (red) this.svgElement.setAttribute('stroke-linejoin', "none");
+        else this.svgElement.setAttribute('stroke-linejoin', object.getElementAttribute('stroke-linejoin'));
+        if (red) this.svgElement.setAttribute('stroke-linecap', "none");
+        else this.svgElement.setAttribute('stroke-linecap', object.getElementAttribute('stroke-linecap'));
         this.svgElement.setAttribute('fill', "none");
     }
     createClone(newObject) {

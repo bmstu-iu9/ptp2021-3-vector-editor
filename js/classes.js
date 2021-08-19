@@ -1094,6 +1094,8 @@ class polyline extends object {
     deletePoint(ind) {
         if (this.pathCoords.length == 2) deleteFunc(); //actions.js
         else {
+            this.pointsArray[ind].remove();
+            this.pointsArray.splice(ind, 1);
             this.pathCoords.splice(ind, 1);
             this.updateFrameAndPoints();
         }

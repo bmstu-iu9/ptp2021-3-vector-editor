@@ -38,6 +38,47 @@ class point {
             }).bind(this);
             this.circle.addEventListener("mousedown", startMoving);
         }
+        //rotateObject
+        if (this.type.action == "rotate") {
+            this.circle.addEventListener("mouseover", function () {
+                svgPanel.style.cursor = "url(img/rotate.svg) 10 10, pointer";
+            });
+            this.circle.addEventListener("mouseout", function () {
+                if (!this.object.isRotating) {
+                    svgPanel.style.cursor = "default";
+                }
+            }.bind(this));
+
+            const rotate = ((current) => {
+                if (this.object.isRotating) {
+                    updateCursorCoords(current);
+                    this.object.rotate();
+                }
+            }).bind(this);
+            document.addEventListener("mousemove", rotate);
+            const startRotating = ((current) => {
+                if (this.object.isCompleted && this.object.isSelected) {
+                    this.object.isRotating = true;
+                    this.object.isMoving = false;
+                    updateCursorCoords(current);
+                    currentPointTypeAttr = "rotate";
+                    svgPanel.style.cursor = "url(img/rotate.svg) 10 10, pointer";
+                    this.object.startRotating();
+                }
+            }).bind(this);
+            this.circle.addEventListener("mousedown", startRotating);
+            const stopRotating = ((current) => {
+                if (this.object.isSelected && this.object.isRotating) {
+                    this.object.isRotating = false;
+                    updateCursorCoords(current);
+                    svgPanel.style.cursor = "default";
+                    isSomePointSelected = false;
+                    currentPointTypeAttr = null;
+                    this.object.stopRotating();
+                }
+            }).bind(this);
+            svgPanel.addEventListener("mouseup", stopRotating);
+        }
         //movePoint
         if (this.type.action == "resize" || this.type.action == "polygon" || this.type.action == "polyline") {
             const move = ((current) => {
@@ -182,65 +223,65 @@ class lineFrame extends frame {
     }
 }
 class rectangleFrame extends frame {
-    constructor(x, y, width, height, trasform, object) {
+    constructor(x, y, width, height, transform, object) {
         super('rect', object);
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.trasform = trasform;
+        this.transform = transform;
         this.svgElement.setAttribute('x', x);
         this.svgElement.setAttribute('y', y);
         this.svgElement.setAttribute('width', width);
         this.svgElement.setAttribute('height', height);
-        this.svgElement.setAttribute('transform', trasform);
+        this.svgElement.setAttribute('transform', transform);
     }
     createClone(newObject) {
-        let clone = new rectangleFrame(this.x, this.y, this.width, this.height, this.trasform, newObject);
+        let clone = new rectangleFrame(this.x, this.y, this.width, this.height, this.transform, newObject);
         return clone;
     }
-    update(x, y, width, height, trasform) {
+    update(x, y, width, height, transform) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.trasform = trasform;
+        this.transform = transform;
         this.svgElement.setAttribute('x', x);
         this.svgElement.setAttribute('y', y);
         this.svgElement.setAttribute('width', width);
         this.svgElement.setAttribute('height', height);
-        this.svgElement.setAttribute('transform', trasform);
+        this.svgElement.setAttribute('transform', transform);
     }
 }
 class ellipseFrame extends frame {
-    constructor(cx, cy, rx, ry, object) {
+    constructor(cx, cy, rx, ry, transform, object) {
         super('ellipse', object);
         this.cx = cx;
         this.cy = cy;
         this.rx = rx;
         this.ry = ry;
-        this.trasform = trasform;
+        this.transform = transform;
         this.svgElement.setAttribute('cx', cx);
         this.svgElement.setAttribute('cy', cy);
         this.svgElement.setAttribute('rx', rx);
         this.svgElement.setAttribute('ry', ry);
-        this.svgElement.setAttribute('transform', trasform);
+        this.svgElement.setAttribute('transform', transform);
     }
     createClone(newObject) {
-        let clone = new ellipseFrame(this.cx, this.cy, this.rx, this.ry, this.trasform, newObject);
+        let clone = new ellipseFrame(this.cx, this.cy, this.rx, this.ry, this.transform, newObject);
         return clone;
     }
-    update(cx, cy, rx, ry, trasform) {
+    update(cx, cy, rx, ry, transform) {
         this.cx = cx;
         this.cy = cy;
         this.rx = rx;
         this.ry = ry;
-        this.trasform = trasform;
+        this.transform = transform;
         this.svgElement.setAttribute('cx', cx);
         this.svgElement.setAttribute('cy', cy);
         this.svgElement.setAttribute('rx', rx);
         this.svgElement.setAttribute('ry', ry);
-        this.svgElement.setAttribute('transform', trasform);
+        this.svgElement.setAttribute('transform', transform);
     }
 }
 class polygonFrame extends frame {

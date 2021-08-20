@@ -2,6 +2,7 @@ class object {
     constructor(name) {
         this.svgElement = document.createElementNS("http://www.w3.org/2000/svg", name);
         currentLayer.group.appendChild(this.svgElement);
+        this.svgElement.obj = this;
         this.type = name;
         this.isCompleted = false;
         this.isSelected = false;
@@ -18,12 +19,13 @@ class object {
     createClone() {
         let clone = this.clone;
         clone.type = this.type;
-        clone.isCompleted = false;
-        clone.isSelected = true;
+        clone.isCompleted = true;
+        clone.isSelected = false;
         clone.isMoving = false;
         clone.x0 = this.x0;
         clone.y0 = this.y0;
-        clone.removeFrameAndPoints();
+        
+        //clone.removeFrameAndPoints();
         for (let i = 0; i < this.pointsArray.length; i++) {
             clone.pointsArray[i] = this.pointsArray[i].createClone(clone);
         }
@@ -31,6 +33,7 @@ class object {
         for (let i = 0; i < this.frameArray.length; i++) {
             clone.frameArray[i] = this.frameArray[i].createClone();
         }
+        clone.hideFrameAndPoints();
         clone.strokeWidth = this.strokeWidth;
         clone.svgElement.setAttribute('fill', this.svgElement.getAttribute('fill'));
         clone.svgElement.setAttribute('stroke', this.svgElement.getAttribute('stroke'));

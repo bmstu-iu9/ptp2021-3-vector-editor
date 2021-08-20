@@ -126,5 +126,5 @@ function updateStroke(object) {
 fill = document.getElementById("filling");
 fill.onclick = function () {
   wasPressed = "fill";
-  svgPanel.style.cursor = "url(img/fill.ico), default";
+  svgPanel.style.cursor = "url(img/fill.ico) 4 28, default";
 }

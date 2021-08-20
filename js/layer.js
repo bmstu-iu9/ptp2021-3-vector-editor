@@ -1,14 +1,15 @@
 class layer {
-    constructor() {
+    constructor(name) {
         this.group = document.createElementNS("http://www.w3.org/2000/svg", 'g');
         svgcontent.append(this.group);
         this.group.style.pointerEvents = "all";
-        this.name = "Cлой " + layersNum;
-        this.group.id = this.name;
+        this.name = name;
+        this.group.id = name;
         this.group.setAttribute('opacity', 1);
         currentLayer = this;
         this.addPanel();
         this.addActions();
+        this.cloneNum = 0;
     }
     addPanel() {
         this.panel = document.createElement('div');
@@ -31,7 +32,7 @@ class layer {
         this.panel.append(this.nameAndButtons);
         this.text = document.createElement('div');
         this.text.className = "layerName";
-        this.text.textContent = this.name; //14
+        this.text.textContent = this.name;
         this.nameAndButtons.appendChild(this.text);
 
         this.buttons = document.createElement('div');
@@ -72,8 +73,7 @@ class layer {
     addActions() {
         this.panel.onclick = (e) => {
             if (e.target == this.navigation || e.target == this.nameAndButtons || e.target == this.text || e.target == this.buttons) {
-                currentLayer.group.style.pointerEvents = "none";
-                currentLayer.panel.style.background = "#444";
+                resetCurrentLayer();
                 currentLayer = this;
                 this.activeLayer();
             }
@@ -115,8 +115,11 @@ class layer {
         this.merge.onclick = () => {
             this.mergeLayer();
         }
+        this.dub.onclick = () => {
+            this.dublicate();
+        }
     }
-    
+
     renameLayer() {
         this.text.textContent = "";
         let enter = document.createElement('input');
@@ -135,7 +138,6 @@ class layer {
         }
     }
     updateName(enter) {
-        console.log(layers.delete(this.name));
         layers[this.name] = null;
         this.name = enter.value;
         this.text.textContent = this.name;
@@ -179,11 +181,27 @@ class layer {
         let prev = this.group.previousSibling;
         if (prev == null) return;
         let content = this.group.childNodes;
-        let n = content.length
+        let n = content.length;
         for (i = 0; i < n; i++) {
             prev.append(content[0]);
         }
         this.delete(true);
+    }
+    dublicate() {
+        resetCurrentObject();
+        resetCurrentLayer();
+        this.cloneNum++;
+        let name = this.name + "(" + this.cloneNum + ")";
+        layers[name] = new layer(name);
+        let clone = layers[name].group;
+        this.group.after(clone);
+        this.panel.before(layers[name].panel);
+
+        let content = this.group.childNodes;
+        for (i = 0; i < content.length; i++) {
+            let figure = content[i].obj.createClone();
+            clone.append(figure.svgElement);
+        }
     }
 }
 
@@ -194,17 +212,23 @@ function createFirstLayer() {
     svgPanel.append(svgcontent);
     layersNum = 1;
     layers = new Map();
-    layers["Cлой " + layersNum] = new layer();
+    layers["Cлой " + layersNum] = new layer("Cлой " + layersNum);
 }
 
 newLayer = document.getElementById("new_layer");
 newLayer.onclick = () => {
     resetCurrentObject();
+    resetCurrentLayer();
+    layersNum++;
+    layers["Cлой " + layersNum] = new layer("Cлой " + layersNum);
+}
+
+function resetCurrentLayer() {
     currentLayer.group.style.pointerEvents = "none";
     currentLayer.panel.style.background = "#444";
-    layersNum++;
-    layers["Cлой " + layersNum] = new layer();
+    currentLayer = null;
 }
+
 mergeLayers = document.getElementById("merge_layers");
 mergeLayers.onclick = () => {
     layersNum = 1;
@@ -212,5 +236,4 @@ mergeLayers.onclick = () => {
     while (allLayers.length != 1) {
         layers[svgcontent.lastChild.id].mergeLayer();
     }
-
 }

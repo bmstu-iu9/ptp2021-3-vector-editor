@@ -140,7 +140,6 @@ input:checked~ul {
 .navigation {
     height: auto;
     width: 11%;
-    min-width: 11%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;

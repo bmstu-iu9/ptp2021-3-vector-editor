@@ -59,7 +59,6 @@ document.addEventListener('keydown', function (event) {
 
 function pasteFunc() {
     if (currentObject != null) currentObject.hideFrameAndPoints();
-    buffer.isCompleted = true;
     buffer.show();
     currentObject = buffer;
     buffer = buffer.createClone();

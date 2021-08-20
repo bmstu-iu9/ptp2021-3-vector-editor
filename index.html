@@ -83,15 +83,19 @@
       <div id="palette">
         <input class="colorpicker" id="strokeColor" type="color" title="Цвет для контура фигур,
     карандаша и кисти" value="#000000">
-        <input class="colorpicker" id="fillColor" type="color" title="Цвет для заливки фигур" value="#ffffff">
-
-        <div class="checkbox">
-          <input type="checkbox" id="stroke" hidden><label for="stroke"><img id="sImg"
-              src="img/stroke/yes.svg"><span>Контур</span></label>
+        <div class="colorOpacity">
+          <input type="checkbox" id="stroke" hidden><label class="checkBox" for="stroke">
+            <img id="sImg" src="img/stroke/yes.svg"> &ensp;Контур </label>
+          <input type="range" min="0" max="1" step="0.01" value="1" title="Прозрачность">
+          100
         </div>
-        <div class="checkbox">
-          <input type="checkbox" id="fill" hidden><label for="fill"><img id="fImg"
-              src="img/stroke/yes.svg"><span>Заливка</span></label>
+
+        <input class="colorpicker" id="fillColor" type="color" title="Цвет для заливки фигур" value="#ffffff">
+        <div class="colorOpacity">
+          <input type="checkbox" id="fill" hidden><label class="checkBox" for="fill">
+            <img id="fImg" src="img/stroke/yes.svg"> &nbsp;Заливка </label>
+          <input type="range" min="0" max="1" step="0.01" value="1" title="Прозрачность">
+          100
         </div>
 
         <div id="widthBox"><img src="img/stroke/width.svg"><input type="number" id="strokeWidth" min="0" max="100"

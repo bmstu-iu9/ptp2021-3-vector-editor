@@ -20,7 +20,6 @@ class object {
         let clone = this.clone;
         clone.type = this.type;
         clone.isCompleted = true;
-        clone.isSelected = false;
         clone.isMoving = false;
         clone.x0 = this.x0;
         clone.y0 = this.y0;
@@ -33,7 +32,8 @@ class object {
         for (let i = 0; i < this.frameArray.length; i++) {
             clone.frameArray[i] = this.frameArray[i].createClone();
         }
-        clone.hideFrameAndPoints();
+        //clone.hideFrameAndPoints();
+        clone.removeFrameAndPoints();
         clone.strokeWidth = this.strokeWidth;
         clone.svgElement.setAttribute('fill', this.svgElement.getAttribute('fill'));
         clone.svgElement.setAttribute('stroke', this.svgElement.getAttribute('stroke'));

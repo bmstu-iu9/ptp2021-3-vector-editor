@@ -130,7 +130,7 @@ main {
 }
 
 #right_panel {
-    width: 9%;
+    width: 10%;
     height: 100%;
     background-color: #333;
     z-index: 2;
@@ -144,7 +144,7 @@ main {
 /*scrolling*/
 #scroll_panel {
     overflow: scroll;
-    width: 87%;
+    width: 86%;
     height: 100%;
     position: absolute;
     top: 0;

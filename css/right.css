@@ -88,15 +88,10 @@ hr {
     width: 2vw;
 }
 
-.styleList li label {
-    width: inherit;
-    height: initial;
-    display: flex;
-}
-
 #lines li label {
     width: inherit;
     height: initial;
+    display: flex;
     padding: 7px 0;
 }
 
@@ -173,7 +168,7 @@ input:checked~ul {
     display: flex;
     justify-content: center;
     cursor: text;
-    align-items: flex-start;
+    align-items: center;
     font-size: 90%;
 }
 

@@ -11,8 +11,8 @@ class object {
         this.y0 = curY;
         this.pointsArray = [];
         this.frameArray = [];
-        this.svgElement.setAttribute('fill', getCurrentFillColor());
         this.strokeWidth = 1;
+        updateFill(this);
         updateStroke(this);
         this.addActions();
     }

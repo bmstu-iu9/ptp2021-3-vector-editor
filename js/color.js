@@ -7,7 +7,7 @@ function changeStroke() {
 
 function changeFill() {
   if (currentObject != null && currentObject.type != 'pencil') {
-    currentObject.svgElement.setAttribute('fill', getCurrentFillColor());
+    updateFill(currentObject);
   }
 }
 strokeColor = document.getElementById("strokeColor");
@@ -42,12 +42,26 @@ f.onchange = () => {
   changeFill();
 }
 
+//OPACITY
+allOpacity = document.getElementById("allOpacity");
+allOpacity.onchange = () => {
+    changeFill();
+}
+
+fillOpacity = document.getElementById("fillOpacity");
+fillOpacity.onchange = () => {
+  changeFill();
+}
+
 //CURRENT COLOR
-function getCurrentFillColor() {
+function updateFill(object) {
   if (f.checked) {
-    return "transparent";
+    object.svgElement.setAttribute('fill', "transparent");
+    return;
   }
-  return fillColor.value;
+  object.svgElement.setAttribute('fill', fillColor.value);
+  object.svgElement.setAttribute('opacity', allOpacity.value);
+  object.svgElement.setAttribute('fill-opacity', fillOpacity.value);
 }
 
 //stroke style
@@ -119,6 +133,7 @@ function updateStroke(object) {
       obj.setAttribute('stroke-linejoin', "bevel");
       break;
   }
+  //obj.setAttribute('stroke-opacity', strokeOpacity.value);
   if (object.isCompleted) object.updateFrameAndPoints();
 }
 

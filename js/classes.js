@@ -12,7 +12,7 @@ class object {
         this.pointsArray = [];
         this.frameArray = [];
         this.strokeWidth = 1;
-        updateFill(this);
+        updateFill(this.svgElement);
         updateStroke(this);
         this.addActions();
     }

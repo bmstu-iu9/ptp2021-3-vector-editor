@@ -43,18 +43,22 @@ f.onchange = () => {
 }
 
 //OPACITY
-allOpacity = document.getElementById("allOpacity");
-allOpValue = document.getElementById("allOp");
-allOpacity.onchange = () => {
-  changeFill();
-  allOpValue.textContent = Math.round(allOpacity.value * 100);
-}
-
-fillOpacity = document.getElementById("fillOpacity");
-fillOpValue = document.getElementById("fillOp");
-fillOpacity.onchange = () => {
-  changeFill();
-  fillOpValue.textContent = Math.round(fillOpacity.value * 100);
+opacity = document.getElementsByClassName("opacity");
+opValue = document.getElementsByClassName("opValue");
+for (i = 0; i < 2; i++) {
+  opacity[i].i = i;
+  opacity[i].onmousedown = (e) => {
+    let i = e.target.i;
+    rightPanel.onmousemove = () => {
+      changeFill();
+      opValue[i].textContent = Math.round(opacity[i].value * 100);
+    }
+    document.onmouseup = () => {
+      rightPanel.onmousemove();
+      rightPanel.onmousemove = null;
+      document.onmouseup = null;
+    }
+  }
 }
 
 //CURRENT COLOR
@@ -64,8 +68,8 @@ function updateFill(object) {
     return;
   }
   object.svgElement.setAttribute('fill', fillColor.value);
-  object.svgElement.setAttribute('opacity', allOpacity.value);
-  object.svgElement.setAttribute('fill-opacity', fillOpacity.value);
+  object.svgElement.setAttribute('opacity', opacity[0].value);
+  object.svgElement.setAttribute('fill-opacity', opacity[1].value);
 }
 
 //stroke style

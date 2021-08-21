@@ -2,6 +2,7 @@ svgPanel = document.getElementById("svg_panel");
 drawPanel = document.getElementById("draw_panel");
 scrollPanel = document.getElementById("scroll_panel");
 layersPanel = document.getElementById("layers_panel");
+rightPanel = document.getElementById("right_panel");
 
 let isSomeObjectSelected = false, //для курсора
 	isSomePointSelected = false; //для удаления

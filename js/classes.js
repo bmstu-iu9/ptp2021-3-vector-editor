@@ -36,6 +36,8 @@ class object {
         clone.removeFrameAndPoints();
         clone.strokeWidth = this.strokeWidth;
         clone.svgElement.setAttribute('fill', this.svgElement.getAttribute('fill'));
+        clone.svgElement.setAttribute('fill-opacity', this.svgElement.getAttribute('fill-opacity'));
+        clone.svgElement.setAttribute('opacity', this.svgElement.getAttribute('opacity'));
         clone.svgElement.setAttribute('stroke', this.svgElement.getAttribute('stroke'));
         clone.svgElement.setAttribute('stroke-width', this.svgElement.getAttribute('stroke-width'));
         clone.svgElement.setAttribute('stroke-dasharray', this.svgElement.getAttribute('stroke-dasharray'));

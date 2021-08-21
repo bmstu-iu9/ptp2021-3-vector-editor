@@ -71,7 +71,7 @@ class layer {
     }
     addActions() {
         this.panel.onclick = (e) => {
-            if (this!=currentLayer && (e.target == this.navigation || e.target == this.nameAndButtons || e.target == this.text || e.target == this.buttons)) {
+            if (this != currentLayer && (e.target == this.navigation || e.target == this.nameAndButtons || e.target == this.text || e.target == this.buttons)) {
                 this.activeLayer();
                 currentLayer = this;
             }
@@ -99,17 +99,21 @@ class layer {
             this.panel.before(currentLayer.panel);
         }
         this.vis.onclick = () => {
-            let value = this.group.getAttribute('opacity');
-            let newValue = value == 0 ? this.opValue : 0;
-            this.group.setAttribute('opacity', newValue);
-            this.vis.src = value == 0 ? 'img/layers/visible.svg' : 'img/layers/invisible.svg';
-            this.opacity.value = newValue;
+            this.changeVisibility();
         }
-        this.opacity.onchange = () => {
-            this.opValue = this.opacity.value;
-            this.group.setAttribute('opacity', this.opValue);
-            this.vis.src = this.opValue == 0 ? 'img/layers/invisible.svg' : 'img/layers/visible.svg';
-            this.opValue = this.opValue == 0 ? 1 : this.opValue;
+        this.opacity.onmousedown = () => {
+            if (currentLayer == this) resetCurrentObject();
+            rightPanel.onmousemove = () => {
+                this.opValue = this.opacity.value;
+                this.group.setAttribute('opacity', this.opValue);
+                this.vis.src = this.opValue == 0 ? 'img/layers/invisible.svg' : 'img/layers/visible.svg';
+            }
+            document.onmouseup = () => {
+                rightPanel.onmousemove();
+                this.opValue = this.opValue == 0 ? 1 : this.opValue;
+                rightPanel.onmousemove = null;
+                document.onmouseup = null;
+            }
         }
         this.merge.onclick = () => {
             this.mergeLayer();
@@ -182,6 +186,14 @@ class layer {
             prev.before(this.group);
             this.panel.nextSibling.after(this.panel);
         }
+    }
+    changeVisibility() {
+        if (currentLayer == this) resetCurrentObject();
+        let value = this.group.getAttribute('opacity');
+        let newValue = value == 0 ? this.opValue : 0;
+        this.group.setAttribute('opacity', newValue);
+        this.vis.src = value == 0 ? 'img/layers/visible.svg' : 'img/layers/invisible.svg';
+        this.opacity.value = newValue;
     }
     mergeLayer() {
         layers[this.name] = null;

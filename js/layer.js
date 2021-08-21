@@ -45,6 +45,7 @@ class layer {
         this.opacity.step = 0.01;
         this.opacity.value = 1;
         this.opacity.title = "Прозрачность";
+        this.opValue = 1;
         this.vis = document.createElement('img');
         this.vis.src = 'img/layers/visible.svg';
         this.vis.title = "Скрыть";
@@ -104,12 +105,16 @@ class layer {
         }
         this.vis.onclick = () => {
             let value = this.group.getAttribute('opacity');
-            let newValue = value == 1 ? 0 : 1;
+            let newValue = value == 0 ? this.opValue : 0;
             this.group.setAttribute('opacity', newValue);
-            this.vis.src = value == 1 ? 'img/layers/invisible.svg' : 'img/layers/visible.svg'
+            this.vis.src = value == 0 ? 'img/layers/visible.svg' : 'img/layers/invisible.svg';
+            this.opacity.value = newValue;
         }
         this.opacity.onchange = () => {
-            this.group.setAttribute('opacity', this.opacity.value);
+            this.opValue = this.opacity.value;
+            this.group.setAttribute('opacity', this.opValue);
+            this.vis.src = this.opValue == 0 ? 'img/layers/invisible.svg' : 'img/layers/visible.svg';
+            this.opValue = this.opValue == 0 ? 1 : this.opValue;
         }
         this.merge.onclick = () => {
             this.mergeLayer();
@@ -192,15 +197,19 @@ class layer {
         this.cloneNum++;
         let name = this.name + "(" + this.cloneNum + ")";
         layers[name] = new layer(name);
-        let clone = layers[name].group;
-        this.group.after(clone);
-        this.panel.before(layers[name].panel);
+        let clone = layers[name];
+        this.group.after(clone.group);
+        this.panel.before(clone.panel);
 
         let content = this.group.childNodes;
         for (i = 0; i < content.length; i++) {
             let figure = content[i].obj.createClone();
-            clone.append(figure.svgElement);
+            clone.group.append(figure.svgElement);
         }
+        clone.opValue = this.opValue;
+        clone.group.setAttribute('opacity', this.group.getAttribute('opacity'));
+        clone.vis.src = this.vis.src;
+        clone.opacity.value = this.opacity.value;
     }
 }
 

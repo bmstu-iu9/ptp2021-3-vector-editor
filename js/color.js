@@ -44,13 +44,17 @@ f.onchange = () => {
 
 //OPACITY
 allOpacity = document.getElementById("allOpacity");
+allOpValue = document.getElementById("allOp");
 allOpacity.onchange = () => {
-    changeFill();
+  changeFill();
+  allOpValue.textContent = Math.round(allOpacity.value * 100);
 }
 
 fillOpacity = document.getElementById("fillOpacity");
+fillOpValue = document.getElementById("fillOp");
 fillOpacity.onchange = () => {
   changeFill();
+  fillOpValue.textContent = Math.round(fillOpacity.value * 100);
 }
 
 //CURRENT COLOR
@@ -133,7 +137,6 @@ function updateStroke(object) {
       obj.setAttribute('stroke-linejoin', "bevel");
       break;
   }
-  //obj.setAttribute('stroke-opacity', strokeOpacity.value);
   if (object.isCompleted) object.updateFrameAndPoints();
 }
 

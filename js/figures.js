@@ -84,9 +84,8 @@ pencilButton.onclick = function () {
                 newObject.complete();
             };
             svgPanel.onmouseenter = function (current) {
-                updateCursorCoords(current);
-                newObject.completeFirstObject();
-                newObject = new pencil();
+                document.onmouseup();
+                svgPanel.onmousedown(current);
             };
         }
     };

@@ -545,12 +545,6 @@ class pencil extends object {
         this.move(dx, dy);
         this.stopMoving(dx, dy);
     }
-    completeFirstObject() {
-        this.isCompleted = true;
-        this.updateFrameAndPoints();
-        this.hideFrameAndPoints();
-        this.removeHotKeys();
-    }
     complete() {
         super.complete();
         this.path = "";

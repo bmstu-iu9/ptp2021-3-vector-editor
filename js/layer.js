@@ -65,15 +65,13 @@ class layer {
         this.dub.textContent = "Дублировать";
         this.merge = document.createElement('li');
         this.merge.textContent = "Слить с нижним";
-        this.up2 = document.createElement('li');
-        this.up2.textContent = "На передний план";
-        this.down2 = document.createElement('li');
-        this.down2.textContent = "На задний план";
-        ul.append(this.rename, this.del, this.dub, this.merge, this.up2, this.down2);
+        this.new = document.createElement('li');
+        this.new.textContent = "Новый слой сверху";
+        ul.append(this.rename, this.del, this.dub, this.merge, this.new);
     }
     addActions() {
         this.panel.onclick = (e) => {
-            if (e.target == this.navigation || e.target == this.nameAndButtons || e.target == this.text || e.target == this.buttons) {
+            if (this!=currentLayer && (e.target == this.navigation || e.target == this.nameAndButtons || e.target == this.text || e.target == this.buttons)) {
                 this.activeLayer();
                 currentLayer = this;
             }
@@ -95,13 +93,10 @@ class layer {
         this.down.onclick = () => {
             this.lower();
         }
-        this.up2.onclick = () => {
-            svgcontent.append(this.group);
-            layersPanel.prepend(this.panel);
-        }
-        this.down2.onclick = () => {
-            svgcontent.prepend(this.group);
-            layersPanel.append(this.panel);
+        this.new.onclick = () => {
+            newLayer.click();
+            this.group.after(currentLayer.group);
+            this.panel.before(currentLayer.panel);
         }
         this.vis.onclick = () => {
             let value = this.group.getAttribute('opacity');
@@ -138,17 +133,23 @@ class layer {
         }
         enter.onkeyup = (e) => {
             if (e.key == 'Enter') {
-                this.updateName(enter);
+                enter.blur();
             }
         }
     }
     updateName(enter) {
+        let newName = enter.value;
+        enter.remove();
+        if (layers[newName] && newName != this.name) {
+            alert("Слой с таким названием уже существует!");
+            this.text.textContent = this.name;
+            return;
+        }
         layers[this.name] = null;
-        this.name = enter.value;
+        this.name = newName;
         this.text.textContent = this.name;
         this.group.id = this.name;
         layers[this.name] = this;
-        enter.remove();
     }
     delete(afterMerge = false) {
         if (this == currentLayer) {
@@ -164,9 +165,9 @@ class layer {
         layersPanel.removeChild(this.panel);
     }
     activeLayer() {
+        resetCurrentLayer();
         this.group.style.pointerEvents = "all";
         this.panel.style.background = "#555";
-        resetCurrentLayer();
     }
     higher() {
         let next = this.group.nextSibling;
@@ -183,6 +184,7 @@ class layer {
         }
     }
     mergeLayer() {
+        layers[this.name] = null;
         let prev = this.group.previousSibling;
         if (prev == null) return;
         let content = this.group.childNodes;

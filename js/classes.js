@@ -301,11 +301,7 @@ class rectangle extends object {
             new_dy = getRotateCoords(dx, dy, this.angle).y;
         this.svgElement.setAttribute('x', this.angleX + new_dx);
         this.svgElement.setAttribute('y', this.angleY + new_dy);
-        this.cPoint = {
-            x: this.x + dx + this.width / 2,
-            y: this.y + dy + this.height / 2
-        };
-        this.updateFrameAndPoints(this.width, this.height, this.x + dx, this.y + dy, this.angle, this.angleX + new_dx, this.angleY + new_dy);
+        this.updateFrameAndPoints(this.width, this.height, this.x + new_dx, this.y + new_dy, this.angle, this.angleX + new_dx, this.angleY + new_dy);
     }
     stopMoving(dx = curX - this.start.x, dy = curY - this.start.y) {
         let new_dx = getRotateCoords(dx, dy, this.angle).x,
@@ -757,8 +753,6 @@ class ellipse extends object {
             newAngle = args.split(' ')[0] * Math.PI / 180.0;
         this.angle = newAngle;
         this.angle = this.angle > 2 * Math.PI ? this.angle - 2 * Math.PI : this.angle;
-        this.angleCx = this.cx;
-        this.angleCy = this.cy;
         this.updateFrameAndPoints();
     }
     getNewCoords(x = this.x0, y = this.y0, angle = this.angle) {
@@ -1104,12 +1098,11 @@ class line extends object {
         this.y2 = y2;
         this.svgElement.setAttribute('fill', "none");
         this.isFree = isFree;
-        this.angle = 0;
-        this.newAngle = 0;
         this.cPoint = {
             x: curX,
             y: curY
         };
+        this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
         if (!isFree) {
             this.svgElement.setAttribute('stroke', "black");
             this.svgElement.setAttribute('stroke-opacity', "0.5");
@@ -1120,7 +1113,9 @@ class line extends object {
                 new lineFrame(this.x2, this.y0, this.x2, this.y2, this, true),
                 new lineFrame(this.x2, this.y2, this.x0, this.y2, this, true),
                 new lineFrame(this.x0, this.y2, this.x0, this.y0, this, true),
-                new lineFrame(this.x0, this.y0, this.x2, this.y2, this)
+                new lineFrame(this.x0, this.y0, this.x2, this.y2, this),
+                new lineFrame((this.x0 + this.x2) / 2, (this.y0 + this.y2) / 2,
+                    (this.x0 + this.x2) / 2, (this.y0 + this.y2) / 2 - 25, this, true)
             ]
             this.pointsArray = [new point(this.x0, this.y0, this, {
                     action: "resize",
@@ -1158,12 +1153,18 @@ class line extends object {
                     action: "move",
                     attr: "move"
                 }),
-                new point(this.x0 + (this.x2 - this.x0) / 2, this.y0 - 20, this, {
+                new point(this.x0 + (this.x2 - this.x0) / 2, this.y0 + (this.y2 - this.y0) / 2 - 20, this, {
                     action: "rotate",
                     attr: "rotate"
                 }),
             ];
         }
+        //rotate 
+        this.angle = 0;
+        this.angleX0 = this.x0;
+        this.angleX2 = this.x2;
+        this.angleY0 = this.y0;
+        this.angleY2 = this.y2;
     }
     createClone() {
         let clone = new line();
@@ -1174,14 +1175,18 @@ class line extends object {
         clone.x2 = this.x2;
         clone.y2 = this.y2;
         clone.isFree = this.isFree;
-        clone.angle = this.angle;
-        clone.newAngle = this.newAngle;
         clone.cPoint = this.cPoint;
+        clone.angle = this.angle;
+        clone.angleX0 = this.angleX0;
+        clone.angleX2 = this.angleX2;
+        clone.angleY0 = this.angleY0;
+        clone.angleY2 = this.angleY2;
         clone.svgElement.setAttribute('width', this.x0);
         clone.svgElement.setAttribute('height', this.y0);
         clone.svgElement.setAttribute('x', this.x2);
         clone.svgElement.setAttribute('y', this.y2);
         clone.svgElement.setAttribute('fill', "none");
+        clone.svgElement.setAttribute('transform', this.transform);
         return clone;
     }
     updateAttributes(current) {
@@ -1211,58 +1216,71 @@ class line extends object {
         if (this.isFree) {
             this.updateFrameAndPoints(this.x0, this.y0, this.x2, this.y2, 0);
         }
+        this.angleX2 = this.x2;
+        this.angleY2 = this.y2;
     }
     updateFrameAndPoints(x0 = this.x0, y0 = this.y0, x2 = this.x2, y2 = this.y2, angle = this.angle) {
-        /*this.frameArray[0].update(this.getNewCoords(x0, y0, angle).x, this.getNewCoords(x0, y0, angle).y,
+        this.frameArray[0].update(this.getNewCoords(x0, y0, angle).x, this.getNewCoords(x0, y0, angle).y,
             this.getNewCoords(x2, y0, angle).x, this.getNewCoords(x2, y0, angle).y);
         this.frameArray[1].update(this.getNewCoords(x2, y0, angle).x, this.getNewCoords(x2, y0, angle).y,
             this.getNewCoords(x2, y2, angle).x, this.getNewCoords(x2, y2, angle).y);
         this.frameArray[2].update(this.getNewCoords(x2, y2, angle).x, this.getNewCoords(x2, y2, angle).y,
             this.getNewCoords(x0, y2, angle).x, this.getNewCoords(x0, y2, angle).y);
         this.frameArray[3].update(this.getNewCoords(x0, y2, angle).x, this.getNewCoords(x0, y2, angle).y,
-            this.getNewCoords(x0, y0, angle).x, this.getNewCoords(x0, y0, angle).y);*/
+            this.getNewCoords(x0, y0, angle).x, this.getNewCoords(x0, y0, angle).y);
         this.frameArray[4].update(this.getNewCoords(x0, y0, angle).x, this.getNewCoords(x0, y0, angle).y,
             this.getNewCoords(x2, y2, angle).x, this.getNewCoords(x2, y2, angle).y);
+        this.frameArray[5].update(this.getNewCoords((x0 + x2) / 2, (y0 + y2) / 2, angle).x,
+            this.getNewCoords((x0 + x2) / 2, (y0 + y2) / 2, angle).y,
+            this.getNewCoords((x0 + x2) / 2, (y0 + y2) / 2 - 25, angle).x,
+            this.getNewCoords((x0 + x2) / 2, (y0 + y2) / 2 - 25, angle).y);
 
         this.pointsArray[0].update(this.getNewCoords(x0, y0, angle).x, this.getNewCoords(x0, y0, angle).y);
-        /*this.pointsArray[1].update(this.getNewCoords(x0 + (x2 - x0) / 2, y0, angle).x,
+        this.pointsArray[1].update(this.getNewCoords(x0 + (x2 - x0) / 2, y0, angle).x,
             this.getNewCoords(x0 + (x2 - x0) / 2, y0, angle).y);
         this.pointsArray[2].update(this.getNewCoords(x2, y0, angle).x, this.getNewCoords(x2, y0, angle).y);
         this.pointsArray[3].update(this.getNewCoords(x2, y0 + (y2 - y0) / 2, angle).x,
-            this.getNewCoords(x2, y0 + (y2 - y0) / 2, angle).y);*/
+            this.getNewCoords(x2, y0 + (y2 - y0) / 2, angle).y);
         this.pointsArray[4].update(this.getNewCoords(x2, y2, angle).x, this.getNewCoords(x2, y2, angle).y);
-        /*this.pointsArray[5].update(this.getNewCoords(x0 + (x2 - x0) / 2, y2, angle).x,
+        this.pointsArray[5].update(this.getNewCoords(x0 + (x2 - x0) / 2, y2, angle).x,
             this.getNewCoords(x0 + (x2 - x0) / 2, y2, angle).y);
         this.pointsArray[6].update(this.getNewCoords(x0, y2, angle).x, this.getNewCoords(x0, y2, angle).y);
         this.pointsArray[7].update(this.getNewCoords(x0, y0 + (y2 - y0) / 2, angle).x,
             this.getNewCoords(x0, y0 + (y2 - y0) / 2, angle).y);
         this.pointsArray[8].update(this.getNewCoords(x0 + (x2 - x0) / 2, y0 + (y2 - y0) / 2, angle).x,
             this.getNewCoords(x0 + (x2 - x0) / 2, y0 + (y2 - y0) / 2, angle).y);
-        this.pointsArray[9].update(this.getNewCoords(x0 + (x2 - x0) / 2, y0 - 20, angle).x,
-            this.getNewCoords(x0 + (x2 - x0) / 2, y0 - 20, angle).y);*/
+        this.pointsArray[9].update(this.getNewCoords(x0 + (x2 - x0) / 2, y0 + (y2 - y0) / 2 - 20, angle).x,
+            this.getNewCoords(x0 + (x2 - x0) / 2, y0 + (y2 - y0) / 2 - 20, angle).y);
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
-        this.svgElement.setAttribute('x1', this.x0 + dx);
-        this.svgElement.setAttribute('y1', this.y0 + dy);
-        this.svgElement.setAttribute('x2', this.x2 + dx);
-        this.svgElement.setAttribute('y2', this.y2 + dy);
-        this.updateFrameAndPoints(this.x0 + dx,
-            this.y0 + dy,
-            this.x2 + dx,
-            this.y2 + dy,
-            0
+        let new_dx = getRotateCoords(dx, dy, this.angle).x,
+            new_dy = getRotateCoords(dx, dy, this.angle).y;
+        this.svgElement.setAttribute('x1', this.angleX0 + new_dx);
+        this.svgElement.setAttribute('y1', this.angleY0 + new_dy);
+        this.svgElement.setAttribute('x2', this.angleX2 + new_dx);
+        this.svgElement.setAttribute('y2', this.angleY2 + new_dy);
+        this.updateFrameAndPoints(this.x0 + new_dx,
+            this.y0 + new_dy,
+            this.x2 + new_dx,
+            this.y2 + new_dy,
+            this.angle
         );
     }
     stopMoving(dx = curX - this.start.x, dy = curY - this.start.y) {
+        let new_dx = getRotateCoords(dx, dy, this.angle).x,
+            new_dy = getRotateCoords(dx, dy, this.angle).y;
         this.x0 += dx;
         this.y0 += dy;
         this.x2 += dx;
         this.y2 += dy;
+        this.angleX0 += new_dx;
+        this.angleY0 += new_dy;
+        this.angleX2 += new_dx;
+        this.angleY2 += new_dy;
         this.cPoint = {
             x: (this.x0 + this.x2) / 2,
             y: (this.y0 + this.y2) / 2
         };
-        this.angle = 0;
     }
     moveTo(x, y) {
         let dx = x + pointRadius - Math.min(this.x0, this.x2),
@@ -1289,30 +1307,39 @@ class line extends object {
     }
     startRotating() {
         this.rPoint = {
-            x: this.getNewCoords(this.x0 + (this.x2 - this.x0) / 2, this.y0 - 20, this.angle).x,
-            y: this.getNewCoords(this.x0 + (this.x2 - this.x0) / 2, this.y0 - 20, this.angle).y
+            x: this.getNewCoords(this.x0 + (this.x2 - this.x0) / 2, this.y0 + (this.y2 - this.y0) / 2 - 20, this.angle).x,
+            y: this.getNewCoords(this.x0 + (this.x2 - this.x0) / 2, this.y0 + (this.y2 - this.y0) / 2 - 20, this.angle).y
         }
     }
     rotate(angle = this.angle) {
         let firstSide = Math.sqrt(Math.pow(Math.abs(this.rPoint.x - this.cPoint.x), 2) + Math.pow(Math.abs(this.rPoint.y - this.cPoint.y), 2)),
             secondSide = Math.sqrt(Math.pow(Math.abs(curX - this.cPoint.x), 2) + Math.pow(Math.abs(curY - this.cPoint.y), 2)),
             thirdSide = (Math.sqrt(Math.pow(Math.abs(curX - this.rPoint.x), 2) + Math.pow(Math.abs(curY - this.rPoint.y), 2))),
-            angleCos = (Math.pow(firstSide, 2) + Math.pow(secondSide, 2) - Math.pow(thirdSide, 2)) / (2 * firstSide * secondSide);
-        this.newAngle = getRotateCoords(curX, curY, angle).x >= getRotateCoords(this.cPoint.x, this.cPoint.y, angle).x ?
-            Math.acos(angleCos) : 2 * Math.PI - Math.acos(angleCos);
-        this.svgElement.setAttribute('x1', this.getNewCoords(this.x0, this.y0, this.newAngle).x);
-        this.svgElement.setAttribute('y1', this.getNewCoords(this.x0, this.y0, this.newAngle).y);
-        this.svgElement.setAttribute('x2', this.getNewCoords(this.x2, this.y2, this.newAngle).x);
-        this.svgElement.setAttribute('y2', this.getNewCoords(this.x2, this.y2, this.newAngle).y);
-        this.updateFrameAndPoints(this.x0, this.y0, this.x2, this.y2, this.newAngle);
+            angleCos = (Math.pow(firstSide, 2) + Math.pow(secondSide, 2) - Math.pow(thirdSide, 2)) / (2 * firstSide * secondSide),
+            newAngle = getRotateCoords(curX, curY, angle).x >= getRotateCoords(this.cPoint.x, this.cPoint.y, angle).x ?
+            Math.acos(angleCos) + angle : 2 * Math.PI - Math.acos(angleCos) + angle;
+        if (this.svgElement.hasAttribute('transform')) {
+            this.svgElement.removeAttribute('transform');
+            this.svgElement.setAttribute('x1', this.x0);
+            this.svgElement.setAttribute('y1', this.y0);
+            this.svgElement.setAttribute('x2', this.x2);
+            this.svgElement.setAttribute('y2', this.y2);
+            this.angleX0 = this.x0;
+            this.angleY0 = this.y0;
+            this.angleX2 = this.x2;
+            this.angleY2 = this.y2;
+        }
+        this.transform = 'rotate(' + newAngle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
+        this.svgElement.setAttribute('transform', this.transform);
+        this.updateFrameAndPoints(this.x0, this.y0, this.x2, this.y2, newAngle);
     }
     stopRotating() {
-        this.angle = this.newAngle;
-        this.x0 = Number(this.svgElement.getAttribute('x1'));
-        this.y0 = Number(this.svgElement.getAttribute('y1'));
-        this.x2 = Number(this.svgElement.getAttribute('x2'));
-        this.y2 = Number(this.svgElement.getAttribute('y2'));
-        svgPanel.style.cursor = 'default';
+        let argss = this.transform.split('(')[1],
+            args = argss.split(')')[0],
+            newAngle = args.split(' ')[0] * Math.PI / 180.0;
+        this.angle = newAngle;
+        this.angle = this.angle > 2 * Math.PI ? this.angle - 2 * Math.PI : this.angle;
+        this.updateFrameAndPoints();
     }
     getNewCoords(x = this.x0, y = this.y0, angle = this.angle) {
         return {
@@ -1342,7 +1369,13 @@ class polyline extends object {
         this.minY = this.y0;
         this.maxX = this.x0;
         this.maxY = this.y0;
-        this.frameArray = [new polylineFrame(this.path, this)]
+        this.cPoint = {
+            x: this.minX + (this.maxX - this.minX) / 2,
+            y: this.minY + (this.maxY - this.minY) / 2
+        };
+        this.angle = 0;
+        this.newAngle = 0;
+        this.frameArray = [new polylineFrame(this.path, this)];
     }
     createClone() {
         let clone = new polyline();
@@ -1353,6 +1386,9 @@ class polyline extends object {
         clone.minY = this.minY;
         clone.maxX = this.maxX;
         clone.maxY = this.maxY;
+        clone.cPoint = this.cPoint;
+        clone.angle = this.angle;
+        clone.newAngle = this.newAngle;
         clone.path = "";
         clone.pathCoords = [];
         for (let i = 0; i < this.pathCoords.length; i++) {
@@ -1449,6 +1485,32 @@ class polyline extends object {
         this.pathCoords[currentPointTypeAttr].y = curY;
         this.updateFrameAndPoints();
     }
+    startRotating() {
+        this.rPoint = {
+            x: this.getNewCoords(this.minX + (this.maxX - this.minX) / 2, this.minY - 20, this.angle).x,
+            y: this.getNewCoords(this.minX + (this.maxX - this.minX) / 2, this.minY - 20, this.angle).y,
+        }
+    }
+    rotate(angle = this.angle) {
+        let firstSide = Math.sqrt(Math.pow(Math.abs(this.rPoint.x - this.cPoint.x), 2) + Math.pow(Math.abs(this.rPoint.y - this.cPoint.y), 2)),
+            secondSide = Math.sqrt(Math.pow(Math.abs(curX - this.cPoint.x), 2) + Math.pow(Math.abs(curY - this.cPoint.y), 2)),
+            thirdSide = (Math.sqrt(Math.pow(Math.abs(curX - this.rPoint.x), 2) + Math.pow(Math.abs(curY - this.rPoint.y), 2))),
+            angleCos = (Math.pow(firstSide, 2) + Math.pow(secondSide, 2) - Math.pow(thirdSide, 2)) / (2 * firstSide * secondSide);
+        this.newAngle = getRotateCoords(curX, curY, angle).x >= getRotateCoords(this.cPoint.x, this.cPoint.y, angle).x ?
+            Math.acos(angleCos) + angle : 2 * Math.PI - Math.acos(angleCos) + angle;
+        this.updateFrameAndPoints(0, 0, this.minX, this.minY, this.maxX, this.maxY, this.newAngle);
+    }
+    stopRotating() {
+        this.angle = this.newAngle;
+        this.angle = this.angle > 2 * Math.PI ? this.angle - 2 * Math.PI : this.angle;
+        this.updateFrameAndPoints();
+    }
+    getNewCoords(x = this.x0, y = this.y0, angle = this.angle) {
+        return {
+            x: (x - this.cPoint.x) * Math.cos(angle) - (y - this.cPoint.y) * Math.sin(angle) + this.cPoint.x,
+            y: (x - this.cPoint.x) * Math.sin(angle) + (y - this.cPoint.y) * Math.cos(angle) + this.cPoint.y
+        }
+    }
     complete() {
         if (!polylineIsCompleted) {
             super.complete();
@@ -1456,5 +1518,22 @@ class polyline extends object {
             this.pointsArray[0].setPointAttribute('fill', "white");
             polylineIsCompleted = true;
         }
+        this.frameArray = [new lineFrame(this.minX, this.maxY, this.maxX, this.maxY, this, true),
+            new lineFrame(this.maxX, this.maxY, this.maxX, this.minY, this, true),
+            new lineFrame(this.maxX, this.minY, this.minX, this.minY, this, true),
+            new lineFrame(this.minX, this.minY, this.minX, this.maxY, this, true),
+            new polylineFrame(this.path, this)
+        ];
+        this.pointsArray = [new point(this.minX + (this.maxX - this.minX) / 2, this.minY + (this.maxY - this.minY) / 2, this, {
+                action: "move",
+                attr: "move"
+            }),
+            new point(this.minX + (this.maxX - this.minX) / 2, this.minY - 20, this, {
+                action: "rotate",
+                attr: "rotate"
+            })
+        ];
+        super.complete();
+        this.path = "";
     }
 }

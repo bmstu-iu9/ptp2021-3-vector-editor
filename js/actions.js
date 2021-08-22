@@ -2,12 +2,12 @@
 deleteObject = document.getElementById("deleteObject");
 
 deleteObject.onclick = function () {
-    if (currentObject != null && !isSomePointSelected) {
+    if (currentObject != null) {
         deleteFunc();
     }
 }
 document.addEventListener('keydown', function (event) {
-    if (event.code == 'Delete' && currentObject != null && !isSomePointSelected) {
+    if (event.code == 'Delete' && currentObject != null) {
         deleteFunc();
     }
 });

@@ -100,7 +100,6 @@
 
         <div id="widthBox"><img src="img/stroke/width.svg"><input type="number" id="strokeWidth" min="0" max="100"
             value="2" title="Ширина контура"></div>
-
         <div class="styleListBox">
           <input type="checkbox" name="stroke" id="dash" hidden><label for="dash"><img
               src="img/stroke/lines.svg"></label>
@@ -161,12 +160,15 @@
       <div id="rulers">
         <div id="rulers_corner">px</div>
         <svg id="ruler_x">
+          <rect x="0" y="0" width="100%" height="1" fill="#fff"></rect>
           <rect id="ruler_x_line" x="0" y="0" width="512" height="15" fill="url(#ruler_x_pattern)"></rect>
           <defs>
+            <!--
             <linearGradient id="ruler_x_gradient" gradientTransform="rotate(90)">
               <stop offset="0%" stop-color="#fff" />
               <stop offset="100%" stop-color="#808080" />
             </linearGradient>
+            -->
             <pattern id="ruler_x_pattern" patternUnits="userSpaceOnUse" x="0" y="0" width="50" height="15">
               <rect width="100%" height="100%"></rect>
               <line x1="0.5" y1="0" x2="0.5" y2="15"> </line>
@@ -177,12 +179,15 @@
           </g>
         </svg>
         <svg id="ruler_y">
+          <rect x="0" y="0" width="1" height="100%" fill="#fff"></rect>
           <rect id="ruler_y_line" x="0" y="0" width="15" height="512" fill="url(#ruler_y_pattern)"></rect>
           <defs>
+            <!--
             <linearGradient id="ruler_y_gradient">
               <stop offset="0%" stop-color="#fff" />
               <stop offset="100%" stop-color="#808080" />
             </linearGradient>
+            -->
             <pattern id="ruler_y_pattern" patternUnits="userSpaceOnUse" x="0" y="0" width="15" height="50">
               <rect width="100%" height="100%"></rect>
               <line x1="0" y1="0.5" x2="15" y2="0.5"> </line>

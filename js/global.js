@@ -5,7 +5,7 @@ layersPanel = document.getElementById("layers_panel");
 rightPanel = document.getElementById("right_panel");
 
 let isSomeObjectSelected = false, //для курсора
-	isSomePointSelected = false; //для удаления
+	isSomePointSelected = false;
 let wasPressed, currentObject = null,
 	currentLayer,
 	objects = [];
@@ -15,6 +15,7 @@ let svgPanelCoords = getCoords(svgPanel),
 	curX, curY; //cursor coordinates
 let scaleСoef = 1;
 let pointRadius = 4;
+let currentPointTypeAttr = null;
 
 //RULER
 rulerX = document.getElementById("ruler_x");
@@ -86,5 +87,13 @@ function resetCurrentObject() {
 	if (currentObject != null) {
 		currentObject.hideFrameAndPoints();
 		currentObject = null;
+	}
+}
+
+//преобразование декартовых координат при повороте системы координат
+function getRotateCoords(x, y, angle) {
+	return {
+		x: x * Math.cos(angle) + y * Math.sin(angle),
+		y: -x * Math.sin(angle) + y * Math.cos(angle)
 	}
 }

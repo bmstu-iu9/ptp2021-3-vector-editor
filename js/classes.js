@@ -23,23 +23,20 @@ class object {
         clone.isMoving = false;
         clone.x0 = this.x0;
         clone.y0 = this.y0;
+        clone.strokeWidth = this.strokeWidth;
 
-        //clone.removeFrameAndPoints();
+        clone.removeFrameAndPoints();
         for (let i = 0; i < this.pointsArray.length; i++) {
             clone.pointsArray[i] = this.pointsArray[i].createClone(clone);
         }
-        clone.frameArray = [];
         for (let i = 0; i < this.frameArray.length; i++) {
             clone.frameArray[i] = this.frameArray[i].createClone(clone);
         }
-        //clone.hideFrameAndPoints();
-        clone.removeFrameAndPoints();
-        clone.strokeWidth = this.strokeWidth;
         clone.svgElement.setAttribute('fill', this.svgElement.getAttribute('fill'));
         clone.svgElement.setAttribute('fill-opacity', this.svgElement.getAttribute('fill-opacity'));
         clone.svgElement.setAttribute('opacity', this.svgElement.getAttribute('opacity'));
         clone.svgElement.setAttribute('stroke', this.svgElement.getAttribute('stroke'));
-        clone.svgElement.setAttribute('stroke-width', this.svgElement.getAttribute('stroke-width'));
+        clone.svgElement.setAttribute('stroke-width', this.strokeWidth);
         clone.svgElement.setAttribute('stroke-dasharray', this.svgElement.getAttribute('stroke-dasharray'));
         clone.svgElement.setAttribute('stroke-linejoin', this.svgElement.getAttribute('stroke-linejoin'));
         clone.svgElement.setAttribute('stroke-linecap', this.svgElement.getAttribute('stroke-linecap'));
@@ -58,7 +55,7 @@ class object {
                 }
             }
             if (wasPressed == "fill" && this.type != 'pencil') {
-                this.svgElement.setAttribute('fill', getCurrentFillColor());
+                updateFill(this.svgElement, 2)
             }
         }).bind(this);
         this.svgElement.addEventListener("mousedown", select);
@@ -241,6 +238,7 @@ class rectangle extends object {
     createClone() {
         let clone = new rectangle();
         this.clone = clone;
+        clone.transform = this.transform;
         super.createClone();
         clone.width = this.width;
         clone.height = this.height;
@@ -252,8 +250,8 @@ class rectangle extends object {
         clone.angleY = this.angleY;
         clone.svgElement.setAttribute('width', this.width);
         clone.svgElement.setAttribute('height', this.height);
-        clone.svgElement.setAttribute('x', this.x);
-        clone.svgElement.setAttribute('y', this.y);
+        clone.svgElement.setAttribute('x', this.svgElement.getAttribute('x'));
+        clone.svgElement.setAttribute('y', this.svgElement.getAttribute('y'));
         clone.svgElement.setAttribute('transform', this.transform);
         return clone;
     }
@@ -315,6 +313,9 @@ class rectangle extends object {
             x: this.x + this.width / 2,
             y: this.y + this.height / 2
         }
+        /*this.x = this.angleX;
+        this.y = this.angleY;*/
+        //console.log(this.x, this.y);
     }
     moveTo(x, y) {
         let dx = x + pointRadius - this.x,
@@ -523,6 +524,7 @@ class ellipse extends object {
     createClone() {
         let clone = new ellipse();
         this.clone = clone;
+        clone.transform = this.transform;
         super.createClone();
         clone.rx = this.rx;
         clone.ry = this.ry;
@@ -533,8 +535,8 @@ class ellipse extends object {
         clone.angle = this.angle;
         clone.svgElement.setAttribute('rx', this.rx);
         clone.svgElement.setAttribute('ry', this.ry);
-        clone.svgElement.setAttribute('cx', this.cx);
-        clone.svgElement.setAttribute('cy', this.cy);
+        clone.svgElement.setAttribute('cx', this.svgElement.getAttribute('cx'));
+        clone.svgElement.setAttribute('cy', this.svgElement.getAttribute('cy'));
         clone.svgElement.setAttribute('transform', this.transform);
         return clone;
     }
@@ -951,7 +953,7 @@ class pencil extends object {
             clone.pathCoords[i].x = this.pathCoords[i].x;
             clone.pathCoords[i].y = this.pathCoords[i].y;
         }
-        clone.svgElement.setAttribute('points', this.path);
+        clone.svgElement.setAttribute('points', this.svgElement.getAttribute('points'));
         return clone;
     }
     updateAttributes() {
@@ -1164,6 +1166,7 @@ class line extends object {
     createClone() {
         let clone = new line();
         this.clone = clone;
+        clone.transform = this.transform;
         super.createClone();
         clone.x0 = this.x0;
         clone.y0 = this.y0;
@@ -1176,10 +1179,10 @@ class line extends object {
         clone.angleX2 = this.angleX2;
         clone.angleY0 = this.angleY0;
         clone.angleY2 = this.angleY2;
-        clone.svgElement.setAttribute('width', this.x0);
-        clone.svgElement.setAttribute('height', this.y0);
-        clone.svgElement.setAttribute('x', this.x2);
-        clone.svgElement.setAttribute('y', this.y2);
+        clone.svgElement.setAttribute('x1', this.svgElement.getAttribute('x1'));
+        clone.svgElement.setAttribute('y1', this.svgElement.getAttribute('y1'));
+        clone.svgElement.setAttribute('x2', this.svgElement.getAttribute('x2'));
+        clone.svgElement.setAttribute('y2', this.svgElement.getAttribute('y2'));
         clone.svgElement.setAttribute('fill', "none");
         clone.svgElement.setAttribute('transform', this.transform);
         return clone;

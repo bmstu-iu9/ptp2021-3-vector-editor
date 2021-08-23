@@ -218,6 +218,7 @@ class layer {
         let content = this.group.childNodes;
         for (i = 0; i < content.length; i++) {
             let figure = content[i].obj.createClone();
+            figure.hide();
             clone.group.append(figure.svgElement);
         }
         clone.opValue = this.opValue;
@@ -253,7 +254,6 @@ function resetCurrentLayer() {
 
 mergeLayers = document.getElementById("merge_layers");
 mergeLayers.onclick = () => {
-    layersNum = 1;
     let allLayers = svgcontent.childNodes;
     while (allLayers.length != 1) {
         layers[svgcontent.lastChild.id].mergeLayer();

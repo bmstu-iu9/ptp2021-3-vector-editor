@@ -150,7 +150,7 @@ function updateStroke(object, c = 1, width = 1, l = 1, d = 1, j = 1) {
         obj.setAttribute('stroke-linejoin', "bevel");
         break;
     }
-  if (object.isCompleted) object.updateFrameAndPoints();
+  if (object.isCompleted) object.updateFrameAndPoints(); //исправить!
 }
 
 //fill tool

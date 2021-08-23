@@ -41,7 +41,8 @@ class point {
         //rotateObject
         if (this.type.action == "rotate") {
             this.circle.addEventListener("mouseover", function () {
-                svgPanel.style.cursor = "url(img/rotate.svg) 10 10, pointer";
+                if (wasPressed == "cursor")
+                    svgPanel.style.cursor = "url(img/rotate.svg) 10 10, pointer";
             });
             this.circle.addEventListener("mouseout", function () {
                 if (!this.object.isRotating) {
@@ -57,7 +58,7 @@ class point {
             }).bind(this);
             document.addEventListener("mousemove", rotate);
             const startRotating = ((current) => {
-                if (this.object.isCompleted && this.object.isSelected) {
+                if (wasPressed == "cursor" && this.object.isCompleted && this.object.isSelected) {
                     this.object.isRotating = true;
                     this.object.isMoving = false;
                     updateCursorCoords(current);
@@ -166,8 +167,8 @@ class frame {
         if (red) this.svgElement.setAttribute('stroke', "red");
         else this.svgElement.setAttribute('stroke', object.getElementAttribute('stroke'));
         if (red) this.svgElement.setAttribute('stroke-width', pointRadius);
-        else this.svgElement.setAttribute('stroke-width', object.getElementAttribute('stroke-width'));
-        if (red || object.getElementAttribute('stroke-dasharray') == null) this.svgElement.setAttribute('stroke-dasharray', object.strokeWidth * 4);
+        else this.svgElement.setAttribute('stroke-width', object.strokeWidth);
+        if (red || object.getElementAttribute('stroke-dasharray') == null) this.svgElement.setAttribute('stroke-dasharray', this.svgElement.getAttribute('stroke-width') * 4);
         else this.svgElement.setAttribute('stroke-dasharray', object.getElementAttribute('stroke-dasharray'));
         if (red) this.svgElement.setAttribute('stroke-linejoin', "none");
         else this.svgElement.setAttribute('stroke-linejoin', object.getElementAttribute('stroke-linejoin'));

@@ -154,6 +154,8 @@ class object {
     move() {}
     stopMoving() {}
     moveTo() {}
+    resize() {}
+    stopResize() {}
     startRotating() {}
     rotate() {}
     stopRotating() {}
@@ -1088,12 +1090,6 @@ class pencil extends object {
         this.move(dx, dy);
         this.stopMoving(dx, dy);
     }
-    completeFirstObject() {
-        this.isCompleted = true;
-        this.updateFrameAndPoints();
-        this.hideFrameAndPoints();
-        this.removeHotKeys();
-    }
     startRotating() {
         this.rPoint = {
             x: this.getNewCoords(this.minX + (this.maxX - this.minX) / 2, this.minY - 20, this.angle).x,
@@ -1119,6 +1115,27 @@ class pencil extends object {
             x: (x - this.cPoint.x) * Math.cos(angle) - (y - this.cPoint.y) * Math.sin(angle) + this.cPoint.x,
             y: (x - this.cPoint.x) * Math.sin(angle) + (y - this.cPoint.y) * Math.cos(angle) + this.cPoint.y
         }
+    }
+    completeFirstObject() {
+        this.frameArray = [new lineFrame(this.minX, this.maxY, this.maxX, this.maxY, this, true),
+            new lineFrame(this.maxX, this.maxY, this.maxX, this.minY, this, true),
+            new lineFrame(this.maxX, this.minY, this.minX, this.minY, this, true),
+            new lineFrame(this.minX, this.minY, this.minX, this.maxY, this, true),
+            new polylineFrame(this.path, this)
+        ];
+        this.pointsArray = [new point(this.minX + (this.maxX - this.minX) / 2, this.minY + (this.maxY - this.minY) / 2, this, {
+                action: "move",
+                attr: "move"
+            }),
+            new point(this.minX + (this.maxX - this.minX) / 2, this.minY - 20, this, {
+                action: "rotate",
+                attr: "rotate"
+            })
+        ];
+        this.isCompleted = true;
+        this.updateFrameAndPoints();
+        this.hideFrameAndPoints();
+        this.removeHotKeys();
     }
     complete() {
         this.frameArray = [new lineFrame(this.minX, this.maxY, this.maxX, this.maxY, this, true),
@@ -1601,6 +1618,10 @@ class polyline extends object {
     resize() {
         this.pathCoords[currentPointTypeAttr].x = curX;
         this.pathCoords[currentPointTypeAttr].y = curY;
+        this.minX = Math.min(this.minX, curX);
+        this.minY = Math.min(this.minY, curY);
+        this.maxX = Math.max(this.maxX, curX);
+        this.maxY = Math.max(this.maxY, curY);
         this.updateFrameAndPoints();
     }
     startRotating() {

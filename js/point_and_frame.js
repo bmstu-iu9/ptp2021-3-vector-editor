@@ -84,14 +84,19 @@ class point {
             const move = ((current) => {
                 if (this.isMoving && currentObject == this.object) {
                     updateCursorCoords(current);
-                    this.object.resize(current);
+                    this.object.resize(curX - pointStart.x, curY - pointStart.y);
                 }
             }).bind(this);
-            const startMoving = (() => {
+            const startMoving = ((current) => {
                 if (this.isSelected) {
                     this.isMoving = true;
                     currentPointTypeAttr = this.type.attr;
                     this.object.addHotKeys();
+                    updateCursorCoords(current);
+                    pointStart = {
+                        x: curX,
+                        y: curY
+                    }
                     document.addEventListener("mousemove", move);
                 }
             }).bind(this);
@@ -99,6 +104,7 @@ class point {
             const stopMoving = (() => {
                 if (this.isMoving) {
                     this.isMoving = false;
+                    this.object.stopResize();
                     currentPointTypeAttr = null;
                     this.object.removeHotKeys();
                     if (this.circle != null) this.circle.setAttribute('fill', "white");

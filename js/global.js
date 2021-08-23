@@ -13,8 +13,9 @@ let svgPanelCoords = getCoords(svgPanel),
 	scrollcoords = getCoords(scrollPanel),
 	curX, curY; //cursor coordinates
 let scaleСoef = 1;
-let pointRadius = 4;
-let currentPointTypeAttr = null;
+let pointRadius = 4,
+	pointStart,
+	currentPointTypeAttr = null;
 
 //RULER
 rulerX = document.getElementById("ruler_x");
@@ -85,8 +86,8 @@ scrollPanel.onscroll = function () {
 
 //преобразование декартовых координат при повороте системы координат
 function getRotateCoords(x, y, angle) {
-		return {
-			x: x * Math.cos(angle) + y * Math.sin(angle),
-			y: - x * Math.sin(angle) + y * Math.cos(angle)
-		}
-} 
+	return {
+		x: x * Math.cos(angle) + y * Math.sin(angle),
+		y: -x * Math.sin(angle) + y * Math.cos(angle)
+	}
+}

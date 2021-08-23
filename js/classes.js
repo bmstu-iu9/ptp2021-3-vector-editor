@@ -1227,7 +1227,7 @@ class line extends object {
                     action: "move",
                     attr: "move"
                 }),
-                new point(this.x0 + (this.x2 - this.x0) / 2, this.y0 + (this.y2 - this.y0) / 2 - 20, this, {
+                new point(this.x0 + (this.x2 - this.x0) / 2, this.y0 + (this.y2 - this.y0) / 2 - 25, this, {
                     action: "rotate",
                     attr: "rotate"
                 }),
@@ -1324,8 +1324,8 @@ class line extends object {
             this.getNewCoords(x0, y0 + (y2 - y0) / 2, angle).y);
         this.pointsArray[8].update(this.getNewCoords(x0 + (x2 - x0) / 2, y0 + (y2 - y0) / 2, angle).x,
             this.getNewCoords(x0 + (x2 - x0) / 2, y0 + (y2 - y0) / 2, angle).y);
-        this.pointsArray[9].update(this.getNewCoords(x0 + (x2 - x0) / 2, y0 + (y2 - y0) / 2 - 20, angle).x,
-            this.getNewCoords(x0 + (x2 - x0) / 2, y0 + (y2 - y0) / 2 - 20, angle).y);
+        this.pointsArray[9].update(this.getNewCoords(x0 + (x2 - x0) / 2, y0 + (y2 - y0) / 2 - 25, angle).x,
+            this.getNewCoords(x0 + (x2 - x0) / 2, y0 + (y2 - y0) / 2 - 25, angle).y);
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         let new_dx = getRotateCoords(dx, dy, this.angle).x,
@@ -1442,8 +1442,8 @@ class line extends object {
     }
     startRotating() {
         this.rPoint = {
-            x: this.getNewCoords(this.x0 + (this.x2 - this.x0) / 2, this.y0 + (this.y2 - this.y0) / 2 - 20, this.angle).x,
-            y: this.getNewCoords(this.x0 + (this.x2 - this.x0) / 2, this.y0 + (this.y2 - this.y0) / 2 - 20, this.angle).y
+            x: this.getNewCoords(this.x0 + (this.x2 - this.x0) / 2, this.y0 + (this.y2 - this.y0) / 2 - 25, this.angle).x,
+            y: this.getNewCoords(this.x0 + (this.x2 - this.x0) / 2, this.y0 + (this.y2 - this.y0) / 2 - 25, this.angle).y
         }
     }
     rotate(angle = this.angle) {
@@ -1508,9 +1508,10 @@ class polyline extends object {
             x: this.minX + (this.maxX - this.minX) / 2,
             y: this.minY + (this.maxY - this.minY) / 2
         };
+        this.frameArray = [new polylineFrame(this.path, this)];
+        //rotate
         this.angle = 0;
         this.newAngle = 0;
-        this.frameArray = [new polylineFrame(this.path, this)];
     }
     createClone() {
         let clone = new polyline();
@@ -1556,6 +1557,10 @@ class polyline extends object {
         this.minY = Math.min(this.minY, y);
         this.maxX = Math.max(this.maxX, x);
         this.maxY = Math.max(this.maxY, y);
+        this.cPoint = {
+            x: this.minX + (this.maxX - this.minX) / 2,
+            y: this.minY + (this.maxY - this.minY) / 2
+        };
         if (x != this.x0) {
             this.pathCoords.push({
                 x: x,
@@ -1571,22 +1576,28 @@ class polyline extends object {
             }));
         }
     }
-    updateFrameAndPoints(dx = 0, dy = 0) {
+    updateFrameAndPoints(dx = 0, dy = 0, minX = this.minX, minY = this.minY, maxX = this.maxX, maxY = this.maxY, angle = this.angle) {
         //включает обновление атрибута
         for (let i = 0; i < this.pathCoords.length; i++) {
-            let x = this.pathCoords[i].x + dx,
-                y = this.pathCoords[i].y + dy;
+            let x = this.getNewCoords(this.pathCoords[i].x + dx, this.pathCoords[i].y + dy, angle).x,
+                y = this.getNewCoords(this.pathCoords[i].x + dx, this.pathCoords[i].y + dy, angle).y;
             if (i == 0) this.path = x + " " + y;
             else this.path += ", " + x + " " + y;
             this.pointsArray[i].update(x, y, i);
         }
-        this.path += ", " + (this.pathCoords[0].x + dx) + " " + (this.pathCoords[0].y + dy);
+        if (this.isCompleted)
+            this.pointsArray[this.pointsArray.length - 1].update(this.getNewCoords(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2 - 20, angle).x,
+                this.getNewCoords(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2 - 20, angle).y);
+        this.path += ", " + this.getNewCoords(this.pathCoords[0].x + dx, this.pathCoords[0].y + dy, angle).x + " " +
+            this.getNewCoords(this.pathCoords[0].x + dx, this.pathCoords[0].y + dy, angle).y;
         this.frameArray[0].update(this.path);
         this.svgElement.setAttribute('points', this.path);
         this.path = "";
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
-        this.updateFrameAndPoints(dx, dy);
+        let new_dx = getRotateCoords(dx, dy, this.angle).x,
+            new_dy = getRotateCoords(dx, dy, this.angle).y;
+        this.updateFrameAndPoints(new_dx, new_dy, this.minX + new_dx, this.minY + new_dy, this.maxX + new_dx, this.maxY + new_dy);
     }
     stopMoving(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.x0 += dx;
@@ -1595,6 +1606,10 @@ class polyline extends object {
         this.minY += dy;
         this.maxX += dx;
         this.maxY += dy;
+        this.cPoint = {
+            x: this.minX + (this.maxX - this.minX) / 2,
+            y: this.minY + (this.maxY - this.minY) / 2
+        }
         for (let i = 0; i < this.pathCoords.length; i++) {
             this.pathCoords[i].x += dx;
             this.pathCoords[i].y += dy;
@@ -1616,18 +1631,24 @@ class polyline extends object {
         }
     }
     resize() {
-        this.pathCoords[currentPointTypeAttr].x = curX;
-        this.pathCoords[currentPointTypeAttr].y = curY;
-        this.minX = Math.min(this.minX, curX);
-        this.minY = Math.min(this.minY, curY);
-        this.maxX = Math.max(this.maxX, curX);
-        this.maxY = Math.max(this.maxY, curY);
+        let new_curX = this.getNewCoords(curX, curY, 2 * Math.PI - this.angle).x,
+            new_curY = this.getNewCoords(curX, curY, 2 * Math.PI - this.angle).y;
+        this.pathCoords[currentPointTypeAttr].x = new_curX;
+        this.pathCoords[currentPointTypeAttr].y = new_curY;
+        this.minX = Math.min(this.minX, new_curX);
+        this.minY = Math.min(this.minY, new_curY);
+        this.maxX = Math.max(this.maxX, new_curX);
+        this.maxY = Math.max(this.maxY, new_curY);
+        this.cPoint = {
+            x: this.minX + (this.maxX - this.minX) / 2,
+            y: this.minY + (this.maxY - this.minY) / 2
+        }
         this.updateFrameAndPoints();
     }
     startRotating() {
         this.rPoint = {
-            x: this.getNewCoords(this.minX + (this.maxX - this.minX) / 2, this.minY - 20, this.angle).x,
-            y: this.getNewCoords(this.minX + (this.maxX - this.minX) / 2, this.minY - 20, this.angle).y,
+            x: this.getNewCoords(this.minX + (this.maxX - this.minX) / 2, this.minY + (this.maxY - this.minY) / 2 - 20, this.angle).x,
+            y: this.getNewCoords(this.minX + (this.maxX - this.minX) / 2, this.minY + (this.maxY - this.minY) / 2 - 20, this.angle).y,
         }
     }
     rotate(angle = this.angle) {
@@ -1655,24 +1676,13 @@ class polyline extends object {
             super.complete();
             this.line.remove();
             this.pointsArray[0].setPointAttribute('fill', "white");
-            polylineIsCompleted = true;
-        }
-        this.frameArray = [new lineFrame(this.minX, this.maxY, this.maxX, this.maxY, this, true),
-            new lineFrame(this.maxX, this.maxY, this.maxX, this.minY, this, true),
-            new lineFrame(this.maxX, this.minY, this.minX, this.minY, this, true),
-            new lineFrame(this.minX, this.minY, this.minX, this.maxY, this, true),
-            new polylineFrame(this.path, this)
-        ];
-        this.pointsArray = [new point(this.minX + (this.maxX - this.minX) / 2, this.minY + (this.maxY - this.minY) / 2, this, {
-                action: "move",
-                attr: "move"
-            }),
-            new point(this.minX + (this.maxX - this.minX) / 2, this.minY - 20, this, {
+            this.pointsArray.push(new point(this.minX + (this.maxX - this.minX) / 2, this.minY + (this.maxY - this.minY) / 2 - 20, this, {
                 action: "rotate",
                 attr: "rotate"
-            })
-        ];
-        super.complete();
-        this.path = "";
+            }));
+            this.updateFrameAndPoints();
+            this.pointsArray[this.pointsArray.length - 1].hide();
+            polylineIsCompleted = true;
+        }
     }
 }

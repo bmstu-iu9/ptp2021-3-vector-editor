@@ -142,6 +142,8 @@ function readFile(object) {
         first.setAttribute("id", "svg_panel");
         svgPanel = document.getElementById(first.id);
         svgPanel.insertBefore(clone, svgPanel.firstElementChild);
+        svgGrid = document.getElementById("svg_grid");
+        svgBackground = document.getElementById("svg_background");
         let width = first.getAttribute('width');
         let height = first.getAttribute('height')
         if (width == null || height == null) {
@@ -170,21 +172,12 @@ document.getElementById("file-selector").addEventListener("change", readFile);
 save = document.getElementById("save");
 
 save.onclick = function () {
-    let flag = false;
-    if (isGridEnabled) {
-        flag = true;
-        showGrid.click();
-    }
-    let fileName = prompt('Введите имя файла без расширения:');
-    if (fileName == null) {
-        if (flag)
-            showGrid.click();
-        return;
-    }
-    if (currentObject != null) {
-        currentObject.hideFrameAndPoints();
-        currentObject = null;
-    }
+    let style = svgPanel.getAttribute('style');
+    svgPanel.removeAttribute('style');
+    let svgGridClone = svgGrid;
+    svgPanel.removeChild(svgGrid);
+    resetCurrentObject()
+
     let svgData = draw_panel.innerHTML.toString();
     let blob = new Blob([svgData], {
         type: "image/svg+xml;charset=utf-8"
@@ -194,33 +187,25 @@ save.onclick = function () {
     let a = document.createElement("a");
     a.style = "display: none";
     a.href = url;
-    a.download = fileName + ".svg";
+    a.download = ".svg";
     a.click();
 
     window.URL.revokeObjectURL(url);
-    if (flag)
-        showGrid.click();
+
+    svgPanel.style = style;
+    svgPanel.prepend(svgGridClone);
 }
 
 //SAVEPNG
 savePng = document.getElementById("savePng");
 
 savePng.onclick = function () {
-    let flag = false;
-    if (isGridEnabled) {
-        flag = true;
-        showGrid.click();
-    }
-    let fileName = prompt('Введите имя файла без расширения:');
-    if (fileName == null) {
-        if (flag)
-            showGrid.click();
-        return;
-    }
-    if (currentObject != null) {
-        currentObject.hideFrameAndPoints();
-        currentObject = null;
-    }
+    let style = svgPanel.getAttribute('style');
+    svgPanel.removeAttribute('style');
+    let svgGridClone = svgGrid;
+    svgPanel.removeChild(svgGrid);
+    resetCurrentObject()
+
     let svgData = draw_panel.innerHTML.toString();
     let blob = new Blob([svgData], {
         type: "image/svg+xml;charset=utf-8"
@@ -235,14 +220,15 @@ savePng.onclick = function () {
         let a = document.createElement("a");
         a.style = "display: none";
         a.href = canvas.toDataURL("image/png");;
-        a.download = fileName + ".png";
+        a.download = ".png";
         a.click();
 
         window.URL.revokeObjectURL(url);
     }
     img.src = url;
-    if (flag)
-        showGrid.click();
+
+    svgPanel.style = style;
+    svgPanel.prepend(svgGridClone);
 }
 
 //SCALING

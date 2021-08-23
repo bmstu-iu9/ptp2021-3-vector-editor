@@ -241,10 +241,10 @@ input[type=range] {
     width: 70%;
 }
 
-.colorOpacity input::-webkit-slider-runnable-track {
+.opacity::-webkit-slider-runnable-track {
     background: #222;
 }
-.colorOpacity input::-moz-range-track {
+.opacity::-moz-range-track {
     background: #222;
 }
 

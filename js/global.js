@@ -44,6 +44,7 @@ for (var i = 0; i < buttons.length; i++) {
 		this.className += " active";
 	});
 }
+let isEraserActive = false;
 
 //GET COORDS 
 function getCoords(elem) {

@@ -140,7 +140,8 @@ class point {
         svgPanel.appendChild(this.circle);
     }
     remove() {
-        svgPanel.removeChild(this.circle);
+        if (this.object == currentObject || !this.object.isCompleted)
+            svgPanel.removeChild(this.circle);
         this.circle = null;
         this.isSelected = false;
     }
@@ -187,7 +188,8 @@ class frame {
         svgPanel.appendChild(this.svgElement);
     }
     remove() {
-        svgPanel.removeChild(this.svgElement);
+        if (this.object == currentObject || !this.object.isCompleted)
+            svgPanel.removeChild(this.svgElement);
         this.svgElement = null;
     }
     setFrameAttribute(attributeName, value) {

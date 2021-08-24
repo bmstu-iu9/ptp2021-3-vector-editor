@@ -54,8 +54,13 @@ class object {
                     currentObject = this;
                 }
             }
+
             if (wasPressed == "fill" && this.type != 'pencil') {
-                updateFill(this.svgElement, 2)
+                updateFill(this.svgElement, 2);
+            }
+
+            if (wasPressed == "eraser") {
+                this.remove();
             }
         }).bind(this);
         this.svgElement.addEventListener("mousedown", select);
@@ -96,6 +101,11 @@ class object {
             }
         }).bind(this);
         svgPanel.addEventListener("mouseup", stopMoving);
+        this.svgElement.addEventListener("mouseover", () => {
+            if (isEraserActive) {
+                this.remove();
+            }
+        });
     }
     setElementAttribute(attributeName, value) {
         this.svgElement.setAttribute(attributeName, value);
@@ -157,10 +167,10 @@ class object {
     stopRotating() {}
     getNewCoords() {} //преобразование координат ключевых точек при повороте фигуры
     complete() {
-        this.isCompleted = true;
         this.updateFrameAndPoints();
         this.hideFrameAndPoints();
         this.removeHotKeys();
+        this.isCompleted = true;
         svgPanel.onmousemove = null;
         svgPanel.onmouseup = null;
         svgPanel.onmouseenter = null;

@@ -15,8 +15,11 @@ body {
 /*HEADER*/
 
 #logo {
-    font-size: 40px;
-    padding: 5px 0px 15px 60px;
+    /*font-size: 40px;
+    padding: 5px 0px 15px 60px;*/
+    /*font-size: 3.5vh;*/
+    margin-left: 1.1vw;
+    padding-left: 3.2vw;
     font-family: 'Marcellus SC', serif;
     background-image: url(img/logo.svg);
     background-size: 46px 46px;
@@ -35,41 +38,73 @@ header {
 
 /*MENU*/
 
-#menu_bar {
-    margin-left: 30px;
-    height: 6%;
-    width: initial;
-    display: flex;
-    font-family: 'Times New Roman', serif;
+#container {
+    height: 100%;
 }
 
-.container {
-    width: initial;
-    background-color: #333;
-    font-size: 20px;
-}
-
-.container > ul {
+.menu {
+    margin-left: 1vw;
+    height: 100%;
     display: flex;
     list-style: none;
+    font-size: 2.5vh;
 }
 
-.container > ul li a {
-    display: block;
+.menu li {
+    position: relative;
+    height: 100%;
     text-decoration: none;
-    padding: 1.7vh 1.5vw;
+    font-weight: bold;
+    padding: 0 1vw;
     color: #fff;
     transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    cursor: default;
 }
 
-.container > ul li {
-    position: relative;
-}
-
-.container ul > li a:hover {
+.menu li:hover {
     background-color: #555;
-    transition: all 0.3s ease;
+    transition: all 0.5s ease;
 }
+
+.menu li:hover ul {
+    display: block;
+}
+
+/*SUB MENU*/
+
+.sub_menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    display: none;
+    list-style: none;
+    z-index: 3;
+}
+
+.sub_menu li {
+    font-size: 2vh;
+    padding: 1.2vh 0.8vw;
+    text-transform: none;
+    background-color: #333;
+    cursor: pointer;
+}
+
+#help {
+    cursor: pointer;
+}
+
+#paste {
+    color: #999;
+    cursor: default;
+}
+
+#paste:hover {
+    background: #333;
+}
+
+/*TOP RIGHT BUTTONS*/
 
 #functions {
     top: 0vh;
@@ -83,35 +118,6 @@ header {
     background-color: #555;
 }
 
-/*SUB MENU*/
-
-.container li ul {
-    position: absolute;
-    display: none;
-    list-style: none;
-}
-
-.container li > ul li a {
-    font-size: 2vh;
-    padding: 1.8vh 1vw;
-    text-transform: none;
-    background-color: #333;
-    position: relative;
-    z-index: 3;
-}
-
-.container li:hover > ul {
-    display: block;
-}
-
-#paste {
-    color: #999;
-    cursor: default;
-}
-
-#paste:hover {
-    background: #333;
-}
 
 /*MAIN*/
 
@@ -253,7 +259,7 @@ main {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: rgb(255, 255, 255);
+    background: rgb(245, 245, 245);
     box-shadow: 0 0 10px #000000;
     z-index: 1;
 }

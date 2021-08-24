@@ -5,18 +5,16 @@ rectangleButton.onclick = function () {
     wasPressed = "rectangle";
     svgPanel.style.cursor = "default";
     svgPanel.onmousedown = function (current) {
-        if (wasPressed == "rectangle") {
-            updateCursorCoords(current);
-            let newObject = new rectangle();
+        updateCursorCoords(current);
+        let newObject = new rectangle();
 
-            document.onmousemove = function (current) {
-                updateCursorCoords(current);
-                newObject.updateAttributes(current);
-            };
-            document.onmouseup = function () {
-                newObject.complete();
-            };
-        }
+        document.onmousemove = function (current) {
+            updateCursorCoords(current);
+            newObject.updateAttributes(current);
+        };
+        document.onmouseup = function () {
+            newObject.complete();
+        };
     };
 }
 
@@ -27,18 +25,16 @@ ellipseButton.onclick = function () {
     wasPressed = "ellipse";
     svgPanel.style.cursor = "default";
     svgPanel.onmousedown = function (current) {
-        if (wasPressed == "ellipse") {
-            updateCursorCoords(current);
-            let newObject = new ellipse();
+        updateCursorCoords(current);
+        let newObject = new ellipse();
 
-            document.onmousemove = function (current) {
-                updateCursorCoords(current);
-                newObject.updateAttributes(current);
-            };
-            document.onmouseup = function () {
-                newObject.complete();
-            };
-        }
+        document.onmousemove = function (current) {
+            updateCursorCoords(current);
+            newObject.updateAttributes(current);
+        };
+        document.onmouseup = function () {
+            newObject.complete();
+        };
     };
 }
 
@@ -50,18 +46,16 @@ polygonButton.onclick = function () {
     wasPressed = "polygon";
     svgPanel.style.cursor = "default";
     svgPanel.onmousedown = function (current) {
-        if (wasPressed == "polygon") {
-            updateCursorCoords(current);
-            let newObject = new polygon();
+        updateCursorCoords(current);
+        let newObject = new polygon();
 
-            document.onmousemove = function (current) {
-                updateCursorCoords(current);
-                newObject.updateAttributes(current);
-            };
-            document.onmouseup = function () {
-                newObject.complete();
-            };
-        }
+        document.onmousemove = function (current) {
+            updateCursorCoords(current);
+            newObject.updateAttributes(current);
+        };
+        document.onmouseup = function () {
+            newObject.complete();
+        };
     };
 }
 
@@ -73,18 +67,16 @@ pentagramButton.onclick = function () {
     wasPressed = "pentagram";
     svgPanel.style.cursor = "default";
     svgPanel.onmousedown = function (current) {
-        if (wasPressed == "pentagram") {
-            updateCursorCoords(current);
-            let newObject = new pentagram();
+        updateCursorCoords(current);
+        let newObject = new pentagram();
 
-            document.onmousemove = function (current) {
-                updateCursorCoords(current);
-                newObject.updateAttributes(current);
-            };
-            document.onmouseup = function () {
-                newObject.complete();
-            };
-        }
+        document.onmousemove = function (current) {
+            updateCursorCoords(current);
+            newObject.updateAttributes(current);
+        };
+        document.onmouseup = function () {
+            newObject.complete();
+        };
     };
 }
 
@@ -95,22 +87,20 @@ pencilButton.onclick = function () {
     wasPressed = "pencil";
     svgPanel.style.cursor = "default";
     svgPanel.onmousedown = function (current) {
-        if (wasPressed == "pencil") {
-            updateCursorCoords(current);
-            let newObject = new pencil();
+        updateCursorCoords(current);
+        let newObject = new pencil();
 
-            svgPanel.onmousemove = function (current) {
-                updateCursorCoords(current);
-                newObject.updateAttributes();
-            };
-            document.onmouseup = function () {
-                newObject.complete();
-            };
-            svgPanel.onmouseenter = function (current) {
-                document.onmouseup();
-                svgPanel.onmousedown(current);
-            };
-        }
+        svgPanel.onmousemove = function (current) {
+            updateCursorCoords(current);
+            newObject.updateAttributes();
+        };
+        document.onmouseup = function () {
+            newObject.complete();
+        };
+        svgPanel.onmouseenter = function (current) {
+            document.onmouseup();
+            svgPanel.onmousedown(current);
+        };
     };
 };
 
@@ -121,18 +111,16 @@ line.onclick = function () {
     wasPressed = "line";
     svgPanel.style.cursor = "default";
     svgPanel.onmousedown = function (current) {
-        if (wasPressed == "line") {
-            updateCursorCoords(current);
-            let newObject = new line();
+        updateCursorCoords(current);
+        let newObject = new line();
 
-            document.onmousemove = function (current) {
-                updateCursorCoords(current);
-                newObject.updateAttributes(current);
-            };
-            document.onmouseup = function () {
-                newObject.complete();
-            };
-        }
+        document.onmousemove = function (current) {
+            updateCursorCoords(current);
+            newObject.updateAttributes(current);
+        };
+        document.onmouseup = function () {
+            newObject.complete();
+        };
     };
 }
 
@@ -144,7 +132,7 @@ pathTool.onclick = function () {
     wasPressed = "pathTool";
     svgPanel.style.cursor = "default";
     svgPanel.onmousedown = function (current) {
-        if (wasPressed == "pathTool" && polylineIsCompleted) {
+        if (polylineIsCompleted) {
             updateCursorCoords(current);
             let newObject = new polyline();
             polylineIsCompleted = false;

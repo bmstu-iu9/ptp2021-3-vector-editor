@@ -65,6 +65,29 @@ polygonButton.onclick = function () {
     };
 }
 
+//PENTAGRAM
+pentagramButton = document.getElementById("pentagram");
+let curPentagramVertNum = 5;
+
+pentagramButton.onclick = function () {
+    wasPressed = "pentagram";
+    svgPanel.style.cursor = "default";
+    svgPanel.onmousedown = function (current) {
+        if (wasPressed == "pentagram") {
+            updateCursorCoords(current);
+            let newObject = new pentagram();
+
+            document.onmousemove = function (current) {
+                updateCursorCoords(current);
+                newObject.updateAttributes(current);
+            };
+            document.onmouseup = function () {
+                newObject.complete();
+            };
+        }
+    };
+}
+
 //PENCIL
 pencilButton = document.getElementById("pencil");
 

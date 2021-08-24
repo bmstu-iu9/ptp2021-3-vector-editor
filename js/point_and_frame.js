@@ -88,7 +88,7 @@ class point {
                 }
             }).bind(this);
             const startMoving = ((current) => {
-                if (this.isSelected) {
+                if (this.object.isCompleted && this.isSelected) {
                     this.isMoving = true;
                     currentPointTypeAttr = this.type.attr;
                     this.object.addHotKeys();
@@ -154,7 +154,7 @@ class point {
     }
     update(x, y, attr = this.type.attr) {
         if (currentPointTypeAttr != null && currentPointTypeAttr == attr) this.circle.setAttribute('fill', "red");
-        else this.circle.setAttribute('fill', "white");
+        else if (this.type.action != "polygon") this.circle.setAttribute('fill', "white");
         this.x = x;
         this.y = y;
         this.circle.setAttribute('cx', x);
@@ -168,22 +168,20 @@ class frame {
         this.svgElement = document.createElementNS("http://www.w3.org/2000/svg", name);
         svgPanel.appendChild(this.svgElement);
         this.object = object;
+        this.red = red;
         this.svgElement.setAttribute('stroke-opacity', "0.5");
         if (red) this.svgElement.setAttribute('stroke', "red");
         else this.svgElement.setAttribute('stroke', object.getElementAttribute('stroke'));
         if (red) this.svgElement.setAttribute('stroke-width', pointRadius);
         else this.svgElement.setAttribute('stroke-width', object.getElementAttribute('stroke-width'));
-        if (red || object.getElementAttribute('stroke-dasharray') == null) this.svgElement.setAttribute('stroke-dasharray', object.strokeWidth * 4);
+        if (red || object.getElementAttribute('stroke-dasharray') == null ||
+            object.getElementAttribute('stroke-dasharray') == "null") this.svgElement.setAttribute('stroke-dasharray', object.strokeWidth * 4);
         else this.svgElement.setAttribute('stroke-dasharray', object.getElementAttribute('stroke-dasharray'));
         if (red) this.svgElement.setAttribute('stroke-linejoin', "none");
         else this.svgElement.setAttribute('stroke-linejoin', object.getElementAttribute('stroke-linejoin'));
         if (red) this.svgElement.setAttribute('stroke-linecap', "none");
         else this.svgElement.setAttribute('stroke-linecap', object.getElementAttribute('stroke-linecap'));
         this.svgElement.setAttribute('fill', "none");
-    }
-    createClone(newObject) {
-        let clone = new frame(this.x1, this.y1, this.x2, this.y2, newObject);
-        return clone;
     }
     hide() {
         svgPanel.removeChild(this.svgElement);
@@ -198,7 +196,19 @@ class frame {
     setFrameAttribute(attributeName, value) {
         this.svgElement.setAttribute(attributeName, value);
     }
-    update() {}
+    update() {
+        if (this.red) this.svgElement.setAttribute('stroke', "red");
+        else this.svgElement.setAttribute('stroke', this.object.getElementAttribute('stroke'));
+        if (this.red) this.svgElement.setAttribute('stroke-width', pointRadius);
+        else this.svgElement.setAttribute('stroke-width', this.object.getElementAttribute('stroke-width'));
+        if (this.red || this.object.getElementAttribute('stroke-dasharray') == null ||
+            this.object.getElementAttribute('stroke-dasharray') == "null") this.svgElement.setAttribute('stroke-dasharray', this.object.strokeWidth * 4);
+        else this.svgElement.setAttribute('stroke-dasharray', this.object.getElementAttribute('stroke-dasharray'));
+        if (this.red) this.svgElement.setAttribute('stroke-linejoin', "none");
+        else this.svgElement.setAttribute('stroke-linejoin', this.object.getElementAttribute('stroke-linejoin'));
+        if (this.red) this.svgElement.setAttribute('stroke-linecap', "none");
+        else this.svgElement.setAttribute('stroke-linecap', this.object.getElementAttribute('stroke-linecap'));
+    }
 }
 class lineFrame extends frame {
     constructor(x1, y1, x2, y2, object, red = false) {
@@ -217,36 +227,38 @@ class lineFrame extends frame {
         let clone = new lineFrame(this.x1, this.y1, this.x2, this.y2, newObject, this.red);
         return clone;
     }
-    update(x1, y1, x2, y2) {
+    update(x1, y1, x2, y2, transform) {
+        super.update();
         this.x1 = x1;
         this.y1 = y1;
         this.x2 = x2;
         this.y2 = y2;
+        this.transform = transform;
         this.svgElement.setAttribute('x1', x1);
         this.svgElement.setAttribute('y1', y1);
         this.svgElement.setAttribute('x2', x2);
         this.svgElement.setAttribute('y2', y2);
+        if (transform != null) this.svgElement.setAttribute('transform', transform);
     }
 }
 class rectangleFrame extends frame {
-    constructor(x, y, width, height, transform, object) {
+    constructor(x, y, width, height, object) {
         super('rect', object);
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.transform = transform;
         this.svgElement.setAttribute('x', x);
         this.svgElement.setAttribute('y', y);
         this.svgElement.setAttribute('width', width);
         this.svgElement.setAttribute('height', height);
-        this.svgElement.setAttribute('transform', transform);
     }
     createClone(newObject) {
-        let clone = new rectangleFrame(this.x, this.y, this.width, this.height, this.transform, newObject);
+        let clone = new rectangleFrame(this.x, this.y, this.width, this.height, newObject);
         return clone;
     }
     update(x, y, width, height, transform) {
+        super.update();
         this.x = x;
         this.y = y;
         this.width = width;
@@ -256,28 +268,27 @@ class rectangleFrame extends frame {
         this.svgElement.setAttribute('y', y);
         this.svgElement.setAttribute('width', width);
         this.svgElement.setAttribute('height', height);
-        this.svgElement.setAttribute('transform', transform);
+        if (transform != null) this.svgElement.setAttribute('transform', transform);
     }
 }
 class ellipseFrame extends frame {
-    constructor(cx, cy, rx, ry, transform, object) {
+    constructor(cx, cy, rx, ry, object) {
         super('ellipse', object);
         this.cx = cx;
         this.cy = cy;
         this.rx = rx;
         this.ry = ry;
-        this.transform = transform;
         this.svgElement.setAttribute('cx', cx);
         this.svgElement.setAttribute('cy', cy);
         this.svgElement.setAttribute('rx', rx);
         this.svgElement.setAttribute('ry', ry);
-        this.svgElement.setAttribute('transform', transform);
     }
     createClone(newObject) {
-        let clone = new ellipseFrame(this.cx, this.cy, this.rx, this.ry, this.transform, newObject);
+        let clone = new ellipseFrame(this.cx, this.cy, this.rx, this.ry, newObject);
         return clone;
     }
     update(cx, cy, rx, ry, transform) {
+        super.update();
         this.cx = cx;
         this.cy = cy;
         this.rx = rx;
@@ -287,7 +298,7 @@ class ellipseFrame extends frame {
         this.svgElement.setAttribute('cy', cy);
         this.svgElement.setAttribute('rx', rx);
         this.svgElement.setAttribute('ry', ry);
-        this.svgElement.setAttribute('transform', transform);
+        if (transform != null) this.svgElement.setAttribute('transform', transform);
     }
 }
 class polygonFrame extends frame {
@@ -300,9 +311,11 @@ class polygonFrame extends frame {
         let clone = new polygonFrame(this.vertices, newObject);
         return clone;
     }
-    update(vertices) {
+    update(vertices, transform) {
+        super.update();
         this.vertices = vertices;
         this.svgElement.setAttribute('points', vertices);
+        if (transform != null) this.svgElement.setAttribute('transform', transform);
     }
 }
 class polylineFrame extends frame {
@@ -315,8 +328,10 @@ class polylineFrame extends frame {
         let clone = new polylineFrame(this.path, newObject);
         return clone;
     }
-    update(path) {
+    update(path, transform) {
+        super.update();
         this.path = path;
         this.svgElement.setAttribute('points', path);
+        if (transform != null) this.svgElement.setAttribute('transform', transform);
     }
 }

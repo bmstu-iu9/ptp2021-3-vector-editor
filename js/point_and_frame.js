@@ -153,8 +153,10 @@ class point {
         this.circle.setAttribute(attributeName, value);
     }
     update(x, y, attr = this.type.attr) {
-        if (currentPointTypeAttr != null && currentPointTypeAttr == attr) this.circle.setAttribute('fill', "red");
-        else if (this.type.action != "polygon") this.circle.setAttribute('fill', "white");
+        if (this.type.action != "polygon") {
+            if (currentPointTypeAttr != null && currentPointTypeAttr == attr) this.circle.setAttribute('fill', "red");
+            else this.circle.setAttribute('fill', "white");
+        }
         this.x = x;
         this.y = y;
         this.circle.setAttribute('cx', x);
@@ -332,6 +334,23 @@ class polylineFrame extends frame {
         super.update();
         this.path = path;
         this.svgElement.setAttribute('points', path);
+        if (transform != null) this.svgElement.setAttribute('transform', transform);
+    }
+}
+class pathFrame extends frame {
+    constructor(path, object) {
+        super('path', object);
+        this.path = path;
+        this.svgElement.setAttribute('d', path);
+    }
+    createClone(newObject) {
+        let clone = new pathFrame(this.path, newObject);
+        return clone;
+    }
+    update(path, transform) {
+        super.update();
+        this.path = path;
+        this.svgElement.setAttribute('d', path);
         if (transform != null) this.svgElement.setAttribute('transform', transform);
     }
 }

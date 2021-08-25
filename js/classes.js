@@ -840,7 +840,8 @@ class polygon extends object {
         this.frameArray = [new polygonFrame(this.vertices, this)];
         for (let i = 0; i < curVertNum; i++) {
             this.pointsArray.push(new point(this.x0, this.y0, this, {
-                action: "polygon"
+                action: "polygon",
+                attr: "polygon"
             }));
         }
     }
@@ -885,10 +886,8 @@ class polygon extends object {
             let x = x0 + this.r * Math.cos(this.phi + 2 * Math.PI * i / this.vertNum);
             let y = y0 + this.r * Math.sin(this.phi + 2 * Math.PI * i / this.vertNum);
             this.pointsArray[i].update(x, y);
-            if (i == 0) {
+            if (i == 0 && currentPointTypeAttr == "polygon") {
                 this.pointsArray[i].setColor("red");
-            } else {
-                this.pointsArray[i].setColor("white");
             }
         }
         this.svgElement.setAttribute('points', this.vertices);
@@ -919,7 +918,7 @@ class polygon extends object {
             this.pointsArray[i].remove();
         }
         this.pointsArray = [];
-        for (let i = 0; i < curVertNum; i++) {
+        for (let i = 0; i < this.vertNum; i++) {
             this.pointsArray.push(new point(this.x0, this.y0, this, {
                 action: "polygon"
             }));
@@ -976,23 +975,23 @@ class polygon extends object {
 //PENTAGRAM
 class pentagram extends object {
     constructor() {
-        super('polyline');
+        super('path');
         this.path = "";
         this.r = 0;
         this.phi = 0;
         this.step = 2;
-        //this.vertNum = curPentagramVertNum;
-        this.vertNum = 5;
+        this.vertNum = curPentagramVertNum;
         this.verticesCoords = [];
         this.circle = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
         currentLayer.group.appendChild(this.circle);
         this.circle.setAttribute('fill', "none");
-        this.frameArray = [new polylineFrame(this.path, this),
+        this.frameArray = [new pathFrame(this.path, this),
             new ellipseFrame(this.x0, this.y0, 0, 0, this)
         ];
         for (let i = 0; i < this.vertNum; i++) {
             this.pointsArray.push(new point(this.x0, this.y0, this, {
-                action: "polygon"
+                action: "polygon",
+                attr: "polygon"
             }));
         }
         this.rotationIsFixed = false;
@@ -1000,7 +999,7 @@ class pentagram extends object {
         this.radiusIsFixed = false;
         this.fix = this.fix.bind(this);
         this.free = this.free.bind(this);
-        //this.updateVertNum = this.updateVertNum.bind(this);
+        this.updateVertNum = this.updateVertNum.bind(this);
         this.addHotKeys();
         this.addCircleActions();
     }
@@ -1089,39 +1088,46 @@ class pentagram extends object {
                 y: y
             })
             this.pointsArray[i].update(x, y);
-            if (i == 0) {
+            if (i == 0 && currentPointTypeAttr == "polygon") {
                 this.pointsArray[i].setColor("red");
-            } else {
-                this.pointsArray[i].setColor("white");
             }
         }
-        this.path = this.verticesCoords[0].x + "," + this.verticesCoords[0].y;
         this.step = Math.floor((this.vertNum - 3) / 2) + 1;
+        this.path = "M " + this.verticesCoords[0].x + "," + this.verticesCoords[0].y;
+        this.endInd = 0;
         this.setPath(this.step);
-        this.path += " " + this.verticesCoords[0].x + "," + this.verticesCoords[0].y;
+        this.path += "L " + this.verticesCoords[0].x + "," + this.verticesCoords[0].y;
+        if (this.vertNum % 4 == 2) {
+            this.path += "M " + this.verticesCoords[1].x + "," + this.verticesCoords[1].y;
+            this.endInd = 1;
+            this.setPath(this.step + 1);
+            this.path += "L " + this.verticesCoords[1].x + "," + this.verticesCoords[1].y;
+        }
 
-        this.svgElement.setAttribute('points', this.path);
+
+
+        this.svgElement.setAttribute('d', this.path);
         this.frameArray[0].update(this.path);
     }
     setPath(ind) {
-        if (ind == 0) return;
-        this.path += " " + this.verticesCoords[ind].x + "," + this.verticesCoords[ind].y;
+        if (ind == this.endInd) return;
+        this.path += "L " + this.verticesCoords[ind].x + "," + this.verticesCoords[ind].y;
         this.setPath((ind + this.step) % this.vertNum);
     }
     addHotKeys() {
-        //document.addEventListener('keydown', this.updateVertNum);
+        document.addEventListener('keydown', this.updateVertNum);
         document.addEventListener('keydown', this.fix);
         document.addEventListener('keyup', this.free);
     }
     removeHotKeys() {
-        //document.removeEventListener('keydown', this.updateVertNum);
+        document.removeEventListener('keydown', this.updateVertNum);
         this.rotationIsFixed = false;
         this.angleIsFixed = false;
         this.radiusIsFixed = false;
         document.removeEventListener('keydown', this.fix);
         document.removeEventListener('keyup', this.free);
     }
-    /*updateVertNum(current) {
+    updateVertNum(current) {
         if (current.code == 'ArrowUp') {
             curPentagramVertNum++;
             this.vertNum++;
@@ -1130,8 +1136,17 @@ class pentagram extends object {
             curPentagramVertNum--;
             this.vertNum--;
         }
+        for (let i = 0; i < this.pointsArray.length; i++) {
+            this.pointsArray[i].remove();
+        }
+        this.pointsArray = [];
+        for (let i = 0; i < this.vertNum; i++) {
+            this.pointsArray.push(new point(this.x0, this.y0, this, {
+                action: "polygon"
+            }));
+        }
         this.updateAttributes();
-    }*/
+    }
     fix(event) {
         event.preventDefault();
         if (event.shiftKey) {

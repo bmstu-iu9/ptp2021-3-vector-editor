@@ -16,8 +16,10 @@ class point {
     addActions() {
         //select
         this.circle.addEventListener("mousedown", function () {
-            isSomePointSelected = true;
-            this.isSelected = true;
+            if (wasPressed == "cursor") {
+                isSomePointSelected = true;
+                this.isSelected = true;
+            }
         }.bind(this));
         this.circle.addEventListener("mouseup", function () {
             this.isSelected = false;
@@ -26,14 +28,16 @@ class point {
         this.circle.addEventListener("mouseover", this.setColor.bind(this, "red"));
         this.circle.addEventListener("mouseout", this.setColor.bind(this, "white"));
         //moveObject
-        if (this.type != null && this.type.action == "move") {
+        if (this.type.action == "move") {
             const startMoving = ((current) => {
-                this.object.isMoving = true;
-                updateCursorCoords(current);
-                currentPointTypeAttr = this.type.attr;
-                this.object.start = {
-                    x: curX,
-                    y: curY
+                if (this.isSelected && this.object.isCompleted) {
+                    this.object.isMoving = true;
+                    updateCursorCoords(current);
+                    currentPointTypeAttr = this.type.attr;
+                    this.object.start = {
+                        x: curX,
+                        y: curY
+                    }
                 }
             }).bind(this);
             this.circle.addEventListener("mousedown", startMoving);
@@ -41,7 +45,9 @@ class point {
         //rotateObject
         if (this.type.action == "rotate") {
             this.circle.addEventListener("mouseover", function () {
-                svgPanel.style.cursor = "url(img/rotate.svg) 10 10, pointer";
+                if (wasPressed == "cursor") {
+                    svgPanel.style.cursor = "url(img/rotate.svg) 10 10, pointer";
+                }
             });
             this.circle.addEventListener("mouseout", function () {
                 if (!this.object.isRotating) {
@@ -57,7 +63,7 @@ class point {
             }).bind(this);
             document.addEventListener("mousemove", rotate);
             const startRotating = ((current) => {
-                if (this.object.isCompleted && this.object.isSelected) {
+                if (this.isSelected && this.object.isCompleted) {
                     this.object.isRotating = true;
                     this.object.isMoving = false;
                     updateCursorCoords(current);
@@ -68,12 +74,13 @@ class point {
             }).bind(this);
             this.circle.addEventListener("mousedown", startRotating);
             const stopRotating = ((current) => {
-                if (this.object.isSelected && this.object.isRotating) {
+                if (this.object.isRotating) {
                     this.object.isRotating = false;
                     updateCursorCoords(current);
                     svgPanel.style.cursor = "default";
-                    isSomePointSelected = false;
                     currentPointTypeAttr = null;
+                    this.isSelected = false;
+                    isSomePointSelected = false;
                     this.object.stopRotating();
                 }
             }).bind(this);
@@ -88,7 +95,7 @@ class point {
                 }
             }).bind(this);
             const startMoving = ((current) => {
-                if (this.object.isCompleted && this.isSelected) {
+                if (this.isSelected && this.object.isCompleted) {
                     this.isMoving = true;
                     currentPointTypeAttr = this.type.attr;
                     this.object.addHotKeys();
@@ -105,9 +112,10 @@ class point {
                 if (this.isMoving) {
                     this.isMoving = false;
                     this.object.stopResize();
-                    currentPointTypeAttr = null;
                     this.object.removeHotKeys();
                     if (this.circle != null) this.circle.setAttribute('fill', "white");
+                    currentPointTypeAttr = null;
+                    this.isSelected = false;
                     isSomePointSelected = false;
                     document.removeEventListener("mousemove", move);
                 }
@@ -120,7 +128,7 @@ class point {
             this.object.deletePoint(this.type.attr);
             isSomePointSelected = false;
         })
-        if (this.type != null && this.type.action == "polyline") {
+        if (this.type.action == "polyline") {
             this.circle.addEventListener("contextmenu", deletePoint);
         }
     }
@@ -133,7 +141,7 @@ class point {
         return clone;
     }
     setColor(color) {
-        if ((!isSomePointSelected || this.type.action == "polygon") && this.object.isCompleted) {
+        if (!isSomePointSelected && this.object.isCompleted) {
             this.circle.setAttribute('fill', color);
         }
     }

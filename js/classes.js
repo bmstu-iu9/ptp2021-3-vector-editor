@@ -18,7 +18,7 @@ class object {
     createClone() {
         let clone = this.clone;
         clone.type = this.type;
-        clone.isCompleted = false;
+        clone.isCompleted = true;
         clone.isSelected = true;
         clone.isMoving = false;
         clone.x0 = this.x0;
@@ -39,6 +39,7 @@ class object {
         clone.svgElement.setAttribute('stroke-linejoin', this.getElementAttribute('stroke-linejoin'));
         clone.svgElement.setAttribute('stroke-linecap', this.getElementAttribute('stroke-linecap'));
         clone.removeHotKeys();
+        clone.hide();
     }
     addActions() {
         //select
@@ -63,7 +64,7 @@ class object {
         });
         //hide
         svgPanel.addEventListener("mousedown", function () {
-            if (!isSomeObjectSelected && !isSomePointSelected) {
+            if (!isSomeObjectSelected && !isSomePointSelected && wasPressed != "scale") {
                 if (currentObject != null) {
                     currentObject.hideFrameAndPoints();
                     currentObject = null;
@@ -163,7 +164,6 @@ class object {
     complete() {
         this.isCompleted = true;
         this.updateFrameAndPoints();
-        this.hideFrameAndPoints();
         this.removeHotKeys();
         svgPanel.onmousemove = null;
         svgPanel.onmouseup = null;
@@ -173,13 +173,13 @@ class object {
         document.onclick = null;
         document.onmouseenter = null;
 
-        /*isSomeObjectSelected = true;
+        isSomeObjectSelected = false;
         if (currentObject != null) {
-            currentObject.hideFrameAndPoints();   показывать рамку после создания объекта
+            currentObject.hideFrameAndPoints(); //показывать рамку после создания объекта
             currentObject = null;
         }
         currentObject = this;
-        this.isSelected = true;*/
+        this.isSelected = true;
     }
 }
 
@@ -854,6 +854,7 @@ class polygon extends object {
         clone.vertNum = this.vertNum;
         clone.vertices = this.vertices;
         clone.svgElement.setAttribute('points', this.vertices);
+        clone.updateFrameAndPoints();
         return clone;
     }
     updateAttributes() {
@@ -886,11 +887,13 @@ class polygon extends object {
             let x = x0 + this.r * Math.cos(this.phi + 2 * Math.PI * i / this.vertNum);
             let y = y0 + this.r * Math.sin(this.phi + 2 * Math.PI * i / this.vertNum);
             this.pointsArray[i].update(x, y);
-            if (i == 0 && currentPointTypeAttr == "polygon") {
-                this.pointsArray[i].setColor("red");
+            if (currentPointTypeAttr == "polygon") {
+                if (i == 0) this.pointsArray[i].setPointAttribute("fill", "red");
+                else this.pointsArray[i].setPointAttribute("fill", "white");
             }
         }
         this.svgElement.setAttribute('points', this.vertices);
+        this.vertices = "";
     }
     addHotKeys() {
         document.addEventListener('keydown', this.updateVertNum);
@@ -920,7 +923,8 @@ class polygon extends object {
         this.pointsArray = [];
         for (let i = 0; i < this.vertNum; i++) {
             this.pointsArray.push(new point(this.x0, this.y0, this, {
-                action: "polygon"
+                action: "polygon",
+                attr: "polygon"
             }));
         }
         this.updateAttributes();
@@ -1007,10 +1011,12 @@ class pentagram extends object {
         let clone = new pentagram();
         this.clone = clone;
         super.createClone();
-        clone.path = this.path
+        clone.path = this.path;
         clone.r = this.r;
         clone.phi = this.phi;
         clone.vertNum = this.vertNum;
+        clone.vertices = this.vertices;
+        clone.updateFrameAndPoints();
         return clone;
     }
     addCircleActions() {
@@ -1053,6 +1059,11 @@ class pentagram extends object {
         currentLayer.group.appendChild(this.circle);
         super.show();
     }
+    remove() {
+        currentLayer.group.removeChild(this.circle);
+        this.circle = null;
+        super.remove();
+    }
     updateAttributes() {
         let dx = curX - this.x0,
             dy = curY - this.y0;
@@ -1088,8 +1099,9 @@ class pentagram extends object {
                 y: y
             })
             this.pointsArray[i].update(x, y);
-            if (i == 0 && currentPointTypeAttr == "polygon") {
-                this.pointsArray[i].setColor("red");
+            if (currentPointTypeAttr == "polygon") {
+                if (i == 0) this.pointsArray[i].setPointAttribute("fill", "red");
+                else this.pointsArray[i].setPointAttribute("fill", "white");
             }
         }
         this.step = Math.floor((this.vertNum - 3) / 2) + 1;
@@ -1104,10 +1116,10 @@ class pentagram extends object {
             this.path += "L " + this.verticesCoords[1].x + "," + this.verticesCoords[1].y;
         }
 
-
-
         this.svgElement.setAttribute('d', this.path);
         this.frameArray[0].update(this.path);
+        this.path = "";
+        this.verticesCoords = [];
     }
     setPath(ind) {
         if (ind == this.endInd) return;
@@ -1142,7 +1154,8 @@ class pentagram extends object {
         this.pointsArray = [];
         for (let i = 0; i < this.vertNum; i++) {
             this.pointsArray.push(new point(this.x0, this.y0, this, {
-                action: "polygon"
+                action: "polygon",
+                attr: "polygon"
             }));
         }
         this.updateAttributes();
@@ -1238,7 +1251,7 @@ class pencil extends object {
             clone.pathCoords[i].x = this.pathCoords[i].x;
             clone.pathCoords[i].y = this.pathCoords[i].y;
         }
-        clone.svgElement.setAttribute('points', this.path);
+        clone.updateFrameAndPoints();
         return clone;
     }
     updateAttributes() {
@@ -1764,7 +1777,7 @@ class polyline extends object {
             clone.pathCoords[i].x = this.pathCoords[i].x;
             clone.pathCoords[i].y = this.pathCoords[i].y;
         }
-        clone.svgElement.setAttribute('points', this.path);
+        clone.updateFrameAndPoints();
         return clone;
     }
     updateLine(current) {

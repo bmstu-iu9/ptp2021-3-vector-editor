@@ -123,11 +123,42 @@ main {
 }
 
 #left_panel {
+    display: flex;
+    flex-direction: column;
     width: 60px;
     height: 100%;
     background-color: #444;
     position: fixed;
     z-index: 2;
+}
+
+.tool_button {
+    margin: 5px;
+    width: 50px;
+    height: 50px;
+    background-size: cover;
+    background-color: #444;
+    border-color: #fff;
+    border-radius: 10%;
+    border-width: 3px;
+    cursor: pointer;
+}
+
+.tool_button:hover {
+    background-color: #555;
+}
+
+#left_panel li > ul {
+    display: none;
+    position: absolute;
+    left: 60px;
+    margin-top: -60px;
+    background-color: #444;
+    list-style: none;
+}
+
+#left_panel li:hover > ul {
+    display: block;
 }
 
 #right_panel {
@@ -171,7 +202,7 @@ main {
     display: block;
     text-align: center;
     position: fixed;
-    background-color: #555;
+    background-color: #333;
     border: 1px solid #bbb;
     z-index: 1;
     will-change: transform;
@@ -186,11 +217,11 @@ main {
 }
 
 #ruler_x pattern rect {
-    fill: #555;
+    fill: #333;
 }
 
 #ruler_y pattern rect {
-    fill: #555;
+    fill: #333;
 }
 
 #ruler_x,
@@ -231,18 +262,6 @@ main {
     z-index: 1;
 }
 
-.tool_button {
-    margin: 5px;
-    width: 50px;
-    height: 50px;
-    background-size: cover;
-    background-color: #444;
-    border-color: #fff;
-    border-radius: 10%;
-    border-width: 3px;
-    cursor: pointer;
-}
-
 .func_button {
     width: 4vh;
     height: 4vh;
@@ -255,10 +274,6 @@ main {
 
 .active {
     border-width: 6px;
-}
-
-.tool_button:hover {
-    background-color: #555;
 }
 
 /*VERT MENU*/

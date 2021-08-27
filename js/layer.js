@@ -218,7 +218,6 @@ class layer {
         let content = this.group.childNodes;
         for (i = 0; i < content.length; i++) {
             let figure = content[i].obj.createClone();
-            figure.hide();
             clone.group.append(figure.svgElement);
         }
         clone.opValue = this.opValue;

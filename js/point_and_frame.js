@@ -180,7 +180,8 @@ class frame {
         svgPanel.appendChild(this.svgElement);
         this.object = object;
         this.red = red;
-        this.svgElement.setAttribute('stroke-opacity', "0.5");
+        if (red || Number(object.getElementAttribute('opacity')) > 0.5) this.svgElement.setAttribute('opacity', "0.5");
+        else this.svgElement.setAttribute('opacity', object.getElementAttribute('opacity'));
         if (red) this.svgElement.setAttribute('stroke', "red");
         else this.svgElement.setAttribute('stroke', object.getElementAttribute('stroke'));
         if (red) this.svgElement.setAttribute('stroke-width', pointRadius);

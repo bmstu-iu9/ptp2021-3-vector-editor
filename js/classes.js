@@ -184,10 +184,7 @@ class object {
         document.onmouseenter = null;
 
         isSomeObjectSelected = false;
-        if (currentObject != null) {
-            currentObject.hideFrameAndPoints(); //показывать рамку после создания объекта
-            currentObject = null;
-        }
+        resetCurrentObject(); //показывать рамку после создания объекта
         currentObject = this;
         this.isSelected = true;
     }

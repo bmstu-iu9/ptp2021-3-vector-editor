@@ -27,7 +27,7 @@ function updateRulers() {
   for (var i = parseFloat(ruler_x_pattern.getAttribute("x")); i < parseInt(rulerX.style.width);) {
     var newText = document.createElement("text");
     newText.setAttribute("x", i);
-    newText.setAttribute("y", 11);  
+    newText.setAttribute("y", 8);  
     ruler_x_text.innerHTML += "<text x=" + newText.getAttribute("x") + " " + "y=" + newText.getAttribute("y") + ">" + text + "</text>";
     text += 50 * coef;
     i += text_dist;
@@ -36,7 +36,7 @@ function updateRulers() {
   for (var i = svgPanelCoords.left - rulerXcoords.left - text_dist; i > 0;) {
     var newText = document.createElement("text");
     newText.setAttribute("x", i);
-    newText.setAttribute("y", 11);
+    newText.setAttribute("y", 8);
     ruler_x_text.innerHTML += "<text x=" + newText.getAttribute("x") + " " + "y=" + newText.getAttribute("y") + ">" + text + "</text>";
     text -= 50 * coef;
     i -= text_dist;
@@ -47,7 +47,7 @@ function updateRulers() {
     var newText = document.createElement("text");
     newText.textContent = String(text);
     newText.setAttribute("x", 8);
-    newText.setAttribute("y", i+3); 
+    newText.setAttribute("y", i); 
     newText.setAttribute("transform", "rotate(-90 8 " + i + ")");  
     ruler_y_text.appendChild(newText); 
     text += 50 * coef;
@@ -59,7 +59,7 @@ function updateRulers() {
     var newText = document.createElement("text");
     newText.textContent = String(text);
     newText.setAttribute("x", 8);
-    newText.setAttribute("y", i+3);
+    newText.setAttribute("y", i);
     newText.setAttribute("transform", "rotate(-90 8 " + i + ")");  
     ruler_y_text.appendChild(newText);
     text -= 50 * coef;

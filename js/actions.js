@@ -2,12 +2,12 @@
 deleteObject = document.getElementById("deleteObject");
 
 deleteObject.onclick = function () {
-    if (currentObject != null && !isSomePointSelected) {
+    if (currentObject != null) {
         deleteFunc();
     }
 }
 document.addEventListener('keydown', function (event) {
-    if (event.code == 'Delete' && currentObject != null && !isSomePointSelected) {
+    if (event.code == 'Delete' && currentObject != null) {
         deleteFunc();
     }
 });
@@ -33,7 +33,6 @@ document.addEventListener('keydown', function (event) {
 function copyFunc() {
     buffer = currentObject.createClone();
     buffer.moveTo(0, 0);
-    buffer.hide();
     paste.style.color = "#fff";
     paste.style.cursor = "pointer";
     paste.onmouseover = () => {
@@ -59,13 +58,11 @@ document.addEventListener('keydown', function (event) {
 
 function pasteFunc() {
     if (currentObject != null) currentObject.hideFrameAndPoints();
-    buffer.isCompleted = true;
     buffer.show();
     currentObject = buffer;
     buffer = buffer.createClone();
     buffer.move(50, 50);
     buffer.stopMoving(50, 50);
-    buffer.hide();
 }
 
 //CUT

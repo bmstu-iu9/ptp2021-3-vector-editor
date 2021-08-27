@@ -14,8 +14,9 @@ let svgPanelCoords = getCoords(svgPanel),
 	scrollcoords = getCoords(scrollPanel),
 	curX, curY; //cursor coordinates
 let scaleСoef = 1;
-let pointRadius = 4;
-let currentPointTypeAttr = null;
+let pointRadius = 4,
+	pointStart,
+	currentPointTypeAttr = null;
 
 //RULER
 rulerX = document.getElementById("ruler_x");

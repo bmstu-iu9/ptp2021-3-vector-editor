@@ -164,7 +164,7 @@ main {
 #right_panel {
     width: 10%;
     height: 100%;
-    background-color: #333;
+    background-color: #444;
     z-index: 2;
     margin-left: auto;
     margin-right: 0;
@@ -190,7 +190,7 @@ main {
     z-index: 2;
     display: block;
     position: relative;
-    font-size: 11px;
+    font-size: 15px;
     font-family: Courier;
     font-weight: bold;
     user-select: none;
@@ -207,9 +207,9 @@ main {
 }
 
 #ruler_x {
-    width: 512px;
-    height: 15px;
-    left: 15px;
+    width: 100%;
+    height: 20px;
+    left: 20px;
     top: 0px;
 }
 
@@ -227,7 +227,7 @@ main {
     position: absolute;
     display: block;
     overflow: hidden;
-    -webkit-transform: translateZ(0)
+    -webkit-transform: translateZ(0);
 }
 
 #ruler_x pattern line,
@@ -243,7 +243,7 @@ main {
 
 #ruler_y {
     width: 15px;
-    height: 512px;
+    height: 100%;
     top: 15px;
 }
 
@@ -280,9 +280,9 @@ main {
 .vertical_menu {
     position: relative;
     list-style: none;
+    width: 100%;
     left: 100px;
-    top: 0px;
-    opacity: 0;
+    display: none;
 }
 
 .vertical_menu a {
@@ -297,5 +297,5 @@ main {
 }
 
 #figures:hover .vertical_menu {
-    opacity: 1;
+    display: block;
 }

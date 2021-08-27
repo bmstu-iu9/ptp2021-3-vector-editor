@@ -33,7 +33,6 @@ document.addEventListener('keydown', function (event) {
 function copyFunc() {
     buffer = currentObject.createClone();
     buffer.moveTo(0, 0);
-    buffer.hide();
     paste.style.color = "#fff";
     paste.style.cursor = "pointer";
     paste.onmouseover = () => {
@@ -64,7 +63,6 @@ function pasteFunc() {
     buffer = buffer.createClone();
     buffer.move(50, 50);
     buffer.stopMoving(50, 50);
-    buffer.hide();
 }
 
 //CUT

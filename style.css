@@ -10,30 +10,31 @@ body {
     width: 100%;
     position: fixed;
     font-family: "Roboto", sans-serif;
+    background-color: #333;
 }
 
 /*HEADER*/
 
 #logo {
     /*font-size: 40px;
-    padding: 5px 0px 15px 60px;*/
-    /*font-size: 3.5vh;*/
-    margin-left: 1.1vw;
-    padding-left: 3.2vw;
+    padding: 5px 0px 15px 60px;
+    background-size: 46px 46px;
+    background-position: 7px 7px;*/
+    font-size: x-large;
+    margin: 0 0.5vw;
+    padding-left: 2.3%;
     font-family: 'Marcellus SC', serif;
     background-image: url(img/logo.svg);
-    background-size: 46px 46px;
+    background-size: auto 100%;
     background-repeat: no-repeat;
-    background-position: 7px 7px;
 }
 
 header {
     width: 100%;
-    height: 60px;
+    height: 5%;
     color: #fff;
-    background-color: #333;
-    z-index: 2;
     display: flex;
+    align-items: center;
 }
 
 /*MENU*/
@@ -43,20 +44,16 @@ header {
 }
 
 .menu {
-    margin-left: 1vw;
     height: 100%;
     display: flex;
-    list-style: none;
-    font-size: 2.5vh;
 }
 
 .menu li {
     position: relative;
     height: 100%;
-    text-decoration: none;
+    font-size: medium;
     font-weight: bold;
-    padding: 0 1vw;
-    color: #fff;
+    padding: 0 0.6vw;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
@@ -79,14 +76,12 @@ header {
     top: 100%;
     left: 0;
     display: none;
-    list-style: none;
-    z-index: 3;
+    z-index: 2;
 }
 
 .sub_menu li {
-    font-size: 2vh;
-    padding: 1.2vh 0.8vw;
-    text-transform: none;
+    padding: 1.2vh 0.7vw;
+    font-size: small;
     background-color: #333;
     cursor: pointer;
 }
@@ -104,71 +99,87 @@ header {
     background: #333;
 }
 
-/*TOP RIGHT BUTTONS*/
+/*TOP BUTTONS*/
 
 #functions {
-    top: 0vh;
-    margin-left: auto;
-    margin-right: 1.5vw;
+    margin-left: 0;
+    height: 60%;
+    width: initial;
     display: flex;
     align-items: center;
+}
+
+.func_button {
+    height: 100%;
+    padding: 3px;
+    background-size: cover;
+    background-color: transparent;
+    border: none;
+    border-radius: 15%;
+    cursor: pointer;
 }
 
 .func_button:hover {
     background-color: #555;
 }
 
-
 /*MAIN*/
 
 main {
-    top: 60px;
-    height: 94%;
+    height: 95%;
     width: 100%;
     position: fixed;
 }
 
 #left_panel {
+    width: 2.8%;
+    height: 100%;
+    position: absolute;
+    z-index: 2;
     display: flex;
     flex-direction: column;
-    width: 60px;
-    height: 100%;
-    background-color: #333;
-    position: fixed;
-    z-index: 2;
+    margin-top: 5px;
 }
 
 .tool_button {
-    margin: 5px;
-    width: 50px;
-    height: 50px;
+    width: 2.1vw;
+    height: 2.1vw;
     background-size: cover;
     background-color: #333;
     border-color: #fff;
     border-radius: 10%;
-    border-width: 3px;
     cursor: pointer;
+    margin: 5px;
+}
+
+.active {
+    border-width: 4px;
 }
 
 .tool_button:hover {
-    background-color: #444;
+    background-color: #555;
 }
 
-#left_panel li > ul {
+#left_panel li {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#left_panel li ul {
     display: none;
     position: absolute;
-    left: 60px;
-    margin-top: -60px;
+    left: 100%;
     background-color: #333;
     list-style: none;
 }
 
-#left_panel li:hover > ul {
+#left_panel li:hover ul {
     display: block;
 }
 
 #right_panel {
-    width: 10%;
+    width: 9%;
     height: 100%;
     background-color: #333;
     z-index: 2;
@@ -182,11 +193,11 @@ main {
 /*scrolling*/
 #scroll_panel {
     overflow: scroll;
-    width: 86%;
+    width: 88.2%;
     height: 100%;
     position: absolute;
     top: 0;
-    left: 60px;
+    left: 2.8%;
     background: #222;
     z-index: 1;
 }
@@ -262,20 +273,6 @@ main {
     background: rgb(245, 245, 245);
     box-shadow: 0 0 10px #000000;
     z-index: 1;
-}
-
-.func_button {
-    width: 4vh;
-    height: 4vh;
-    margin: 0.4vw;
-    background-size: cover;
-    background-color: transparent;
-    border-width: 0;
-    cursor: pointer;
-}
-
-.active {
-    border-width: 6px;
 }
 
 /*VERT MENU*/

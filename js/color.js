@@ -159,6 +159,7 @@ fill.onclick = function () {
   wasPressed = "fill";
   svgPanel.style.cursor = "url(img/fill.ico) 4 28, default";
   svgPanel.onmousedown = function (event) {
-    if (event.target == svgBackground) svgPanel.style.background = getCurrentFillColor();
+    if (event.target == svgBackground)
+      svgPanel.style.background = fillColor.value;
   }
 }

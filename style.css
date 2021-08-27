@@ -15,38 +15,38 @@ body {
 /*HEADER*/
 
 #logo {
-    /*font-size: 5vh;*/
-    margin-left: 0.9vw;
-    padding-left: 3.2vw;
+    font-size: 40px;
+    padding: 5px 0px 15px 60px;
     font-family: 'Marcellus SC', serif;
     background-image: url(img/logo.svg);
-    background-size: auto 100%;
+    background-size: 46px 46px;
     background-repeat: no-repeat;
+    background-position: 7px 7px;
 }
 
 header {
     width: 100%;
-    height: 7%;
+    height: 60px;
     color: #fff;
     background-color: #333;
     z-index: 2;
     display: flex;
-    align-items: center;
 }
 
 /*MENU*/
 
 #menu_bar {
-    margin-left: 1.5vw;
+    margin-left: 30px;
+    height: 6%;
     width: initial;
     display: flex;
-    align-items: center;
+    font-family: 'Times New Roman', serif;
 }
 
 .container {
     width: initial;
     background-color: #333;
-    font-size: 3vh;
+    font-size: 20px;
 }
 
 .container>ul {
@@ -116,17 +116,49 @@ header {
 /*MAIN*/
 
 main {
-    height: 93%;
+    top: 60px;
+    height: 94%;
     width: 100%;
     position: fixed;
 }
 
 #left_panel {
-    width: 4%;
+    display: flex;
+    flex-direction: column;
+    width: 60px;
     height: 100%;
     background-color: #444;
     position: fixed;
     z-index: 2;
+}
+
+.tool_button {
+    margin: 5px;
+    width: 50px;
+    height: 50px;
+    background-size: cover;
+    background-color: #444;
+    border-color: #fff;
+    border-radius: 10%;
+    border-width: 3px;
+    cursor: pointer;
+}
+
+.tool_button:hover {
+    background-color: #555;
+}
+
+#left_panel li > ul {
+    display: none;
+    position: absolute;
+    left: 60px;
+    margin-top: -60px;
+    background-color: #444;
+    list-style: none;
+}
+
+#left_panel li:hover > ul {
+    display: block;
 }
 
 #right_panel {
@@ -148,7 +180,7 @@ main {
     height: 100%;
     position: absolute;
     top: 0;
-    left: 4%;
+    left: 60px;
     background: #222;
     z-index: 1;
 }
@@ -158,39 +190,38 @@ main {
     z-index: 2;
     display: block;
     position: relative;
-    font-size: 11px;
+    font-size: 15px;
     font-family: Courier;
     font-weight: bold;
     user-select: none;
-    opacity: .6;
 }
 
 #rulers_corner {
-    width: 15px;
-    height: 15px;
+    width: 18px;
+    height: 18px;
     display: block;
     text-align: center;
     position: fixed;
-    background-color: #555;
-    border: 1px solid #fff;
+    background-color: #333;
+    border: 1px solid #bbb;
     z-index: 1;
     will-change: transform;
-    color: #fff;
+    color: #ccc;
 }
 
 #ruler_x {
-    width: 512px;
-    height: 15px;
-    left: 15px;
+    width: 100%;
+    height: 20px;
+    left: 20px;
     top: 0px;
 }
 
 #ruler_x pattern rect {
-    fill: url(#ruler_x_gradient);
+    fill: #333;
 }
 
 #ruler_y pattern rect {
-    fill: #555;
+    fill: #333;
 }
 
 #ruler_x,
@@ -198,7 +229,7 @@ main {
     position: absolute;
     display: block;
     overflow: hidden;
-    -webkit-transform: translateZ(0)
+    -webkit-transform: translateZ(0);
 }
 
 #ruler_x pattern line,
@@ -210,14 +241,13 @@ main {
 
 #ruler_x_text text,
 #ruler_y_text text {
-    fill: #fff;
-    opacity: .8;
+    fill: #ccc;
 }
 
 #ruler_y {
-    width: 15px;
-    height: 512px;
-    top: 15px;
+    width: 20px;
+    height: 100%;
+    top: 20px;
     left: 0px;
 }
 
@@ -230,18 +260,6 @@ main {
     background: rgb(255, 255, 255);
     box-shadow: 0 0 10px #000000;
     z-index: 1;
-}
-
-.tool_button {
-    margin: 0.5vw;
-    width: 3vw;
-    height: 3vw;
-    background-size: cover;
-    background-color: #444;
-    border-color: #fff;
-    border-radius: 10%;
-    border-width: 3px;
-    cursor: pointer;
 }
 
 .func_button {
@@ -258,20 +276,16 @@ main {
     border-width: 6px;
 }
 
-.tool_button:hover {
-    background-color: #555;
-}
-
 /*VERT MENU*/
 #figures:hover {
     background-color: #555;
 }
 
 .vertical_menu {
-    position: relative;
+    position: absolute;
     list-style: none;
     width: 100%;
-    left: 95%;
+    left: 100px;
     display: none;
 }
 

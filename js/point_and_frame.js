@@ -153,7 +153,8 @@ class point {
         svgPanel.appendChild(this.circle);
     }
     remove() {
-        svgPanel.removeChild(this.circle);
+        if (this.object == currentObject || !this.object.isCompleted)
+            svgPanel.removeChild(this.circle);
         this.circle = null;
         this.isSelected = false;
     }
@@ -179,13 +180,13 @@ class frame {
         svgPanel.appendChild(this.svgElement);
         this.object = object;
         this.red = red;
-        this.svgElement.setAttribute('stroke-opacity', "0.5");
+        if (red || Number(object.getElementAttribute('opacity')) > 0.5) this.svgElement.setAttribute('opacity', "0.5");
+        else this.svgElement.setAttribute('opacity', object.getElementAttribute('opacity'));
         if (red) this.svgElement.setAttribute('stroke', "red");
         else this.svgElement.setAttribute('stroke', object.getElementAttribute('stroke'));
         if (red) this.svgElement.setAttribute('stroke-width', pointRadius);
-        else this.svgElement.setAttribute('stroke-width', object.getElementAttribute('stroke-width'));
-        if (red || object.getElementAttribute('stroke-dasharray') == null ||
-            object.getElementAttribute('stroke-dasharray') == "null") this.svgElement.setAttribute('stroke-dasharray', object.strokeWidth * 4);
+        else this.svgElement.setAttribute('stroke-width', object.strokeWidth);
+        if (red || object.getElementAttribute('stroke-dasharray') == null) this.svgElement.setAttribute('stroke-dasharray', this.svgElement.getAttribute('stroke-width') * 4);
         else this.svgElement.setAttribute('stroke-dasharray', object.getElementAttribute('stroke-dasharray'));
         if (red) this.svgElement.setAttribute('stroke-linejoin', "none");
         else this.svgElement.setAttribute('stroke-linejoin', object.getElementAttribute('stroke-linejoin'));
@@ -310,6 +311,7 @@ class ellipseFrame extends frame {
         this.svgElement.setAttribute('ry', ry);
         if (transform != null) this.svgElement.setAttribute('transform', transform);
     }
+    update() {}
 }
 class polygonFrame extends frame {
     constructor(vertices, object) {

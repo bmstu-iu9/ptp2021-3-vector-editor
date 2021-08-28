@@ -2,6 +2,7 @@ svgPanel = document.getElementById("svg_panel");
 drawPanel = document.getElementById("draw_panel");
 scrollPanel = document.getElementById("scroll_panel");
 layersPanel = document.getElementById("layers_panel");
+rightPanel = document.getElementById("right_panel");
 
 let isSomeObjectSelected = false, //для курсора
 	isSomePointSelected = false;
@@ -44,6 +45,7 @@ for (var i = 0; i < buttons.length; i++) {
 		this.className += " active";
 	});
 }
+let isEraserActive = false;
 
 //GET COORDS 
 function getCoords(elem) {
@@ -83,11 +85,17 @@ scrollPanel.onscroll = function () {
 	updateRulers();
 };
 
+function resetCurrentObject() {
+	if (currentObject != null) {
+		currentObject.hideFrameAndPoints();
+		currentObject = null;
+	}
+}
 
 //преобразование декартовых координат при повороте системы координат
 function getRotateCoords(x, y, angle) {
 	return {
 		x: x * Math.cos(angle) + y * Math.sin(angle),
 		y: -x * Math.sin(angle) + y * Math.cos(angle)
-	}
+	};
 }

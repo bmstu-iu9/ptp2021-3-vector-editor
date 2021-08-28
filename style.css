@@ -10,98 +10,84 @@ body {
     width: 100%;
     position: fixed;
     font-family: "Roboto", sans-serif;
+    background-color: #333;
 }
 
 /*HEADER*/
 
 #logo {
-    font-size: 40px;
+    /*font-size: 40px;
     padding: 5px 0px 15px 60px;
+    background-size: 46px 46px;
+    background-position: 7px 7px;*/
+    font-size: x-large;
+    margin: 0 0.5vw;
+    padding-left: 2.3%;
     font-family: 'Marcellus SC', serif;
     background-image: url(img/logo.svg);
-    background-size: 46px 46px;
+    background-size: auto 100%;
     background-repeat: no-repeat;
-    background-position: 7px 7px;
 }
 
 header {
     width: 100%;
-    height: 60px;
+    height: 5%;
     color: #fff;
-    background-color: #333;
-    z-index: 2;
-    display: flex;
-}
-
-/*MENU*/
-
-#menu_bar {
-    margin-left: 30px;
-    height: 6%;
-    width: initial;
-    display: flex;
-    font-family: 'Times New Roman', serif;
-}
-
-.container {
-    width: initial;
-    background-color: #333;
-    font-size: 20px;
-}
-
-.container>ul {
-    display: flex;
-    list-style: none;
-}
-
-.container>ul li a {
-    display: block;
-    text-decoration: none;
-    padding: 1.7vh 1.5vw;
-    color: #fff;
-    transition: all 0.3s ease;
-}
-
-.container>ul li {
-    position: relative;
-}
-
-.container ul>li a:hover {
-    background-color: #555;
-    transition: all 0.3s ease;
-}
-
-#functions {
-    top: 0vh;
-    margin-left: auto;
-    margin-right: 1.5vw;
     display: flex;
     align-items: center;
 }
 
-.func_button:hover {
+/*MENU*/
+
+#container {
+    height: 100%;
+}
+
+.menu {
+    height: 100%;
+    display: flex;
+}
+
+.menu li {
+    position: relative;
+    height: 100%;
+    font-size: medium;
+    font-weight: bold;
+    padding: 0 0.6vw;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    cursor: default;
+}
+
+.menu li:hover {
     background-color: #555;
+    transition: all 0.5s ease;
+}
+
+.menu li:hover ul {
+    display: block;
 }
 
 /*SUB MENU*/
 
-.container li ul {
+.sub_menu {
     position: absolute;
+    top: 100%;
+    left: 0;
     display: none;
-    list-style: none;
+    z-index: 2;
 }
 
-.container li>ul li a {
-    font-size: 2vh;
-    padding: 1.8vh 1vw;
-    text-transform: none;
+.sub_menu li {
+    padding: 1.2vh 0.7vw;
+    font-size: small;
     background-color: #333;
-    position: relative;
-    z-index: 3;
+    cursor: pointer;
 }
 
-.container li:hover>ul {
-    display: block;
+#help {
+    cursor: pointer;
 }
 
 #paste {
@@ -113,58 +99,89 @@ header {
     background: #333;
 }
 
+/*TOP BUTTONS*/
+
+#functions {
+    margin-left: 0;
+    height: 60%;
+    width: initial;
+    display: flex;
+    align-items: center;
+}
+
+.func_button {
+    height: 100%;
+    padding: 3px;
+    background-size: cover;
+    background-color: transparent;
+    border: none;
+    border-radius: 15%;
+    cursor: pointer;
+}
+
+.func_button:hover {
+    background-color: #555;
+}
+
 /*MAIN*/
 
 main {
-    top: 60px;
-    height: 94%;
+    height: 95%;
     width: 100%;
     position: fixed;
 }
 
 #left_panel {
+    width: 2.8%;
+    height: 100%;
+    position: absolute;
+    z-index: 2;
     display: flex;
     flex-direction: column;
-    width: 60px;
-    height: 100%;
-    background-color: #444;
-    position: fixed;
-    z-index: 2;
+    margin-top: 5px;
 }
 
 .tool_button {
-    margin: 5px;
-    width: 50px;
-    height: 50px;
+    width: 2.1vw;
+    height: 2.1vw;
     background-size: cover;
-    background-color: #444;
+    background-color: #333;
     border-color: #fff;
     border-radius: 10%;
-    border-width: 3px;
     cursor: pointer;
+    margin: 5px;
+}
+
+.active {
+    border-width: 4px;
 }
 
 .tool_button:hover {
     background-color: #555;
 }
 
-#left_panel li > ul {
+#left_panel li {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#left_panel li ul {
     display: none;
     position: absolute;
-    left: 60px;
-    margin-top: -60px;
-    background-color: #444;
+    left: 100%;
+    background-color: #333;
     list-style: none;
 }
 
-#left_panel li:hover > ul {
+#left_panel li:hover ul {
     display: block;
 }
 
 #right_panel {
     width: 9%;
     height: 100%;
-    background-color: #444;
+    background-color: #333;
     z-index: 2;
     margin-left: auto;
     margin-right: 0;
@@ -176,11 +193,11 @@ main {
 /*scrolling*/
 #scroll_panel {
     overflow: scroll;
-    width: 87%;
+    width: 88.2%;
     height: 100%;
     position: absolute;
     top: 0;
-    left: 60px;
+    left: 2.8%;
     background: #222;
     z-index: 1;
 }
@@ -190,38 +207,36 @@ main {
     z-index: 2;
     display: block;
     position: relative;
-    font-size: 15px;
+    font-size: 11px;
     font-family: Courier;
     font-weight: bold;
     user-select: none;
+    color: #ccc;
 }
 
 #rulers_corner {
-    width: 18px;
-    height: 18px;
-    display: block;
+    width: 15px;
+    height: 15px;
     text-align: center;
-    position: fixed;
     background-color: #333;
-    border: 1px solid #bbb;
+    border: none;
     z-index: 1;
-    will-change: transform;
-    color: #ccc;
 }
 
 #ruler_x {
     width: 100%;
-    height: 20px;
-    left: 20px;
-    top: 0px;
+    height: 15px;
+    left: 15px;
+    top: 0;
 }
 
 #ruler_x pattern rect {
-    fill: #333;
+    /*fill: url(#ruler_x_gradient);*/
+    fill: #444;
 }
 
 #ruler_y pattern rect {
-    fill: #333;
+    fill: #444;
 }
 
 #ruler_x,
@@ -234,8 +249,7 @@ main {
 
 #ruler_x pattern line,
 #ruler_y pattern line {
-    stroke: #fff;
-    stroke-opacity: .8;
+    stroke: #ccc;
     stroke-width: 1px;
 }
 
@@ -245,10 +259,9 @@ main {
 }
 
 #ruler_y {
-    width: 20px;
+    width: 15px;
     height: 100%;
-    top: 20px;
-    left: 0px;
+    top: 15px;
 }
 
 /*холст*/
@@ -257,23 +270,9 @@ main {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: rgb(255, 255, 255);
+    background: rgb(245, 245, 245);
     box-shadow: 0 0 10px #000000;
     z-index: 1;
-}
-
-.func_button {
-    width: 4vh;
-    height: 4vh;
-    margin: 0.4vw;
-    background-size: cover;
-    background-color: transparent;
-    border-width: 0;
-    cursor: pointer;
-}
-
-.active {
-    border-width: 6px;
 }
 
 /*VERT MENU*/
@@ -282,7 +281,7 @@ main {
 }
 
 .vertical_menu {
-    position: absolute;
+    position: relative;
     list-style: none;
     width: 100%;
     left: 100px;

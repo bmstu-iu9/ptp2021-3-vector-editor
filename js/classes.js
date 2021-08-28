@@ -2,6 +2,7 @@ class object {
     constructor(name) {
         this.svgElement = document.createElementNS("http://www.w3.org/2000/svg", name);
         currentLayer.group.appendChild(this.svgElement);
+        this.svgElement.obj = this;
         this.type = name;
         this.isCompleted = false;
         this.isSelected = false;
@@ -10,8 +11,8 @@ class object {
         this.y0 = curY;
         this.pointsArray = [];
         this.frameArray = [];
-        this.svgElement.setAttribute('fill', getCurrentFillColor());
         this.strokeWidth = 1;
+        updateFill(this.svgElement);
         updateStroke(this);
         this.addActions();
     }
@@ -23,21 +24,23 @@ class object {
         clone.isMoving = false;
         clone.x0 = this.x0;
         clone.y0 = this.y0;
-        clone.removeFrameAndPoints();
+        clone.strokeWidth = this.strokeWidth;
+
+        clone.hideFrameAndPoints();
         for (let i = 0; i < this.pointsArray.length; i++) {
             clone.pointsArray[i] = this.pointsArray[i].createClone(clone);
         }
-        clone.frameArray = [];
         for (let i = 0; i < this.frameArray.length; i++) {
             clone.frameArray[i] = this.frameArray[i].createClone(clone);
         }
-        clone.strokeWidth = this.strokeWidth;
-        clone.svgElement.setAttribute('fill', this.getElementAttribute('fill'));
-        clone.svgElement.setAttribute('stroke', this.getElementAttribute('stroke'));
-        clone.svgElement.setAttribute('stroke-width', this.getElementAttribute('stroke-width'));
-        clone.svgElement.setAttribute('stroke-dasharray', this.getElementAttribute('stroke-dasharray'));
-        clone.svgElement.setAttribute('stroke-linejoin', this.getElementAttribute('stroke-linejoin'));
-        clone.svgElement.setAttribute('stroke-linecap', this.getElementAttribute('stroke-linecap'));
+        clone.svgElement.setAttribute('fill', this.svgElement.getAttribute('fill'));
+        clone.svgElement.setAttribute('fill-opacity', this.svgElement.getAttribute('fill-opacity'));
+        clone.svgElement.setAttribute('opacity', this.svgElement.getAttribute('opacity'));
+        clone.svgElement.setAttribute('stroke', this.svgElement.getAttribute('stroke'));
+        clone.svgElement.setAttribute('stroke-width', this.strokeWidth);
+        clone.svgElement.setAttribute('stroke-dasharray', this.svgElement.getAttribute('stroke-dasharray'));
+        clone.svgElement.setAttribute('stroke-linejoin', this.svgElement.getAttribute('stroke-linejoin'));
+        clone.svgElement.setAttribute('stroke-linecap', this.svgElement.getAttribute('stroke-linecap'));
         clone.removeHotKeys();
         clone.hide();
     }
@@ -46,16 +49,20 @@ class object {
         const select = (() => {
             if (wasPressed == "cursor") {
                 isSomeObjectSelected = true;
-                if (currentObject != null) {
-                    currentObject.hideFrameAndPoints();
-                }
+                resetCurrentObject()
+
                 if (this.isCompleted) {
                     this.showFrameAndPoints();
                     currentObject = this;
                 }
             }
+
             if (wasPressed == "fill" && this.type != 'pencil') {
-                this.svgElement.setAttribute('fill', getCurrentFillColor());
+                updateFill(this.svgElement, 2);
+            }
+
+            if (wasPressed == "eraser") {
+                this.remove();
             }
         }).bind(this);
         this.svgElement.addEventListener("mousedown", select);
@@ -65,10 +72,7 @@ class object {
         //hide
         svgPanel.addEventListener("mousedown", function () {
             if (!isSomeObjectSelected && !isSomePointSelected && wasPressed != "scale") {
-                if (currentObject != null) {
-                    currentObject.hideFrameAndPoints();
-                    currentObject = null;
-                }
+                resetCurrentObject();
             }
         });
         //move
@@ -99,7 +103,13 @@ class object {
             }
         }).bind(this);
         svgPanel.addEventListener("mouseup", stopMoving);
+        this.svgElement.addEventListener("mouseover", () => {
+            if (isEraserActive) {
+                this.remove();
+            }
+        });
     }
+
     setElementAttribute(attributeName, value) {
         this.svgElement.setAttribute(attributeName, value);
     }
@@ -162,9 +172,9 @@ class object {
     stopRotating() {}
     getNewCoords() {} //преобразование координат ключевых точек при повороте фигуры
     complete() {
-        this.isCompleted = true;
         this.updateFrameAndPoints();
         this.removeHotKeys();
+        this.isCompleted = true;
         svgPanel.onmousemove = null;
         svgPanel.onmouseup = null;
         svgPanel.onmouseenter = null;
@@ -174,10 +184,7 @@ class object {
         document.onmouseenter = null;
 
         isSomeObjectSelected = false;
-        if (currentObject != null) {
-            currentObject.hideFrameAndPoints(); //показывать рамку после создания объекта
-            currentObject = null;
-        }
+        resetCurrentObject(); //показывать рамку после создания объекта
         currentObject = this;
         this.isSelected = true;
     }
@@ -246,6 +253,7 @@ class rectangle extends object {
     createClone() {
         let clone = new rectangle();
         this.clone = clone;
+        clone.transform = this.transform;
         super.createClone();
         clone.width = this.width;
         clone.height = this.height;
@@ -255,11 +263,10 @@ class rectangle extends object {
         clone.angle = this.angle;
         clone.angleX = this.angleX;
         clone.angleY = this.angleY;
-        clone.transform = this.transform;
         clone.svgElement.setAttribute('width', this.width);
         clone.svgElement.setAttribute('height', this.height);
-        clone.svgElement.setAttribute('x', this.x);
-        clone.svgElement.setAttribute('y', this.y);
+        clone.svgElement.setAttribute('x', this.svgElement.getAttribute('x'));
+        clone.svgElement.setAttribute('y', this.svgElement.getAttribute('y'));
         clone.svgElement.setAttribute('transform', this.transform);
         return clone;
     }
@@ -558,6 +565,7 @@ class ellipse extends object {
     createClone() {
         let clone = new ellipse();
         this.clone = clone;
+        clone.transform = this.transform;
         super.createClone();
         clone.rx = this.rx;
         clone.ry = this.ry;
@@ -566,11 +574,10 @@ class ellipse extends object {
         clone.angleCx = this.angleCx;
         clone.angleCy = this.angleCy;
         clone.angle = this.angle;
-        clone.transform = this.transform;
         clone.svgElement.setAttribute('rx', this.rx);
         clone.svgElement.setAttribute('ry', this.ry);
-        clone.svgElement.setAttribute('cx', this.cx);
-        clone.svgElement.setAttribute('cy', this.cy);
+        clone.svgElement.setAttribute('cx', this.svgElement.getAttribute('cx'));
+        clone.svgElement.setAttribute('cy', this.svgElement.getAttribute('cy'));
         clone.svgElement.setAttribute('transform', this.transform);
         return clone;
     }
@@ -943,6 +950,7 @@ class polygon extends object {
             this.radiusIsFixed = true;
             this.updateAttributes();
         }
+        this.updateAttributes();
     }
     free(event) {
         if (event.key == 'Shift') {
@@ -1251,6 +1259,7 @@ class pencil extends object {
             clone.pathCoords[i].x = this.pathCoords[i].x;
             clone.pathCoords[i].y = this.pathCoords[i].y;
         }
+        //clone.svgElement.setAttribute('points', this.svgElement.getAttribute('points'));
         clone.updateFrameAndPoints();
         return clone;
     }
@@ -1300,6 +1309,15 @@ class pencil extends object {
         this.pointsArray[1].update(this.getNewCoords(minX + (maxX - minX) / 2, minY - 20, angle).x,
             this.getNewCoords(minX + (maxX - minX) / 2, minY - 20, angle).y);
         this.path = "";
+        this.rotatePoint = this.pointsArray[this.pointsArray.length - 1];
+        for (let i = 0; i < this.pointsArray.length; i++) {
+            this.pointsArray[i].circle.addEventListener("mouseover", function () {
+                isSomePointSelected = true;
+            });
+            this.pointsArray[i].circle.addEventListener("mouseout", function () {
+                isSomePointSelected = false;
+            });
+        }
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.updateFrameAndPoints(getRotateCoords(dx, dy, this.angle).x, getRotateCoords(dx, dy, this.angle).y,
@@ -1376,8 +1394,12 @@ class pencil extends object {
         ];
         this.isCompleted = true;
         this.updateFrameAndPoints();
-        this.hideFrameAndPoints();
-        this.removeHotKeys();
+    }
+    getNewCoords(x = this.x0, y = this.y0, angle = this.angle) {
+        return {
+            x: (x - this.cPoint.x) * Math.cos(angle) - (y - this.cPoint.y) * Math.sin(angle) + this.cPoint.x,
+            y: (x - this.cPoint.x) * Math.sin(angle) + (y - this.cPoint.y) * Math.cos(angle) + this.cPoint.y
+        }
     }
     complete() {
         this.frameArray = [new lineFrame(this.minX, this.maxY, this.maxX, this.maxY, this, true),
@@ -1485,6 +1507,7 @@ class line extends object {
     createClone() {
         let clone = new line();
         this.clone = clone;
+        clone.transform = this.transform;
         super.createClone();
         clone.x0 = this.x0;
         clone.y0 = this.y0;
@@ -1497,11 +1520,10 @@ class line extends object {
         clone.angleY0 = this.angleY0;
         clone.angleX2 = this.angleX2;
         clone.angleY2 = this.angleY2;
-        clone.transform = this.transform;
-        clone.svgElement.setAttribute('x1', this.x0);
-        clone.svgElement.setAttribute('y1', this.y0);
-        clone.svgElement.setAttribute('x2', this.x2);
-        clone.svgElement.setAttribute('y2', this.y2);
+        clone.svgElement.setAttribute('x1', this.svgElement.getAttribute('x1'));
+        clone.svgElement.setAttribute('y1', this.svgElement.getAttribute('y1'));
+        clone.svgElement.setAttribute('x2', this.svgElement.getAttribute('x2'));
+        clone.svgElement.setAttribute('y2', this.svgElement.getAttribute('y2'));
         clone.svgElement.setAttribute('fill', "none");
         clone.svgElement.setAttribute('transform', this.transform);
         return clone;

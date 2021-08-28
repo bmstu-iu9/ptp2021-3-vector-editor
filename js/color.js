@@ -1,20 +1,20 @@
 //COLOR CHANGE
-function changeStroke() {
+function changeStroke(c, w, l, d, j) {
   if (currentObject != null) {
-    updateStroke(currentObject);
+    updateStroke(currentObject, c, w, l, d, j);
   }
 }
 
-function changeFill() {
+function changeFill(i) {
   if (currentObject != null && currentObject.type != 'pencil') {
-    currentObject.svgElement.setAttribute('fill', getCurrentFillColor());
+    updateFill(currentObject.svgElement, i);
   }
 }
 strokeColor = document.getElementById("strokeColor");
-strokeColor.onchange = changeStroke;
+strokeColor.onchange = () => changeStroke(1, 0, 0, 0, 0);
 
 fillColor = document.getElementById("fillColor");
-fillColor.onchange = changeFill;
+fillColor.onchange = () => changeFill(2);
 
 //presence of stroke & fill
 s = document.getElementById("stroke");
@@ -42,89 +42,124 @@ f.onchange = () => {
   changeFill();
 }
 
-//CURRENT COLOR
-function getCurrentFillColor() {
-  if (f.checked) {
-    return "transparent";
+//OPACITY
+opacity = document.getElementsByClassName("opacity");
+opValue = document.getElementsByClassName("opValue");
+
+for (i = 0; i < 2; i++) {
+  opacity[i].i = i;
+  opacity[i].onmousedown = (e) => {
+    let i = e.target.i;
+    rightPanel.onmousemove = () => {
+      changeFill(i);
+      opValue[i].textContent = Math.round(opacity[i].value * 100);
+    }
+    document.onmouseup = () => {
+      rightPanel.onmousemove();
+      rightPanel.onmousemove = null;
+      document.onmouseup = null;
+    }
   }
-  return fillColor.value;
+}
+
+//CURRENT COLOR
+function updateFill(obj, i = -1) {
+  if (f.checked) {
+    obj.setAttribute('fill', "transparent");
+    return;
+  }
+  if (i == 0 || i == -1) obj.setAttribute('opacity', opacity[0].value);
+  if (i == 1 || i == -1) obj.setAttribute('fill-opacity', opacity[1].value);
+  if (i == 2 || i == -1) obj.setAttribute('fill', fillColor.value);
 }
 
 //stroke style
-dashs = document.querySelectorAll('input[type=radio][name="dash"]');
-dashs.forEach(s => s.addEventListener('change', () => changeStroke()));
-join = document.querySelectorAll('input[type=radio][name="join"]');
-join.forEach(s => s.addEventListener('change', () => changeStroke()));
 caps = document.querySelectorAll('input[type=radio][name="cap"]');
-caps.forEach(s => s.addEventListener('change', () => changeStroke()));
+caps.forEach(s => s.addEventListener('change', () => changeStroke(0, 0, 1, 0, 0)));
+dashs = document.querySelectorAll('input[type=radio][name="dash"]');
+dashs.forEach(s => s.addEventListener('change', () => changeStroke(0, 0, 0, 1, 0)));
+join = document.querySelectorAll('input[type=radio][name="join"]');
+join.forEach(s => s.addEventListener('change', () => changeStroke(0, 0, 0, 0, 1)));
 
 strokeWidth = document.getElementById("strokeWidth");
 strokeWidth.onchange = () => {
-  changeStroke();
+  changeStroke(0, 1, 0, 0, 0);
 }
 
-function updateStroke(object) {
-  obj = object.svgElement;
+function updateStroke(object, c = 1, width = 1, l = 1, d = 1, j = 1) {
+  let obj = object.svgElement;
   if (s.checked && (object == null || (object.type != 'pencil' && object.type != 'line'))) {
     obj.removeAttribute('stroke');
     object.strokeWidth = 0;
+    if (object.isCompleted) object.updateFrameAndPoints();
     return;
   }
-  obj.setAttribute('stroke', strokeColor.value);
-  let w = Number(strokeWidth.value);
-  obj.setAttribute('stroke-width', w);
-  object.strokeWidth = w;
+  if (c) obj.setAttribute('stroke', strokeColor.value);
+  if (width) {
+    let wid = Number(strokeWidth.value);
+    obj.setAttribute('stroke-width', wid);
+    object.strokeWidth = wid;
+  }
+  let w = object.strokeWidth;
   let cap = 0;
-  switch (true) {
-    case caps[0].checked:
-      obj.removeAttribute('stroke-linecap');
-      break;
-    case caps[1].checked:
-      obj.setAttribute('stroke-linecap', "square");
-      cap = w;
-      break;
-    case caps[2].checked:
-      obj.setAttribute('stroke-linecap', "round");
-      cap = w;
-      break;
+  if (l)
+    switch (true) {
+      case caps[0].checked:
+        obj.removeAttribute('stroke-linecap');
+        break;
+      case caps[1].checked:
+        obj.setAttribute('stroke-linecap', "square");
+        break;
+      case caps[2].checked:
+        obj.setAttribute('stroke-linecap', "round");
+        break;
+    }
+  if (d || l || w) {
+    let capAttr = obj.getAttribute('stroke-linecap');
+    if (capAttr == "square" || capAttr == "round") cap = w;
+    switch (true) {
+      case dashs[0].checked:
+        obj.removeAttribute('stroke-dasharray');
+        break;
+      case dashs[1].checked:
+        obj.setAttribute('stroke-dasharray', (4 * w - cap) + " " + (1.5 * w + cap));
+        break;
+      case dashs[2].checked:
+        obj.setAttribute('stroke-dasharray', (4 * w - cap) + " " + (4 * w + cap));
+        break;
+      case dashs[3].checked:
+        obj.setAttribute('stroke-dasharray', (w - cap) + " " + (w + cap));
+        break;
+      case dashs[4].checked:
+        obj.setAttribute('stroke-dasharray', (4 * w - cap) + " " + (w + cap) + " " + (w - cap) + " " + (w + cap) + " " + (w - cap) + " " + (w + cap));
+        break;
+      case dashs[5].checked:
+        obj.setAttribute('stroke-dasharray', (4 * w - cap) + " " + (w + cap) + " " + (w - cap) + " " + (w + cap));
+        break;
+    }
   }
-  switch (true) {
-    case dashs[0].checked:
-      obj.removeAttribute('stroke-dasharray');
-      break;
-    case dashs[1].checked:
-      obj.setAttribute('stroke-dasharray', (4 * w - cap) + " " + (1.5 * w + cap));
-      break;
-    case dashs[2].checked:
-      obj.setAttribute('stroke-dasharray', (4 * w - cap) + " " + (4 * w + cap));
-      break;
-    case dashs[3].checked:
-      obj.setAttribute('stroke-dasharray', (w - cap) + " " + (w + cap));
-      break;
-    case dashs[4].checked:
-      obj.setAttribute('stroke-dasharray', (4 * w - cap) + " " + (w + cap) + " " + (w - cap) + " " + (w + cap) + " " + (w - cap) + " " + (w + cap));
-      break;
-    case dashs[5].checked:
-      obj.setAttribute('stroke-dasharray', (4 * w - cap) + " " + (w + cap) + " " + (w - cap) + " " + (w + cap));
-      break;
-  }
-  switch (true) {
-    case join[0].checked:
-      obj.removeAttribute('stroke-linejoin');
-      break;
-    case join[1].checked:
-      obj.setAttribute('stroke-linejoin', "round");
-      break;
-    case join[2].checked:
-      obj.setAttribute('stroke-linejoin', "bevel");
-      break;
-  }
-  if (object.isCompleted) object.updateFrameAndPoints();
+  if (j)
+    switch (true) {
+      case join[0].checked:
+        obj.removeAttribute('stroke-linejoin');
+        break;
+      case join[1].checked:
+        obj.setAttribute('stroke-linejoin', "round");
+        break;
+      case join[2].checked:
+        obj.setAttribute('stroke-linejoin', "bevel");
+        break;
+    }
+  if (object.isCompleted) object.updateFrameAndPoints(); //исправить!
 }
 
 //fill tool
 fill = document.getElementById("filling");
 fill.onclick = function () {
   wasPressed = "fill";
-  svgPanel.style.cursor = "url(img/fill.ico), default";
+  svgPanel.style.cursor = "url(img/fill.ico) 4 28, default";
+  svgPanel.onmousedown = function (event) {
+    if (event.target == svgBackground)
+      svgPanel.style.background = fillColor.value;
+  }
 }

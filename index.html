@@ -15,100 +15,104 @@
 
 <body>
   <header>
-    <h1 id="logo">Pentagram</h1>
-    <nav id="menu_bar">
-      <div class="container">
-        <ul class="menu">
-          <li class="dropdown"> <a href="#"> <b> Файл </b> </a>
-            <ul class="sub_menu">
-              <li> <a href="#" id="create"> <b> Новый документ </b> </a> </li>
-              <input id="file-selector" type="file" accept="image/svg+xml" style="display: none;" />
-              <li> <a href="#" id="open"> <b> Открыть SVG-файл </b> </a> </li>
-              <li> <a href="#" id="save"> <b> Сохранить изображение </b> </a> </li>
-              <li> <a href="#" id="savePng"> <b> Сохранить как PNG </b> </a> </li>
-            </ul>
-          </li>
-          <li class="dropdown"> <a href="#"> <b> Редактировать </b> </a>
-            <ul class="sub_menu">
-              <li> <a href="#" id="cut"> <b> Вырезать </b> </a> </li>
-              <li> <a href="#" id="copy"> <b> Копировать </b> </a> </li>
-              <li> <a href="#" id="paste"> <b> Вставить </b> </a> </li>
-              <li> <a href="#" id="deleteObject"> <b> Удалить </b> </a> </li>
-            </ul>
-          </li>
-          <li class="dropdown"> <a href="#"> <b> Вид </b> </a>
-            <ul class="sub_menu">
-              <li> <a href="#" id="showRulers"> <b> Просмотр линеек </b> </a> </li>
-              <li> <a href="#" id="showGrid"> <b> Просмотр сетки </b> </a> </li>
-              <li> <a href="#" id="zoomIn"> <b> Увеличить масштаб </b> </a> </li>
-              <li> <a href="#" id="zoomOut"> <b> Уменьшить масштаб </b> </a> </li>
-            </ul>
-          </li>
-          <li class="dropdown"> <a href="#"> <b> Помощь </b> </a> </li>
-        </ul>
-      </div>
-    </nav>
+    <h1 id="logo"> Pentagram </h1>
+    <hr>
+    <div id="container">
+      <ul class="menu">
+        <li> Файл
+          <ul class="sub_menu">
+            <li id="create"> Новый документ </li>
+            <input id="file-selector" type="file" accept="image/svg+xml" style="display: none;" />
+            <li id="open"> Открыть SVG-файл </li>
+            <li id="save"> Сохранить изображение </li>
+            <li id="savePng"> Сохранить как PNG </li>
+          </ul>
+        </li>
+        <li> Редактировать
+          <ul class="sub_menu">
+            <li id="cut"> Вырезать </li>
+            <li id="copy"> Копировать </li>
+            <li id="paste"> Вставить </li>
+            <li id="deleteObject"> Удалить </li>
+          </ul>
+        </li>
+        <li> Вид
+          <ul class="sub_menu">
+            <li id="showRulers"> Просмотр линеек </li>
+            <li id="showGrid"> Просмотр сетки </li>
+            <li id="zoomIn"> Увеличить масштаб </li>
+            <li id="zoomOut"> Уменьшить масштаб </li>
+          </ul>
+        </li>
+        <li id="help"> Помощь </li>
+      </ul>
+    </div>
+    <hr>
     <div id="functions">
-      <button title="Отменить" class=func_button id="undo" style="background-image: url(img/undo.svg)"></button>
-      <button title="Вернуть" class=func_button id="redo" style="background-image: url(img/redo.svg)"></button>
-      <button title="На передний план" class=func_button id="frontObject"
-        style="background-image: url(img/to_front.svg)"></button>
-      <button title="На задний план" class=func_button id="backObject"
-        style="background-image: url(img/to_back.svg)"></button>
+      <img title="Отменить" class=func_button id="undo" src="img/undo.svg">
+      <img title="Вернуть" class=func_button id="redo" src="img/redo.svg">
+      <img title="На передний план" class=func_button id="frontObject" src="img/to_front.svg">
+      <img title="На задний план" class=func_button id="backObject" src="img/to_back.svg">
     </div>
   </header>
 
   <main>
-    <div id="left_panel">
-      <ul>
-        <li><button title="Курсор" class="tool_button" id="cursor"
-            style="background-image: url(img/cursor.svg)"></button></li>
-        <li><button title="Рука" class="tool_button" id="hand" style="background-image: url(img/hand.svg)"></button>
-        </li>
-        <li><button title="Лупа" class="tool_button" id="scale" style="background-image: url(img/scale.svg)"></button>
-        </li>
-        <li><button title="Карандаш" class="tool_button" id="pencil"
-            style="background-image: url(img/pencil.svg)"></button></li>
-        <li><button title="Линия" class="tool_button" id="line" style="background-image: url(img/line.svg)"></button>
-        </li>
-        <li>
-          <button disabled title="Фигуры" class="tool_button" id="figures"
-            style="background-image: url(img/figures.svg)"></button>
-          <ul>
-            <li><button title="Прямоугольник" class="tool_button" id="rectangle"
-                style="background-image: url(img/rectangle.svg)"></button></li>
-            <li><button title="Эллипс" class="tool_button" id="ellipse"
-                style="background-image: url(img/ellipse.svg)"></button></li>
-            <li><button title="Правильный многоугольник" class="tool_button" id="polygon"
-                style="background-image: url(img/polygon.svg)"></button></li>
-            <li><button title="Звёздчатый многоугольник" class="tool_button" id="star_polygon"
-                style="background-image: url(img/star_polygon.svg)"></button></li>
-          </ul>
-        </li>
-        <li><button title="Текст" class="tool_button" id="text" style="background-image: url(img/text.svg)"></button>
-        </li>
-        <li><button title="Перо" class="tool_button" id="pathTool"
-            style="background-image: url(img/path_tool.svg)"></button></li>
-        <li><button title="Заливка" class="tool_button" id="filling"
-            style="background-image: url(img/fill.svg)"></button></li>
-      </ul>
-    </div>
+    <ul id="left_panel">
+      <li><button title="Курсор" class="tool_button" id="cursor" style="background-image: url(img/cursor.svg)"></button>
+      </li>
+      <li><button title="Рука" class="tool_button" id="hand" style="background-image: url(img/hand.svg)"></button>
+      </li>
+      <li><button title="Лупа" class="tool_button" id="scale" style="background-image: url(img/scale.svg)"></button>
+      </li>
+      <li><button title="Карандаш" class="tool_button" id="pencil"
+          style="background-image: url(img/pencil.svg)"></button></li>
+      <li><button title="Линия" class="tool_button" id="line" style="background-image: url(img/line.svg)"></button>
+      </li>
+      <li>
+        <button disabled title="Фигуры" class="tool_button" id="figures"
+          style="background-image: url(img/figures.svg)"></button>
+        <ul>
+          <li><button title="Прямоугольник" class="tool_button" id="rectangle"
+              style="background-image: url(img/rectangle.svg)"></button></li>
+          <li><button title="Эллипс" class="tool_button" id="ellipse"
+              style="background-image: url(img/ellipse.svg)"></button></li>
+          <li><button title="Правильный многоугольник" class="tool_button" id="polygon"
+              style="background-image: url(img/polygon.svg)"></button></li>
+          <li><button title="Звёздчатый многоугольник" class="tool_button" id="star_polygon"
+              style="background-image: url(img/star_polygon.svg)"></button></li>
+          <li><button title="Пентаграмма" class="tool_button" id="pentagram"
+              style="background-image: url(img/pentagram.svg)"></button></li>
+        </ul>
+      </li>
+      <li><button title="Текст" class="tool_button" id="text" style="background-image: url(img/text.svg)"></button>
+      </li>
+      <li><button title="Перо" class="tool_button" id="pathTool"
+          style="background-image: url(img/path_tool.svg)"></button></li>
+      <li><button title="Ластик" class="tool_button" id="eraser" style="background-image: url(img/eraser.svg)"></button>
+      </li>
+      <li><button title="Заливка" class="tool_button" id="filling" style="background-image: url(img/fill.svg)"></button>
+      </li>
+    </ul>
     <div id="right_panel">
       <div id="palette">
         <input class="colorpicker" id="strokeColor" type="color" title="Цвет для контура фигур,
     карандаша и кисти" value="#000000">
-        <input class="colorpicker" id="fillColor" type="color" title="Цвет для заливки фигур" value="#ffffff">
-
-        <div class="checkbox">
-          <input type="checkbox" id="stroke" hidden><label for="stroke"><img id="sImg"
-              src="img/stroke/yes.svg"><span>Контур</span></label>
+        <div class="colorOpacity">
+          <input type="checkbox" id="stroke" hidden><label class="checkBox" for="stroke">
+            <img id="sImg" src="img/stroke/yes.svg"> &ensp;Контур </label>
+          <input type="range" class="opacity" min="0" max="1" step="0.01" value="1" title="Прозрачность фигуры">
+          <p class="opValue">100</p>
         </div>
-        <div class="checkbox">
-          <input type="checkbox" id="fill" hidden><label for="fill"><img id="fImg"
-              src="img/stroke/yes.svg"><span>Заливка</span></label>
+
+        <input class="colorpicker" id="fillColor" type="color" title="Цвет для заливки фигур" value="#ffffff">
+        <div class="colorOpacity">
+          <input type="checkbox" id="fill" hidden><label class="checkBox" for="fill">
+            <img id="fImg" src="img/stroke/yes.svg"> &nbsp;Заливка </label>
+          <input type="range" class="opacity" min="0" max="1" step="0.01" value="1" title="Прозрачность заливки">
+          <p class="opValue">100</p>
         </div>
         <div id="widthBox"><img src="img/stroke/width.svg"><input type="number" id="strokeWidth" min="0" max="100"
-            value="2"></div>
+            value="2" title="Ширина контура"></div>
         <div class="styleListBox">
           <input type="checkbox" name="stroke" id="dash" hidden><label for="dash"><img
               src="img/stroke/lines.svg"></label>
@@ -156,7 +160,11 @@
 
       <hr>
 
-      <div id="layers_header">Слои<img id="new_layer" src="img/layers/new.svg" title="Новый слой"></div>
+      <div id="layers_header">
+        Слои
+        <img id="merge_layers" src="img/layers/merge.svg" title="Объединить все слои">
+        <img id="new_layer" src="img/layers/new.svg" title="Новый слой">
+      </div>
       <div id="layers_panel">
       </div>
     </div>
@@ -165,9 +173,8 @@
       <div id="rulers">
         <div id="rulers_corner">px</div>
         <svg id="ruler_x">
-          <rect x="0" y="0" width="100%" height="1" fill="#bbb"></rect>
-          <rect id="ruler_x_line" x="0" y="1" width="100%" height="19" fill="url(#ruler_x_pattern)"></rect>
-          <rect x="0" y="19" width="100%" height="1" fill="#bbb"></rect>
+          <rect x="0" y="0" width="100%" height="1" fill="#fff"></rect>
+          <rect id="ruler_x_line" x="0" y="0" width="512" height="15" fill="url(#ruler_x_pattern)"></rect>
           <defs>
             <!--
             <linearGradient id="ruler_x_gradient" gradientTransform="rotate(90)">
@@ -175,19 +182,18 @@
               <stop offset="100%" stop-color="#808080" />
             </linearGradient>
             -->
-            <pattern id="ruler_x_pattern" patternUnits="userSpaceOnUse" x="0" y="4" width="50" height="19">
+            <pattern id="ruler_x_pattern" patternUnits="userSpaceOnUse" x="0" y="0" width="50" height="15">
               <rect width="100%" height="100%"></rect>
               <line x1="0.5" y1="0" x2="0.5" y2="15"> </line>
             </pattern>
           </defs>
           <g id="ruler_x_text">
-            <text x="252" y="15"> 0 </text>
+            <text x="252" y="10"> 0 </text>
           </g>
         </svg>
         <svg id="ruler_y">
-          <rect x="0" y="0" width="1" height="100%" fill="#bbb"></rect>
-          <rect id="ruler_y_line" x="1" y="0" width="19" height="100%" fill="url(#ruler_y_pattern)"></rect>
-          <rect x="19" y="0" width="1" height="100%" fill="#bbb"></rect>
+          <rect x="0" y="0" width="1" height="100%" fill="#fff"></rect>
+          <rect id="ruler_y_line" x="0" y="0" width="15" height="512" fill="url(#ruler_y_pattern)"></rect>
           <defs>
             <!--
             <linearGradient id="ruler_y_gradient">
@@ -195,7 +201,7 @@
               <stop offset="100%" stop-color="#808080" />
             </linearGradient>
             -->
-            <pattern id="ruler_y_pattern" patternUnits="userSpaceOnUse" x="4" y="0" width="19" height="50">
+            <pattern id="ruler_y_pattern" patternUnits="userSpaceOnUse" x="0" y="0" width="15" height="50">
               <rect width="100%" height="100%"></rect>
               <line x1="0" y1="0.5" x2="15" y2="0.5"> </line>
             </pattern>
@@ -236,6 +242,7 @@
   <script src="js/classes.js"></script>
   <script src="js/point_and_frame.js"></script>
   <script src="js/color.js"></script>
+  <script src="js/eraser.js"></script>
 </body>
 
 </html>

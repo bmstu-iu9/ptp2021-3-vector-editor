@@ -24,7 +24,7 @@ body {
     margin: 0 0.5vw;
     padding-left: 2.3%;
     font-family: 'Marcellus SC', serif;
-    background-image: url(img/logo.svg);
+    background-image: url(../img/logo.svg);
     background-size: auto 100%;
     background-repeat: no-repeat;
 }

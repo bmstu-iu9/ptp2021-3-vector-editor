@@ -101,8 +101,7 @@ header {
 
 /*TOP BUTTONS*/
 
-#functions {
-    margin-left: 0;
+#functions, #properties_panel {
     height: 60%;
     width: initial;
     display: flex;
@@ -121,6 +120,12 @@ header {
 
 .func_button:hover {
     background-color: #555;
+}
+
+/*properties_panel*/
+
+#properties_panel {
+    display: none;
 }
 
 /*MAIN*/

@@ -4,6 +4,7 @@ scrollPanel = document.getElementById("scroll_panel");
 layersPanel = document.getElementById("layers_panel");
 rightPanel = document.getElementById("right_panel");
 canvas = document.getElementById("canvas");
+propertiesPanel = document.getElementById("properties_panel");
 
 let isSomeObjectSelected = false, //для курсора
 	isSomePointSelected = false;
@@ -90,6 +91,7 @@ function resetCurrentObject() {
 	if (currentObject != null) {
 		currentObject.hideFrameAndPoints();
 		currentObject = null;
+		propertiesPanel.style.display = "none";
 	}
 }
 

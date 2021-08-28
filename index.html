@@ -9,7 +9,7 @@
   <meta name="keywords" content="графический редактор, создать, удалить, переместить, объединить">
   <meta name="authors" content="">
   <title>Pentagram - svg-редактор</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/right.css" />
 </head>
 
@@ -47,13 +47,19 @@
         <li id="help"> Помощь </li>
       </ul>
     </div>
+
     <hr>
+
     <div id="functions">
       <img title="Отменить" class=func_button id="undo" src="img/undo.svg">
       <img title="Вернуть" class=func_button id="redo" src="img/redo.svg">
+    </div>
+
+    <div id="properties_panel">
       <img title="На передний план" class=func_button id="frontObject" src="img/to_front.svg">
       <img title="На задний план" class=func_button id="backObject" src="img/to_back.svg">
     </div>
+
   </header>
 
   <main>
@@ -93,6 +99,7 @@
       <li><button title="Заливка" class="tool_button" id="filling" style="background-image: url(img/fill.svg)"></button>
       </li>
     </ul>
+    
     <div id="right_panel">
       <div id="palette">
         <input class="colorpicker" id="strokeColor" type="color" title="Цвет для контура фигур,

@@ -54,6 +54,7 @@ class object {
                 if (this.isCompleted) {
                     this.showFrameAndPoints();
                     currentObject = this;
+                    propertiesPanel.style.display = "flex";
                 }
             }
 
@@ -185,6 +186,7 @@ class object {
 
         isSomeObjectSelected = false;
         resetCurrentObject(); //показывать рамку после создания объекта
+        propertiesPanel.style.display = "flex";
         currentObject = this;
         this.isSelected = true;
         this.isCompleted = true;

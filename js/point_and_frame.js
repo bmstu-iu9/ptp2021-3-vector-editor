@@ -5,12 +5,14 @@ class point {
         this.x = x;
         this.y = y;
         this.object = object;
+        this.transform = 'rotate(' + 0 + ' ' + this.object.cPoint.x + ' ' + this.object.cPoint.y + ')';
         this.type = type;
         this.circle.setAttribute('fill', "white");
         this.circle.setAttribute('stroke', "black");
         this.circle.setAttribute('cx', x);
         this.circle.setAttribute('cy', y);
         this.circle.setAttribute('r', pointRadius);
+        this.circle.setAttribute('transform', this.transform);
         this.addActions();
     }
     addActions() {
@@ -111,7 +113,7 @@ class point {
             const stopMoving = (() => {
                 if (this.isMoving) {
                     this.isMoving = false;
-                    this.object.stopResize();
+                    this.object.stopResize(curX - pointStart.x, curY - pointStart.y);
                     this.object.removeHotKeys();
                     if (this.circle != null) this.circle.setAttribute('fill', "white");
                     currentPointTypeAttr = null;
@@ -168,8 +170,10 @@ class point {
         }
         this.x = x;
         this.y = y;
+        this.transform = 'rotate(' + this.object.newAngle * 180.0 / Math.PI + ' ' + this.object.cPoint.x + ' ' + this.object.cPoint.y + ')';
         this.circle.setAttribute('cx', x);
         this.circle.setAttribute('cy', y);
+        this.circle.setAttribute('transform', this.transform);
         this.type.attr = attr;
     }
 }

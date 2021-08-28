@@ -12,7 +12,7 @@ class object {
         this.pointsArray = [];
         this.frameArray = [];
         this.strokeWidth = 1;
-        updateFill(this.svgElement);
+        updateFill(this);
         updateStroke(this);
         this.addActions();
     }
@@ -58,7 +58,7 @@ class object {
             }
 
             if (wasPressed == "fill" && this.type != 'pencil') {
-                updateFill(this.svgElement, 2);
+                updateFill(this, 2);
             }
 
             if (wasPressed == "eraser") {
@@ -174,7 +174,7 @@ class object {
     complete() {
         this.updateFrameAndPoints();
         this.removeHotKeys();
-        this.isCompleted = true;
+        
         svgPanel.onmousemove = null;
         svgPanel.onmouseup = null;
         svgPanel.onmouseenter = null;
@@ -187,6 +187,7 @@ class object {
         resetCurrentObject(); //показывать рамку после создания объекта
         currentObject = this;
         this.isSelected = true;
+        this.isCompleted = true;
     }
 }
 
@@ -1375,25 +1376,6 @@ class pencil extends object {
             x: (x - this.cPoint.x) * Math.cos(angle) - (y - this.cPoint.y) * Math.sin(angle) + this.cPoint.x,
             y: (x - this.cPoint.x) * Math.sin(angle) + (y - this.cPoint.y) * Math.cos(angle) + this.cPoint.y
         }
-    }
-    completeFirstObject() {
-        this.frameArray = [new lineFrame(this.minX, this.maxY, this.maxX, this.maxY, this, true),
-            new lineFrame(this.maxX, this.maxY, this.maxX, this.minY, this, true),
-            new lineFrame(this.maxX, this.minY, this.minX, this.minY, this, true),
-            new lineFrame(this.minX, this.minY, this.minX, this.maxY, this, true),
-            new polylineFrame(this.path, this)
-        ];
-        this.pointsArray = [new point(this.minX + (this.maxX - this.minX) / 2, this.minY + (this.maxY - this.minY) / 2, this, {
-                action: "move",
-                attr: "move"
-            }),
-            new point(this.minX + (this.maxX - this.minX) / 2, this.minY - 20, this, {
-                action: "rotate",
-                attr: "rotate"
-            })
-        ];
-        this.isCompleted = true;
-        this.updateFrameAndPoints();
     }
     getNewCoords(x = this.x0, y = this.y0, angle = this.angle) {
         return {

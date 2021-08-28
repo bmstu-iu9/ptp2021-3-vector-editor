@@ -201,23 +201,27 @@ class frame {
         svgPanel.appendChild(this.svgElement);
     }
     remove() {
-        svgPanel.removeChild(this.svgElement);
+        if (this.object == currentObject || !this.object.isCompleted)
+            svgPanel.removeChild(this.svgElement);
         this.svgElement = null;
     }
     setFrameAttribute(attributeName, value) {
         this.svgElement.setAttribute(attributeName, value);
     }
     update() {
-        if (this.red) this.svgElement.setAttribute('stroke', "red");
+        let without = false;
+        if (this.object.getElementAttribute('stroke') == null || this.object.getElementAttribute('stroke') == "null" || Number(this.object.getElementAttribute('opacity')) == 0) without = true;
+        this.svgElement.setAttribute('opacity', "0.5");
+        if (without || this.red) this.svgElement.setAttribute('stroke', "red");
         else this.svgElement.setAttribute('stroke', this.object.getElementAttribute('stroke'));
-        if (this.red) this.svgElement.setAttribute('stroke-width', pointRadius);
+        if (without || this.red) this.svgElement.setAttribute('stroke-width', pointRadius);
         else this.svgElement.setAttribute('stroke-width', this.object.getElementAttribute('stroke-width'));
-        if (this.red || this.object.getElementAttribute('stroke-dasharray') == null ||
-            this.object.getElementAttribute('stroke-dasharray') == "null") this.svgElement.setAttribute('stroke-dasharray', this.object.strokeWidth * 4);
+        if (without || this.red || this.object.getElementAttribute('stroke-dasharray') == null ||
+            this.object.getElementAttribute('stroke-dasharray') == "null") this.svgElement.setAttribute('stroke-dasharray', this.svgElement.getAttribute('stroke-width') * 4);
         else this.svgElement.setAttribute('stroke-dasharray', this.object.getElementAttribute('stroke-dasharray'));
-        if (this.red) this.svgElement.setAttribute('stroke-linejoin', "none");
+        if (without || this.red) this.svgElement.setAttribute('stroke-linejoin', "none");
         else this.svgElement.setAttribute('stroke-linejoin', this.object.getElementAttribute('stroke-linejoin'));
-        if (this.red) this.svgElement.setAttribute('stroke-linecap', "none");
+        if (without || this.red) this.svgElement.setAttribute('stroke-linecap', "none");
         else this.svgElement.setAttribute('stroke-linecap', this.object.getElementAttribute('stroke-linecap'));
     }
 }

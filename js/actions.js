@@ -116,6 +116,8 @@ create.onclick = function () {
     updateRulers();
     updateGrid();
     createFirstLayer();
+    canvas.setAttribute('width', width);
+    canvas.setAttribute('height', height);
 }
 
 //OPEN
@@ -148,6 +150,7 @@ function readFile(object) {
             first.setAttribute('width', 512);
             first.setAttribute('height', 512);
             first.setAttribute('viewBox', '0 0 512 512');
+            width = 512, height = 512;
         }
 
         svgPanel = document.getElementById(first.id);
@@ -160,6 +163,8 @@ function readFile(object) {
         for (var i = 0; i < layersPanel.childNodes.length;)
             layersPanel.removeChild(layersPanel.childNodes[i]);
         createFirstLayer();
+        canvas.setAttribute('width', width);
+        canvas.setAttribute('height', height);
     };
     reader.readAsText(file);
 }
@@ -210,7 +215,6 @@ savePng.onclick = function () {
     });
     let url = window.URL.createObjectURL(blob);
 
-    let canvas = document.getElementById("canvas");
     let img = new Image();
     img.onload = function () {
         canvas.getContext("2d").drawImage(img, 0, 0);

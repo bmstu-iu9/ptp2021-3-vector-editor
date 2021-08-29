@@ -113,7 +113,7 @@ class point {
             const stopMoving = (() => {
                 if (this.isMoving) {
                     this.isMoving = false;
-                    this.object.stopResize(curX - pointStart.x, curY - pointStart.y);
+                    this.object.stopResize();
                     this.object.removeHotKeys();
                     if (this.circle != null) this.circle.setAttribute('fill', "white");
                     currentPointTypeAttr = null;

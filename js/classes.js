@@ -1066,7 +1066,7 @@ class pentagram extends object {
                 x: x,
                 y: y
             })
-            this.pointsArray[i].update(x, y);
+            this.pointsArray[i].update(x, y, '');
             if (currentPointTypeAttr == "polygon") {
                 if (i == 0) this.pointsArray[i].setPointAttribute("fill", "red");
                 else this.pointsArray[i].setPointAttribute("fill", "white");
@@ -1685,10 +1685,10 @@ class polyline extends object {
             x: this.minX + (this.maxX - this.minX) / 2,
             y: this.minY + (this.maxY - this.minY) / 2
         };
+        this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
         this.frameArray = [new polylineFrame(this.path, this)];
         //rotate
         this.angle = 0;
-        this.newAngle = 0;
     }
     createClone() {
         let clone = new polyline();
@@ -1702,6 +1702,8 @@ class polyline extends object {
         clone.cPoint = this.cPoint;
         clone.angle = this.angle;
         clone.newAngle = this.newAngle;
+        clone.transform = this.transform;
+        clone.svgElement.setAttribute('transform', this.transform);
         clone.path = "";
         clone.pathCoords = [];
         for (let i = 0; i < this.pathCoords.length; i++) {
@@ -1753,28 +1755,27 @@ class polyline extends object {
             }));
         }
     }
-    updateFrameAndPoints(dx = 0, dy = 0, minX = this.minX, minY = this.minY, maxX = this.maxX, maxY = this.maxY, angle = this.angle) {
+    updateFrameAndPoints(dx = 0, dy = 0, minX = this.minX, minY = this.minY, maxX = this.maxX, maxY = this.maxY, transform = this.transform) {
         //включает обновление атрибута
         for (let i = 0; i < this.pathCoords.length; i++) {
-            let x = this.getNewCoords(this.pathCoords[i].x + dx, this.pathCoords[i].y + dy, angle).x,
-                y = this.getNewCoords(this.pathCoords[i].x + dx, this.pathCoords[i].y + dy, angle).y;
+            let x = this.pathCoords[i].x + dx,
+                y = this.pathCoords[i].y + dy;
             if (i == 0) this.path = x + "," + y;
             else this.path += " " + x + "," + y;
-            this.pointsArray[i].update(x, y, i);
+            this.pointsArray[i].update(x, y, transform);
         }
         if (this.isCompleted)
-            this.pointsArray[this.pointsArray.length - 1].update(this.getNewCoords(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2 - 20, angle).x,
-                this.getNewCoords(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2 - 20, angle).y);
-        this.path += " " + this.getNewCoords(this.pathCoords[0].x + dx, this.pathCoords[0].y + dy, angle).x + "," +
-            this.getNewCoords(this.pathCoords[0].x + dx, this.pathCoords[0].y + dy, angle).y;
-        this.frameArray[0].update(this.path);
+            this.pointsArray[this.pointsArray.length - 1].update(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2 - 20, transform);
+        let x = this.pathCoords[0].x + dx, 
+            y = this.pathCoords[0].y + dy;
+        this.path += " " + x + "," + y;
+        this.frameArray[0].update(this.path, transform);
         this.svgElement.setAttribute('points', this.path);
-        this.path = "";
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         let new_dx = getRotateCoords(dx, dy, this.angle).x,
             new_dy = getRotateCoords(dx, dy, this.angle).y;
-        this.updateFrameAndPoints(new_dx, new_dy, this.minX + new_dx, this.minY + new_dy, this.maxX + new_dx, this.maxY + new_dy);
+        this.updateFrameAndPoints(new_dx, new_dy, this.minX + new_dx, this.minY + new_dy, this.maxX + new_dx, this.maxY + new_dy, this.transform);
     }
     stopMoving(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.x0 += dx;
@@ -1791,6 +1792,9 @@ class polyline extends object {
             this.pathCoords[i].x += dx;
             this.pathCoords[i].y += dy;
         }
+        this.transform = 'rotate(' + this.angle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
+        this.svgElement.setAttribute('transform', this.transform);
+        this.updateFrameAndPoints();
     }
     moveTo(x, y) {
         let dx = x + pointRadius - this.minX,
@@ -1812,19 +1816,22 @@ class polyline extends object {
             new_curY = this.getNewCoords(curX, curY, 2 * Math.PI - this.angle).y;
         this.pathCoords[currentPointTypeAttr].x = new_curX;
         this.pathCoords[currentPointTypeAttr].y = new_curY;
+        this.minX = Math.min(this.minX, new_curX);
+        this.minY = Math.min(this.minY, new_curY);
+        this.maxX = Math.max(this.maxX, new_curX);
+        this.maxY = Math.max(this.maxY, new_curY);
         this.updateFrameAndPoints();
     }
     stopResize() {
         let new_curX = this.getNewCoords(curX, curY, 2 * Math.PI - this.angle).x,
             new_curY = this.getNewCoords(curX, curY, 2 * Math.PI - this.angle).y;
-        this.minX = Math.min(this.minX, new_curX);
-        this.minY = Math.min(this.minY, new_curY);
-        this.maxX = Math.max(this.maxX, new_curX);
-        this.maxY = Math.max(this.maxY, new_curY);
         this.cPoint = {
             x: this.minX + (this.maxX - this.minX) / 2,
             y: this.minY + (this.maxY - this.minY) / 2
-        }
+        };
+        this.transform = 'rotate(' + this.angle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
+        this.svgElement.setAttribute('transform', this.transform);
+        this.updateFrameAndPoints();
     }
     startRotating() {
         this.rPoint = {
@@ -1836,13 +1843,18 @@ class polyline extends object {
         let firstSide = Math.sqrt(Math.pow(Math.abs(this.rPoint.x - this.cPoint.x), 2) + Math.pow(Math.abs(this.rPoint.y - this.cPoint.y), 2)),
             secondSide = Math.sqrt(Math.pow(Math.abs(curX - this.cPoint.x), 2) + Math.pow(Math.abs(curY - this.cPoint.y), 2)),
             thirdSide = (Math.sqrt(Math.pow(Math.abs(curX - this.rPoint.x), 2) + Math.pow(Math.abs(curY - this.rPoint.y), 2))),
-            angleCos = (Math.pow(firstSide, 2) + Math.pow(secondSide, 2) - Math.pow(thirdSide, 2)) / (2 * firstSide * secondSide);
-        this.newAngle = getRotateCoords(curX, curY, angle).x >= getRotateCoords(this.cPoint.x, this.cPoint.y, angle).x ?
+            angleCos = (Math.pow(firstSide, 2) + Math.pow(secondSide, 2) - Math.pow(thirdSide, 2)) / (2 * firstSide * secondSide),
+            newAngle = getRotateCoords(curX, curY, angle).x >= getRotateCoords(this.cPoint.x, this.cPoint.y, angle).x ?
             Math.acos(angleCos) + angle : 2 * Math.PI - Math.acos(angleCos) + angle;
-        this.updateFrameAndPoints(0, 0, this.minX, this.minY, this.maxX, this.maxY, this.newAngle);
+        this.transform = 'rotate(' + newAngle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
+        this.svgElement.setAttribute('transform', this.transform);
+        this.updateFrameAndPoints(0, 0, this.minX, this.minY, this.maxX, this.maxY, this.transform);
     }
     stopRotating() {
-        this.angle = this.newAngle;
+        let argss = this.transform.split('(')[1],
+            args = argss.split(')')[0],
+            newAngle = args.split(' ')[0] * Math.PI / 180.0;
+        this.angle = newAngle;
         this.angle = this.angle > 2 * Math.PI ? this.angle - 2 * Math.PI : this.angle;
         this.updateFrameAndPoints();
     }
@@ -1862,7 +1874,6 @@ class polyline extends object {
                 attr: "rotate"
             }));
             this.updateFrameAndPoints();
-            this.pointsArray[this.pointsArray.length - 1].hide();
             polylineIsCompleted = true;
         }
     }

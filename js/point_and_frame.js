@@ -170,7 +170,8 @@ class point {
         }
         this.x = x;
         this.y = y;
-        this.transform = transform;
+        if (transform != '') 
+            this.transform = transform;
         this.circle.setAttribute('cx', x);
         this.circle.setAttribute('cy', y);
         this.circle.setAttribute('transform', this.transform);

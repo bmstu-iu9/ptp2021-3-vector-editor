@@ -247,7 +247,6 @@ class rectangle extends object {
         ];
         //rotate
         this.angle = 0;
-        this.newAngle = 0;
         this.angleX = this.x;
         this.angleY = this.y;
     }
@@ -262,7 +261,6 @@ class rectangle extends object {
         clone.y = this.y;
         clone.cPoint = this.cPoint;
         clone.angle = this.angle;
-        clone.newAngle = this.newAngle;
         clone.angleX = this.angleX;
         clone.angleY = this.angleY;
         clone.svgElement.setAttribute('width', this.width);
@@ -299,26 +297,26 @@ class rectangle extends object {
         this.svgElement.setAttribute('y', this.y);
         this.updateFrameAndPoints()
     }
-    updateFrameAndPoints(width = this.width, height = this.height, x = this.x, y = this.y, angle = this.angle, angleX = this.angleX, angleY = this.angleY) {
-        this.frameArray[0].update(angleX, angleY, width, height, this.transform);
+    updateFrameAndPoints(width = this.width, height = this.height, x = this.x, y = this.y, transform = this.transform) {
+        this.frameArray[0].update(x, y, width, height, transform);
 
-        this.pointsArray[0].update(x, y);
-        this.pointsArray[1].update(x + width / 2, y);
-        this.pointsArray[2].update(x + width, y);
-        this.pointsArray[3].update(x + width, y + height / 2);
-        this.pointsArray[4].update(x + width, y + height);
-        this.pointsArray[5].update(x + width / 2, y + height);
-        this.pointsArray[6].update(x, y + height);
-        this.pointsArray[7].update(x, y + height / 2);
-        this.pointsArray[8].update(x + width / 2, y - 20);
-        this.pointsArray[9].update(x + width / 2, y + height / 2);
+        this.pointsArray[0].update(x, y, transform);
+        this.pointsArray[1].update(x + width / 2, y, transform);
+        this.pointsArray[2].update(x + width, y, transform);
+        this.pointsArray[3].update(x + width, y + height / 2, transform);
+        this.pointsArray[4].update(x + width, y + height, transform);
+        this.pointsArray[5].update(x + width / 2, y + height, transform);
+        this.pointsArray[6].update(x, y + height, transform);
+        this.pointsArray[7].update(x, y + height / 2, transform);
+        this.pointsArray[8].update(x + width / 2, y - 20, transform);
+        this.pointsArray[9].update(x + width / 2, y + height / 2, transform);
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         let new_dx = getRotateCoords(dx, dy, this.angle).x,
             new_dy = getRotateCoords(dx, dy, this.angle).y;
         this.svgElement.setAttribute('x', this.angleX + new_dx);
         this.svgElement.setAttribute('y', this.angleY + new_dy);
-        this.updateFrameAndPoints(this.width, this.height, this.x + new_dx, this.y + new_dy, this.angle, this.angleX + new_dx, this.angleY + new_dy);
+        this.updateFrameAndPoints(this.width, this.height, this.x + new_dx, this.y + new_dy, this.transform);
     }
     stopMoving(dx = curX - this.start.x, dy = curY - this.start.y) {
         let new_dx = getRotateCoords(dx, dy, this.angle).x,
@@ -331,6 +329,7 @@ class rectangle extends object {
             x: this.x + this.width / 2,
             y: this.y + this.height / 2
         }
+        this.transform = 'rotate(' + this.angle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
     }
     moveTo(x, y) {
         let dx = x + pointRadius - this.x,
@@ -452,25 +451,24 @@ class rectangle extends object {
         this.svgElement.setAttribute('y', n.angleY);
         this.svgElement.setAttribute('width', n.width);
         this.svgElement.setAttribute('height', n.height);
-        this.updateFrameAndPoints(n.width, n.height, n.x, n.y, this.angle, n.angleX, n.angleY);
+        this.updateFrameAndPoints(n.width, n.height, n.x, n.y, this.transform);
     }
     stopResize(dx, dy) {
-        let new_dx = getRotateCoords(dx, dy, this.angle).x,
-            new_dy = getRotateCoords(dx, dy, this.angle).y;
-        this.x = this.x != this.resizeTemp.x ? this.x + new_dx : this.x;
-        this.y = this.y != this.resizeTemp.y ? this.y + new_dy : this.y;
+        this.x = this.resizeTemp.x;
+        this.y = this.resizeTemp.y;
         this.width = this.resizeTemp.width;
         this.height = this.resizeTemp.height;
         this.angleX = this.resizeTemp.angleX;
         this.angleY = this.resizeTemp.angleY;
-        let new_x = this.getNewCoords(this.x + this.width / 2, this.y + this.height / 2, this.angle).x, 
+        let new_x = this.getNewCoords(this.x + this.width / 2, this.y + this.height / 2, this.angle).x,
             new_y = this.getNewCoords(this.x + this.width / 2, this.y + this.height / 2, this.angle).y;
         this.cPoint = {
             x: new_x,
             y: new_y
         };
-        this.x = this.cPoint.x - this.width / 2; 
+        this.x = this.cPoint.x - this.width / 2;
         this.y = this.cPoint.y - this.height / 2;
+        this.transform = 'rotate(' + this.angle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
         this.updateFrameAndPoints();
     }
     startRotating() {
@@ -483,8 +481,8 @@ class rectangle extends object {
         let firstSide = Math.sqrt(Math.pow(Math.abs(this.rPoint.x - this.cPoint.x), 2) + Math.pow(Math.abs(this.rPoint.y - this.cPoint.y), 2)),
             secondSide = Math.sqrt(Math.pow(Math.abs(curX - this.cPoint.x), 2) + Math.pow(Math.abs(curY - this.cPoint.y), 2)),
             thirdSide = (Math.sqrt(Math.pow(Math.abs(curX - this.rPoint.x), 2) + Math.pow(Math.abs(curY - this.rPoint.y), 2))),
-            angleCos = (Math.pow(firstSide, 2) + Math.pow(secondSide, 2) - Math.pow(thirdSide, 2)) / (2 * firstSide * secondSide);
-        this.newAngle = getRotateCoords(curX, curY, angle).x >= getRotateCoords(this.cPoint.x, this.cPoint.y, angle).x ?
+            angleCos = (Math.pow(firstSide, 2) + Math.pow(secondSide, 2) - Math.pow(thirdSide, 2)) / (2 * firstSide * secondSide),
+            newAngle = getRotateCoords(curX, curY, angle).x >= getRotateCoords(this.cPoint.x, this.cPoint.y, angle).x ?
             Math.acos(angleCos) + angle : 2 * Math.PI - Math.acos(angleCos) + angle;
         if (this.svgElement.hasAttribute('transform')) {
             this.svgElement.removeAttribute('transform');
@@ -493,15 +491,15 @@ class rectangle extends object {
             this.angleX = this.x;
             this.angleY = this.y;
         }
-        this.transform = 'rotate(' + this.newAngle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
+        this.transform = 'rotate(' + newAngle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
         this.svgElement.setAttribute('transform', this.transform);
-        this.updateFrameAndPoints(this.width, this.height, this.x, this.y, this.newAngle);
+        this.updateFrameAndPoints(this.width, this.height, this.x, this.y, this.transform);
     }
     stopRotating() {
         let argss = this.transform.split('(')[1],
             args = argss.split(')')[0],
             newAngle = args.split(' ')[0] * Math.PI / 180.0;
-        this.angle = this.newAngle;
+        this.angle = newAngle;
         this.angle = this.angle > 2 * Math.PI ? this.angle - 2 * Math.PI : this.angle;
         this.updateFrameAndPoints();
     }
@@ -612,33 +610,29 @@ class ellipse extends object {
         this.svgElement.setAttribute('cy', this.cy);
         this.updateFrameAndPoints();
     }
-    updateFrameAndPoints(rx = this.rx, ry = this.ry, cx = this.cx, cy = this.cy, angle = this.angle, angleCx = this.angleCx, angleCy = this.angleCy) {
-        this.frameArray[0].update(this.getNewCoords(cx - rx, cy + ry, angle).x, this.getNewCoords(cx - rx, cy + ry, angle).y,
-            this.getNewCoords(cx + rx, cy + ry, angle).x, this.getNewCoords(cx + rx, cy + ry, angle).y);
-        this.frameArray[1].update(this.getNewCoords(cx + rx, cy + ry, angle).x, this.getNewCoords(cx + rx, cy + ry, angle).y,
-            this.getNewCoords(cx + rx, cy - ry, angle).x, this.getNewCoords(cx + rx, cy - ry, angle).y);
-        this.frameArray[2].update(this.getNewCoords(cx + rx, cy - ry, angle).x, this.getNewCoords(cx + rx, cy - ry, angle).y,
-            this.getNewCoords(cx - rx, cy - ry, angle).x, this.getNewCoords(cx - rx, cy - ry, angle).y);
-        this.frameArray[3].update(this.getNewCoords(cx - rx, cy - ry, angle).x, this.getNewCoords(cx - rx, cy - ry, angle).y,
-            this.getNewCoords(cx - rx, cy + ry, angle).x, this.getNewCoords(cx - rx, cy + ry, angle).y);
-        this.frameArray[4].update(angleCx, angleCy, rx, ry, this.transform);
+    updateFrameAndPoints(rx = this.rx, ry = this.ry, cx = this.cx, cy = this.cy, transform = this.transform) {
+        this.frameArray[0].update(cx - rx, cy + ry, cx + rx, cy + ry, transform);
+        this.frameArray[1].update(cx + rx, cy + ry, cx + rx, cy - ry, transform);
+        this.frameArray[2].update(cx + rx, cy - ry, cx - rx, cy - ry, transform);
+        this.frameArray[3].update(cx - rx, cy - ry, cx - rx, cy + ry, transform);
+        this.frameArray[4].update(cx, cy, rx, ry, transform);
 
-        this.pointsArray[0].update(this.getNewCoords(cx - rx, cy - ry, angle).x, this.getNewCoords(cx - rx, cy - ry, angle).y);
-        this.pointsArray[1].update(this.getNewCoords(cx, cy - ry, angle).x, this.getNewCoords(cx, cy - ry, angle).y);
-        this.pointsArray[2].update(this.getNewCoords(cx + rx, cy - ry, angle).x, this.getNewCoords(cx + rx, cy - ry, angle).y);
-        this.pointsArray[3].update(this.getNewCoords(cx + rx, cy, angle).x, this.getNewCoords(cx + rx, cy, angle).y);
-        this.pointsArray[4].update(this.getNewCoords(cx + rx, cy + ry, angle).x, this.getNewCoords(cx + rx, cy + ry, angle).y);
-        this.pointsArray[5].update(this.getNewCoords(cx, cy + ry, angle).x, this.getNewCoords(cx, cy + ry, angle).y);
-        this.pointsArray[6].update(this.getNewCoords(cx - rx, cy + ry, angle).x, this.getNewCoords(cx - rx, cy + ry, angle).y);
-        this.pointsArray[7].update(this.getNewCoords(cx - rx, cy, angle).x, this.getNewCoords(cx - rx, cy, angle).y);
-        this.pointsArray[8].update(this.getNewCoords(cx, cy - ry - 20, angle).x, this.getNewCoords(cx, cy - ry - 20, angle).y);
+        this.pointsArray[0].update(cx - rx, cy - ry, transform);
+        this.pointsArray[1].update(cx, cy - ry, transform);
+        this.pointsArray[2].update(cx + rx, cy - ry, transform);
+        this.pointsArray[3].update(cx + rx, cy, transform);
+        this.pointsArray[4].update(cx + rx, cy + ry, transform);
+        this.pointsArray[5].update(cx, cy + ry, transform);
+        this.pointsArray[6].update(cx - rx, cy + ry, transform);
+        this.pointsArray[7].update(cx - rx, cy, transform);
+        this.pointsArray[8].update(cx, cy - ry - 20, transform);
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         let new_dx = getRotateCoords(dx, dy, this.angle).x,
             new_dy = getRotateCoords(dx, dy, this.angle).y;
         this.svgElement.setAttribute('cx', this.angleCx + new_dx);
         this.svgElement.setAttribute('cy', this.angleCy + new_dy);
-        this.updateFrameAndPoints(this.rx, this.ry, this.cx + new_dx, this.cy + new_dy, this.angle, this.angleCx + new_dx, this.angleCy + new_dy);
+        this.updateFrameAndPoints(this.rx, this.ry, this.cx + new_dx, this.cy + new_dy, this.transform);
     }
     stopMoving(dx = curX - this.start.x, dy = curY - this.start.y) {
         let new_dx = getRotateCoords(dx, dy, this.angle).x,
@@ -647,6 +641,7 @@ class ellipse extends object {
         this.cy += dy;
         this.angleCx += new_dx;
         this.angleCy += new_dy;
+        this.transform = 'rotate(' + this.angle * 180.0 / Math.PI + ' ' + this.cx + ' ' + this.cy + ')';
     }
     moveTo(x, y) {
         let dx = x + pointRadius - (this.cx - this.rx),
@@ -786,15 +781,18 @@ class ellipse extends object {
         this.svgElement.setAttribute('cy', n.angleCy);
         this.svgElement.setAttribute('rx', n.rx);
         this.svgElement.setAttribute('ry', n.ry);
-        this.updateFrameAndPoints(n.rx, n.ry, n.cx, n.cy, this.angle, n.angleCx, n.angleCy);
+        this.updateFrameAndPoints(n.rx, n.ry, n.cx, n.cy, this.transform);
     }
-    stopResize() {
-        this.cx = this.resizeTemp.cx;
-        this.cy = this.resizeTemp.cy;
+    stopResize(dx, dy) {
+        let new_cx = this.getNewCoords(this.resizeTemp.cx, this.resizeTemp.cy, this.angle).x,
+            new_cy = this.getNewCoords(this.resizeTemp.cx, this.resizeTemp.cy, this.angle).y;
+        this.cx = new_cx;
+        this.cy = new_cy;
         this.rx = this.resizeTemp.rx;
         this.ry = this.resizeTemp.ry;
         this.angleCx = this.resizeTemp.angleCx;
         this.angleCy = this.resizeTemp.angleCy;
+        this.transform = 'rotate(' + this.angle * 180.0 / Math.PI + ' ' + this.cx + ' ' + this.cy + ')';
         this.updateFrameAndPoints();
     }
     startRotating() {
@@ -819,7 +817,7 @@ class ellipse extends object {
         }
         this.transform = 'rotate(' + newAngle * 180.0 / Math.PI + ' ' + this.cx + ' ' + this.cy + ')';
         this.svgElement.setAttribute('transform', this.transform);
-        this.updateFrameAndPoints(this.rx, this.ry, this.cx, this.dy, newAngle);
+        this.updateFrameAndPoints(this.rx, this.ry, this.cx, this.dy, this.transform);
     }
     stopRotating() {
         let argss = this.transform.split('(')[1],

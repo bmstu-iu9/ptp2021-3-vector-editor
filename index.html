@@ -55,9 +55,17 @@
       <img title="Вернуть" class=func_button id="redo" src="img/redo.svg">
     </div>
 
-    <div id="properties_panel">
+    <div id="obj_panel">
       <img title="На передний план" class=func_button id="frontObject" src="img/to_front.svg">
       <img title="На задний план" class=func_button id="backObject" src="img/to_back.svg">
+    </div>
+    <div class="properties_panel" id="rect_panel">
+      &nbsp;x<input type="number" class="property" min="1" max="9999">
+      &nbsp;y<input type="number" class="property" min="1" max="9999">
+      &nbsp;w<input type="number" class="property" min="1" max="9999">
+      &nbsp;h<input type="number" class="property" min="1" max="9999">
+      <img src="img/angle.svg" class="not_buttons"><input type="number" class="property" min="-180" max="180">
+      <img src="img/corner.svg" class="not_buttons"><input type="number" class="property" min="0" max="50">
     </div>
 
   </header>
@@ -99,7 +107,7 @@
       <li><button title="Заливка" class="tool_button" id="filling" style="background-image: url(img/fill.svg)"></button>
       </li>
     </ul>
-    
+
     <div id="right_panel">
       <div id="palette">
         <input class="colorpicker" id="strokeColor" type="color" title="Цвет для контура фигур,

@@ -4,7 +4,6 @@ scrollPanel = document.getElementById("scroll_panel");
 layersPanel = document.getElementById("layers_panel");
 rightPanel = document.getElementById("right_panel");
 canvas = document.getElementById("canvas");
-propertiesPanel = document.getElementById("properties_panel");
 
 let isSomeObjectSelected = false, //для курсора
 	isSomePointSelected = false;
@@ -19,6 +18,10 @@ let scaleСoef = 1;
 let pointRadius = 4,
 	pointStart,
 	currentPointTypeAttr = null;
+
+//properties_panel
+objPanel = document.getElementById("obj_panel");
+rectPanel = document.getElementById("rect_panel");
 
 //RULER
 rulerX = document.getElementById("ruler_x");
@@ -90,8 +93,8 @@ scrollPanel.onscroll = function () {
 function resetCurrentObject() {
 	if (currentObject != null) {
 		currentObject.hideFrameAndPoints();
+		currentObject.removePanel()
 		currentObject = null;
-		propertiesPanel.style.display = "none";
 	}
 }
 

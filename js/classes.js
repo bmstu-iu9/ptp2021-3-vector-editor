@@ -15,6 +15,7 @@ class object {
         updateFill(this);
         updateStroke(this);
         this.addActions();
+        this.addPanel();
     }
     createClone() {
         let clone = this.clone;
@@ -54,7 +55,7 @@ class object {
                 if (this.isCompleted) {
                     this.showFrameAndPoints();
                     currentObject = this;
-                    propertiesPanel.style.display = "flex";
+                    this.addPanel();
                 }
             }
 
@@ -160,6 +161,16 @@ class object {
         }
         this.isSelected = true;
     }
+    addPanel() {
+        objPanel.style.display = "flex";
+        this.addProperties();
+    }
+    removePanel() {
+        objPanel.style.display = "none";
+        this.removeProperties();
+    }
+    addProperties() {}
+    removeProperties() {}
     updateFrameAndPoints() {}
     addHotKeys() {}
     removeHotKeys() {}
@@ -175,7 +186,7 @@ class object {
     complete() {
         this.updateFrameAndPoints();
         this.removeHotKeys();
-        
+
         svgPanel.onmousemove = null;
         svgPanel.onmouseup = null;
         svgPanel.onmouseenter = null;
@@ -186,7 +197,6 @@ class object {
 
         isSomeObjectSelected = false;
         resetCurrentObject(); //показывать рамку после создания объекта
-        propertiesPanel.style.display = "flex";
         currentObject = this;
         this.isSelected = true;
         this.isCompleted = true;
@@ -272,6 +282,12 @@ class rectangle extends object {
         clone.svgElement.setAttribute('y', this.svgElement.getAttribute('y'));
         clone.svgElement.setAttribute('transform', this.transform);
         return clone;
+    }
+    addProperties() {
+        rectPanel.style.display = "flex";
+    }
+    removeProperties() {
+        rectPanel.style.display = "none";
     }
     updateAttributes(current) {
         let w = curX - this.x0;

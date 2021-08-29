@@ -15,7 +15,6 @@ class object {
         updateFill(this);
         updateStroke(this);
         this.addActions();
-        this.addPanel();
     }
     createClone() {
         let clone = this.clone;
@@ -198,6 +197,7 @@ class object {
 
         isSomeObjectSelected = false;
         resetCurrentObject(); //показывать рамку после создания объекта
+        this.addPanel();
         currentObject = this;
         this.isSelected = true;
         this.isCompleted = true;
@@ -212,6 +212,7 @@ class rectangle extends object {
         this.height = 0;
         this.x = curX;
         this.y = curY;
+        this.r = 0;
         this.cPoint = {
             x: curX,
             y: curY
@@ -275,13 +276,22 @@ class rectangle extends object {
         clone.angle = this.angle;
         clone.svgElement.setAttribute('width', this.width);
         clone.svgElement.setAttribute('height', this.height);
-        clone.svgElement.setAttribute('x', this.svgElement.getAttribute('x'));
-        clone.svgElement.setAttribute('y', this.svgElement.getAttribute('y'));
+        clone.svgElement.setAttribute('x', this.x);
+        clone.svgElement.setAttribute('y', this.y);
         clone.svgElement.setAttribute('transform', this.transform);
         return clone;
     }
     addProperties() {
         rectPanel.style.display = "flex";
+        this.updateProperties();
+    }
+    updateProperties() {
+        rectX.value = this.x;
+        rectY.value = this.y;
+        rectW.value = this.width;
+        rectH.value = this.height;
+        rectR.value = this.r;
+        rectA.value = this.angle * 180.0 / Math.PI;
     }
     removeProperties() {
         rectPanel.style.display = "none";
@@ -343,6 +353,7 @@ class rectangle extends object {
         this.svgElement.setAttribute('x', this.x);
         this.svgElement.setAttribute('y', this.y);
         this.svgElement.setAttribute('transform', this.transform);
+        this.updateProperties();
     }
     moveTo(x, y) {
         let dx = x + pointRadius - this.x,
@@ -482,6 +493,7 @@ class rectangle extends object {
         this.svgElement.setAttribute('y', this.y);
         this.svgElement.setAttribute('transform', this.transform);
         this.updateFrameAndPoints();
+        this.updateProperties();
     }
     startRotating() {
         this.rPoint = {
@@ -509,6 +521,7 @@ class rectangle extends object {
         this.angle = newAngle;
         this.angle = this.angle > 2 * Math.PI ? this.angle - 2 * Math.PI : this.angle;
         this.updateFrameAndPoints();
+        this.updateProperties();
     }
     getNewCoords(x = this.x, y = this.y, angle = this.angle) {
         return {
@@ -585,8 +598,8 @@ class ellipse extends object {
         clone.angle = this.angle;
         clone.svgElement.setAttribute('rx', this.rx);
         clone.svgElement.setAttribute('ry', this.ry);
-        clone.svgElement.setAttribute('cx', this.svgElement.getAttribute('cx'));
-        clone.svgElement.setAttribute('cy', this.svgElement.getAttribute('cy'));
+        clone.svgElement.setAttribute('cx', this.cx);
+        clone.svgElement.setAttribute('cy', this.cy);
         clone.svgElement.setAttribute('transform', this.transform);
         return clone;
     }
@@ -1791,7 +1804,7 @@ class polyline extends object {
         }
         if (this.isCompleted)
             this.pointsArray[this.pointsArray.length - 1].update(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2 - 20, transform);
-        let x = this.pathCoords[0].x + dx, 
+        let x = this.pathCoords[0].x + dx,
             y = this.pathCoords[0].y + dy;
         this.path += " " + x + "," + y;
         this.frameArray[0].update(this.path, transform);

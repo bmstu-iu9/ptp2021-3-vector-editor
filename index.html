@@ -60,12 +60,14 @@
       <img title="На задний план" class=func_button id="backObject" src="img/to_back.svg">
     </div>
     <div class="properties_panel" id="rect_panel">
-      &nbsp;x<input type="number" class="property" min="1" max="9999">
-      &nbsp;y<input type="number" class="property" min="1" max="9999">
-      &nbsp;w<input type="number" class="property" min="1" max="9999">
-      &nbsp;h<input type="number" class="property" min="1" max="9999">
-      <img src="img/angle.svg" class="not_buttons"><input type="number" class="property" min="-180" max="180">
-      <img src="img/corner.svg" class="not_buttons"><input type="number" class="property" min="0" max="50">
+      &nbsp;x <input id="rectX" type="number" class="property" required>
+      &nbsp;y <input id="rectY" type="number" class="property" required>
+      &nbsp;w <input id="rectW" type="number" class="property" min="1" required>
+      &nbsp;h <input id="rectH" type="number" class="property" min="1" required>
+      <img src="img/angle.svg" class="not_buttons">
+      <input id="rectA" type="number" class="property a" min="-180" max="180" required>
+      <img src="img/corner.svg" class="not_buttons">
+      <input id="rectR" type="number" class="property" min="0" max="100" required>
     </div>
 
   </header>
@@ -258,6 +260,7 @@
   <script src="js/point_and_frame.js"></script>
   <script src="js/color.js"></script>
   <script src="js/eraser.js"></script>
+  <script src="js/properties.js"></script>
 </body>
 
 </html>

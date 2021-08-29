@@ -19,10 +19,6 @@ let pointRadius = 4,
 	pointStart,
 	currentPointTypeAttr = null;
 
-//properties_panel
-objPanel = document.getElementById("obj_panel");
-rectPanel = document.getElementById("rect_panel");
-
 //RULER
 rulerX = document.getElementById("ruler_x");
 rulerY = document.getElementById("ruler_y");
@@ -62,8 +58,8 @@ function getCoords(elem) {
 }
 
 function updateCursorCoords(current) {
-	curX = (current.pageX - svgPanelCoords.left) / scaleСoef;
-	curY = (current.pageY - svgPanelCoords.top) / scaleСoef;
+	curX = Math.round((current.pageX - svgPanelCoords.left) / scaleСoef);
+	curY = Math.round((current.pageY - svgPanelCoords.top) / scaleСoef);
 }
 
 window.onresize = function () {

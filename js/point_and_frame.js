@@ -5,12 +5,14 @@ class point {
         this.x = x;
         this.y = y;
         this.object = object;
+        this.transform = 'rotate(' + 0 + ' ' + 0 + ' ' + 0 + ')';
         this.type = type;
         this.circle.setAttribute('fill', "white");
         this.circle.setAttribute('stroke', "black");
         this.circle.setAttribute('cx', x);
         this.circle.setAttribute('cy', y);
         this.circle.setAttribute('r', pointRadius);
+        this.circle.setAttribute('transform', this.transform);
         this.addActions();
     }
     addActions() {
@@ -103,7 +105,8 @@ class point {
                     pointStart = {
                         x: curX,
                         y: curY
-                    }
+                    };
+                    this.object.startResize();
                     document.addEventListener("mousemove", move);
                 }
             }).bind(this);
@@ -161,13 +164,17 @@ class point {
     setPointAttribute(attributeName, value) {
         this.circle.setAttribute(attributeName, value);
     }
-    update(x, y, attr = this.type.attr) {
+    update(x, y, transform, attr = this.type.attr) {
         if (this.type.action != "polygon") {
             if (currentPointTypeAttr != null && currentPointTypeAttr == attr) this.circle.setAttribute('fill', "red");
             else this.circle.setAttribute('fill', "white");
         }
         this.x = x;
         this.y = y;
+        if (transform) {
+            this.transform = transform;
+            this.circle.setAttribute('transform', this.transform);
+        }
         this.circle.setAttribute('cx', x);
         this.circle.setAttribute('cy', y);
         this.type.attr = attr;

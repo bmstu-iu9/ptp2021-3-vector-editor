@@ -101,7 +101,7 @@ pencilButton = document.getElementById("pencil");
 
 pencilButton.onclick = function () {
     wasPressed = "pencil";
-    svgPanel.style.cursor = "default";
+    svgPanel.style.cursor = "url(img/pencil_cursor.svg) 0 20, default";
     svgPanel.onmousedown = function (current) {
         updateCursorCoords(current);
         let newObject = new pencil();

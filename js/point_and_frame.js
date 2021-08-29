@@ -105,7 +105,8 @@ class point {
                     pointStart = {
                         x: curX,
                         y: curY
-                    }
+                    };
+                    this.object.startResize();
                     document.addEventListener("mousemove", move);
                 }
             }).bind(this);
@@ -170,11 +171,12 @@ class point {
         }
         this.x = x;
         this.y = y;
-        if (transform != '') 
+        if (transform) {
             this.transform = transform;
+            this.circle.setAttribute('transform', this.transform);
+        }
         this.circle.setAttribute('cx', x);
         this.circle.setAttribute('cy', y);
-        this.circle.setAttribute('transform', this.transform);
         this.type.attr = attr;
     }
 }

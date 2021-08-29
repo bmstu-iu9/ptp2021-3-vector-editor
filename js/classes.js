@@ -165,6 +165,7 @@ class object {
     move() {}
     stopMoving() {}
     moveTo() {}
+    startResize() {}
     resize() {}
     stopResize() {}
     startRotating() {}
@@ -330,6 +331,14 @@ class rectangle extends object {
         this.move(dx, dy);
         this.stopMoving(dx, dy);
     }
+    startResize() {
+        this.resizeTemp = {
+            x: this.x,
+            y: this.y,
+            width: this.width,
+            height: this.height
+        };
+    }
     resize(dx, dy) {
         let new_dx = getRotateCoords(dx, dy, this.angle).x,
             new_dy = getRotateCoords(dx, dy, this.angle).y;
@@ -337,7 +346,7 @@ class rectangle extends object {
             x: this.x,
             y: this.y,
             width: this.width,
-            height: this.height,
+            height: this.height
         };
         switch (currentPointTypeAttr) {
             case "ltc":
@@ -621,6 +630,14 @@ class ellipse extends object {
         this.move(dx, dy);
         this.stopMoving(dx, dy);
     }
+    startResize() {
+        this.resizeTemp = {
+            cx: this.cx,
+            cy: this.cy,
+            rx: this.rx,
+            ry: this.ry
+        };
+    }
     resize(dx, dy) {
         let new_dx = getRotateCoords(dx, dy, this.angle).x,
             new_dy = getRotateCoords(dx, dy, this.angle).y;
@@ -628,7 +645,7 @@ class ellipse extends object {
             cx: this.cx,
             cy: this.cy,
             rx: this.rx,
-            ry: this.ry,
+            ry: this.ry
         };
         switch (currentPointTypeAttr) {
             case "ltc":
@@ -1555,6 +1572,14 @@ class line extends object {
         this.move(dx, dy);
         this.stopMoving(dx, dy);
     }
+    startResize() {
+        this.resizeTemp = {
+            x0: this.x0,
+            y0: this.y0,
+            x2: this.x2,
+            y2: this.y2
+        };
+    }
     resize(dx, dy) {
         let new_dx = getRotateCoords(dx, dy, this.angle).x,
             new_dy = getRotateCoords(dx, dy, this.angle).y;
@@ -1562,7 +1587,7 @@ class line extends object {
             x0: this.x0,
             y0: this.y0,
             x2: this.x2,
-            y2: this.y2,
+            y2: this.y2
         };
         switch (currentPointTypeAttr) {
             case "ltc":

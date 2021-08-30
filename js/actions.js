@@ -3,19 +3,22 @@ deleteObject = document.getElementById("deleteObject");
 
 deleteObject.onclick = function () {
     if (currentObject != null) {
+        doFunc("delete", currentObject);
         deleteFunc();
     }
 }
 document.addEventListener('keydown', function (event) {
     if (event.code == 'Delete' && currentObject != null) {
+        doFunc("delete", currentObject);
         deleteFunc();
     }
 });
 
 function deleteFunc() {
-    currentObject.remove();
+    currentObject.hide();
     currentObject = null;
 }
+
 
 //COPY
 copy = document.getElementById("copy");
@@ -259,7 +262,7 @@ frontObject = document.getElementById("frontObject");
 
 frontObject.onclick = function () {
     if (currentObject != null) {
-        currentLayer.group.append(currentObject.svgElement);
+        currentObject.appendSvgElement();
         for (let i = 0; i < currentObject.frameArray.length; i++) {
             svgPanel.append(currentObject.frameArray[i].svgElement);
         }
@@ -273,7 +276,7 @@ backObject = document.getElementById("backObject");
 
 backObject.onclick = function () {
     if (currentObject != null) {
-        currentLayer.group.prepend(currentObject.svgElement);
+        currentObject.prependSvgElement();
     }
 }
 
@@ -297,5 +300,81 @@ showGrid.onclick = function () {
     } else {
         isGridEnabled = false;
         svgBackground.setAttribute("fill", "rgb(255, 255, 255)");
+    }
+}
+
+//UNDO REDO
+undoButton = document.getElementById("undo");
+undoButton.onclick = function () {
+    undoFunc();
+}
+document.addEventListener('keydown', function (event) {
+    if (event.code == 'KeyZ' && (event.ctrlKey || event.metaKey)) {
+        undoFunc();
+    }
+});
+
+
+redoButton = document.getElementById("redo");
+redoButton.onclick = function () {
+    redoFunc();
+}
+document.addEventListener('keydown', function (event) {
+    if (event.code == 'KeyY' && (event.ctrlKey || event.metaKey)) {
+        redoFunc();
+    }
+});
+
+
+let undoActions = [],
+    redoActions = [];
+class action {
+    constructor(type, object) {
+        this.type = type;
+        this.object = object;
+    }
+    undo() {
+        switch (this.type) {
+            case "delete":
+                this.object.showSvgElement();
+                redoActions.push(this);
+                break;
+            case "create":
+                if (currentObject == this.object) currentObject = null;
+                this.object.showFrameAndPoints();
+                this.object.hide();
+                redoActions.push(this);
+                break;
+        }
+    }
+    redo() {
+        switch (this.type) {
+            case "delete":
+                this.object.showFrameAndPoints();
+                this.object.hide();
+                undoActions.push(this);
+                break;
+            case "create":
+                this.object.showSvgElement();
+                undoActions.push(this);
+                break;
+        }
+    }
+}
+
+function doFunc(type, object) {
+    redoActions = [];
+    undoActions.push(new action(type, object));
+}
+
+function undoFunc() {
+    if (undoActions.length > 0) {
+        undoActions.pop().undo();
+    }
+}
+
+function redoFunc() {
+    if (redoActions.length > 0) {
+        redoActions.pop().redo();
     }
 }

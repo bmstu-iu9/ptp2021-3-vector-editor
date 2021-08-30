@@ -161,6 +161,15 @@ class object {
         }
         this.isSelected = true;
     }
+    showSvgElement() {
+        currentLayer.group.appendChild(this.svgElement);
+    }
+    appendSvgElement() {
+        currentLayer.group.append(this.svgElement);
+    }
+    prependSvgElement() {
+        currentLayer.group.prepend(this.svgElement);
+    }
     updateFrameAndPoints() {}
     addHotKeys() {}
     removeHotKeys() {}
@@ -194,6 +203,7 @@ class object {
         }
 
         this.isCompleted = true;
+        doFunc("create", this);
     }
 }
 

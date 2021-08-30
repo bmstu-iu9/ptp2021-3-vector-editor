@@ -161,8 +161,7 @@ class point {
         svgPanel.appendChild(this.circle);
     }
     remove() {
-        if (this.object == currentObject || !this.object.isCompleted)
-            svgPanel.removeChild(this.circle);
+        svgPanel.removeChild(this.circle);
         this.circle = null;
         this.isSelected = false;
     }

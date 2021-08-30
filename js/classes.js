@@ -7,6 +7,7 @@ class object {
         this.isCompleted = false;
         this.isSelected = false;
         this.isMoving = false;
+        this.arePointsAndFrameShown = true;
         this.x0 = curX;
         this.y0 = curY;
         this.pointsArray = [];
@@ -25,8 +26,7 @@ class object {
         clone.x0 = this.x0;
         clone.y0 = this.y0;
         clone.strokeWidth = this.strokeWidth;
-
-        clone.hideFrameAndPoints();
+        clone.removeFrameAndPoints();
         for (let i = 0; i < this.pointsArray.length; i++) {
             clone.pointsArray[i] = this.pointsArray[i].createClone(clone);
         }
@@ -42,6 +42,7 @@ class object {
         clone.svgElement.setAttribute('stroke-linejoin', this.svgElement.getAttribute('stroke-linejoin'));
         clone.svgElement.setAttribute('stroke-linecap', this.svgElement.getAttribute('stroke-linecap'));
         clone.removeHotKeys();
+        clone.arePointsAndFrameShown = true;
         clone.hide();
     }
     addActions() {
@@ -61,7 +62,8 @@ class object {
             }
 
             if (wasPressed == "eraser") {
-                this.remove();
+                doFunc("delete", this);
+                this.hide();
             }
         }).bind(this);
         this.svgElement.addEventListener("mousedown", select);
@@ -69,7 +71,9 @@ class object {
             isSomeObjectSelected = false;
         });
         this.svgElement.addEventListener("mouseover", function () {
-            isSomeObjectSelected = true;
+            if (wasPressed == "cursor") {
+                isSomeObjectSelected = true;
+            }
         });
         //hide
         svgPanel.addEventListener("mousedown", function () {
@@ -86,7 +90,7 @@ class object {
         }).bind(this);
         document.addEventListener("mousemove", move);
         const startMoving = ((current) => {
-            if (this.isCompleted && this.isSelected) {
+            if (wasPressed == "cursor" && this.isCompleted && this.isSelected) {
                 this.isMoving = true;
                 updateCursorCoords(current);
                 this.start = {
@@ -107,11 +111,14 @@ class object {
         svgPanel.addEventListener("mouseup", stopMoving);
         this.svgElement.addEventListener("mouseover", () => {
             if (isEraserActive) {
-                this.remove();
+                doFunc("delete", this);
+                this.hide();
             }
         });
     }
-
+    showSvgElement() {
+        currentLayer.group.appendChild(this.svgElement);
+    }
     setElementAttribute(attributeName, value) {
         this.svgElement.setAttribute(attributeName, value);
     }
@@ -144,25 +151,28 @@ class object {
         this.showFrameAndPoints()
     }
     hideFrameAndPoints() {
-        for (let i = 0; i < this.frameArray.length; i++) {
-            this.frameArray[i].hide();
+        if (this.arePointsAndFrameShown) {
+            for (let i = 0; i < this.frameArray.length; i++) {
+                this.frameArray[i].hide();
+            }
+            for (let i = 0; i < this.pointsArray.length; i++) {
+                this.pointsArray[i].hide();
+            }
+            this.arePointsAndFrameShown = false;
+            this.isSelected = false;
         }
-        for (let i = 0; i < this.pointsArray.length; i++) {
-            this.pointsArray[i].hide();
-        }
-        this.isSelected = false;
     }
     showFrameAndPoints() {
-        for (let i = 0; i < this.frameArray.length; i++) {
-            this.frameArray[i].show();
+        if (!this.arePointsAndFrameShown) {
+            for (let i = 0; i < this.frameArray.length; i++) {
+                this.frameArray[i].show();
+            }
+            for (let i = 0; i < this.pointsArray.length; i++) {
+                this.pointsArray[i].show();
+            }
+            this.arePointsAndFrameShown = true;
+            this.isSelected = true;
         }
-        for (let i = 0; i < this.pointsArray.length; i++) {
-            this.pointsArray[i].show();
-        }
-        this.isSelected = true;
-    }
-    showSvgElement() {
-        currentLayer.group.appendChild(this.svgElement);
     }
     appendSvgElement() {
         currentLayer.group.append(this.svgElement);
@@ -198,12 +208,12 @@ class object {
             resetCurrentObject(); //показывать рамку после создания объекта
             currentObject = this;
             this.isSelected = true;
+            doFunc("create", this);
         } else {
             this.remove();
         }
 
         this.isCompleted = true;
-        doFunc("create", this);
     }
 }
 
@@ -256,10 +266,6 @@ class rectangle extends object {
             new point(this.x + this.width / 2, this.y - 20, this, {
                 action: "rotate",
                 attr: "rotate"
-            }),
-            new point(0, 0, this, {
-                action: "c",
-                attr: "c"
             })
         ];
         //rotate
@@ -326,7 +332,6 @@ class rectangle extends object {
         this.pointsArray[6].update(this.getNewCoords(x, y + height, angle).x, this.getNewCoords(x, y + height, angle).y);
         this.pointsArray[7].update(this.getNewCoords(x, y + height / 2, angle).x, this.getNewCoords(x, y + height / 2, angle).y);
         this.pointsArray[8].update(this.getNewCoords(x + width / 2, y - 20, angle).x, this.getNewCoords(x + width / 2, y - 20, angle).y);
-        this.pointsArray[9].update(this.cPoint.x, this.cPoint.y);
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         let new_dx = getRotateCoords(dx, dy, this.angle).x,

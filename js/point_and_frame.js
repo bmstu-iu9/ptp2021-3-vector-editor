@@ -141,6 +141,8 @@ class point {
             action: this.type.action,
             attr: this.type.attr
         }
+        clone.transform = this.transform;
+        clone.setPointAttribute('transform', this.transform);
         return clone;
     }
     setColor(color) {
@@ -166,8 +168,8 @@ class point {
     }
     update(x, y, transform, attr = this.type.attr) {
         if (this.type.action != "polygon") {
-            if (currentPointTypeAttr != null && currentPointTypeAttr == attr) this.circle.setAttribute('fill', "red");
-            else this.circle.setAttribute('fill', "white");
+            if (currentPointTypeAttr == null || currentPointTypeAttr != attr) 
+            this.circle.setAttribute('fill', "white");
         }
         this.x = x;
         this.y = y;
@@ -187,8 +189,7 @@ class frame {
         svgPanel.appendChild(this.svgElement);
         this.object = object;
         this.red = red;
-        if (red || Number(object.getElementAttribute('opacity')) > 0.5) this.svgElement.setAttribute('opacity', "0.5");
-        else this.svgElement.setAttribute('opacity', object.getElementAttribute('opacity'));
+        this.svgElement.setAttribute('opacity', "0.5");
         if (red) this.svgElement.setAttribute('stroke', "red");
         else this.svgElement.setAttribute('stroke', object.getElementAttribute('stroke'));
         if (red) this.svgElement.setAttribute('stroke-width', pointRadius);
@@ -208,19 +209,21 @@ class frame {
         svgPanel.appendChild(this.svgElement);
     }
     remove() {
-        svgPanel.removeChild(this.svgElement);
+        if (this.object == currentObject || !this.object.isCompleted)
+            svgPanel.removeChild(this.svgElement);
         this.svgElement = null;
     }
     setFrameAttribute(attributeName, value) {
         this.svgElement.setAttribute(attributeName, value);
     }
     update() {
+        this.svgElement.setAttribute('opacity', "0.5");
         if (this.red) this.svgElement.setAttribute('stroke', "red");
         else this.svgElement.setAttribute('stroke', this.object.getElementAttribute('stroke'));
         if (this.red) this.svgElement.setAttribute('stroke-width', pointRadius);
         else this.svgElement.setAttribute('stroke-width', this.object.getElementAttribute('stroke-width'));
         if (this.red || this.object.getElementAttribute('stroke-dasharray') == null ||
-            this.object.getElementAttribute('stroke-dasharray') == "null") this.svgElement.setAttribute('stroke-dasharray', this.object.strokeWidth * 4);
+            this.object.getElementAttribute('stroke-dasharray') == "null") this.svgElement.setAttribute('stroke-dasharray', this.svgElement.getAttribute('stroke-width') * 4);
         else this.svgElement.setAttribute('stroke-dasharray', this.object.getElementAttribute('stroke-dasharray'));
         if (this.red) this.svgElement.setAttribute('stroke-linejoin', "none");
         else this.svgElement.setAttribute('stroke-linejoin', this.object.getElementAttribute('stroke-linejoin'));
@@ -243,6 +246,8 @@ class lineFrame extends frame {
     }
     createClone(newObject) {
         let clone = new lineFrame(this.x1, this.y1, this.x2, this.y2, newObject, this.red);
+        clone.transform = this.transform;
+        clone.setFrameAttribute('transform', this.transform);
         return clone;
     }
     update(x1, y1, x2, y2, transform) {
@@ -256,7 +261,7 @@ class lineFrame extends frame {
         this.svgElement.setAttribute('y1', y1);
         this.svgElement.setAttribute('x2', x2);
         this.svgElement.setAttribute('y2', y2);
-        if (transform != null) this.svgElement.setAttribute('transform', transform);
+        if (transform != null) this.setFrameAttribute('transform', transform);
     }
 }
 class rectangleFrame extends frame {
@@ -273,6 +278,8 @@ class rectangleFrame extends frame {
     }
     createClone(newObject) {
         let clone = new rectangleFrame(this.x, this.y, this.width, this.height, newObject);
+        clone.transform = this.transform;
+        clone.setFrameAttribute('transform', this.transform);
         return clone;
     }
     update(x, y, width, height, transform) {
@@ -286,7 +293,7 @@ class rectangleFrame extends frame {
         this.svgElement.setAttribute('y', y);
         this.svgElement.setAttribute('width', width);
         this.svgElement.setAttribute('height', height);
-        if (transform != null) this.svgElement.setAttribute('transform', transform);
+        this.svgElement.setAttribute('transform', transform);
     }
 }
 class ellipseFrame extends frame {
@@ -303,6 +310,8 @@ class ellipseFrame extends frame {
     }
     createClone(newObject) {
         let clone = new ellipseFrame(this.cx, this.cy, this.rx, this.ry, newObject);
+        clone.transform = this.transform;
+        clone.setFrameAttribute('transform', this.transform);
         return clone;
     }
     update(cx, cy, rx, ry, transform) {
@@ -316,9 +325,8 @@ class ellipseFrame extends frame {
         this.svgElement.setAttribute('cy', cy);
         this.svgElement.setAttribute('rx', rx);
         this.svgElement.setAttribute('ry', ry);
-        if (transform != null) this.svgElement.setAttribute('transform', transform);
+        this.svgElement.setAttribute('transform', transform);
     }
-    update() {}
 }
 class polygonFrame extends frame {
     constructor(vertices, object) {
@@ -330,11 +338,10 @@ class polygonFrame extends frame {
         let clone = new polygonFrame(this.vertices, newObject);
         return clone;
     }
-    update(vertices, transform) {
+    update(vertices) {
         super.update();
         this.vertices = vertices;
         this.svgElement.setAttribute('points', vertices);
-        if (transform != null) this.svgElement.setAttribute('transform', transform);
     }
 }
 class polylineFrame extends frame {
@@ -345,13 +352,16 @@ class polylineFrame extends frame {
     }
     createClone(newObject) {
         let clone = new polylineFrame(this.path, newObject);
+        clone.transform = this.transform;
+        clone.svgElement.setAttribute("transform", this.transform);
         return clone;
     }
     update(path, transform) {
         super.update();
         this.path = path;
-        this.svgElement.setAttribute('points', path);
-        if (transform != null) this.svgElement.setAttribute('transform', transform);
+        this.setFrameAttribute('points', path);
+        this.setFrameAttribute('transform', transform);
+        this.transform = transform;
     }
 }
 class pathFrame extends frame {
@@ -362,12 +372,15 @@ class pathFrame extends frame {
     }
     createClone(newObject) {
         let clone = new pathFrame(this.path, newObject);
+        clone.transform = this.transform;
+        clone.setFrameAttribute('transform', this.transform);
         return clone;
     }
     update(path, transform) {
         super.update();
         this.path = path;
         this.svgElement.setAttribute('d', path);
-        if (transform != null) this.svgElement.setAttribute('transform', transform);
+        this.svgElement.setAttribute('transform', transform);
+        this.transform = transform;
     }
 }

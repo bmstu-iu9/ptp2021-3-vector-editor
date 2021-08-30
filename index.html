@@ -9,7 +9,7 @@
   <meta name="keywords" content="графический редактор, создать, удалить, переместить, объединить">
   <meta name="authors" content="">
   <title>Pentagram - svg-редактор</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/right.css" />
 </head>
 
@@ -47,13 +47,29 @@
         <li id="help"> Помощь </li>
       </ul>
     </div>
+
     <hr>
+
     <div id="functions">
       <img title="Отменить" class=func_button id="undo" src="img/undo.svg">
       <img title="Вернуть" class=func_button id="redo" src="img/redo.svg">
+    </div>
+
+    <div id="obj_panel">
       <img title="На передний план" class=func_button id="frontObject" src="img/to_front.svg">
       <img title="На задний план" class=func_button id="backObject" src="img/to_back.svg">
     </div>
+    <div class="properties_panel" id="rect_panel">
+      &nbsp;x <input id="rectX" type="number" class="property" required>
+      &nbsp;y <input id="rectY" type="number" class="property" required>
+      &nbsp;w <input id="rectW" type="number" class="property" min="1" required>
+      &nbsp;h <input id="rectH" type="number" class="property" min="1" required>
+      <img src="img/angle.svg" class="not_buttons">
+      <input id="rectA" type="number" class="property a" min="-180" max="180" required>
+      <img src="img/corner.svg" class="not_buttons">
+      <input id="rectR" type="number" class="property" min="0" max="100" required>
+    </div>
+
   </header>
 
   <main>
@@ -93,6 +109,7 @@
       <li><button title="Заливка" class="tool_button" id="filling" style="background-image: url(img/fill.svg)"></button>
       </li>
     </ul>
+
     <div id="right_panel">
       <div id="palette">
         <input class="colorpicker" id="strokeColor" type="color" title="Цвет для контура фигур,
@@ -243,6 +260,7 @@
   <script src="js/point_and_frame.js"></script>
   <script src="js/color.js"></script>
   <script src="js/eraser.js"></script>
+  <script src="js/properties.js"></script>
 </body>
 
 </html>

@@ -3,6 +3,7 @@ drawPanel = document.getElementById("draw_panel");
 scrollPanel = document.getElementById("scroll_panel");
 layersPanel = document.getElementById("layers_panel");
 rightPanel = document.getElementById("right_panel");
+canvas = document.getElementById("canvas");
 
 let isSomeObjectSelected = false, //для курсора
 	isSomePointSelected = false;
@@ -57,8 +58,8 @@ function getCoords(elem) {
 }
 
 function updateCursorCoords(current) {
-	curX = (current.pageX - svgPanelCoords.left) / scaleСoef;
-	curY = (current.pageY - svgPanelCoords.top) / scaleСoef;
+	curX = Math.round((current.pageX - svgPanelCoords.left) / scaleСoef);
+	curY = Math.round((current.pageY - svgPanelCoords.top) / scaleСoef);
 }
 
 window.onresize = function () {
@@ -88,6 +89,7 @@ scrollPanel.onscroll = function () {
 function resetCurrentObject() {
 	if (currentObject != null) {
 		currentObject.hideFrameAndPoints();
+		currentObject.removePanel()
 		currentObject = null;
 	}
 }

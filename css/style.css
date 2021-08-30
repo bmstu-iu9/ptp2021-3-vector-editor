@@ -24,7 +24,7 @@ body {
     margin: 0 0.5vw;
     padding-left: 2.3%;
     font-family: 'Marcellus SC', serif;
-    background-image: url(img/logo.svg);
+    background-image: url(../img/logo.svg);
     background-size: auto 100%;
     background-repeat: no-repeat;
 }
@@ -101,8 +101,9 @@ header {
 
 /*TOP BUTTONS*/
 
-#functions {
-    margin-left: 0;
+#functions,
+#obj_panel,
+.properties_panel {
     height: 60%;
     width: initial;
     display: flex;
@@ -116,11 +117,42 @@ header {
     background-color: transparent;
     border: none;
     border-radius: 15%;
-    cursor: pointer;
 }
 
 .func_button:hover {
     background-color: #555;
+}
+
+/*properties_panel*/
+
+#obj_panel,
+.properties_panel {
+    display: none;
+    cursor: default;
+}
+
+.not_buttons {
+    cursor: default;
+}
+
+input[type=number] {
+    outline: none;
+    color: #e5e5e5;
+    border-radius: 2%;
+    padding: 0 2px 0 8px;
+}
+
+.property {
+    margin: 0 5px;
+    font-size: medium;
+    border: none;
+    width: 54px;
+    height: 100%;
+    background: #444;
+}
+
+::-webkit-inner-spin-button {
+    opacity: 0.7;
 }
 
 /*MAIN*/
@@ -215,6 +247,7 @@ main {
 }
 
 #rulers_corner {
+    position: fixed;
     width: 15px;
     height: 15px;
     text-align: center;

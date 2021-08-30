@@ -26,7 +26,7 @@ function updateRulers() {
   var text = 0;
   for (var i = parseFloat(ruler_x_pattern.getAttribute("x")); i < parseInt(rulerX.style.width);) {
     var newText = document.createElement("text");
-    newText.setAttribute("x", i);
+    newText.setAttribute("x", i+1);
     newText.setAttribute("y", 8);  
     ruler_x_text.innerHTML += "<text x=" + newText.getAttribute("x") + " " + "y=" + newText.getAttribute("y") + ">" + text + "</text>";
     text += 50 * coef;

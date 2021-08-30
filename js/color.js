@@ -6,7 +6,7 @@ function changeStroke(c, w, l, d, j) {
 }
 
 function changeFill(i) {
-  if (currentObject != null && currentObject.type != 'pencil') {
+  if (currentObject != null && (currentObject.type != 'pencil' || i == 0)) {
     updateFill(currentObject, i);
   }
 }
@@ -43,8 +43,8 @@ f.onchange = () => {
 }
 
 //OPACITY
-opacity = document.getElementsByClassName("opacity");
-opValue = document.getElementsByClassName("opValue");
+opacity = rightPanel.getElementsByClassName("opacity");
+opValue = rightPanel.getElementsByClassName("opValue");
 
 for (i = 0; i < 2; i++) {
   opacity[i].i = i;
@@ -71,15 +71,14 @@ function updateFill(obj, i = -1) {
   if (i == 0 || i == -1) obj.setElementAttribute('opacity', opacity[0].value);
   if (i == 1 || i == -1) obj.setElementAttribute('fill-opacity', opacity[1].value);
   if (i == 2 || i == -1) obj.setElementAttribute('fill', fillColor.value);
-  if (obj.isCompleted) obj.updateFrameAndPoints();
 }
 
 //stroke style
-caps = document.querySelectorAll('input[type=radio][name="cap"]');
+caps = rightPanel.querySelectorAll('input[type=radio][name="cap"]');
 caps.forEach(s => s.addEventListener('change', () => changeStroke(0, 0, 1, 0, 0)));
-dashs = document.querySelectorAll('input[type=radio][name="dash"]');
+dashs = rightPanel.querySelectorAll('input[type=radio][name="dash"]');
 dashs.forEach(s => s.addEventListener('change', () => changeStroke(0, 0, 0, 1, 0)));
-join = document.querySelectorAll('input[type=radio][name="join"]');
+join = rightPanel.querySelectorAll('input[type=radio][name="join"]');
 join.forEach(s => s.addEventListener('change', () => changeStroke(0, 0, 0, 0, 1)));
 
 strokeWidth = document.getElementById("strokeWidth");

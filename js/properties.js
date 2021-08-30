@@ -59,14 +59,14 @@ rectH.onchange = () => {
 
 rectR.onchange = () => {
     let r = rectR.value;
-    if (r > 100) {
-        rectR.value = 100;
-        r = 100;
+    if (r > 50) {
+        rectR.value = 50;
+        r = 50;
     }
     if (r < 0) {
         rectR.value = 0;
         r = 0;
     }
-    currentObject.setElementAttribute('rx', r);
+    currentObject.setElementAttribute('rx', Math.max(currentObject.height, currentObject.width) * r / 100);
     currentObject.r = r;
 }

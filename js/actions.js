@@ -33,14 +33,8 @@ document.addEventListener('keydown', function (event) {
 function copyFunc() {
     buffer = currentObject.createClone();
     buffer.moveTo(0, 0);
-    paste.style.color = "#fff";
-    paste.style.cursor = "pointer";
-    paste.onmouseover = () => {
-        paste.style.background = "#555";
-    }
-    paste.onmouseout = () => {
-        paste.style.background = "#333";
-    }
+    currentObject.addPanel();
+    unblockEditing(3);
 }
 
 //PASTE
@@ -57,12 +51,13 @@ document.addEventListener('keydown', function (event) {
 });
 
 function pasteFunc() {
-    if (currentObject != null) currentObject.hideFrameAndPoints();
+    resetCurrentObject();
     buffer.show();
     currentObject = buffer;
     buffer = buffer.createClone();
     buffer.move(50, 50);
     buffer.stopMoving(50, 50);
+    currentObject.addPanel();
 }
 
 //CUT
@@ -79,6 +74,25 @@ document.addEventListener('keydown', function (event) {
         deleteFunc();
     }
 });
+
+editFunctions = [cut, copy, deleteObject, paste];
+
+function unblockEditing(i) {
+    func = editFunctions[i];
+    func.style.color = "#fff";
+    func.style.cursor = "pointer";
+    func.onmouseover = (e) => e.target.style.background = "#555";
+    func.onmouseout = (e) => e.target.style.background = "#333";
+}
+
+function blockEditing(i) {
+    func = editFunctions[i];
+    func.style.color = "#999";
+    func.style.cursor = "default";
+    func.style.background = "#333";
+    func.onmouseover = null;
+    func.onmouseout = null;
+}
 
 function centralLocation(width, height) {
     svgPanel.setAttribute('style', 'top: 50%; left: 50%; transform: translate(-50%, -50%);');

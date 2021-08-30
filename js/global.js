@@ -39,7 +39,7 @@ var left_panel = document.getElementById("left_panel");
 var buttons = left_panel.getElementsByClassName("tool_button");
 for (var i = 0; i < buttons.length; i++) {
 	buttons[i].addEventListener("click", function () {
-		var current = document.getElementsByClassName("tool_button active");
+		var current = left_panel.getElementsByClassName("tool_button active");
 		if (current.length > 0) {
 			current[0].className = "tool_button";
 		}
@@ -60,6 +60,14 @@ function getCoords(elem) {
 function updateCursorCoords(current) {
 	curX = Math.round((current.pageX - svgPanelCoords.left) / scaleСoef);
 	curY = Math.round((current.pageY - svgPanelCoords.top) / scaleСoef);
+}
+
+//преобразование декартовых координат при повороте системы координат
+function getRotateCoords(x, y, angle) {
+	return {
+		x: x * Math.cos(angle) + y * Math.sin(angle),
+		y: -x * Math.sin(angle) + y * Math.cos(angle)
+	};
 }
 
 window.onresize = function () {
@@ -92,12 +100,4 @@ function resetCurrentObject() {
 		currentObject.removePanel()
 		currentObject = null;
 	}
-}
-
-//преобразование декартовых координат при повороте системы координат
-function getRotateCoords(x, y, angle) {
-	return {
-		x: x * Math.cos(angle) + y * Math.sin(angle),
-		y: -x * Math.sin(angle) + y * Math.cos(angle)
-	};
 }

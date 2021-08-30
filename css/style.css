@@ -87,15 +87,15 @@ header {
 }
 
 #help {
-    cursor: pointer;
+    cursor: help;
 }
 
-#paste {
+#edit li {
     color: #999;
     cursor: default;
 }
 
-#paste:hover {
+#edit li:hover {
     background: #333;
 }
 

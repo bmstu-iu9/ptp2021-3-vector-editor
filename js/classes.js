@@ -118,6 +118,7 @@ class object {
         return this.svgElement.getAttribute(attributeName);
     }
     remove() {
+        resetCurrentObject();
         currentLayer.group.removeChild(this.svgElement);
         this.svgElement = null;
         this.isSelected = false;
@@ -162,10 +163,16 @@ class object {
     }
     addPanel() {
         objPanel.style.display = "flex";
+        for (i = 0; i < 3; i++) {
+            unblockEditing(i);
+        }
         this.addProperties();
     }
     removePanel() {
         objPanel.style.display = "none";
+        for (i = 0; i < 3; i++) {
+            blockEditing(i);
+        }
         this.removeProperties();
     }
     addProperties() {}
@@ -475,6 +482,7 @@ class rectangle extends object {
         this.svgElement.setAttribute('y', n.y);
         this.svgElement.setAttribute('width', n.width);
         this.svgElement.setAttribute('height', n.height);
+        this.setElementAttribute('rx', Math.max(n.height, n.width) * this.r / 100);
         this.updateFrameAndPoints(n.width, n.height, n.x, n.y, this.transform);
     }
     stopResize() {
@@ -492,6 +500,7 @@ class rectangle extends object {
         this.svgElement.setAttribute('x', this.x);
         this.svgElement.setAttribute('y', this.y);
         this.svgElement.setAttribute('transform', this.transform);
+        this.setElementAttribute('rx', Math.max(this.height, this.width) * this.r / 100);
         this.updateFrameAndPoints();
         this.updateProperties();
     }
@@ -1040,9 +1049,8 @@ class pentagram extends object {
         const select = (() => {
             if (wasPressed == "cursor") {
                 isSomeObjectSelected = true;
-                if (currentObject != null) {
-                    currentObject.hideFrameAndPoints();
-                }
+                resetCurrentObject()
+
                 if (this.isCompleted) {
                     this.showFrameAndPoints();
                     currentObject = this;

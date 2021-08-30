@@ -9,6 +9,7 @@
   <meta name="keywords" content="графический редактор, создать, удалить, переместить, объединить">
   <meta name="authors" content="">
   <title>Pentagram - svg-редактор</title>
+  <link rel="icon" href="img/icon.svg" type="image/x-icon">
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/right.css" />
 </head>
@@ -28,7 +29,7 @@
             <li id="savePng"> Сохранить как PNG </li>
           </ul>
         </li>
-        <li> Редактировать
+        <li id="edit"> Редактировать
           <ul class="sub_menu">
             <li id="cut"> Вырезать </li>
             <li id="copy"> Копировать </li>
@@ -67,7 +68,7 @@
       <img src="img/angle.svg" class="not_buttons">
       <input id="rectA" type="number" class="property a" min="-180" max="180" required>
       <img src="img/corner.svg" class="not_buttons">
-      <input id="rectR" type="number" class="property" min="0" max="100" required>
+      <input id="rectR" type="number" class="property" min="0" max="50" required>
     </div>
 
   </header>

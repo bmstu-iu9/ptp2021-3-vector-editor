@@ -25,10 +25,12 @@ header hr {
 }
 
 .colorpicker {
-    margin: 3px 0;
+    margin: 4px 0;
     width: 2.2vw;
-    height: 2.2vw;
-    border-radius: 8%;
+    height: 2.3vw;
+    border: none;
+    background: none;
+    cursor: pointer;
 }
 
 .colorOpacity {

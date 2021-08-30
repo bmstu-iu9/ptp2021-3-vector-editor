@@ -86,7 +86,7 @@ class point {
                     this.object.stopRotating();
                 }
             }).bind(this);
-            svgPanel.addEventListener("mouseup", stopRotating);
+            document.addEventListener("mouseup", stopRotating);
         }
         //movePoint
         if (this.type.action == "resize" || this.type.action == "polygon" || this.type.action == "polyline") {
@@ -123,7 +123,7 @@ class point {
                     document.removeEventListener("mousemove", move);
                 }
             }).bind(this);
-            svgPanel.addEventListener("mouseup", stopMoving);
+            document.addEventListener("mouseup", stopMoving);
         }
         //удаление точки пера
         const deletePoint = ((event) => {
@@ -158,7 +158,7 @@ class point {
         svgPanel.appendChild(this.circle);
     }
     remove() {
-        if (this.object == currentObject || !this.object.isCompleted)
+        if (!this.object.isCompleted)
             svgPanel.removeChild(this.circle);
         this.circle = null;
         this.isSelected = false;
@@ -168,8 +168,8 @@ class point {
     }
     update(x, y, transform, attr = this.type.attr) {
         if (this.type.action != "polygon") {
-            if (currentPointTypeAttr == null || currentPointTypeAttr != attr) 
-            this.circle.setAttribute('fill', "white");
+            if (currentPointTypeAttr == null || currentPointTypeAttr != attr)
+                this.circle.setAttribute('fill', "white");
         }
         this.x = x;
         this.y = y;

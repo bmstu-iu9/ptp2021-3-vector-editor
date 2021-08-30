@@ -7,7 +7,7 @@ function changeStroke(c, w, l, d, j) {
 
 function changeFill(i) {
   if (currentObject != null && currentObject.type != 'pencil') {
-    updateFill(currentObject.svgElement, i);
+    updateFill(currentObject, i);
   }
 }
 strokeColor = document.getElementById("strokeColor");
@@ -68,9 +68,10 @@ function updateFill(obj, i = -1) {
     obj.setAttribute('fill', "transparent");
     return;
   }
-  if (i == 0 || i == -1) obj.setAttribute('opacity', opacity[0].value);
-  if (i == 1 || i == -1) obj.setAttribute('fill-opacity', opacity[1].value);
-  if (i == 2 || i == -1) obj.setAttribute('fill', fillColor.value);
+  if (i == 0 || i == -1) obj.setElementAttribute('opacity', opacity[0].value);
+  if (i == 1 || i == -1) obj.setElementAttribute('fill-opacity', opacity[1].value);
+  if (i == 2 || i == -1) obj.setElementAttribute('fill', fillColor.value);
+  if (obj.isCompleted) obj.updateFrameAndPoints();
 }
 
 //stroke style

@@ -12,7 +12,7 @@ class object {
         this.pointsArray = [];
         this.frameArray = [];
         this.strokeWidth = 1;
-        updateFill(this.svgElement);
+        updateFill(this);
         updateStroke(this);
         this.addActions();
     }
@@ -48,7 +48,6 @@ class object {
         //select
         const select = (() => {
             if (wasPressed == "cursor") {
-                isSomeObjectSelected = true;
                 resetCurrentObject()
 
                 if (this.isCompleted) {
@@ -58,7 +57,7 @@ class object {
             }
 
             if (wasPressed == "fill" && this.type != 'pencil') {
-                updateFill(this.svgElement, 2);
+                updateFill(this, 2);
             }
 
             if (wasPressed == "eraser") {
@@ -68,6 +67,9 @@ class object {
         this.svgElement.addEventListener("mousedown", select);
         this.svgElement.addEventListener("mouseout", function () {
             isSomeObjectSelected = false;
+        });
+        this.svgElement.addEventListener("mouseover", function () {
+            isSomeObjectSelected = true;
         });
         //hide
         svgPanel.addEventListener("mousedown", function () {
@@ -174,7 +176,6 @@ class object {
     complete() {
         this.updateFrameAndPoints();
         this.removeHotKeys();
-        this.isCompleted = true;
         svgPanel.onmousemove = null;
         svgPanel.onmouseup = null;
         svgPanel.onmouseenter = null;
@@ -183,10 +184,16 @@ class object {
         document.onclick = null;
         document.onmouseenter = null;
 
-        isSomeObjectSelected = false;
-        resetCurrentObject(); //показывать рамку после создания объекта
-        currentObject = this;
-        this.isSelected = true;
+        if (this.svgElement.getBoundingClientRect().width + this.svgElement.getBoundingClientRect().height > 0) {
+            isSomeObjectSelected = false;
+            resetCurrentObject(); //показывать рамку после создания объекта
+            currentObject = this;
+            this.isSelected = true;
+        } else {
+            this.remove();
+        }
+
+        this.isCompleted = true;
     }
 }
 
@@ -1092,6 +1099,7 @@ class pentagram extends object {
         this.circle.setAttribute('cy', y0);
         this.circle.setAttribute('r', this.r + this.strokeWidth);
         this.circle.setAttribute('stroke', this.getElementAttribute('stroke'));
+        this.circle.setAttribute('opacity', this.getElementAttribute('opacity'));
         this.circle.setAttribute('stroke-width', this.getElementAttribute('stroke-width'));
         this.circle.setAttribute('stroke-dasharray', this.getElementAttribute('stroke-dasharray'));
         this.circle.setAttribute('stroke-linejoin', this.getElementAttribute('stroke-linejoin'));
@@ -1259,7 +1267,6 @@ class pencil extends object {
             clone.pathCoords[i].x = this.pathCoords[i].x;
             clone.pathCoords[i].y = this.pathCoords[i].y;
         }
-        //clone.svgElement.setAttribute('points', this.svgElement.getAttribute('points'));
         clone.updateFrameAndPoints();
         return clone;
     }
@@ -1310,14 +1317,6 @@ class pencil extends object {
             this.getNewCoords(minX + (maxX - minX) / 2, minY - 20, angle).y);
         this.path = "";
         this.rotatePoint = this.pointsArray[this.pointsArray.length - 1];
-        for (let i = 0; i < this.pointsArray.length; i++) {
-            this.pointsArray[i].circle.addEventListener("mouseover", function () {
-                isSomePointSelected = true;
-            });
-            this.pointsArray[i].circle.addEventListener("mouseout", function () {
-                isSomePointSelected = false;
-            });
-        }
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.updateFrameAndPoints(getRotateCoords(dx, dy, this.angle).x, getRotateCoords(dx, dy, this.angle).y,
@@ -1376,25 +1375,6 @@ class pencil extends object {
             y: (x - this.cPoint.x) * Math.sin(angle) + (y - this.cPoint.y) * Math.cos(angle) + this.cPoint.y
         }
     }
-    completeFirstObject() {
-        this.frameArray = [new lineFrame(this.minX, this.maxY, this.maxX, this.maxY, this, true),
-            new lineFrame(this.maxX, this.maxY, this.maxX, this.minY, this, true),
-            new lineFrame(this.maxX, this.minY, this.minX, this.minY, this, true),
-            new lineFrame(this.minX, this.minY, this.minX, this.maxY, this, true),
-            new polylineFrame(this.path, this)
-        ];
-        this.pointsArray = [new point(this.minX + (this.maxX - this.minX) / 2, this.minY + (this.maxY - this.minY) / 2, this, {
-                action: "move",
-                attr: "move"
-            }),
-            new point(this.minX + (this.maxX - this.minX) / 2, this.minY - 20, this, {
-                action: "rotate",
-                attr: "rotate"
-            })
-        ];
-        this.isCompleted = true;
-        this.updateFrameAndPoints();
-    }
     getNewCoords(x = this.x0, y = this.y0, angle = this.angle) {
         return {
             x: (x - this.cPoint.x) * Math.cos(angle) - (y - this.cPoint.y) * Math.sin(angle) + this.cPoint.x,
@@ -1417,8 +1397,8 @@ class pencil extends object {
                 attr: "rotate"
             })
         ];
-        super.complete();
         this.path = "";
+        super.complete();
     }
 }
 
@@ -1451,9 +1431,7 @@ class line extends object {
                 new lineFrame(this.x2, this.y0, this.x2, this.y2, this, true),
                 new lineFrame(this.x2, this.y2, this.x0, this.y2, this, true),
                 new lineFrame(this.x0, this.y2, this.x0, this.y0, this, true),
-                new lineFrame(this.x0, this.y0, this.x2, this.y2, this),
-                new lineFrame((this.x0 + this.x2) / 2, (this.y0 + this.y2) / 2,
-                    (this.x0 + this.x2) / 2, (this.y0 + this.y2) / 2 - 25, this, true)
+                new lineFrame(this.x0, this.y0, this.x2, this.y2, this)
             ]
             this.pointsArray = [new point(this.x0, this.y0, this, {
                     action: "resize",
@@ -1569,10 +1547,6 @@ class line extends object {
             this.getNewCoords(x0, y0, angle).x, this.getNewCoords(x0, y0, angle).y);
         this.frameArray[4].update(this.getNewCoords(x0, y0, angle).x, this.getNewCoords(x0, y0, angle).y,
             this.getNewCoords(x2, y2, angle).x, this.getNewCoords(x2, y2, angle).y);
-        this.frameArray[5].update(this.getNewCoords((x0 + x2) / 2, (y0 + y2) / 2, angle).x,
-            this.getNewCoords((x0 + x2) / 2, (y0 + y2) / 2, angle).y,
-            this.getNewCoords((x0 + x2) / 2, (y0 + y2) / 2 - 25, angle).x,
-            this.getNewCoords((x0 + x2) / 2, (y0 + y2) / 2 - 25, angle).y);
 
         this.pointsArray[0].update(this.getNewCoords(x0, y0, angle).x, this.getNewCoords(x0, y0, angle).y);
         this.pointsArray[1].update(this.getNewCoords(x0 + (x2 - x0) / 2, y0, angle).x,
@@ -1758,6 +1732,7 @@ class polyline extends object {
             y: this.y0
         }];
         this.svgElement.setAttribute('points', this.path);
+        this.frameArray = [new polylineFrame(this.path, this)];
         this.pointsArray.push(new point(this.x0, this.y0, this, {
             action: "polyline",
             attr: 0
@@ -1772,7 +1747,6 @@ class polyline extends object {
             x: this.minX + (this.maxX - this.minX) / 2,
             y: this.minY + (this.maxY - this.minY) / 2
         };
-        this.frameArray = [new polylineFrame(this.path, this)];
         //rotate
         this.angle = 0;
         this.newAngle = 0;
@@ -1849,11 +1823,11 @@ class polyline extends object {
             else this.path += " " + x + "," + y;
             this.pointsArray[i].update(x, y, i);
         }
+        this.path += " " + this.getNewCoords(this.pathCoords[0].x + dx, this.pathCoords[0].y + dy, angle).x + "," +
+            this.getNewCoords(this.pathCoords[0].x + dx, this.pathCoords[0].y + dy, angle).y;
         if (this.isCompleted)
             this.pointsArray[this.pointsArray.length - 1].update(this.getNewCoords(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2 - 20, angle).x,
                 this.getNewCoords(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2 - 20, angle).y);
-        this.path += " " + this.getNewCoords(this.pathCoords[0].x + dx, this.pathCoords[0].y + dy, angle).x + "," +
-            this.getNewCoords(this.pathCoords[0].x + dx, this.pathCoords[0].y + dy, angle).y;
         this.frameArray[0].update(this.path);
         this.svgElement.setAttribute('points', this.path);
         this.path = "";
@@ -1912,6 +1886,7 @@ class polyline extends object {
             x: this.minX + (this.maxX - this.minX) / 2,
             y: this.minY + (this.maxY - this.minY) / 2
         }
+        this.updateFrameAndPoints();
     }
     startRotating() {
         this.rPoint = {
@@ -1941,7 +1916,6 @@ class polyline extends object {
     }
     complete() {
         if (!polylineIsCompleted) {
-            super.complete();
             this.line.remove();
             this.pointsArray[0].setPointAttribute('fill', "white");
             this.pointsArray.push(new point(this.minX + (this.maxX - this.minX) / 2, this.minY + (this.maxY - this.minY) / 2 - 20, this, {
@@ -1949,8 +1923,8 @@ class polyline extends object {
                 attr: "rotate"
             }));
             this.updateFrameAndPoints();
-            this.pointsArray[this.pointsArray.length - 1].hide();
             polylineIsCompleted = true;
+            super.complete();
         }
     }
 }

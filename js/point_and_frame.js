@@ -41,6 +41,12 @@ class point {
                 }
             }).bind(this);
             this.circle.addEventListener("mousedown", startMoving);
+            this.circle.addEventListener("mouseover", function () {
+                if (this.object.isMoving) {
+                    currentPointTypeAttr = this.type.attr;
+                }
+            }.bind(this));
+            this.circle.addEventListener("mouseup", this.setColor.bind(this, "white"));
         }
         //rotateObject
         if (this.type.action == "rotate") {
@@ -50,7 +56,7 @@ class point {
                 }
             });
             this.circle.addEventListener("mouseout", function () {
-                if (!this.object.isRotating) {
+                if (!this.object.isRotating && wasPressed == "cursor") {
                     svgPanel.style.cursor = "default";
                 }
             }.bind(this));
@@ -124,9 +130,11 @@ class point {
         }
         //удаление точки пера
         const deletePoint = ((event) => {
-            event.preventDefault();
-            this.object.deletePoint(this.type.attr);
-            isSomePointSelected = false;
+            if (wasPressed == "cursor") {
+                event.preventDefault();
+                this.object.deletePoint(this.type.attr);
+                isSomePointSelected = false;
+            }
         })
         if (this.type.action == "polyline") {
             this.circle.addEventListener("contextmenu", deletePoint);

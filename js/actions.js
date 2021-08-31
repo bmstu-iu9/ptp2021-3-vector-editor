@@ -63,6 +63,7 @@ function pasteFunc() {
     if (currentObject != null) currentObject.hideFrameAndPoints();
     buffer.show();
     currentObject = buffer;
+    doFunc("create", currentObject);
     buffer = buffer.createClone();
     buffer.move(50, 50);
     buffer.stopMoving(50, 50);
@@ -79,6 +80,7 @@ cut.onclick = function () {
 document.addEventListener('keydown', function (event) {
     if (event.code == 'KeyX' && (event.ctrlKey || event.metaKey) && currentObject != null) {
         copyFunc();
+        doFunc("delete", currentObject);
         deleteFunc();
     }
 });
@@ -325,46 +327,55 @@ document.addEventListener('keydown', function (event) {
     }
 });
 
-
 let undoActions = [],
     redoActions = [];
+let maxActionsNum = 20;
+
 class action {
-    constructor(type, object) {
+    constructor(type, object, attr) {
         this.type = type;
         this.object = object;
+        this.attr = attr;
     }
     undo() {
         switch (this.type) {
             case "delete":
                 this.object.showSvgElement();
-                redoActions.push(this);
                 break;
             case "create":
                 if (currentObject == this.object) currentObject = null;
-                this.object.showFrameAndPoints();
                 this.object.hide();
-                redoActions.push(this);
                 break;
+            case "move":
+                let coords = this.attr;
+                this.attr = this.object.getCornerCoords();
+                this.object.moveTo(coords.x, coords.y);
         }
+        redoActions.push(this);
+        if (redoActions.length > maxActionsNum) redoActions.shift();
     }
     redo() {
         switch (this.type) {
             case "delete":
-                this.object.showFrameAndPoints();
                 this.object.hide();
-                undoActions.push(this);
                 break;
             case "create":
                 this.object.showSvgElement();
-                undoActions.push(this);
                 break;
+            case "move":
+                let coords = this.attr;
+                this.attr = this.object.getCornerCoords();
+                this.object.moveTo(coords.x, coords.y);
         }
+        undoActions.push(this);
+        if (undoActions.length > maxActionsNum) undoActions.shift();
     }
 }
 
-function doFunc(type, object) {
+function doFunc(type, object, attr = null) {
     redoActions = [];
-    undoActions.push(new action(type, object));
+    undoActions.push(new action(type, object, attr));
+    if (undoActions.length > maxActionsNum) undoActions.shift();
 }
 
 function undoFunc() {

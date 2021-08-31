@@ -105,6 +105,7 @@ class object {
                 this.isMoving = false;
                 updateCursorCoords(current);
                 currentPointTypeAttr = null;
+                doFunc("move", this, this.getCornerCoords())
                 this.stopMoving();
             }
         }).bind(this);
@@ -186,6 +187,7 @@ class object {
     move() {}
     stopMoving() {}
     moveTo() {}
+    getCornerCoords() {}
     resize() {}
     stopResize() {}
     startRotating() {}
@@ -357,6 +359,12 @@ class rectangle extends object {
             dy = y + pointRadius - this.y;
         this.move(dx, dy);
         this.stopMoving(dx, dy);
+    }
+    getCornerCoords() {
+        return {
+            x: this.x - pointRadius,
+            y: this.y - pointRadius
+        }
     }
     resize(dx, dy) {
         let new_dx = getRotateCoords(dx, dy, this.angle).x,
@@ -667,6 +675,12 @@ class ellipse extends object {
             dy = y + pointRadius - (this.cy - this.ry);
         this.move(dx, dy);
         this.stopMoving(dx, dy);
+    }
+    getCornerCoords() {
+        return {
+            x: (this.cx - this.rx) - pointRadius,
+            y: (this.cy - this.ry) - pointRadius
+        }
     }
     resize(dx, dy) {
         let new_dx = getRotateCoords(dx, dy, this.angle).x,
@@ -1001,6 +1015,12 @@ class polygon extends object {
         this.move(dx, dy);
         this.stopMoving(dx, dy);
     }
+    getCornerCoords() {
+        return {
+            x: (this.x0 - this.r) - pointRadius,
+            y: (this.y0 - this.r) - pointRadius
+        }
+    }
     resize() {
         this.updateAttributes();
     }
@@ -1233,6 +1253,12 @@ class pentagram extends object {
         this.move(dx, dy);
         this.stopMoving(dx, dy);
     }
+    getCornerCoords() {
+        return {
+            x: (this.x0 - this.r) - pointRadius,
+            y: (this.y0 - this.r) - pointRadius
+        }
+    }
     resize() {
         this.updateAttributes();
     }
@@ -1363,6 +1389,12 @@ class pencil extends object {
             dy = y + pointRadius - this.minY;
         this.move(dx, dy);
         this.stopMoving(dx, dy);
+    }
+    getCornerCoords() {
+        return {
+            x: this.minX - pointRadius,
+            y: this.minY - pointRadius
+        }
     }
     startRotating() {
         this.rPoint = {
@@ -1615,6 +1647,12 @@ class line extends object {
             dy = y + pointRadius - Math.min(this.y0, this.y2);
         this.move(dx, dy);
         this.stopMoving(dx, dy);
+    }
+    getCornerCoords() {
+        return {
+            x: Math.min(this.x0, this.x2) - pointRadius,
+            y: Math.min(this.y0, this.y2) - pointRadius
+        }
     }
     resize(dx, dy) {
         let new_dx = getRotateCoords(dx, dy, this.angle).x,
@@ -1873,6 +1911,12 @@ class polyline extends object {
             dy = y + pointRadius - this.minY;
         this.move(dx, dy);
         this.stopMoving(dx, dy);
+    }
+    getCornerCoords() {
+        return {
+            x: this.minX - pointRadius,
+            y: this.minY - pointRadius
+        }
     }
     deletePoint(ind) {
         if (this.pathCoords.length == 2) deleteFunc(); //actions.js

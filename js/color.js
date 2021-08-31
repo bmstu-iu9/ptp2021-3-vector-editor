@@ -65,7 +65,7 @@ for (i = 0; i < 2; i++) {
 //CURRENT COLOR
 function updateFill(obj, i = -1) {
   if (f.checked) {
-    obj.setAttribute('fill', "transparent");
+    obj.setElementAttribute('fill', "transparent");
     return;
   }
   if (i == 0 || i == -1) obj.setElementAttribute('opacity', opacity[0].value);
@@ -151,7 +151,7 @@ function updateStroke(object, c = 1, width = 1, l = 1, d = 1, j = 1) {
         obj.setAttribute('stroke-linejoin', "bevel");
         break;
     }
-  if (object.isCompleted) object.updateFrameAndPoints(); //исправить!
+  if (object.isCompleted) object.updateFrameAndPoints();
 }
 
 //fill tool

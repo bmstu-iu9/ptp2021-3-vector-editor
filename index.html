@@ -14,9 +14,24 @@
 </head>
 
 <body>
+  <div id="helpbox">
+    <div id="banner"></div>
+    <div id="bannerinside">
+        <a href="#" title="Закрыть" id="exit"></a>
+        <h2>Помощь</h2>
+        <hr color="#fff" width="90%" align="center" size="2" style="margin-left: 5%">
+        <div id="helppage"></div>
+        <hr color="#fff" width="90%" align="center" size="2" style="margin-left: 5%">
+        <h2>Страницы: 1/1</h2>
+    </div>
+    <a href="#" title="Предыдущая страница" class="arr7" id="prev"></a>
+    <a href="#" title="Следующая страница" class="arr7" id="next"></a>
+    <div class="peaks" id="peaksup"></div>
+    <div class="peaks" id="peaksdown"></div>
+  </div>
   <header>
     <h1 id="logo"> Pentagram </h1>
-    <hr>
+    <hr class="hrline">
     <div id="container">
       <ul class="menu">
         <li> Файл
@@ -47,7 +62,7 @@
         <li id="help"> Помощь </li>
       </ul>
     </div>
-    <hr>
+    <hr class="hrline">
     <div id="functions">
       <img title="Отменить" class=func_button id="undo" src="img/undo.svg">
       <img title="Вернуть" class=func_button id="redo" src="img/redo.svg">
@@ -158,7 +173,7 @@
         </div>
       </div>
 
-      <hr>
+      <hr class="hrline">
 
       <div id="layers_header">
         Слои
@@ -243,6 +258,7 @@
   <script src="js/point_and_frame.js"></script>
   <script src="js/color.js"></script>
   <script src="js/eraser.js"></script>
+  <script src="js/helpbox.js"></script>
 </body>
 
 </html>

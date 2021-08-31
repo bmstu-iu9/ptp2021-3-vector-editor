@@ -712,13 +712,15 @@ class ellipse extends object {
             rx: this.rx,
             ry: this.ry
         };
+        this.resizeCx = this.cx;
+        this.resizeCy = this.cy;
     }
     resize(dx, dy) {
         let new_dx = getRotateCoords(dx, dy, this.angle).x,
             new_dy = getRotateCoords(dx, dy, this.angle).y;
         let n = {
-            cx: this.cx,
-            cy: this.cy,
+            cx: this.resizeCx,
+            cy: this.resizeCy,
             rx: this.rx,
             ry: this.ry
         };
@@ -764,16 +766,10 @@ class ellipse extends object {
                 n.rx -= new_dx / 2;
                 break;
         }
-        /*if (n.rx < 0) {
-            n.rx = 0;
-            if (this.cx + this.rx < curX) {
-                n.cx = this.cx + 2 * this.rx;
-                n.rx = this.rx;
-            }
-            if (this.cx + this.rx > curX) {
-                n.cx = this.cx - 2 * this.rx;
-                n.rx = this.rx;
-            }
+        if (n.rx < 0) {
+            if (this.resizeCx + this.rx < n.cx) n.cx = this.resizeCx + this.rx;
+            if (this.resizeCx + this.rx > n.cx) n.cx = this.resizeCx - this.rx;
+            let q = 1;
             switch (currentPointTypeAttr) {
                 case "ltc":
                     currentPointTypeAttr = "rtc";
@@ -782,50 +778,60 @@ class ellipse extends object {
                     currentPointTypeAttr = "rbc";
                     break;
                 case "rtc":
+                    q *= -1;
                     currentPointTypeAttr = "ltc";
                     break;
                 case "rbc":
+                    q *= -1;
                     currentPointTypeAttr = "lbc";
                     break;
                 case "l":
                     currentPointTypeAttr = "r";
                     break;
                 case "r":
+                    q *= -1;
                     currentPointTypeAttr = "l";
                     break;
             }
+            pointStart.x += this.rx * 2 * Math.cos(this.angle) * q;
+            pointStart.y += this.rx * 2 * Math.sin(this.angle) * q;
+            n.rx = 0;
+            this.rx = 0;
+            this.resizeCx = n.cx;
         }
         if (n.ry < 0) {
-            n.ry = 0;
-            if (this.cy + this.ry < curY) {
-                n.cy = this.cy + 2 * this.ry;
-                n.ry = this.ry;
-            }
-            if (this.cy + this.ry > curY) {
-                n.cy = this.cy - 2 * this.ry;
-                n.ry = this.ry;
-            }
+            if (this.resizeCy + this.ry < n.cy) n.cy = this.resizeCy + this.ry;
+            if (this.resizeCy + this.ry > n.cy) n.cy = this.resizeCy - this.ry;
+            let q = 1;
             switch (currentPointTypeAttr) {
                 case "ltc":
                     currentPointTypeAttr = "lbc";
                     break;
                 case "lbc":
+                    q *= -1;
                     currentPointTypeAttr = "ltc";
                     break;
                 case "rtc":
                     currentPointTypeAttr = "rbc";
                     break;
                 case "rbc":
+                    q *= -1;
                     currentPointTypeAttr = "rtc";
                     break;
                 case "t":
                     currentPointTypeAttr = "b";
                     break;
                 case "b":
+                    q *= -1;
                     currentPointTypeAttr = "t";
                     break;
             }
-        }*/
+            pointStart.x -= this.ry * 2 * Math.sin(this.angle) * q;
+            pointStart.y += this.ry * 2 * Math.cos(this.angle) * q;
+            n.ry = 0;
+            this.ry = 0;
+            this.resizeCy = n.cy;
+        }
         this.resizeTemp = n;
         this.svgElement.setAttribute('cx', n.cx);
         this.svgElement.setAttribute('cy', n.cy);

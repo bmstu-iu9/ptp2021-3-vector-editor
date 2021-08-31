@@ -1034,6 +1034,183 @@ class polygon extends object {
     }
 }
 
+//STAR POLYGON
+class starPolygon extends object {
+    constructor() {
+        super('path');
+        this.path = "";
+        this.r = 0;
+        this.phi = 0;
+        this.step = 2;
+        this.vertNum = curStarPolygonVertNum;
+        this.verticesCoords = [];
+        this.frameArray = [new pathFrame(this.path, this)];
+        for (let i = 0; i < this.vertNum; i++) {
+            this.pointsArray.push(new point(this.x0, this.y0, this, {
+                action: "polygon",
+                attr: "polygon"
+            }));
+        }
+        this.rotationIsFixed = false;
+        this.angleIsFixed = false;
+        this.radiusIsFixed = false;
+        this.fix = this.fix.bind(this);
+        this.free = this.free.bind(this);
+        this.updateVertNum = this.updateVertNum.bind(this);
+        this.addHotKeys();
+    }
+    createClone() {
+        let clone = new starPolygon();
+        this.clone = clone;
+        super.createClone();
+        clone.path = this.path;
+        clone.r = this.r;
+        clone.phi = this.phi;
+        clone.vertNum = this.vertNum;
+        clone.vertices = this.vertices;
+        clone.updateFrameAndPoints();
+        return clone;
+    }
+    updateAttributes() {
+        let dx = curX - this.x0,
+            dy = curY - this.y0;
+        if (!this.radiusIsFixed) this.r = Math.sqrt(dx ** 2 + dy ** 2);
+        else if (dx != 0 && dy != 0) {
+            dx *= this.r / Math.sqrt(dx ** 2 + dy ** 2);
+            dy *= this.r / Math.sqrt(dx ** 2 + dy ** 2);
+        }
+        if (!this.angleIsFixed) {
+            if (this.rotationIsFixed) this.phi = (this.vertNum - 2) * Math.PI / (this.vertNum * 2);
+            else if (this.r > 0) this.phi = dy > 0 ? Math.acos(dx / this.r) : -Math.acos(dx / this.r);
+        }
+        this.updateFrameAndPoints();
+    }
+    updateFrameAndPoints(x0 = this.x0, y0 = this.y0) {
+        //включает обновление атрибута
+        this.verticesCoords = [];
+        for (let i = 0; i < this.vertNum; i++) {
+            let x = x0 + this.r * Math.cos(this.phi + 2 * Math.PI * i / this.vertNum);
+            let y = y0 + this.r * Math.sin(this.phi + 2 * Math.PI * i / this.vertNum);
+            this.verticesCoords.push({
+                x: x,
+                y: y
+            })
+            this.pointsArray[i].update(x, y, '');
+            if (currentPointTypeAttr == "polygon") {
+                if (i == 0) this.pointsArray[i].setPointAttribute("fill", "red");
+                else this.pointsArray[i].setPointAttribute("fill", "white");
+            }
+        }
+        this.step = Math.floor((this.vertNum - 3) / 2) + 1;
+        this.path = "M " + this.verticesCoords[0].x + "," + this.verticesCoords[0].y;
+        this.endInd = 0;
+        this.setPath(this.step);
+        this.path += "L " + this.verticesCoords[0].x + "," + this.verticesCoords[0].y;
+        if (this.vertNum % 4 == 2) {
+            this.path += "M " + this.verticesCoords[1].x + "," + this.verticesCoords[1].y;
+            this.endInd = 1;
+            this.setPath(this.step + 1);
+            this.path += "L " + this.verticesCoords[1].x + "," + this.verticesCoords[1].y;
+        }
+
+        this.svgElement.setAttribute('d', this.path);
+        this.frameArray[0].update(this.path);
+        this.path = "";
+        this.verticesCoords = [];
+    }
+    setPath(ind) {
+        if (ind == this.endInd) return;
+        this.path += "L " + this.verticesCoords[ind].x + "," + this.verticesCoords[ind].y;
+        this.setPath((ind + this.step) % this.vertNum);
+    }
+    addHotKeys() {
+        document.addEventListener('keydown', this.updateVertNum);
+        document.addEventListener('keydown', this.fix);
+        document.addEventListener('keyup', this.free);
+    }
+    removeHotKeys() {
+        document.removeEventListener('keydown', this.updateVertNum);
+        this.rotationIsFixed = false;
+        this.angleIsFixed = false;
+        this.radiusIsFixed = false;
+        document.removeEventListener('keydown', this.fix);
+        document.removeEventListener('keyup', this.free);
+    }
+    updateVertNum(current) {
+        if (current.code == 'ArrowUp') {
+            curStarPolygonVertNum++;
+            this.vertNum++;
+        }
+        if (current.code == 'ArrowDown' && curStarPolygonVertNum > 5) {
+            curStarPolygonVertNum--;
+            this.vertNum--;
+        }
+        for (let i = 0; i < this.pointsArray.length; i++) {
+            this.pointsArray[i].remove();
+        }
+        this.pointsArray = [];
+        for (let i = 0; i < this.vertNum; i++) {
+            this.pointsArray.push(new point(this.x0, this.y0, this, {
+                action: "polygon",
+                attr: "polygon"
+            }));
+        }
+        this.updateAttributes();
+    }
+    fix(event) {
+        event.preventDefault();
+        if (event.shiftKey) {
+            this.rotationIsFixed = true;
+            this.updateAttributes();
+        }
+        if (event.altKey) {
+            this.angleIsFixed = true;
+            this.updateAttributes();
+        }
+        if (event.ctrlKey) {
+            this.radiusIsFixed = true;
+            this.updateAttributes();
+        }
+    }
+    free(event) {
+        if (event.key == 'Shift') {
+            this.rotationIsFixed = false;
+            this.updateAttributes();
+        }
+        if (event.key == "Alt") {
+            this.angleIsFixed = false;
+            this.updateAttributes();
+        }
+        if (event.key == 'Control') {
+            this.radiusIsFixed = false;
+            this.updateAttributes();
+        }
+    }
+    move(dx = curX - this.start.x, dy = curY - this.start.y) {
+        this.updateFrameAndPoints(this.x0 + dx, this.y0 + dy);
+    }
+    stopMoving(dx = curX - this.start.x, dy = curY - this.start.y) {
+        this.x0 += dx;
+        this.y0 += dy;
+    }
+    moveTo(x, y) {
+        let dx = x + pointRadius - (this.x0 - this.r),
+            dy = y + pointRadius - (this.y0 - this.r);
+        this.move(dx, dy);
+        this.stopMoving(dx, dy);
+    }
+    getCornerCoords() {
+        return {
+            x: (this.x0 - this.r) - pointRadius,
+            y: (this.y0 - this.r) - pointRadius
+        }
+    }
+    resize() {
+        this.updateAttributes();
+    }
+}
+
+
 //PENTAGRAM
 class pentagram extends object {
     constructor() {

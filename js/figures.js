@@ -14,10 +14,6 @@ rectangleButton.onclick = function () {
         };
         document.onmouseup = function () {
             newObject.complete();
-            if (newObject.width == 0 || newObject.height == 0) {
-                newObject.remove();
-                resetCurrentObject();
-            }
         };
     };
 }
@@ -38,10 +34,6 @@ ellipseButton.onclick = function () {
         };
         document.onmouseup = function () {
             newObject.complete();
-            if (newObject.rx == 0 || newObject.ry == 0) {
-                newObject.remove();
-                resetCurrentObject();
-            }
         };
     };
 }
@@ -63,10 +55,27 @@ polygonButton.onclick = function () {
         };
         document.onmouseup = function () {
             newObject.complete();
-            if (newObject.r == 0) {
-                newObject.remove();
-                resetCurrentObject();
-            }
+        };
+    };
+}
+
+//STAR POLYGON
+starPolygonButton = document.getElementById("starPolygon");
+let curStarPolygonVertNum = 5;
+
+starPolygonButton.onclick = function () {
+    wasPressed = "starPolygon";
+    svgPanel.style.cursor = "default";
+    svgPanel.onmousedown = function (current) {
+        updateCursorCoords(current);
+        let newObject = new starPolygon();
+
+        document.onmousemove = function (current) {
+            updateCursorCoords(current);
+            newObject.updateAttributes(current);
+        };
+        document.onmouseup = function () {
+            newObject.complete();
         };
     };
 }
@@ -88,10 +97,6 @@ pentagramButton.onclick = function () {
         };
         document.onmouseup = function () {
             newObject.complete();
-            if (newObject.r == 0) {
-                newObject.remove();
-                resetCurrentObject();
-            }
         };
     };
 }
@@ -111,11 +116,7 @@ pencilButton.onclick = function () {
             newObject.updateAttributes();
         };
         document.onmouseup = function () {
-            if (newObject.path == newObject.x0 + "," + newObject.y0) {
-                newObject.complete();
-                newObject.remove();
-                resetCurrentObject();
-            } else newObject.complete();
+            newObject.complete();
         };
         svgPanel.onmouseenter = function (current) {
             document.onmouseup();
@@ -141,10 +142,6 @@ line.onclick = function () {
         };
         document.onmouseup = function () {
             newObject.complete();
-            if (newObject.x0 == newObject.x2 && newObject.y0 == newObject.y2) {
-                newObject.remove();
-                resetCurrentObject();
-            }
         };
     };
 }

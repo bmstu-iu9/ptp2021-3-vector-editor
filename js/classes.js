@@ -443,13 +443,9 @@ class rectangle extends object {
                 n.width -= new_dx;
                 break;
         }
-        /*if (n.width < 0) {
+        if (n.width < 0) {
             if (this.x + this.width < n.x) n.x = this.x + this.width;
-            n.width = 0;
-            this.width = 0;
-            this.x = n.x;
-            this.angleX = n.angleX;
-            pointStart.x += dx;
+            let q = 1;
             switch (currentPointTypeAttr) {
                 case "ltc":
                     currentPointTypeAttr = "rtc";
@@ -458,47 +454,59 @@ class rectangle extends object {
                     currentPointTypeAttr = "rbc";
                     break;
                 case "rtc":
+                    q *= -1;
                     currentPointTypeAttr = "ltc";
                     break;
                 case "rbc":
+                    q *= -1;
                     currentPointTypeAttr = "lbc";
                     break;
                 case "l":
                     currentPointTypeAttr = "r";
                     break;
                 case "r":
+                    q *= -1;
                     currentPointTypeAttr = "l";
                     break;
             }
+            pointStart.x += this.width * Math.cos(this.angle) * q;
+            pointStart.y += this.width * Math.sin(this.angle) * q;
+            n.width = 0;
+            this.width = 0;
+            this.x = n.x;
         }
         if (n.height < 0) {
             if (this.y + this.height < n.y) n.y = this.y + this.height;
-            n.height = 0;
-            this.height = 0;
-            this.y = n.y;
-            this.angleY = n.angleY;
-            pointStart.y += dy;
+            let q = 1;
             switch (currentPointTypeAttr) {
                 case "ltc":
                     currentPointTypeAttr = "lbc";
                     break;
                 case "lbc":
+                    q *= -1;
                     currentPointTypeAttr = "ltc";
                     break;
                 case "rtc":
                     currentPointTypeAttr = "rbc";
                     break;
                 case "rbc":
+                    q *= -1;
                     currentPointTypeAttr = "rtc";
                     break;
                 case "t":
                     currentPointTypeAttr = "b";
                     break;
                 case "b":
+                    q *= -1;
                     currentPointTypeAttr = "t";
                     break;
             }
-        }*/
+            pointStart.x -= this.height * Math.sin(this.angle) * q;
+            pointStart.y += this.height * Math.cos(this.angle) * q;
+            n.height = 0;
+            this.height = 0;
+            this.y = n.y;
+        }
         this.resizeTemp = n;
         this.svgElement.setAttribute('x', n.x);
         this.svgElement.setAttribute('y', n.y);

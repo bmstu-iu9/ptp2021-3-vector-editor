@@ -227,7 +227,7 @@ class object {
         } else {
             this.remove();
         }
-      
+
         this.isCompleted = true;
     }
 }
@@ -357,7 +357,6 @@ class rectangle extends object {
         this.pointsArray[6].update(x, y + height, transform);
         this.pointsArray[7].update(x, y + height / 2, transform);
         this.pointsArray[8].update(x + width / 2, y - 20, transform);
-        this.pointsArray[9].update(x + width / 2, y + height / 2, transform);
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         let new_dx = getRotateCoords(dx, dy, this.angle).x,
@@ -1588,7 +1587,6 @@ class line extends object {
         this.frameArray[2].update(x2, y2, x0, y2, transform);
         this.frameArray[3].update(x0, y2, x0, y0, transform);
         this.frameArray[4].update(x0, y0, x2, y2, transform);
-        this.frameArray[5].update((x0 + x2) / 2, (y0 + y2) / 2, (x0 + x2) / 2, (y0 + y2) / 2 - 25, transform);
 
         this.pointsArray[0].update(x0, y0, transform);
         this.pointsArray[1].update(x0 + (x2 - x0) / 2, y0, transform);
@@ -1860,11 +1858,8 @@ class polyline extends object {
             else this.path += " " + x + "," + y;
             this.pointsArray[i].update(x, y, transform);
         }
-        this.path += " " + this.getNewCoords(this.pathCoords[0].x + dx, this.pathCoords[0].y + dy, angle).x + "," +
-            this.getNewCoords(this.pathCoords[0].x + dx, this.pathCoords[0].y + dy, angle).y;
         if (this.isCompleted)
             this.pointsArray[this.pointsArray.length - 1].update(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2 - 20, transform);
-      
         let x = this.pathCoords[0].x + dx,
             y = this.pathCoords[0].y + dy;
         this.path += " " + x + "," + y;
@@ -1928,13 +1923,11 @@ class polyline extends object {
         this.updateFrameAndPoints();
     }
     stopResize() {
-        let new_curX = this.getNewCoords(curX, curY, 2 * Math.PI - this.angle).x,
-            new_curY = this.getNewCoords(curX, curY, 2 * Math.PI - this.angle).y;
         this.cPoint = {
             x: this.minX + (this.maxX - this.minX) / 2,
             y: this.minY + (this.maxY - this.minY) / 2
         };
-      
+
         this.transform = 'rotate(' + this.angle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
         this.svgElement.setAttribute('transform', this.transform);
         this.updateFrameAndPoints();
@@ -1942,7 +1935,7 @@ class polyline extends object {
     startRotating() {
         this.rPoint = {
             x: this.getNewCoords(this.minX + (this.maxX - this.minX) / 2, this.minY + (this.maxY - this.minY) / 2 - 20, this.angle).x,
-            y: this.getNewCoords(this.minX + (this.maxX - this.minX) / 2, this.minY + (this.maxY - this.minY) / 2 - 20, this.angle).y,
+            y: this.getNewCoords(this.minX + (this.maxX - this.minX) / 2, this.minY + (this.maxY - this.minY) / 2 - 20, this.angle).y
         }
     }
     rotate(angle = this.angle) {

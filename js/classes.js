@@ -7,6 +7,7 @@ class object {
         this.isCompleted = false;
         this.isSelected = false;
         this.isMoving = false;
+        this.arePointsAndFrameShown = true;
         this.x0 = curX;
         this.y0 = curY;
         this.pointsArray = [];
@@ -25,8 +26,7 @@ class object {
         clone.x0 = this.x0;
         clone.y0 = this.y0;
         clone.strokeWidth = this.strokeWidth;
-
-        clone.hideFrameAndPoints();
+        clone.removeFrameAndPoints();
         for (let i = 0; i < this.pointsArray.length; i++) {
             clone.pointsArray[i] = this.pointsArray[i].createClone(clone);
         }
@@ -42,13 +42,13 @@ class object {
         clone.svgElement.setAttribute('stroke-linejoin', this.svgElement.getAttribute('stroke-linejoin'));
         clone.svgElement.setAttribute('stroke-linecap', this.svgElement.getAttribute('stroke-linecap'));
         clone.removeHotKeys();
+        clone.arePointsAndFrameShown = true;
         clone.hide();
     }
     addActions() {
         //select
         const select = (() => {
             if (wasPressed == "cursor") {
-                isSomeObjectSelected = true;
                 resetCurrentObject()
 
                 if (this.isCompleted) {
@@ -63,12 +63,18 @@ class object {
             }
 
             if (wasPressed == "eraser") {
-                this.remove();
+                doFunc("delete", this);
+                this.hide();
             }
         }).bind(this);
         this.svgElement.addEventListener("mousedown", select);
         this.svgElement.addEventListener("mouseout", function () {
             isSomeObjectSelected = false;
+        });
+        this.svgElement.addEventListener("mouseover", function () {
+            if (wasPressed == "cursor") {
+                isSomeObjectSelected = true;
+            }
         });
         //hide
         svgPanel.addEventListener("mousedown", function () {
@@ -85,7 +91,7 @@ class object {
         }).bind(this);
         document.addEventListener("mousemove", move);
         const startMoving = ((current) => {
-            if (this.isCompleted && this.isSelected) {
+            if (wasPressed == "cursor" && this.isCompleted && this.isSelected) {
                 this.isMoving = true;
                 updateCursorCoords(current);
                 this.start = {
@@ -100,17 +106,21 @@ class object {
                 this.isMoving = false;
                 updateCursorCoords(current);
                 currentPointTypeAttr = null;
+                doFunc("move", this, this.getCornerCoords())
                 this.stopMoving();
             }
         }).bind(this);
         svgPanel.addEventListener("mouseup", stopMoving);
         this.svgElement.addEventListener("mouseover", () => {
             if (isEraserActive) {
-                this.remove();
+                doFunc("delete", this);
+                this.hide();
             }
         });
     }
-
+    showSvgElement() {
+        currentLayer.group.appendChild(this.svgElement);
+    }
     setElementAttribute(attributeName, value) {
         this.svgElement.setAttribute(attributeName, value);
     }
@@ -143,22 +153,34 @@ class object {
         this.showFrameAndPoints()
     }
     hideFrameAndPoints() {
-        for (let i = 0; i < this.frameArray.length; i++) {
-            this.frameArray[i].hide();
+        if (this.arePointsAndFrameShown) {
+            for (let i = 0; i < this.frameArray.length; i++) {
+                this.frameArray[i].hide();
+            }
+            for (let i = 0; i < this.pointsArray.length; i++) {
+                this.pointsArray[i].hide();
+            }
+            this.arePointsAndFrameShown = false;
+            this.isSelected = false;
         }
-        for (let i = 0; i < this.pointsArray.length; i++) {
-            this.pointsArray[i].hide();
-        }
-        this.isSelected = false;
     }
     showFrameAndPoints() {
-        for (let i = 0; i < this.frameArray.length; i++) {
-            this.frameArray[i].show();
+        if (!this.arePointsAndFrameShown) {
+            for (let i = 0; i < this.frameArray.length; i++) {
+                this.frameArray[i].show();
+            }
+            for (let i = 0; i < this.pointsArray.length; i++) {
+                this.pointsArray[i].show();
+            }
+            this.arePointsAndFrameShown = true;
+            this.isSelected = true;
         }
-        for (let i = 0; i < this.pointsArray.length; i++) {
-            this.pointsArray[i].show();
-        }
-        this.isSelected = true;
+    }
+    appendSvgElement() {
+        currentLayer.group.append(this.svgElement);
+    }
+    prependSvgElement() {
+        currentLayer.group.prepend(this.svgElement);
     }
     addPanel() {
         objPanel.style.display = "flex";
@@ -176,6 +198,7 @@ class object {
     move() {}
     stopMoving() {}
     moveTo() {}
+    getCornerCoords() {}
     startResize() {}
     resize() {}
     stopResize() {}
@@ -186,7 +209,6 @@ class object {
     complete() {
         this.updateFrameAndPoints();
         this.removeHotKeys();
-
         svgPanel.onmousemove = null;
         svgPanel.onmouseup = null;
         svgPanel.onmouseenter = null;
@@ -195,11 +217,17 @@ class object {
         document.onclick = null;
         document.onmouseenter = null;
 
-        isSomeObjectSelected = false;
-        resetCurrentObject(); //показывать рамку после создания объекта
-        this.addPanel();
-        currentObject = this;
-        this.isSelected = true;
+        if (this.svgElement.getBoundingClientRect().width + this.svgElement.getBoundingClientRect().height > 0) {
+            isSomeObjectSelected = false;
+            resetCurrentObject(); //показывать рамку после создания объекта
+            this.addPanel();
+            currentObject = this;
+            this.isSelected = true;
+            doFunc("create", this);
+        } else {
+            this.remove();
+        }
+
         this.isCompleted = true;
     }
 }
@@ -217,7 +245,6 @@ class rectangle extends object {
             x: curX,
             y: curY
         };
-        this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
         this.frameArray = [new rectangleFrame(this.x, this.y, this.width, this.height, this)];
         this.pointsArray = [new point(this.x, this.y, this, {
                 action: "resize",
@@ -254,13 +281,10 @@ class rectangle extends object {
             new point(this.x + this.width / 2, this.y - 20, this, {
                 action: "rotate",
                 attr: "rotate"
-            }),
-            new point(0, 0, this, {
-                action: "c",
-                attr: "c"
             })
         ];
         //rotate
+        this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
         this.angle = 0;
     }
     createClone() {
@@ -333,7 +357,6 @@ class rectangle extends object {
         this.pointsArray[6].update(x, y + height, transform);
         this.pointsArray[7].update(x, y + height / 2, transform);
         this.pointsArray[8].update(x + width / 2, y - 20, transform);
-        this.pointsArray[9].update(x + width / 2, y + height / 2, transform);
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         let new_dx = getRotateCoords(dx, dy, this.angle).x,
@@ -360,6 +383,12 @@ class rectangle extends object {
             dy = y + pointRadius - this.y;
         this.move(dx, dy);
         this.stopMoving(dx, dy);
+    }
+    getCornerCoords() {
+        return {
+            x: this.x - pointRadius,
+            y: this.y - pointRadius
+        }
     }
     startResize() {
         this.resizeTemp = {
@@ -539,7 +568,6 @@ class ellipse extends object {
         this.ry = 0;
         this.cx = curX;
         this.cy = curY;
-        this.transform = 'rotate(' + 0 + ' ' + this.cx + ' ' + this.cy + ')';
         this.frameArray = [new lineFrame(this.cx - this.rx, this.cy + this.ry, this.cx + this.rx, this.cy + this.ry, this, true),
             new lineFrame(this.cx + this.rx, this.cy + this.ry, this.cx + this.rx, this.cy - this.ry, this, true),
             new lineFrame(this.cx + this.rx, this.cy - this.ry, this.cx - this.rx, this.cy - this.ry, this, true),
@@ -584,6 +612,7 @@ class ellipse extends object {
             })
         ];
         //rotate
+        this.transform = 'rotate(' + 0 + ' ' + this.cx + ' ' + this.cy + ')';
         this.angle = 0;
     }
     createClone() {
@@ -661,6 +690,12 @@ class ellipse extends object {
             dy = y + pointRadius - (this.cy - this.ry);
         this.move(dx, dy);
         this.stopMoving(dx, dy);
+    }
+    getCornerCoords() {
+        return {
+            x: (this.cx - this.rx) - pointRadius,
+            y: (this.cy - this.ry) - pointRadius
+        }
     }
     startResize() {
         this.resizeTemp = {
@@ -988,6 +1023,12 @@ class polygon extends object {
         this.move(dx, dy);
         this.stopMoving(dx, dy);
     }
+    getCornerCoords() {
+        return {
+            x: (this.x0 - this.r) - pointRadius,
+            y: (this.y0 - this.r) - pointRadius
+        }
+    }
     resize() {
         this.updateAttributes();
     }
@@ -1101,6 +1142,7 @@ class pentagram extends object {
         this.circle.setAttribute('cy', y0);
         this.circle.setAttribute('r', this.r + this.strokeWidth);
         this.circle.setAttribute('stroke', this.getElementAttribute('stroke'));
+        this.circle.setAttribute('opacity', this.getElementAttribute('opacity'));
         this.circle.setAttribute('stroke-width', this.getElementAttribute('stroke-width'));
         this.circle.setAttribute('stroke-dasharray', this.getElementAttribute('stroke-dasharray'));
         this.circle.setAttribute('stroke-linejoin', this.getElementAttribute('stroke-linejoin'));
@@ -1219,6 +1261,12 @@ class pentagram extends object {
         this.move(dx, dy);
         this.stopMoving(dx, dy);
     }
+    getCornerCoords() {
+        return {
+            x: (this.x0 - this.r) - pointRadius,
+            y: (this.y0 - this.r) - pointRadius
+        }
+    }
     resize() {
         this.updateAttributes();
     }
@@ -1270,7 +1318,6 @@ class pencil extends object {
             clone.pathCoords[i].x = this.pathCoords[i].x;
             clone.pathCoords[i].y = this.pathCoords[i].y;
         }
-        //clone.svgElement.setAttribute('points', this.svgElement.getAttribute('points'));
         clone.updateFrameAndPoints();
         return clone;
     }
@@ -1344,6 +1391,12 @@ class pencil extends object {
         this.move(dx, dy);
         this.stopMoving(dx, dy);
     }
+    getCornerCoords() {
+        return {
+            x: this.minX - pointRadius,
+            y: this.minY - pointRadius
+        }
+    }
     startRotating() {
         this.rPoint = {
             x: this.getNewCoords(this.minX + (this.maxX - this.minX) / 2, this.minY - 20, this.angle).x,
@@ -1397,8 +1450,8 @@ class pencil extends object {
                 attr: "rotate"
             })
         ];
-        super.complete();
         this.path = "";
+        super.complete();
     }
 }
 
@@ -1431,9 +1484,7 @@ class line extends object {
                 new lineFrame(this.x2, this.y0, this.x2, this.y2, this, true),
                 new lineFrame(this.x2, this.y2, this.x0, this.y2, this, true),
                 new lineFrame(this.x0, this.y2, this.x0, this.y0, this, true),
-                new lineFrame(this.x0, this.y0, this.x2, this.y2, this),
-                new lineFrame((this.x0 + this.x2) / 2, (this.y0 + this.y2) / 2,
-                    (this.x0 + this.x2) / 2, (this.y0 + this.y2) / 2 - 25, this, true)
+                new lineFrame(this.x0, this.y0, this.x2, this.y2, this)
             ]
             this.pointsArray = [new point(this.x0, this.y0, this, {
                     action: "resize",
@@ -1536,7 +1587,6 @@ class line extends object {
         this.frameArray[2].update(x2, y2, x0, y2, transform);
         this.frameArray[3].update(x0, y2, x0, y0, transform);
         this.frameArray[4].update(x0, y0, x2, y2, transform);
-        this.frameArray[5].update((x0 + x2) / 2, (y0 + y2) / 2, (x0 + x2) / 2, (y0 + y2) / 2 - 25, transform);
 
         this.pointsArray[0].update(x0, y0, transform);
         this.pointsArray[1].update(x0 + (x2 - x0) / 2, y0, transform);
@@ -1584,6 +1634,12 @@ class line extends object {
             dy = y + pointRadius - Math.min(this.y0, this.y2);
         this.move(dx, dy);
         this.stopMoving(dx, dy);
+    }
+    getCornerCoords() {
+        return {
+            x: Math.min(this.x0, this.x2) - pointRadius,
+            y: Math.min(this.y0, this.y2) - pointRadius
+        }
     }
     startResize() {
         this.resizeTemp = {
@@ -1709,6 +1765,7 @@ class polyline extends object {
             y: this.y0
         }];
         this.svgElement.setAttribute('points', this.path);
+        this.frameArray = [new polylineFrame(this.path, this)];
         this.pointsArray.push(new point(this.x0, this.y0, this, {
             action: "polyline",
             attr: 0
@@ -1723,9 +1780,8 @@ class polyline extends object {
             x: this.minX + (this.maxX - this.minX) / 2,
             y: this.minY + (this.maxY - this.minY) / 2
         };
-        this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
-        this.frameArray = [new polylineFrame(this.path, this)];
         //rotate
+        this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
         this.angle = 0;
     }
     createClone() {
@@ -1840,6 +1896,12 @@ class polyline extends object {
         this.move(dx, dy);
         this.stopMoving(dx, dy);
     }
+    getCornerCoords() {
+        return {
+            x: this.minX - pointRadius,
+            y: this.minY - pointRadius
+        }
+    }
     deletePoint(ind) {
         if (this.pathCoords.length == 2) deleteFunc(); //actions.js
         else {
@@ -1861,12 +1923,11 @@ class polyline extends object {
         this.updateFrameAndPoints();
     }
     stopResize() {
-        let new_curX = this.getNewCoords(curX, curY, 2 * Math.PI - this.angle).x,
-            new_curY = this.getNewCoords(curX, curY, 2 * Math.PI - this.angle).y;
         this.cPoint = {
             x: this.minX + (this.maxX - this.minX) / 2,
             y: this.minY + (this.maxY - this.minY) / 2
         };
+
         this.transform = 'rotate(' + this.angle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
         this.svgElement.setAttribute('transform', this.transform);
         this.updateFrameAndPoints();
@@ -1874,7 +1935,7 @@ class polyline extends object {
     startRotating() {
         this.rPoint = {
             x: this.getNewCoords(this.minX + (this.maxX - this.minX) / 2, this.minY + (this.maxY - this.minY) / 2 - 20, this.angle).x,
-            y: this.getNewCoords(this.minX + (this.maxX - this.minX) / 2, this.minY + (this.maxY - this.minY) / 2 - 20, this.angle).y,
+            y: this.getNewCoords(this.minX + (this.maxX - this.minX) / 2, this.minY + (this.maxY - this.minY) / 2 - 20, this.angle).y
         }
     }
     rotate(angle = this.angle) {
@@ -1904,7 +1965,6 @@ class polyline extends object {
     }
     complete() {
         if (!polylineIsCompleted) {
-            super.complete();
             this.line.remove();
             this.pointsArray[0].setPointAttribute('fill', "white");
             this.pointsArray.push(new point(this.minX + (this.maxX - this.minX) / 2, this.minY + (this.maxY - this.minY) / 2 - 20, this, {
@@ -1913,6 +1973,7 @@ class polyline extends object {
             }));
             this.updateFrameAndPoints();
             polylineIsCompleted = true;
+            super.complete();
         }
     }
 }

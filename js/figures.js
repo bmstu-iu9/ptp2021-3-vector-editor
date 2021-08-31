@@ -157,7 +157,7 @@ pathTool.onclick = function () {
     wasPressed = "pathTool";
     svgPanel.style.cursor = "default";
     svgPanel.onmousedown = function (current) {
-        if (polylineIsCompleted) {
+        if (polylineIsCompleted && current.which == 1) {
             updateCursorCoords(current);
             let newObject = new polyline();
             polylineIsCompleted = false;

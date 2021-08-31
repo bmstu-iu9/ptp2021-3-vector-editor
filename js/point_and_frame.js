@@ -43,6 +43,12 @@ class point {
                 }
             }).bind(this);
             this.circle.addEventListener("mousedown", startMoving);
+            this.circle.addEventListener("mouseover", function () {
+                if (this.object.isMoving) {
+                    currentPointTypeAttr = this.type.attr;
+                }
+            }.bind(this));
+            this.circle.addEventListener("mouseup", this.setColor.bind(this, "white"));
         }
         //rotateObject
         if (this.type.action == "rotate") {
@@ -52,7 +58,7 @@ class point {
                 }
             });
             this.circle.addEventListener("mouseout", function () {
-                if (!this.object.isRotating) {
+                if (!this.object.isRotating && wasPressed == "cursor") {
                     svgPanel.style.cursor = "default";
                 }
             }.bind(this));
@@ -127,9 +133,11 @@ class point {
         }
         //удаление точки пера
         const deletePoint = ((event) => {
-            event.preventDefault();
-            this.object.deletePoint(this.type.attr);
-            isSomePointSelected = false;
+            if (wasPressed == "cursor") {
+                event.preventDefault();
+                this.object.deletePoint(this.type.attr);
+                isSomePointSelected = false;
+            }
         })
         if (this.type.action == "polyline") {
             this.circle.addEventListener("contextmenu", deletePoint);
@@ -158,8 +166,7 @@ class point {
         svgPanel.appendChild(this.circle);
     }
     remove() {
-        if (this.object == currentObject || !this.object.isCompleted)
-            svgPanel.removeChild(this.circle);
+        svgPanel.removeChild(this.circle);
         this.circle = null;
         this.isSelected = false;
     }
@@ -168,8 +175,8 @@ class point {
     }
     update(x, y, transform, attr = this.type.attr) {
         if (this.type.action != "polygon") {
-            if (currentPointTypeAttr == null || currentPointTypeAttr != attr) 
-            this.circle.setAttribute('fill', "white");
+            if (currentPointTypeAttr == null || currentPointTypeAttr != attr)
+                this.circle.setAttribute('fill', "white");
         }
         this.x = x;
         this.y = y;
@@ -246,8 +253,10 @@ class lineFrame extends frame {
     }
     createClone(newObject) {
         let clone = new lineFrame(this.x1, this.y1, this.x2, this.y2, newObject, this.red);
-        clone.transform = this.transform;
-        clone.setFrameAttribute('transform', this.transform);
+        if (this.transform) {
+            clone.transform = this.transform;
+            clone.setFrameAttribute('transform', this.transform);
+        }
         return clone;
     }
     update(x1, y1, x2, y2, transform) {
@@ -256,12 +265,14 @@ class lineFrame extends frame {
         this.y1 = y1;
         this.x2 = x2;
         this.y2 = y2;
-        this.transform = transform;
         this.svgElement.setAttribute('x1', x1);
         this.svgElement.setAttribute('y1', y1);
         this.svgElement.setAttribute('x2', x2);
         this.svgElement.setAttribute('y2', y2);
-        if (transform != null) this.setFrameAttribute('transform', transform);
+        if (transform) {
+            this.transform = transform;
+            this.setFrameAttribute('transform', transform);
+        }
     }
 }
 class rectangleFrame extends frame {
@@ -310,8 +321,10 @@ class ellipseFrame extends frame {
     }
     createClone(newObject) {
         let clone = new ellipseFrame(this.cx, this.cy, this.rx, this.ry, newObject);
-        clone.transform = this.transform;
-        clone.setFrameAttribute('transform', this.transform);
+        if (this.transform) {
+            clone.transform = this.transform;
+            clone.setFrameAttribute('transform', this.transform);
+        }
         return clone;
     }
     update(cx, cy, rx, ry, transform) {
@@ -320,12 +333,14 @@ class ellipseFrame extends frame {
         this.cy = cy;
         this.rx = rx;
         this.ry = ry;
-        this.transform = transform;
         this.svgElement.setAttribute('cx', cx);
         this.svgElement.setAttribute('cy', cy);
         this.svgElement.setAttribute('rx', rx);
         this.svgElement.setAttribute('ry', ry);
-        this.svgElement.setAttribute('transform', transform);
+        if (transform) {
+            this.transform = transform;
+            this.svgElement.setAttribute('transform', transform);
+        }
     }
 }
 class polygonFrame extends frame {
@@ -372,15 +387,19 @@ class pathFrame extends frame {
     }
     createClone(newObject) {
         let clone = new pathFrame(this.path, newObject);
-        clone.transform = this.transform;
-        clone.setFrameAttribute('transform', this.transform);
+        if (this.transform) {
+            clone.transform = this.transform;
+            clone.setFrameAttribute('transform', this.transform);
+        }
         return clone;
     }
     update(path, transform) {
         super.update();
         this.path = path;
         this.svgElement.setAttribute('d', path);
-        this.svgElement.setAttribute('transform', transform);
-        this.transform = transform;
+        if (transform) {
+            this.transform = transform;
+            this.svgElement.setAttribute('transform', transform);
+        }
     }
 }

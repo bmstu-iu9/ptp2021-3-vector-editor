@@ -14,10 +14,7 @@ rectangleButton.onclick = function () {
         };
         document.onmouseup = function () {
             newObject.complete();
-            if (newObject.width == 0 || newObject.height == 0) {
-                newObject.remove();
-                resetCurrentObject();
-            }
+            if (newObject.width == 0 || newObject.height == 0) newObject.remove();
         };
     };
 }
@@ -38,10 +35,7 @@ ellipseButton.onclick = function () {
         };
         document.onmouseup = function () {
             newObject.complete();
-            if (newObject.rx == 0 || newObject.ry == 0) {
-                newObject.remove();
-                resetCurrentObject();
-            }
+            if (newObject.rx == 0 || newObject.ry == 0) newObject.remove();
         };
     };
 }
@@ -63,10 +57,7 @@ polygonButton.onclick = function () {
         };
         document.onmouseup = function () {
             newObject.complete();
-            if (newObject.r == 0) {
-                newObject.remove();
-                resetCurrentObject();
-            }
+            if (newObject.r == 0) newObject.remove();
         };
     };
 }
@@ -88,10 +79,7 @@ pentagramButton.onclick = function () {
         };
         document.onmouseup = function () {
             newObject.complete();
-            if (newObject.r == 0) {
-                newObject.remove();
-                resetCurrentObject();
-            }
+            if (newObject.r == 0) newObject.remove();
         };
     };
 }
@@ -114,7 +102,6 @@ pencilButton.onclick = function () {
             if (newObject.path == newObject.x0 + "," + newObject.y0) {
                 newObject.complete();
                 newObject.remove();
-                resetCurrentObject();
             } else newObject.complete();
         };
         svgPanel.onmouseenter = function (current) {
@@ -141,10 +128,7 @@ line.onclick = function () {
         };
         document.onmouseup = function () {
             newObject.complete();
-            if (newObject.x0 == newObject.x2 && newObject.y0 == newObject.y2) {
-                newObject.remove();
-                resetCurrentObject();
-            }
+            if (newObject.x0 == newObject.x2 && newObject.y0 == newObject.y2) newObject.remove();
         };
     };
 }

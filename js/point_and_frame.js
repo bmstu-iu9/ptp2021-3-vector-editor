@@ -84,6 +84,7 @@ class point {
                     this.isSelected = false;
                     isSomePointSelected = false;
                     this.object.stopRotating();
+                    this.object.updateParameters();
                 }
             }).bind(this);
             document.addEventListener("mouseup", stopRotating);
@@ -115,6 +116,7 @@ class point {
                 if (this.isMoving) {
                     this.isMoving = false;
                     this.object.stopResize();
+                    this.object.updateParameters();
                     this.object.removeHotKeys();
                     if (this.circle != null) this.circle.setAttribute('fill', "white");
                     currentPointTypeAttr = null;

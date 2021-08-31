@@ -101,6 +101,7 @@ class object {
                 updateCursorCoords(current);
                 currentPointTypeAttr = null;
                 this.stopMoving();
+                this.updateParameters();
             }
         }).bind(this);
         svgPanel.addEventListener("mouseup", stopMoving);
@@ -162,21 +163,22 @@ class object {
         this.isSelected = true;
     }
     addPanel() {
-        objPanel.style.display = "flex";
+        obj_panel.style.display = "flex";
         for (i = 0; i < 3; i++) {
             unblockEditing(i);
         }
-        this.addProperties();
+        this.addParameters();
+        this.updateParameters();
     }
     removePanel() {
-        objPanel.style.display = "none";
+        obj_panel.style.display = "none";
         for (i = 0; i < 3; i++) {
             blockEditing(i);
         }
-        this.removeProperties();
+        this.removeParameters();
     }
-    addProperties() {}
-    removeProperties() {}
+    addParameters() {}
+    removeParameters() {}
     updateFrameAndPoints() {}
     addHotKeys() {}
     removeHotKeys() {}
@@ -288,11 +290,10 @@ class rectangle extends object {
         clone.svgElement.setAttribute('transform', this.transform);
         return clone;
     }
-    addProperties() {
-        rectPanel.style.display = "flex";
-        this.updateProperties();
+    addParameters() {
+        rect_panel.style.display = "flex";
     }
-    updateProperties() {
+    updateParameters() {
         rectX.value = this.x;
         rectY.value = this.y;
         rectW.value = this.width;
@@ -300,8 +301,8 @@ class rectangle extends object {
         rectR.value = this.r;
         rectA.value = this.angle * 180.0 / Math.PI;
     }
-    removeProperties() {
-        rectPanel.style.display = "none";
+    removeParameters() {
+        rect_panel.style.display = "none";
     }
     updateAttributes(current) {
         let w = curX - this.x0;
@@ -360,7 +361,6 @@ class rectangle extends object {
         this.svgElement.setAttribute('x', this.x);
         this.svgElement.setAttribute('y', this.y);
         this.svgElement.setAttribute('transform', this.transform);
-        this.updateProperties();
     }
     moveTo(x, y) {
         let dx = x + pointRadius - this.x,
@@ -502,7 +502,6 @@ class rectangle extends object {
         this.svgElement.setAttribute('transform', this.transform);
         this.setElementAttribute('rx', Math.max(this.height, this.width) * this.r / 100);
         this.updateFrameAndPoints();
-        this.updateProperties();
     }
     startRotating() {
         this.rPoint = {
@@ -530,7 +529,6 @@ class rectangle extends object {
         this.angle = newAngle;
         this.angle = this.angle > 2 * Math.PI ? this.angle - 2 * Math.PI : this.angle;
         this.updateFrameAndPoints();
-        this.updateProperties();
     }
     getNewCoords(x = this.x, y = this.y, angle = this.angle) {
         return {
@@ -611,6 +609,19 @@ class ellipse extends object {
         clone.svgElement.setAttribute('cy', this.cy);
         clone.svgElement.setAttribute('transform', this.transform);
         return clone;
+    }
+    addParameters() {
+        ell_panel.style.display = "flex";
+    }
+    updateParameters() {
+        ellRX.value = this.rx;
+        ellRY.value = this.ry;
+        ellCX.value = this.cx;
+        ellCY.value = this.cy;
+        ellA.value = this.angle * 180.0 / Math.PI;
+    }
+    removeParameters() {
+        ell_panel.style.display = "none";
     }
     updateAttributes(current) {
         let w = (curX - this.x0) / 2;

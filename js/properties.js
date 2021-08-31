@@ -1,11 +1,3 @@
-objPanel = document.getElementById("obj_panel");
-rectPanel = document.getElementById("rect_panel");
-rectX = document.getElementById("rectX");
-rectY = document.getElementById("rectY");
-rectW = document.getElementById("rectW");
-rectH = document.getElementById("rectH");
-rectR = document.getElementById("rectR");
-
 property = document.getElementsByClassName("property");
 
 for (i = 0; i < property.length; i++) {
@@ -69,4 +61,36 @@ rectR.onchange = () => {
     }
     currentObject.setElementAttribute('rx', Math.max(currentObject.height, currentObject.width) * r / 100);
     currentObject.r = r;
+}
+
+ellCX.onchange = () => {
+    currentObject.move(ellCX.value - currentObject.cx, 0);
+    currentObject.stopMoving(ellCX.value - currentObject.cx, 0);
+}
+
+ellCY.onchange = () => {
+    currentObject.move(0, ellCY.value - currentObject.cy);
+    currentObject.stopMoving(0, ellCY.value - currentObject.cy);
+}
+
+ellRX.onchange = () => {
+    let rx = ellRX.value;
+    if (rx < 1) {
+        ellRX.value = 1;
+        rx = 1;
+    }
+    currentPointTypeAttr = "r";
+    currentObject.resize(rx - currentObject.rx, 0);
+    currentObject.stopResize(rx - currentObject.rx, 0);
+}
+
+ellRY.onchange = () => {
+    let ry = ellRY.value;
+    if (ry < 1) {
+        ellRY.value = 1;
+        ry = 1;
+    }
+    currentPointTypeAttr = "b";
+    currentObject.resize(0, ry - currentObject.ry);
+    currentObject.stopResize(0, ry - currentObject.ry);
 }

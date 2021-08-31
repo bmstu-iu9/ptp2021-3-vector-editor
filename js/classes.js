@@ -1228,15 +1228,17 @@ class starPolygon extends object {
 //PENTAGRAM
 class pentagram extends object {
     constructor() {
-        super('path');
+        super('g');
         this.path = "";
         this.r = 0;
         this.phi = 0;
         this.step = 2;
         this.vertNum = curPentagramVertNum;
         this.verticesCoords = [];
+        this.star = document.createElementNS("http://www.w3.org/2000/svg", 'path');
         this.circle = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
-        currentLayer.group.appendChild(this.circle);
+        this.svgElement.appendChild(this.star);
+        this.svgElement.appendChild(this.circle);
         this.circle.setAttribute('fill', "none");
         this.frameArray = [new pathFrame(this.path, this),
             new ellipseFrame(this.x0, this.y0, 0, 0, this)
@@ -1254,7 +1256,6 @@ class pentagram extends object {
         this.free = this.free.bind(this);
         this.updateVertNum = this.updateVertNum.bind(this);
         this.addHotKeys();
-        this.addCircleActions();
     }
     createClone() {
         let clone = new pentagram();
@@ -1267,51 +1268,6 @@ class pentagram extends object {
         clone.vertices = this.vertices;
         clone.updateFrameAndPoints();
         return clone;
-    }
-    addCircleActions() {
-        const select = (() => {
-            if (wasPressed == "cursor") {
-                isSomeObjectSelected = true;
-                if (currentObject != null) {
-                    currentObject.hideFrameAndPoints();
-                }
-                if (this.isCompleted) {
-                    this.showFrameAndPoints();
-                    currentObject = this;
-                }
-            }
-            if (wasPressed == "fill" && this.type != 'pencil') {
-                this.svgElement.setAttribute('fill', getCurrentFillColor());
-            }
-        }).bind(this);
-        this.circle.addEventListener("mousedown", select);
-        this.circle.addEventListener("mouseout", function () {
-            isSomeObjectSelected = false;
-        });
-        const startMoving = ((current) => {
-            if (this.isCompleted && this.isSelected) {
-                this.isMoving = true;
-                updateCursorCoords(current);
-                this.start = {
-                    x: curX,
-                    y: curY
-                };
-            }
-        }).bind(this);
-        this.circle.addEventListener("mousedown", startMoving);
-    }
-    hide() {
-        currentLayer.group.removeChild(this.circle);
-        super.hide();
-    }
-    show() {
-        currentLayer.group.appendChild(this.circle);
-        super.show();
-    }
-    remove() {
-        currentLayer.group.removeChild(this.circle);
-        this.circle = null;
-        super.remove();
     }
     updateAttributes() {
         let dx = curX - this.x0,
@@ -1332,12 +1288,6 @@ class pentagram extends object {
         this.circle.setAttribute('cx', x0);
         this.circle.setAttribute('cy', y0);
         this.circle.setAttribute('r', this.r + this.strokeWidth);
-        this.circle.setAttribute('stroke', this.getElementAttribute('stroke'));
-        this.circle.setAttribute('opacity', this.getElementAttribute('opacity'));
-        this.circle.setAttribute('stroke-width', this.getElementAttribute('stroke-width'));
-        this.circle.setAttribute('stroke-dasharray', this.getElementAttribute('stroke-dasharray'));
-        this.circle.setAttribute('stroke-linejoin', this.getElementAttribute('stroke-linejoin'));
-        this.circle.setAttribute('stroke-linecap', this.getElementAttribute('stroke-linecap'));
         this.frameArray[1].update(x0, y0, this.r + this.strokeWidth, this.r + this.strokeWidth);
 
         this.verticesCoords = [];
@@ -1366,7 +1316,7 @@ class pentagram extends object {
             this.path += "L " + this.verticesCoords[1].x + "," + this.verticesCoords[1].y;
         }
 
-        this.svgElement.setAttribute('d', this.path);
+        this.star.setAttribute('d', this.path);
         this.frameArray[0].update(this.path);
         this.path = "";
         this.verticesCoords = [];

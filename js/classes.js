@@ -178,6 +178,7 @@ class object {
         this.removeParameters();
     }
     addParameters() {}
+    updateParameters() {}
     removeParameters() {}
     updateFrameAndPoints() {}
     addHotKeys() {}
@@ -1289,9 +1290,20 @@ class pencil extends object {
             clone.pathCoords[i].x = this.pathCoords[i].x;
             clone.pathCoords[i].y = this.pathCoords[i].y;
         }
-        //clone.svgElement.setAttribute('points', this.svgElement.getAttribute('points'));
+        //clone.svgElement.setAttribute('points', this.path);
         clone.updateFrameAndPoints();
         return clone;
+    }
+    addParameters() {
+        pen_panel.style.display = "flex";
+    }
+    updateParameters() {
+        penX.value = this.minX;
+        penY.value = this.minY;
+        penA.value = this.angle * 180.0 / Math.PI;
+    }
+    removeParameters() {
+        pen_panel.style.display = "none";
     }
     updateAttributes() {
         this.path += " " + curX + "," + curY;
@@ -1511,13 +1523,26 @@ class line extends object {
         clone.isFree = this.isFree;
         clone.cPoint = this.cPoint;
         clone.angle = this.angle;
-        clone.svgElement.setAttribute('x1', this.svgElement.getAttribute('x1'));
-        clone.svgElement.setAttribute('y1', this.svgElement.getAttribute('y1'));
-        clone.svgElement.setAttribute('x2', this.svgElement.getAttribute('x2'));
-        clone.svgElement.setAttribute('y2', this.svgElement.getAttribute('y2'));
+        clone.svgElement.setAttribute('x1', this.x0);
+        clone.svgElement.setAttribute('y1', this.y0);
+        clone.svgElement.setAttribute('x2', this.x2);
+        clone.svgElement.setAttribute('y2', this.y2);
         clone.svgElement.setAttribute('fill', "none");
         clone.svgElement.setAttribute('transform', this.transform);
         return clone;
+    }
+    addParameters() {
+        line_panel.style.display = "flex";
+    }
+    updateParameters() {
+        lineX1.value = this.x0;
+        lineY1.value = this.y0;
+        lineX2.value = this.x2;
+        lineY2.value = this.y2;
+        lineA.value = this.angle * 180.0 / Math.PI;
+    }
+    removeParameters() {
+        line_panel.style.display = "none";
     }
     updateAttributes(current) {
         let w = curX - this.x0;

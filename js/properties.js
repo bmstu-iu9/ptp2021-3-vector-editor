@@ -94,3 +94,37 @@ ellRY.onchange = () => {
     currentObject.resize(0, ry - currentObject.ry);
     currentObject.stopResize(0, ry - currentObject.ry);
 }
+
+lineX1.onchange = () => {
+    currentPointTypeAttr = "l";
+    currentObject.resize(lineX1.value - currentObject.x0, 0);
+    currentObject.stopResize(lineX1.value - currentObject.x0, 0);
+}
+
+lineY1.onchange = () => {
+    currentPointTypeAttr = "t";
+    currentObject.resize(0, lineY1.value - currentObject.y0);
+    currentObject.stopResize(0, lineY1.value - currentObject.y0);
+}
+
+lineX2.onchange = () => {
+    currentPointTypeAttr = "r";
+    currentObject.resize(lineX2.value - currentObject.x2, 0);
+    currentObject.stopResize(lineX2.value - currentObject.x2, 0);
+}
+
+lineY2.onchange = () => {
+    currentPointTypeAttr = "b";
+    currentObject.resize(0, lineY2.value - currentObject.y2);
+    currentObject.stopResize(0, lineY2.value - currentObject.y2);
+}
+
+penX.onchange = () => {
+    currentObject.move(penX.value - currentObject.minX, 0);
+    currentObject.stopMoving(penX.value - currentObject.minX, 0);
+}
+
+penY.onchange = () => {
+    currentObject.move(0, penY.value - currentObject.minY);
+    currentObject.stopMoving(0, penY.value - currentObject.minY);
+}

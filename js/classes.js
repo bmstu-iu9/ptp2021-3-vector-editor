@@ -1539,6 +1539,12 @@ class line extends object {
         lineY1.value = this.y0;
         lineX2.value = this.x2;
         lineY2.value = this.y2;
+        let x1x2 = this.x2-this.x0;
+        let y1y2 = this.y2-this.y0;
+        this.len = Math.sqrt(Math.pow(x1x2, 2) + Math.pow(y1y2, 2));
+        lineL.value = this.len;
+        this.sin = Math.abs(x1x2/this.len);
+        this.cos = Math.abs(y1y2/this.len);
         lineA.value = this.angle * 180.0 / Math.PI;
     }
     removeParameters() {

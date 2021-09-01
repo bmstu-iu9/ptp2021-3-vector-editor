@@ -17,14 +17,48 @@ for (i = 0; i < propertyA.length; i++) {
     }
 }*/
 
+function resizeX(dx) {
+    currentObject.resize(dx, 0);
+    currentObject.stopResize(dx, 0);
+    currentObject.updateParameters();
+}
+
+function resizeY(dy) {
+    currentObject.resize(0, dy);
+    currentObject.stopResize(0, dy);
+    currentObject.updateParameters();
+}
+
+function resizeW(dx) {
+    currentPointTypeAttr = "r";
+    resizeX(dx);
+    currentPointTypeAttr = "l";
+    resizeX(-dx);
+}
+
+function resizeH(dy) {
+    currentPointTypeAttr = "b";
+    resizeY(dy);
+    currentPointTypeAttr = "t";
+    resizeY(-dy);
+}
+
+function moveX(dx){
+    currentObject.move(dx, 0);
+    currentObject.stopMoving(dx, 0);
+}
+
+function moveY(dy){
+    currentObject.move(0, dy);
+    currentObject.stopMoving(0, dy);
+}
+
 rectX.onchange = () => {
-    currentObject.move(rectX.value - currentObject.x, 0);
-    currentObject.stopMoving(rectX.value - currentObject.x, 0);
+    moveX(rectX.value - currentObject.x);
 }
 
 rectY.onchange = () => {
-    currentObject.move(0, rectY.value - currentObject.y);
-    currentObject.stopMoving(0, rectY.value - currentObject.y);
+    moveY(rectY.value - currentObject.y);
 }
 
 rectW.onchange = () => {
@@ -33,9 +67,7 @@ rectW.onchange = () => {
         rectW.value = 1;
         w = 1;
     }
-    currentPointTypeAttr = "r";
-    currentObject.resize(w - currentObject.width, 0);
-    currentObject.stopResize(w - currentObject.width, 0);
+    resizeW((w - currentObject.width) / 2);
 }
 
 rectH.onchange = () => {
@@ -44,9 +76,7 @@ rectH.onchange = () => {
         rectH.value = 1;
         h = 1;
     }
-    currentPointTypeAttr = "b";
-    currentObject.resize(0, h - currentObject.height);
-    currentObject.stopResize(0, h - currentObject.height);
+    resizeH((h - currentObject.height) / 2);
 }
 
 rectR.onchange = () => {
@@ -64,13 +94,11 @@ rectR.onchange = () => {
 }
 
 ellCX.onchange = () => {
-    currentObject.move(ellCX.value - currentObject.cx, 0);
-    currentObject.stopMoving(ellCX.value - currentObject.cx, 0);
+    moveX(ellCX.value - currentObject.cx);
 }
 
 ellCY.onchange = () => {
-    currentObject.move(0, ellCY.value - currentObject.cy);
-    currentObject.stopMoving(0, ellCY.value - currentObject.cy);
+    moveY(ellCY.value - currentObject.cy);
 }
 
 ellRX.onchange = () => {
@@ -79,9 +107,7 @@ ellRX.onchange = () => {
         ellRX.value = 1;
         rx = 1;
     }
-    currentPointTypeAttr = "r";
-    currentObject.resize(rx - currentObject.rx, 0);
-    currentObject.stopResize(rx - currentObject.rx, 0);
+    resizeW(rx - currentObject.rx);
 }
 
 ellRY.onchange = () => {
@@ -90,41 +116,41 @@ ellRY.onchange = () => {
         ellRY.value = 1;
         ry = 1;
     }
-    currentPointTypeAttr = "b";
-    currentObject.resize(0, ry - currentObject.ry);
-    currentObject.stopResize(0, ry - currentObject.ry);
+    resizeH(ry - currentObject.ry);
 }
 
 lineX1.onchange = () => {
     currentPointTypeAttr = "l";
-    currentObject.resize(lineX1.value - currentObject.x0, 0);
-    currentObject.stopResize(lineX1.value - currentObject.x0, 0);
+    resizeX(lineX1.value - currentObject.x0);
 }
 
 lineY1.onchange = () => {
     currentPointTypeAttr = "t";
-    currentObject.resize(0, lineY1.value - currentObject.y0);
-    currentObject.stopResize(0, lineY1.value - currentObject.y0);
+    resizeY(lineY1.value - currentObject.y0);
 }
 
 lineX2.onchange = () => {
     currentPointTypeAttr = "r";
-    currentObject.resize(lineX2.value - currentObject.x2, 0);
-    currentObject.stopResize(lineX2.value - currentObject.x2, 0);
+    resizeX(lineX2.value - currentObject.x2);
 }
 
 lineY2.onchange = () => {
     currentPointTypeAttr = "b";
-    currentObject.resize(0, lineY2.value - currentObject.y2);
-    currentObject.stopResize(0, lineY2.value - currentObject.y2);
+    resizeY(lineY2.value - currentObject.y2);
+}
+
+lineL.onchange = () => {
+    let dl = (lineL.value - currentObject.len)/2;
+    let dx = currentObject.sin*dl;
+    let dy = currentObject.cos*dl;
+    resizeW(dx);
+    resizeH(dy);
 }
 
 penX.onchange = () => {
-    currentObject.move(penX.value - currentObject.minX, 0);
-    currentObject.stopMoving(penX.value - currentObject.minX, 0);
+    moveX(penX.value - currentObject.minX);
 }
 
 penY.onchange = () => {
-    currentObject.move(0, penY.value - currentObject.minY);
-    currentObject.stopMoving(0, penY.value - currentObject.minY);
+    moveY(penY.value - currentObject.minY);
 }

@@ -43,16 +43,17 @@ function resizeH(dy) {
     resizeY(-dy);
 }
 
-function moveX(dx){
+function moveX(dx) {
     currentObject.move(dx, 0);
     currentObject.stopMoving(dx, 0);
 }
 
-function moveY(dy){
+function moveY(dy) {
     currentObject.move(0, dy);
     currentObject.stopMoving(0, dy);
 }
 
+//rectangle
 rectX.onchange = () => {
     moveX(rectX.value - currentObject.x);
 }
@@ -93,6 +94,7 @@ rectR.onchange = () => {
     currentObject.r = r;
 }
 
+//ellipse
 ellCX.onchange = () => {
     moveX(ellCX.value - currentObject.cx);
 }
@@ -119,6 +121,7 @@ ellRY.onchange = () => {
     resizeH(ry - currentObject.ry);
 }
 
+//line
 lineX1.onchange = () => {
     currentPointTypeAttr = "l";
     resizeX(lineX1.value - currentObject.x0);
@@ -140,17 +143,69 @@ lineY2.onchange = () => {
 }
 
 lineL.onchange = () => {
-    let dl = (lineL.value - currentObject.len)/2;
-    let dx = currentObject.sin*dl;
-    let dy = currentObject.cos*dl;
+    let l = lineL.value;
+    if (l < 1) {
+        lineL.value = 1;
+        l = 1;
+    }
+    let dl = (l - currentObject.len) / 2;
+    let dx = currentObject.sin * dl;
+    let dy = currentObject.cos * dl;
     resizeW(dx);
     resizeH(dy);
 }
 
+//pencil
 penX.onchange = () => {
     moveX(penX.value - currentObject.minX);
 }
 
 penY.onchange = () => {
     moveY(penY.value - currentObject.minY);
+}
+
+//polygon
+polR.onchange = () => {
+    let r = polR.value;
+    if (r < 1) {
+        polR.value = 1;
+        r = 1;
+    }
+    currentObject.r = r;
+    currentObject.updateFrameAndPoints();
+}
+
+polN.onchange = () => {
+    let n = polN.value;
+    if (n < 3) {
+        polN.value = 3;
+        n = 3;
+    }
+    if (currentObject.type == 'pentagram' && n < 5) {
+        polN.value = 5;
+        n = 5;
+    }
+    currentObject.vertNum = n;
+    currentObject.updateVertNum(e = {
+        code: "none"
+    });
+}
+
+polX.onchange = () => {
+    currentObject.x0 = Number(polX.value);
+    currentObject.updateFrameAndPoints();
+}
+
+polY.onchange = () => {
+    currentObject.y0 = Number(polY.value);
+    currentObject.updateFrameAndPoints();
+}
+
+//polyline
+pLineX.onchange = () => {
+    moveX(pLineX.value - currentObject.minX);
+}
+
+pLineY.onchange = () => {
+    moveY(pLineY.value - currentObject.minY);
 }

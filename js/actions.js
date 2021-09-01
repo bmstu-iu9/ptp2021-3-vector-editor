@@ -278,12 +278,6 @@ frontObject = document.getElementById("frontObject");
 frontObject.onclick = function () {
     if (currentObject != null) {
         currentLayer.group.append(currentObject.svgElement);
-        for (let i = 0; i < currentObject.frameArray.length; i++) {
-            svgPanel.append(currentObject.frameArray[i].svgElement);
-        }
-        for (let i = 0; i < currentObject.pointsArray.length; i++) {
-            svgPanel.append(currentObject.pointsArray[i].circle);
-        }
     }
 }
 

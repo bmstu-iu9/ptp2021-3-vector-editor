@@ -13,12 +13,10 @@ img {
 hr {
     border: none;
     background: #222;
-    height: 0.6vh;
+    height: 5px;
 }
 
 header hr {
-    border: none;
-    background: #222;
     height: 100%;
     width: 2px;
     margin: 0 0.5vw;
@@ -121,14 +119,11 @@ input:checked~ul {
     align-items: center;
     justify-content: space-between;
     padding: 0 0.8vw;
-    border-style: solid;
+    border-bottom: solid;
     border-color: #444;
-    border-image: initial;
-    border-width: 0 0px 0.4vh;
 }
 
 #layers_header img:hover {
-    cursor: pointer;
     background: #444;
 }
 

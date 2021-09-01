@@ -68,7 +68,8 @@
       <img src="img/angle.svg" class="not_buttons">
       <input id="rectA" type="number" class="property a" min="-180" max="180" required>
       <img src="img/corner.svg" class="not_buttons">
-      <input id="rectR" type="number" class="property" min="0" max="50" required>
+      <input id="rectR" type="number" class="property" min="0" max="50" style="
+      width: 40px;" required>
     </div>
     <div class="properties_panel" id="ell_panel">
       &nbsp;cx <input id="ellCX" type="number" class="property" required>
@@ -89,9 +90,22 @@
       &nbsp;y1 <input id="lineY1" type="number" class="property" required>
       &nbsp;x2 <input id="lineX2" type="number" class="property" required>
       &nbsp;y2 <input id="lineY2" type="number" class="property" required>
-      &nbsp;len <input id="lineL" type="number" class="property" min="0" step="1" required>
+      &nbsp;len <input id="lineL" type="number" class="property" min="1" required>
       <img src="img/angle.svg" class="not_buttons">
       <input id="lineA" type="number" class="property a" min="-180" max="180" required>
+    </div>
+    <div class="properties_panel" id="pol_panel">
+      &nbsp;x <input id="polX" type="number" class="property" required>
+      &nbsp;y <input id="polY" type="number" class="property" required>
+      &nbsp;r <input id="polR" type="number" class="property" min="1" required>
+      &nbsp;vertices <input id="polN" type="number" class="property" min="3" style="
+      width: 40px;" required>
+    </div>
+    <div class="properties_panel" id="pLine_panel">
+      &nbsp;x <input id="pLineX" type="number" class="property" required>
+      &nbsp;y <input id="pLineY" type="number" class="property" required>
+      <img src="img/angle.svg" class="not_buttons">
+      <input id="pLineA" type="number" class="property a" min="-180" max="180" required>
     </div>
 
   </header>

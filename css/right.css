@@ -93,7 +93,6 @@ header hr {
 }
 
 #lines li label {
-    width: inherit;
     height: initial;
     display: flex;
     padding: 7px 0;

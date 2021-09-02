@@ -52,7 +52,7 @@ class point {
                 }
             });
             this.circle.addEventListener("mouseout", function () {
-                if (!this.object.isRotating) {
+                if (!this.object.isRotating && wasPressed == "cursor") {
                     svgPanel.style.cursor = "default";
                 }
             }.bind(this));

@@ -1288,8 +1288,7 @@ class pencil extends object {
             y: this.minY + (this.maxY - this.minY) / 2
         };
         this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
-        this.svgElement.setAttribute('stroke-linejoin', "round");
-        this.svgElement.setAttribute('stroke-linecap', "round");
+        makeRoundStroke(this);
         //rotate 
         this.angle = 0;
     }
@@ -1454,6 +1453,7 @@ class pencil extends object {
                 attr: "rotate"
             })
         ];
+        makePrevStroke();
         super.complete();
         this.path = "";
     }

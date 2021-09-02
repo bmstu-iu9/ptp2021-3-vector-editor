@@ -74,16 +74,26 @@ function updateFill(obj, i = -1) {
 }
 
 //stroke style
-caps = rightPanel.querySelectorAll('input[type=radio][name="cap"]');
-caps.forEach(s => s.addEventListener('change', () => changeStroke(0, 0, 1, 0, 0)));
-dashs = rightPanel.querySelectorAll('input[type=radio][name="dash"]');
-dashs.forEach(s => s.addEventListener('change', () => changeStroke(0, 0, 0, 1, 0)));
-join = rightPanel.querySelectorAll('input[type=radio][name="join"]');
-join.forEach(s => s.addEventListener('change', () => changeStroke(0, 0, 0, 0, 1)));
+caps = rightPanel.querySelectorAll('input[name="cap"]');
+caps.forEach(s => s.addEventListener('change', () => {
+  changeStroke(0, 0, 1, 1, 0);
+  capImg.src = "img/stroke/cap" + rightPanel.querySelector('input[name="cap"]:checked').id[1] + ".svg";
+}));
+dashs = rightPanel.querySelectorAll('input[name="dash"]');
+dashs.forEach(s => s.addEventListener('change', () => {
+  changeStroke(0, 0, 0, 1, 0);
+  dashImg.src = "img/stroke/line" + rightPanel.querySelector('input[name="dash"]:checked').id[1] + ".svg";
+  dashImg.style = "height: initial; padding: 40% 0;";
+}));
+join = rightPanel.querySelectorAll('input[name="join"]');
+join.forEach(s => s.addEventListener('change', () => {
+  changeStroke(0, 0, 0, 0, 1);
+  joinImg.src = "img/stroke/join" + rightPanel.querySelector('input[name="join"]:checked').id[1] + ".svg";
+}));
 
 strokeWidth = document.getElementById("strokeWidth");
 strokeWidth.onchange = () => {
-  changeStroke(0, 1, 0, 0, 0);
+  changeStroke(0, 1, 0, 1, 0);
 }
 
 function updateStroke(object, c = 1, width = 1, l = 1, d = 1, j = 1) {
@@ -114,7 +124,7 @@ function updateStroke(object, c = 1, width = 1, l = 1, d = 1, j = 1) {
         obj.setAttribute('stroke-linecap', "round");
         break;
     }
-  if (d || l || w) {
+  if (d) {
     let capAttr = obj.getAttribute('stroke-linecap');
     if (capAttr == "square" || capAttr == "round") cap = w;
     switch (true) {
@@ -151,6 +161,29 @@ function updateStroke(object, c = 1, width = 1, l = 1, d = 1, j = 1) {
         break;
     }
   if (object.isCompleted) object.updateFrameAndPoints();
+}
+
+let prevJ, prevC;
+
+//для карандаша
+function makeRoundStroke(pen) {
+  prevJ = rightPanel.querySelector('input[name="join"]:checked');
+  prevC = rightPanel.querySelector('input[name="cap"]:checked')
+  j1.checked = "true";
+  c2.checked = "true";
+  currentObject = pen;
+  var event = new Event('change');
+  j1.dispatchEvent(event);
+  c2.dispatchEvent(event);
+  currentObject = null;
+}
+
+function makePrevStroke(pen) {
+  prevJ.checked = "true";
+  prevC.checked = "true";
+  var event = new Event('change');
+  prevJ.dispatchEvent(event);
+  prevC.dispatchEvent(event);
 }
 
 //fill tool

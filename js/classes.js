@@ -443,13 +443,9 @@ class rectangle extends object {
                 n.width -= new_dx;
                 break;
         }
-        /*if (n.width < 0) {
+        if (n.width < 0) {
             if (this.x + this.width < n.x) n.x = this.x + this.width;
-            n.width = 0;
-            this.width = 0;
-            this.x = n.x;
-            this.angleX = n.angleX;
-            pointStart.x += dx;
+            let q = 1;
             switch (currentPointTypeAttr) {
                 case "ltc":
                     currentPointTypeAttr = "rtc";
@@ -458,47 +454,59 @@ class rectangle extends object {
                     currentPointTypeAttr = "rbc";
                     break;
                 case "rtc":
+                    q *= -1;
                     currentPointTypeAttr = "ltc";
                     break;
                 case "rbc":
+                    q *= -1;
                     currentPointTypeAttr = "lbc";
                     break;
                 case "l":
                     currentPointTypeAttr = "r";
                     break;
                 case "r":
+                    q *= -1;
                     currentPointTypeAttr = "l";
                     break;
             }
+            pointStart.x += this.width * Math.cos(this.angle) * q;
+            pointStart.y += this.width * Math.sin(this.angle) * q;
+            n.width = 0;
+            this.width = 0;
+            this.x = n.x;
         }
         if (n.height < 0) {
             if (this.y + this.height < n.y) n.y = this.y + this.height;
-            n.height = 0;
-            this.height = 0;
-            this.y = n.y;
-            this.angleY = n.angleY;
-            pointStart.y += dy;
+            let q = 1;
             switch (currentPointTypeAttr) {
                 case "ltc":
                     currentPointTypeAttr = "lbc";
                     break;
                 case "lbc":
+                    q *= -1;
                     currentPointTypeAttr = "ltc";
                     break;
                 case "rtc":
                     currentPointTypeAttr = "rbc";
                     break;
                 case "rbc":
+                    q *= -1;
                     currentPointTypeAttr = "rtc";
                     break;
                 case "t":
                     currentPointTypeAttr = "b";
                     break;
                 case "b":
+                    q *= -1;
                     currentPointTypeAttr = "t";
                     break;
             }
-        }*/
+            pointStart.x -= this.height * Math.sin(this.angle) * q;
+            pointStart.y += this.height * Math.cos(this.angle) * q;
+            n.height = 0;
+            this.height = 0;
+            this.y = n.y;
+        }
         this.resizeTemp = n;
         this.svgElement.setAttribute('x', n.x);
         this.svgElement.setAttribute('y', n.y);
@@ -704,13 +712,15 @@ class ellipse extends object {
             rx: this.rx,
             ry: this.ry
         };
+        this.resizeCx = this.cx;
+        this.resizeCy = this.cy;
     }
     resize(dx, dy) {
         let new_dx = getRotateCoords(dx, dy, this.angle).x,
             new_dy = getRotateCoords(dx, dy, this.angle).y;
         let n = {
-            cx: this.cx,
-            cy: this.cy,
+            cx: this.resizeCx,
+            cy: this.resizeCy,
             rx: this.rx,
             ry: this.ry
         };
@@ -756,16 +766,10 @@ class ellipse extends object {
                 n.rx -= new_dx / 2;
                 break;
         }
-        /*if (n.rx < 0) {
-            n.rx = 0;
-            if (this.cx + this.rx < curX) {
-                n.cx = this.cx + 2 * this.rx;
-                n.rx = this.rx;
-            }
-            if (this.cx + this.rx > curX) {
-                n.cx = this.cx - 2 * this.rx;
-                n.rx = this.rx;
-            }
+        if (n.rx < 0) {
+            if (this.resizeCx + this.rx < n.cx) n.cx = this.resizeCx + this.rx;
+            if (this.resizeCx + this.rx > n.cx) n.cx = this.resizeCx - this.rx;
+            let q = 1;
             switch (currentPointTypeAttr) {
                 case "ltc":
                     currentPointTypeAttr = "rtc";
@@ -774,50 +778,60 @@ class ellipse extends object {
                     currentPointTypeAttr = "rbc";
                     break;
                 case "rtc":
+                    q *= -1;
                     currentPointTypeAttr = "ltc";
                     break;
                 case "rbc":
+                    q *= -1;
                     currentPointTypeAttr = "lbc";
                     break;
                 case "l":
                     currentPointTypeAttr = "r";
                     break;
                 case "r":
+                    q *= -1;
                     currentPointTypeAttr = "l";
                     break;
             }
+            pointStart.x += this.rx * 2 * Math.cos(this.angle) * q;
+            pointStart.y += this.rx * 2 * Math.sin(this.angle) * q;
+            n.rx = 0;
+            this.rx = 0;
+            this.resizeCx = n.cx;
         }
         if (n.ry < 0) {
-            n.ry = 0;
-            if (this.cy + this.ry < curY) {
-                n.cy = this.cy + 2 * this.ry;
-                n.ry = this.ry;
-            }
-            if (this.cy + this.ry > curY) {
-                n.cy = this.cy - 2 * this.ry;
-                n.ry = this.ry;
-            }
+            if (this.resizeCy + this.ry < n.cy) n.cy = this.resizeCy + this.ry;
+            if (this.resizeCy + this.ry > n.cy) n.cy = this.resizeCy - this.ry;
+            let q = 1;
             switch (currentPointTypeAttr) {
                 case "ltc":
                     currentPointTypeAttr = "lbc";
                     break;
                 case "lbc":
+                    q *= -1;
                     currentPointTypeAttr = "ltc";
                     break;
                 case "rtc":
                     currentPointTypeAttr = "rbc";
                     break;
                 case "rbc":
+                    q *= -1;
                     currentPointTypeAttr = "rtc";
                     break;
                 case "t":
                     currentPointTypeAttr = "b";
                     break;
                 case "b":
+                    q *= -1;
                     currentPointTypeAttr = "t";
                     break;
             }
-        }*/
+            pointStart.x -= this.ry * 2 * Math.sin(this.angle) * q;
+            pointStart.y += this.ry * 2 * Math.cos(this.angle) * q;
+            n.ry = 0;
+            this.ry = 0;
+            this.resizeCy = n.cy;
+        }
         this.resizeTemp = n;
         this.svgElement.setAttribute('cx', n.cx);
         this.svgElement.setAttribute('cy', n.cy);
@@ -1034,18 +1048,197 @@ class polygon extends object {
     }
 }
 
-//PENTAGRAM
-class pentagram extends object {
+//STAR POLYGON
+class starPolygon extends object {
     constructor() {
         super('path');
         this.path = "";
         this.r = 0;
         this.phi = 0;
         this.step = 2;
+        this.vertNum = curStarPolygonVertNum;
+        this.verticesCoords = [];
+        this.frameArray = [new pathFrame(this.path, this)];
+        for (let i = 0; i < this.vertNum; i++) {
+            this.pointsArray.push(new point(this.x0, this.y0, this, {
+                action: "polygon",
+                attr: "polygon"
+            }));
+        }
+        this.rotationIsFixed = false;
+        this.angleIsFixed = false;
+        this.radiusIsFixed = false;
+        this.fix = this.fix.bind(this);
+        this.free = this.free.bind(this);
+        this.updateVertNum = this.updateVertNum.bind(this);
+        this.addHotKeys();
+    }
+    createClone() {
+        let clone = new starPolygon();
+        this.clone = clone;
+        super.createClone();
+        clone.path = this.path;
+        clone.r = this.r;
+        clone.phi = this.phi;
+        clone.vertNum = this.vertNum;
+        clone.vertices = this.vertices;
+        clone.updateFrameAndPoints();
+        return clone;
+    }
+    updateAttributes() {
+        let dx = curX - this.x0,
+            dy = curY - this.y0;
+        if (!this.radiusIsFixed) this.r = Math.sqrt(dx ** 2 + dy ** 2);
+        else if (dx != 0 && dy != 0) {
+            dx *= this.r / Math.sqrt(dx ** 2 + dy ** 2);
+            dy *= this.r / Math.sqrt(dx ** 2 + dy ** 2);
+        }
+        if (!this.angleIsFixed) {
+            if (this.rotationIsFixed) this.phi = (this.vertNum - 2) * Math.PI / (this.vertNum * 2);
+            else if (this.r > 0) this.phi = dy > 0 ? Math.acos(dx / this.r) : -Math.acos(dx / this.r);
+        }
+        this.updateFrameAndPoints();
+    }
+    updateFrameAndPoints(x0 = this.x0, y0 = this.y0) {
+        //включает обновление атрибута
+        this.verticesCoords = [];
+        for (let i = 0; i < this.vertNum; i++) {
+            let x = x0 + this.r * Math.cos(this.phi + 2 * Math.PI * i / this.vertNum);
+            let y = y0 + this.r * Math.sin(this.phi + 2 * Math.PI * i / this.vertNum);
+            this.verticesCoords.push({
+                x: x,
+                y: y
+            })
+            this.pointsArray[i].update(x, y, '');
+            if (currentPointTypeAttr == "polygon") {
+                if (i == 0) this.pointsArray[i].setPointAttribute("fill", "red");
+                else this.pointsArray[i].setPointAttribute("fill", "white");
+            }
+        }
+        this.step = Math.floor((this.vertNum - 3) / 2) + 1;
+        this.path = "M " + this.verticesCoords[0].x + "," + this.verticesCoords[0].y;
+        this.endInd = 0;
+        this.setPath(this.step);
+        this.path += "L " + this.verticesCoords[0].x + "," + this.verticesCoords[0].y;
+        if (this.vertNum % 4 == 2) {
+            this.path += "M " + this.verticesCoords[1].x + "," + this.verticesCoords[1].y;
+            this.endInd = 1;
+            this.setPath(this.step + 1);
+            this.path += "L " + this.verticesCoords[1].x + "," + this.verticesCoords[1].y;
+        }
+
+        this.svgElement.setAttribute('d', this.path);
+        this.frameArray[0].update(this.path);
+        this.path = "";
+        this.verticesCoords = [];
+    }
+    setPath(ind) {
+        if (ind == this.endInd) return;
+        this.path += "L " + this.verticesCoords[ind].x + "," + this.verticesCoords[ind].y;
+        this.setPath((ind + this.step) % this.vertNum);
+    }
+    addHotKeys() {
+        document.addEventListener('keydown', this.updateVertNum);
+        document.addEventListener('keydown', this.fix);
+        document.addEventListener('keyup', this.free);
+    }
+    removeHotKeys() {
+        document.removeEventListener('keydown', this.updateVertNum);
+        this.rotationIsFixed = false;
+        this.angleIsFixed = false;
+        this.radiusIsFixed = false;
+        document.removeEventListener('keydown', this.fix);
+        document.removeEventListener('keyup', this.free);
+    }
+    updateVertNum(current) {
+        if (current.code == 'ArrowUp') {
+            curStarPolygonVertNum++;
+            this.vertNum++;
+        }
+        if (current.code == 'ArrowDown' && curStarPolygonVertNum > 5) {
+            curStarPolygonVertNum--;
+            this.vertNum--;
+        }
+        for (let i = 0; i < this.pointsArray.length; i++) {
+            this.pointsArray[i].remove();
+        }
+        this.pointsArray = [];
+        for (let i = 0; i < this.vertNum; i++) {
+            this.pointsArray.push(new point(this.x0, this.y0, this, {
+                action: "polygon",
+                attr: "polygon"
+            }));
+        }
+        this.updateAttributes();
+    }
+    fix(event) {
+        event.preventDefault();
+        if (event.shiftKey) {
+            this.rotationIsFixed = true;
+            this.updateAttributes();
+        }
+        if (event.altKey) {
+            this.angleIsFixed = true;
+            this.updateAttributes();
+        }
+        if (event.ctrlKey) {
+            this.radiusIsFixed = true;
+            this.updateAttributes();
+        }
+    }
+    free(event) {
+        if (event.key == 'Shift') {
+            this.rotationIsFixed = false;
+            this.updateAttributes();
+        }
+        if (event.key == "Alt") {
+            this.angleIsFixed = false;
+            this.updateAttributes();
+        }
+        if (event.key == 'Control') {
+            this.radiusIsFixed = false;
+            this.updateAttributes();
+        }
+    }
+    move(dx = curX - this.start.x, dy = curY - this.start.y) {
+        this.updateFrameAndPoints(this.x0 + dx, this.y0 + dy);
+    }
+    stopMoving(dx = curX - this.start.x, dy = curY - this.start.y) {
+        this.x0 += dx;
+        this.y0 += dy;
+    }
+    moveTo(x, y) {
+        let dx = x + pointRadius - (this.x0 - this.r),
+            dy = y + pointRadius - (this.y0 - this.r);
+        this.move(dx, dy);
+        this.stopMoving(dx, dy);
+    }
+    getCornerCoords() {
+        return {
+            x: (this.x0 - this.r) - pointRadius,
+            y: (this.y0 - this.r) - pointRadius
+        }
+    }
+    resize() {
+        this.updateAttributes();
+    }
+}
+
+
+//PENTAGRAM
+class pentagram extends object {
+    constructor() {
+        super('g');
+        this.path = "";
+        this.r = 0;
+        this.phi = 0;
+        this.step = 2;
         this.vertNum = curPentagramVertNum;
         this.verticesCoords = [];
+        this.star = document.createElementNS("http://www.w3.org/2000/svg", 'path');
         this.circle = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
-        currentLayer.group.appendChild(this.circle);
+        this.svgElement.appendChild(this.star);
+        this.svgElement.appendChild(this.circle);
         this.circle.setAttribute('fill', "none");
         this.frameArray = [new pathFrame(this.path, this),
             new ellipseFrame(this.x0, this.y0, 0, 0, this)
@@ -1063,7 +1256,6 @@ class pentagram extends object {
         this.free = this.free.bind(this);
         this.updateVertNum = this.updateVertNum.bind(this);
         this.addHotKeys();
-        this.addCircleActions();
     }
     createClone() {
         let clone = new pentagram();
@@ -1076,51 +1268,6 @@ class pentagram extends object {
         clone.vertices = this.vertices;
         clone.updateFrameAndPoints();
         return clone;
-    }
-    addCircleActions() {
-        const select = (() => {
-            if (wasPressed == "cursor") {
-                isSomeObjectSelected = true;
-                if (currentObject != null) {
-                    currentObject.hideFrameAndPoints();
-                }
-                if (this.isCompleted) {
-                    this.showFrameAndPoints();
-                    currentObject = this;
-                }
-            }
-            if (wasPressed == "fill" && this.type != 'pencil') {
-                this.svgElement.setAttribute('fill', getCurrentFillColor());
-            }
-        }).bind(this);
-        this.circle.addEventListener("mousedown", select);
-        this.circle.addEventListener("mouseout", function () {
-            isSomeObjectSelected = false;
-        });
-        const startMoving = ((current) => {
-            if (this.isCompleted && this.isSelected) {
-                this.isMoving = true;
-                updateCursorCoords(current);
-                this.start = {
-                    x: curX,
-                    y: curY
-                };
-            }
-        }).bind(this);
-        this.circle.addEventListener("mousedown", startMoving);
-    }
-    hide() {
-        currentLayer.group.removeChild(this.circle);
-        super.hide();
-    }
-    show() {
-        currentLayer.group.appendChild(this.circle);
-        super.show();
-    }
-    remove() {
-        currentLayer.group.removeChild(this.circle);
-        this.circle = null;
-        super.remove();
     }
     updateAttributes() {
         let dx = curX - this.x0,
@@ -1141,12 +1288,6 @@ class pentagram extends object {
         this.circle.setAttribute('cx', x0);
         this.circle.setAttribute('cy', y0);
         this.circle.setAttribute('r', this.r + this.strokeWidth);
-        this.circle.setAttribute('stroke', this.getElementAttribute('stroke'));
-        this.circle.setAttribute('opacity', this.getElementAttribute('opacity'));
-        this.circle.setAttribute('stroke-width', this.getElementAttribute('stroke-width'));
-        this.circle.setAttribute('stroke-dasharray', this.getElementAttribute('stroke-dasharray'));
-        this.circle.setAttribute('stroke-linejoin', this.getElementAttribute('stroke-linejoin'));
-        this.circle.setAttribute('stroke-linecap', this.getElementAttribute('stroke-linecap'));
         this.frameArray[1].update(x0, y0, this.r + this.strokeWidth, this.r + this.strokeWidth);
 
         this.verticesCoords = [];
@@ -1175,7 +1316,7 @@ class pentagram extends object {
             this.path += "L " + this.verticesCoords[1].x + "," + this.verticesCoords[1].y;
         }
 
-        this.svgElement.setAttribute('d', this.path);
+        this.star.setAttribute('d', this.path);
         this.frameArray[0].update(this.path);
         this.path = "";
         this.verticesCoords = [];

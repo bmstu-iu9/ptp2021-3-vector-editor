@@ -10,7 +10,7 @@ img {
     flex-wrap: wrap;
 }
 
-hr {
+.hrline {
     border: none;
     background: #222;
     height: 5px;

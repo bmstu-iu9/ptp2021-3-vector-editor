@@ -12,9 +12,28 @@
   <link rel="icon" href="img/icon.svg" type="image/x-icon">
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/right.css" />
+  <link rel="stylesheet" href="css/help.css" />
 </head>
 
 <body>
+   <div id="helpbox">
+    <div id="banner"></div>
+    <div id="bannerinside">
+        <a href="#" title="Закрыть" id="exit" style="background-image: url(img/help/cross.svg);"></a>
+        <a href="#" title="Закрыть" id="exitred" style="background-image: url(img/help/cross_hover.svg);"></a>
+        <h2>Помощь</h2>
+        <hr color="#fff" width="90%" align="center" size="2" style="margin-left: 5%">
+        <div id="helppage"></div>
+        <hr color="#fff" width="90%" align="center" size="2" style="margin-left: 5%">
+        <h2 id="page_count">Страницы: 0/0</h2>
+    </div>
+    <a href="#" title="Предыдущая страница" class="arr7" id="prev" style="background-image: url(img/help/arrow.svg);"></a>
+    <a href="#" title="Предыдущая страница" class="arr7 arred" id="prevred" style="background-image: url(img/help/arrow_hover.svg);"></a>
+    <a href="#" title="Следующая страница" class="arr7" id="next" style="background-image: url(img/help/arrow.svg);"></a>
+    <a href="#" title="Следующая страница" class="arr7 arred" id="nextred" style="background-image: url(img/help/arrow_hover.svg);"></a>
+    <div class="peaks" id="peaksup" style="background-image: url(img/help/peaks.svg);"></div>
+    <div class="peaks" id="peaksdown" style="background-image: url(img/help/peaks.svg);"></div>
+  </div>
   <header>
     <h1 id="logo"> Pentagram </h1>
     <hr>
@@ -132,7 +151,7 @@
               style="background-image: url(img/ellipse.svg)"></button></li>
           <li><button title="Правильный многоугольник" class="tool_button" id="polygon"
               style="background-image: url(img/polygon.svg)"></button></li>
-          <li><button title="Звёздчатый многоугольник" class="tool_button" id="star_polygon"
+          <li><button title="Звёздчатый многоугольник" class="tool_button" id="starPolygon"
               style="background-image: url(img/star_polygon.svg)"></button></li>
           <li><button title="Пентаграмма" class="tool_button" id="pentagram"
               style="background-image: url(img/pentagram.svg)"></button></li>
@@ -217,7 +236,7 @@
         </div>
       </div>
 
-      <hr>
+      <hr class="hrline">
 
       <div id="layers_header">
         Слои
@@ -303,6 +322,7 @@
   <script src="js/color.js"></script>
   <script src="js/eraser.js"></script>
   <script src="js/properties.js"></script>
+  <script src="js/helpbox.js"></script>
 </body>
 
 </html>

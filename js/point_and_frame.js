@@ -89,6 +89,7 @@ class point {
                     currentPointTypeAttr = null;
                     this.isSelected = false;
                     isSomePointSelected = false;
+                    doFunc("rotate", this.object, this.object.angle)
                     this.object.stopRotating();
                 }
             }).bind(this);

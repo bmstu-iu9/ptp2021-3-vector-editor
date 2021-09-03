@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Marcellus+SC&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@800&display=swap');
 
 * {
     margin: 0;
@@ -347,16 +348,49 @@ main {
 h2 {
     text-align: center;
     color: #fff;
-    font-size: 2.25vw;
+    font-size: 4vh;
     font-family: 'Times New Roman';
 }
 
 #helppage {
-    height: 84%;
+    height: 82%;
 }
 
 #exit:hover {
     background-image: url(img/help/cross_hover.svg);
+}
+
+.instruction {
+    margin: 1vw;
+    position: relative;
+    height: 30%;
+}
+
+.help_text {
+    color: #fff;
+    font-family: 'Times New Roman';
+    font-size: 3vh;;
+    width: 80%;
+    text-align: justify;
+}
+
+strong {
+    font-weight: 900;
+    font-family: 'Open Sans', sans-serif;
+    background-color: #555;
+}
+
+.help_button {
+    position: absolute;
+    width: 17vh;
+    height: 17vh;
+    background-size: cover;
+    background-color: #333;
+    border-color: #fff;
+    border-radius: 10%;
+    margin: 0vh 2vh;
+    right: 0;
+    top: 0;
 }
 
 .arr7 {

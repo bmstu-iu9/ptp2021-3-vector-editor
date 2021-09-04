@@ -8,14 +8,14 @@ for (i = 0; i < property.length; i++) {
     }
 }
 
-/*propertyA = document.getElementsByClassName("property a");
-for (i = 0; i < propertyA.length; i++) {
-    propertyA[i].onchange = (e) => {
-        currentObject.startRotating();
-        currentObject.rotate(e.target.value);
-        currentObject.stopRotating();
-    }
-}*/
+angleInput = document.getElementById("angle");
+angleInput.onchange = () => {
+    let a = angleInput.value;
+    if (a >= 360) a %= 360;
+    if (a <= -360) a %= 360;
+    angleInput.value = a;
+    currentObject.rotateTo(angleInput.value * Math.PI / 180.0);
+}
 
 function resizeX(dx) {
     currentObject.resize(dx, 0);

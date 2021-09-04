@@ -200,12 +200,13 @@ class object {
         }
         this.removeParameters();
     }
-    addParameters() {}
-    updateParameters() {}
-    removeParameters() {}
     updateFrameAndPoints() {}
     addHotKeys() {}
     removeHotKeys() {}
+    //PROPERTIES PANEL
+    addParameters() {}
+    updateParameters() {}
+    removeParameters() {}
     //MOVE
     move() {}
     stopMoving() {}
@@ -329,7 +330,7 @@ class rectangle extends object {
         rectW.value = this.width;
         rectH.value = this.height;
         rectR.value = this.r;
-        rectA.value = this.angle * 180.0 / Math.PI;
+        angleInput.value = this.angle * 180.0 / Math.PI;
     }
     removeParameters() {
         rect_panel.style.display = "none";
@@ -584,7 +585,6 @@ class rectangle extends object {
         this.angle = newAngle;
         this.angle = this.angle > 2 * Math.PI ? this.angle - 2 * Math.PI : this.angle;
         this.updateFrameAndPoints();
-        this.updateProperties();
     }
     getNewCoords(x = this.x, y = this.y, angle = this.angle) {
         return {
@@ -674,7 +674,7 @@ class ellipse extends object {
         ellRY.value = this.ry;
         ellCX.value = this.cx;
         ellCY.value = this.cy;
-        ellA.value = this.angle * 180.0 / Math.PI;
+        angleInput.value = this.angle * 180.0 / Math.PI;
     }
     removeParameters() {
         ell_panel.style.display = "none";
@@ -929,7 +929,6 @@ class ellipse extends object {
         this.angle = newAngle;
         this.angle = this.angle > 2 * Math.PI ? this.angle - 2 * Math.PI : this.angle;
         this.updateFrameAndPoints();
-        this.updateProperties();
     }
     getNewCoords(x = this.x0, y = this.y0, angle = this.angle) {
         return {
@@ -982,6 +981,7 @@ class polygon extends object {
         polY.value = this.y0;
         polR.value = this.r;
         polN.value = this.vertNum;
+        angleInput.value = this.phi * 180.0 / Math.PI;
     }
     removeParameters() {
         pol_panel.style.display = "none";
@@ -1118,7 +1118,6 @@ class polygon extends object {
     rotateTo(newAngle) {
         this.phi = newAngle;
         this.updateFrameAndPoints();
-        this.updateProperties();
     }
 }
 
@@ -1172,6 +1171,7 @@ class starPolygon extends object {
         polY.value = this.y0;
         polR.value = this.r;
         polN.value = this.vertNum;
+        angleInput.value = this.phi * 180.0 / Math.PI;
     }
     removeParameters() {
         pol_panel.style.display = "none";
@@ -1338,7 +1338,6 @@ class starPolygon extends object {
     rotateTo(newAngle) {
         this.phi = newAngle;
         this.updateFrameAndPoints();
-        this.updateProperties();
     }
 }
 
@@ -1400,6 +1399,7 @@ class pentagram extends object {
         polY.value = this.y0;
         polR.value = this.r;
         polN.value = this.vertNum;
+        angleInput.value = this.phi * 180.0 / Math.PI;
     }
     removeParameters() {
         pol_panel.style.display = "none";
@@ -1571,7 +1571,6 @@ class pentagram extends object {
     rotateTo(newAngle) {
         this.phi = newAngle;
         this.updateFrameAndPoints();
-        this.updateProperties();
     }
 }
 
@@ -1629,7 +1628,7 @@ class pencil extends object {
     updateParameters() {
         penX.value = this.minX;
         penY.value = this.minY;
-        penA.value = this.angle * 180.0 / Math.PI;
+        angleInput.value = this.angle * 180.0 / Math.PI;
     }
     removeParameters() {
         pen_panel.style.display = "none";
@@ -1743,7 +1742,6 @@ class pencil extends object {
         this.angle = newAngle;
         this.angle = this.angle > 2 * Math.PI ? this.angle - 2 * Math.PI : this.angle;
         this.updateFrameAndPoints();
-        this.updateProperties();
     }
     getNewCoords(x = this.x0, y = this.y0, angle = this.angle) {
         return {
@@ -1889,7 +1887,7 @@ class line extends object {
         lineL.value = this.len;
         this.sin = Math.abs(x1x2 / this.len);
         this.cos = Math.abs(y1y2 / this.len);
-        lineA.value = this.angle * 180.0 / Math.PI;
+        angleInput.value = this.angle * 180.0 / Math.PI;
     }
     removeParameters() {
         line_panel.style.display = "none";
@@ -2103,7 +2101,6 @@ class line extends object {
         this.angle = newAngle;
         this.angle = this.angle > 2 * Math.PI ? this.angle - 2 * Math.PI : this.angle;
         this.updateFrameAndPoints();
-        this.updateProperties();
     }
     getNewCoords(x = this.x0, y = this.y0, angle = this.angle) {
         return {
@@ -2176,7 +2173,7 @@ class polyline extends object {
     updateParameters() {
         pLineX.value = this.minX;
         pLineY.value = this.minY;
-        pLineA.value = this.angle * 180.0 / Math.PI;
+        angleInput.value = this.angle * 180.0 / Math.PI;
     }
     removeParameters() {
         pLine_panel.style.display = "none";
@@ -2335,7 +2332,6 @@ class polyline extends object {
         this.angle = newAngle;
         this.angle = this.angle > 2 * Math.PI ? this.angle - 2 * Math.PI : this.angle;
         this.updateFrameAndPoints();
-        this.updateProperties();
     }
     getNewCoords(x = this.x0, y = this.y0, angle = this.angle) {
         return {

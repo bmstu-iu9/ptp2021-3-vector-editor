@@ -13,22 +13,22 @@ img {
 .hrline {
     border: none;
     background: #222;
-    height: 0.6vh;
+    height: 5px;
 }
 
 header hr {
-    border: none;
-    background: #222;
     height: 100%;
     width: 2px;
     margin: 0 0.5vw;
 }
 
 .colorpicker {
-    margin: 3px 0;
+    margin: 4px 0;
     width: 2.2vw;
-    height: 2.2vw;
-    border-radius: 8%;
+    height: 2.3vw;
+    border: none;
+    background: none;
+    cursor: pointer;
 }
 
 .colorOpacity {
@@ -93,7 +93,6 @@ header hr {
 }
 
 #lines li label {
-    width: inherit;
     height: initial;
     display: flex;
     padding: 7px 0;
@@ -119,14 +118,11 @@ input:checked~ul {
     align-items: center;
     justify-content: space-between;
     padding: 0 0.8vw;
-    border-style: solid;
+    border-bottom: solid;
     border-color: #444;
-    border-image: initial;
-    border-width: 0 0px 0.4vh;
 }
 
 #layers_header img:hover {
-    cursor: pointer;
     background: #444;
 }
 

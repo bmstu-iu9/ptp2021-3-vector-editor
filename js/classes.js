@@ -108,6 +108,7 @@ class object {
                 currentPointTypeAttr = null;
                 doFunc("move", this, this.getCornerCoords())
                 this.stopMoving();
+                this.updateParameters();
             }
         }).bind(this);
         svgPanel.addEventListener("mouseup", stopMoving);
@@ -128,6 +129,7 @@ class object {
         return this.svgElement.getAttribute(attributeName);
     }
     remove() {
+        resetCurrentObject();
         currentLayer.group.removeChild(this.svgElement);
         this.svgElement = null;
         this.isSelected = false;
@@ -147,10 +149,11 @@ class object {
     hide() {
         this.hideFrameAndPoints()
         currentLayer.group.removeChild(this.svgElement);
+        this.removePanel();
     }
     show() {
         currentLayer.group.appendChild(this.svgElement);
-        this.showFrameAndPoints()
+        this.showFrameAndPoints();
     }
     hideFrameAndPoints() {
         if (this.arePointsAndFrameShown) {
@@ -160,9 +163,9 @@ class object {
             for (let i = 0; i < this.pointsArray.length; i++) {
                 this.pointsArray[i].hide();
             }
-            this.arePointsAndFrameShown = false;
-            this.isSelected = false;
         }
+        this.arePointsAndFrameShown = false;
+        this.isSelected = false;
     }
     showFrameAndPoints() {
         if (!this.arePointsAndFrameShown) {
@@ -172,9 +175,9 @@ class object {
             for (let i = 0; i < this.pointsArray.length; i++) {
                 this.pointsArray[i].show();
             }
-            this.arePointsAndFrameShown = true;
-            this.isSelected = true;
         }
+        this.arePointsAndFrameShown = true;
+        this.isSelected = true;
     }
     appendSvgElement() {
         currentLayer.group.append(this.svgElement);
@@ -183,27 +186,40 @@ class object {
         currentLayer.group.prepend(this.svgElement);
     }
     addPanel() {
-        objPanel.style.display = "flex";
-        this.addProperties();
+        obj_panel.style.display = "flex";
+        for (i = 0; i < 3; i++) {
+            unblockEditing(i);
+        }
+        this.addParameters();
+        this.updateParameters();
     }
     removePanel() {
-        objPanel.style.display = "none";
-        this.removeProperties();
+        obj_panel.style.display = "none";
+        for (i = 0; i < 3; i++) {
+            blockEditing(i);
+        }
+        this.removeParameters();
     }
-    addProperties() {}
-    removeProperties() {}
     updateFrameAndPoints() {}
     addHotKeys() {}
     removeHotKeys() {}
+    //PROPERTIES PANEL
+    addParameters() {}
+    updateParameters() {}
+    removeParameters() {}
+    //MOVE
     move() {}
     stopMoving() {}
     moveTo() {}
     getCornerCoords() {}
+    //RESIZE
     startResize() {}
     resize() {}
     stopResize() {}
+    //ROTATE
     startRotating() {}
     rotate() {}
+    rotateTo() {}
     stopRotating() {}
     getNewCoords() {} //преобразование координат ключевых точек при повороте фигуры
     complete() {
@@ -217,9 +233,9 @@ class object {
         document.onclick = null;
         document.onmouseenter = null;
 
-        if (this.svgElement.getBoundingClientRect().width + this.svgElement.getBoundingClientRect().height > 0) {
+        if (this.svgElement.getBoundingClientRect().width > 0 && this.svgElement.getBoundingClientRect().height > 0) {
             isSomeObjectSelected = false;
-            resetCurrentObject(); //показывать рамку после создания объекта
+            resetCurrentObject();
             this.addPanel();
             currentObject = this;
             this.isSelected = true;
@@ -305,20 +321,19 @@ class rectangle extends object {
         clone.svgElement.setAttribute('transform', this.transform);
         return clone;
     }
-    addProperties() {
-        rectPanel.style.display = "flex";
-        this.updateProperties();
+    addParameters() {
+        rect_panel.style.display = "flex";
     }
-    updateProperties() {
+    updateParameters() {
         rectX.value = this.x;
         rectY.value = this.y;
         rectW.value = this.width;
         rectH.value = this.height;
         rectR.value = this.r;
-        rectA.value = this.angle * 180.0 / Math.PI;
+        angleInput.value = this.angle * 180.0 / Math.PI;
     }
-    removeProperties() {
-        rectPanel.style.display = "none";
+    removeParameters() {
+        rect_panel.style.display = "none";
     }
     updateAttributes(current) {
         let w = curX - this.x0;
@@ -358,6 +373,7 @@ class rectangle extends object {
         this.pointsArray[7].update(x, y + height / 2, transform);
         this.pointsArray[8].update(x + width / 2, y - 20, transform);
     }
+    //MOVE
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         let new_dx = getRotateCoords(dx, dy, this.angle).x,
             new_dy = getRotateCoords(dx, dy, this.angle).y;
@@ -376,7 +392,6 @@ class rectangle extends object {
         this.svgElement.setAttribute('x', this.x);
         this.svgElement.setAttribute('y', this.y);
         this.svgElement.setAttribute('transform', this.transform);
-        this.updateProperties();
     }
     moveTo(x, y) {
         let dx = x + pointRadius - this.x,
@@ -390,6 +405,7 @@ class rectangle extends object {
             y: this.y - pointRadius
         }
     }
+    //RESIZE
     startResize() {
         this.resizeTemp = {
             x: this.x,
@@ -512,6 +528,7 @@ class rectangle extends object {
         this.svgElement.setAttribute('y', n.y);
         this.svgElement.setAttribute('width', n.width);
         this.svgElement.setAttribute('height', n.height);
+        this.setElementAttribute('rx', Math.max(n.height, n.width) * this.r / 100);
         this.updateFrameAndPoints(n.width, n.height, n.x, n.y, this.transform);
     }
     stopResize() {
@@ -529,9 +546,10 @@ class rectangle extends object {
         this.svgElement.setAttribute('x', this.x);
         this.svgElement.setAttribute('y', this.y);
         this.svgElement.setAttribute('transform', this.transform);
+        this.setElementAttribute('rx', Math.max(this.height, this.width) * this.r / 100);
         this.updateFrameAndPoints();
-        this.updateProperties();
     }
+    //ROTATE
     startRotating() {
         this.rPoint = {
             x: this.getNewCoords(this.x + this.width / 2, this.y - 20, this.angle).x,
@@ -549,7 +567,7 @@ class rectangle extends object {
         this.svgElement.setAttribute('y', this.y);
         this.transform = 'rotate(' + newAngle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
         this.svgElement.setAttribute('transform', this.transform);
-        this.updateFrameAndPoints(this.width, this.height, this.x, this.y, this.transform);
+        this.updateFrameAndPoints();
     }
     stopRotating() {
         let argss = this.transform.split('(')[1],
@@ -558,7 +576,15 @@ class rectangle extends object {
         this.angle = newAngle;
         this.angle = this.angle > 2 * Math.PI ? this.angle - 2 * Math.PI : this.angle;
         this.updateFrameAndPoints();
-        this.updateProperties();
+    }
+    rotateTo(newAngle) {
+        this.svgElement.setAttribute('x', this.x);
+        this.svgElement.setAttribute('y', this.y);
+        this.transform = 'rotate(' + newAngle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
+        this.svgElement.setAttribute('transform', this.transform);
+        this.angle = newAngle;
+        this.angle = this.angle > 2 * Math.PI ? this.angle - 2 * Math.PI : this.angle;
+        this.updateFrameAndPoints();
     }
     getNewCoords(x = this.x, y = this.y, angle = this.angle) {
         return {
@@ -640,6 +666,19 @@ class ellipse extends object {
         clone.svgElement.setAttribute('transform', this.transform);
         return clone;
     }
+    addParameters() {
+        ell_panel.style.display = "flex";
+    }
+    updateParameters() {
+        ellRX.value = this.rx;
+        ellRY.value = this.ry;
+        ellCX.value = this.cx;
+        ellCY.value = this.cy;
+        angleInput.value = this.angle * 180.0 / Math.PI;
+    }
+    removeParameters() {
+        ell_panel.style.display = "none";
+    }
     updateAttributes(current) {
         let w = (curX - this.x0) / 2;
         let h = (curY - this.y0) / 2;
@@ -678,6 +717,7 @@ class ellipse extends object {
         this.pointsArray[7].update(cx - rx, cy, transform);
         this.pointsArray[8].update(cx, cy - ry - 20, transform);
     }
+    //MOVE
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         let new_dx = getRotateCoords(dx, dy, this.angle).x,
             new_dy = getRotateCoords(dx, dy, this.angle).y;
@@ -705,6 +745,7 @@ class ellipse extends object {
             y: (this.cy - this.ry) - pointRadius
         }
     }
+    //RESIZE
     startResize() {
         this.resizeTemp = {
             cx: this.cx,
@@ -712,10 +753,10 @@ class ellipse extends object {
             rx: this.rx,
             ry: this.ry
         };
-        this.resizeCx = this.cx;
-        this.resizeCy = this.cy;
     }
     resize(dx, dy) {
+        this.resizeCx = this.cx;
+        this.resizeCy = this.cy;
         let new_dx = getRotateCoords(dx, dy, this.angle).x,
             new_dy = getRotateCoords(dx, dy, this.angle).y;
         let n = {
@@ -852,6 +893,7 @@ class ellipse extends object {
         this.svgElement.setAttribute('transform', this.transform);
         this.updateFrameAndPoints();
     }
+    //ROTATE
     startRotating() {
         this.rPoint = {
             x: this.getNewCoords(this.cx, this.cy - this.ry - 20, this.angle).x,
@@ -869,12 +911,21 @@ class ellipse extends object {
         this.svgElement.setAttribute('cy', this.cy);
         this.transform = 'rotate(' + newAngle * 180.0 / Math.PI + ' ' + this.cx + ' ' + this.cy + ')';
         this.svgElement.setAttribute('transform', this.transform);
-        this.updateFrameAndPoints(this.rx, this.ry, this.cx, this.dy, this.transform);
+        this.updateFrameAndPoints();
     }
     stopRotating() {
         let argss = this.transform.split('(')[1],
             args = argss.split(')')[0],
             newAngle = args.split(' ')[0] * Math.PI / 180.0;
+        this.angle = newAngle;
+        this.angle = this.angle > 2 * Math.PI ? this.angle - 2 * Math.PI : this.angle;
+        this.updateFrameAndPoints();
+    }
+    rotateTo(newAngle) {
+        this.svgElement.setAttribute('cx', this.cx);
+        this.svgElement.setAttribute('cy', this.cy);
+        this.transform = 'rotate(' + newAngle * 180.0 / Math.PI + ' ' + this.cx + ' ' + this.cy + ')';
+        this.svgElement.setAttribute('transform', this.transform);
         this.angle = newAngle;
         this.angle = this.angle > 2 * Math.PI ? this.angle - 2 * Math.PI : this.angle;
         this.updateFrameAndPoints();
@@ -921,6 +972,20 @@ class polygon extends object {
         clone.svgElement.setAttribute('points', this.vertices);
         clone.updateFrameAndPoints();
         return clone;
+    }
+    addParameters() {
+        pol_panel.style.display = "flex";
+        polN.min = "3";
+    }
+    updateParameters() {
+        polX.value = this.x0;
+        polY.value = this.y0;
+        polR.value = this.r;
+        polN.value = this.vertNum;
+        angleInput.value = this.phi * 180.0 / Math.PI;
+    }
+    removeParameters() {
+        pol_panel.style.display = "none";
     }
     updateAttributes() {
         let dx = curX - this.x0,
@@ -982,17 +1047,19 @@ class polygon extends object {
             curVertNum--;
             this.vertNum--;
         }
-        for (let i = 0; i < this.pointsArray.length; i++) {
-            this.pointsArray[i].remove();
+        if (current.code == 'ArrowUp' || current.code == 'ArrowDown' || current.code == 'changeN') {
+            for (let i = 0; i < this.pointsArray.length; i++) {
+                this.pointsArray[i].remove();
+            }
+            this.pointsArray = [];
+            for (let i = 0; i < this.vertNum; i++) {
+                this.pointsArray.push(new point(this.x0, this.y0, this, {
+                    action: "polygon",
+                    attr: "polygon"
+                }));
+            }
+            this.updateAttributes();
         }
-        this.pointsArray = [];
-        for (let i = 0; i < this.vertNum; i++) {
-            this.pointsArray.push(new point(this.x0, this.y0, this, {
-                action: "polygon",
-                attr: "polygon"
-            }));
-        }
-        this.updateAttributes();
     }
     fix(event) {
         event.preventDefault();
@@ -1024,6 +1091,7 @@ class polygon extends object {
             this.updateAttributes();
         }
     }
+    //MOVE
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.updateFrameAndPoints(this.x0 + dx, this.y0 + dy);
     }
@@ -1043,8 +1111,14 @@ class polygon extends object {
             y: (this.y0 - this.r) - pointRadius
         }
     }
+    //RESIZE
     resize() {
         this.updateAttributes();
+    }
+    //ROTATE
+    rotateTo(newAngle) {
+        this.phi = newAngle;
+        this.updateFrameAndPoints();
     }
 }
 
@@ -1052,11 +1126,13 @@ class polygon extends object {
 class starPolygon extends object {
     constructor() {
         super('path');
+        this.type = 'star';
         this.path = "";
         this.r = 0;
         this.phi = 0;
         this.step = 2;
         this.vertNum = curStarPolygonVertNum;
+        this.step = Math.floor((this.vertNum - 3) / 2) + 1;
         this.verticesCoords = [];
         this.frameArray = [new pathFrame(this.path, this)];
         for (let i = 0; i < this.vertNum; i++) {
@@ -1071,6 +1147,7 @@ class starPolygon extends object {
         this.fix = this.fix.bind(this);
         this.free = this.free.bind(this);
         this.updateVertNum = this.updateVertNum.bind(this);
+        this.updateStep = this.updateStep.bind(this);
         this.addHotKeys();
     }
     createClone() {
@@ -1081,9 +1158,27 @@ class starPolygon extends object {
         clone.r = this.r;
         clone.phi = this.phi;
         clone.vertNum = this.vertNum;
+        clone.step = this.step;
         clone.vertices = this.vertices;
         clone.updateFrameAndPoints();
         return clone;
+    }
+    addParameters() {
+        pol_panel.style.display = "flex";
+        step_panel.style.display = "flex";
+        polN.min = "5";
+    }
+    updateParameters() {
+        polX.value = this.x0;
+        polY.value = this.y0;
+        polR.value = this.r;
+        polN.value = this.vertNum;
+        polS.value = this.step;
+        angleInput.value = this.phi * 180.0 / Math.PI;
+    }
+    removeParameters() {
+        pol_panel.style.display = "none";
+        step_panel.style.display = "none";
     }
     updateAttributes() {
         let dx = curX - this.x0,
@@ -1115,16 +1210,18 @@ class starPolygon extends object {
                 else this.pointsArray[i].setPointAttribute("fill", "white");
             }
         }
-        this.step = Math.floor((this.vertNum - 3) / 2) + 1;
         this.path = "M " + this.verticesCoords[0].x + "," + this.verticesCoords[0].y;
         this.endInd = 0;
+        this.count = 0;
         this.setPath(this.step);
         this.path += "L " + this.verticesCoords[0].x + "," + this.verticesCoords[0].y;
-        if (this.vertNum % 4 == 2) {
-            this.path += "M " + this.verticesCoords[1].x + "," + this.verticesCoords[1].y;
-            this.endInd = 1;
-            this.setPath(this.step + 1);
-            this.path += "L " + this.verticesCoords[1].x + "," + this.verticesCoords[1].y;
+        if (this.vertNum != this.count) {
+            for (let i = 1; i < this.step; i++) {
+                this.path += "M " + this.verticesCoords[i].x + "," + this.verticesCoords[i].y;
+                this.endInd = i;
+                this.setPath(this.step + i);
+                this.path += "L " + this.verticesCoords[i].x + "," + this.verticesCoords[i].y;
+            }
         }
 
         this.svgElement.setAttribute('d', this.path);
@@ -1133,17 +1230,21 @@ class starPolygon extends object {
         this.verticesCoords = [];
     }
     setPath(ind) {
+        this.count++;
         if (ind == this.endInd) return;
         this.path += "L " + this.verticesCoords[ind].x + "," + this.verticesCoords[ind].y;
+        console.log((ind + this.step) % this.vertNum);
         this.setPath((ind + this.step) % this.vertNum);
     }
     addHotKeys() {
         document.addEventListener('keydown', this.updateVertNum);
+        document.addEventListener('keydown', this.updateStep);
         document.addEventListener('keydown', this.fix);
         document.addEventListener('keyup', this.free);
     }
     removeHotKeys() {
         document.removeEventListener('keydown', this.updateVertNum);
+        document.removeEventListener('keydown', this.updateStep);
         this.rotationIsFixed = false;
         this.angleIsFixed = false;
         this.radiusIsFixed = false;
@@ -1159,17 +1260,31 @@ class starPolygon extends object {
             curStarPolygonVertNum--;
             this.vertNum--;
         }
-        for (let i = 0; i < this.pointsArray.length; i++) {
-            this.pointsArray[i].remove();
+        if (current.code == 'ArrowUp' || current.code == 'ArrowDown' || current.code == 'changeN') {
+            this.step = Math.floor((this.vertNum - 3) / 2) + 1;
+            for (let i = 0; i < this.pointsArray.length; i++) {
+                this.pointsArray[i].remove();
+            }
+            this.pointsArray = [];
+            for (let i = 0; i < this.vertNum; i++) {
+                this.pointsArray.push(new point(this.x0, this.y0, this, {
+                    action: "polygon",
+                    attr: "polygon"
+                }));
+            }
+            this.updateAttributes();
         }
-        this.pointsArray = [];
-        for (let i = 0; i < this.vertNum; i++) {
-            this.pointsArray.push(new point(this.x0, this.y0, this, {
-                action: "polygon",
-                attr: "polygon"
-            }));
+    }
+    updateStep(current) {
+        if (current.code == 'ArrowRight' && this.step + 1 <= Math.floor((this.vertNum - 3) / 2) + 1) {
+            this.step++;
         }
-        this.updateAttributes();
+        if (current.code == 'ArrowLeft' && this.step - 1 >= 2) {
+            this.step--;
+        }
+        if (current.code == 'ArrowRight' || current.code == 'ArrowLeft') {
+            this.updateAttributes();
+        }
     }
     fix(event) {
         event.preventDefault();
@@ -1200,6 +1315,7 @@ class starPolygon extends object {
             this.updateAttributes();
         }
     }
+    //MOVE
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.updateFrameAndPoints(this.x0 + dx, this.y0 + dy);
     }
@@ -1219,8 +1335,14 @@ class starPolygon extends object {
             y: (this.y0 - this.r) - pointRadius
         }
     }
+    //RESIZE
     resize() {
         this.updateAttributes();
+    }
+    //ROTATE
+    rotateTo(newAngle) {
+        this.phi = newAngle;
+        this.updateFrameAndPoints();
     }
 }
 
@@ -1229,11 +1351,13 @@ class starPolygon extends object {
 class pentagram extends object {
     constructor() {
         super('g');
+        this.type = 'star';
         this.path = "";
         this.r = 0;
         this.phi = 0;
         this.step = 2;
         this.vertNum = curPentagramVertNum;
+        this.step = Math.floor((this.vertNum - 3) / 2) + 1;
         this.verticesCoords = [];
         this.star = document.createElementNS("http://www.w3.org/2000/svg", 'path');
         this.circle = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
@@ -1255,6 +1379,7 @@ class pentagram extends object {
         this.fix = this.fix.bind(this);
         this.free = this.free.bind(this);
         this.updateVertNum = this.updateVertNum.bind(this);
+        this.updateStep = this.updateStep.bind(this);
         this.addHotKeys();
     }
     createClone() {
@@ -1265,9 +1390,27 @@ class pentagram extends object {
         clone.r = this.r;
         clone.phi = this.phi;
         clone.vertNum = this.vertNum;
+        clone.step = this.step;
         clone.vertices = this.vertices;
         clone.updateFrameAndPoints();
         return clone;
+    }
+    addParameters() {
+        pol_panel.style.display = "flex";
+        step_panel.style.display = "flex";
+        polN.min = "5";
+    }
+    updateParameters() {
+        polX.value = this.x0;
+        polY.value = this.y0;
+        polR.value = this.r;
+        polN.value = this.vertNum;
+        polS.value = this.step;
+        angleInput.value = this.phi * 180.0 / Math.PI;
+    }
+    removeParameters() {
+        pol_panel.style.display = "none";
+        step_panel.style.display = "none";
     }
     updateAttributes() {
         let dx = curX - this.x0,
@@ -1304,16 +1447,18 @@ class pentagram extends object {
                 else this.pointsArray[i].setPointAttribute("fill", "white");
             }
         }
-        this.step = Math.floor((this.vertNum - 3) / 2) + 1;
         this.path = "M " + this.verticesCoords[0].x + "," + this.verticesCoords[0].y;
         this.endInd = 0;
+        this.count = 0;
         this.setPath(this.step);
         this.path += "L " + this.verticesCoords[0].x + "," + this.verticesCoords[0].y;
-        if (this.vertNum % 4 == 2) {
-            this.path += "M " + this.verticesCoords[1].x + "," + this.verticesCoords[1].y;
-            this.endInd = 1;
-            this.setPath(this.step + 1);
-            this.path += "L " + this.verticesCoords[1].x + "," + this.verticesCoords[1].y;
+        if (this.vertNum != this.count) {
+            for (let i = 1; i < this.step; i++) {
+                this.path += "M " + this.verticesCoords[i].x + "," + this.verticesCoords[i].y;
+                this.endInd = i;
+                this.setPath(this.step + i);
+                this.path += "L " + this.verticesCoords[i].x + "," + this.verticesCoords[i].y;
+            }
         }
 
         this.star.setAttribute('d', this.path);
@@ -1322,17 +1467,20 @@ class pentagram extends object {
         this.verticesCoords = [];
     }
     setPath(ind) {
+        this.count++;
         if (ind == this.endInd) return;
         this.path += "L " + this.verticesCoords[ind].x + "," + this.verticesCoords[ind].y;
         this.setPath((ind + this.step) % this.vertNum);
     }
     addHotKeys() {
         document.addEventListener('keydown', this.updateVertNum);
+        document.addEventListener('keydown', this.updateStep);
         document.addEventListener('keydown', this.fix);
         document.addEventListener('keyup', this.free);
     }
     removeHotKeys() {
         document.removeEventListener('keydown', this.updateVertNum);
+        document.removeEventListener('keydown', this.updateStep);
         this.rotationIsFixed = false;
         this.angleIsFixed = false;
         this.radiusIsFixed = false;
@@ -1348,17 +1496,31 @@ class pentagram extends object {
             curPentagramVertNum--;
             this.vertNum--;
         }
-        for (let i = 0; i < this.pointsArray.length; i++) {
-            this.pointsArray[i].remove();
+        if (current.code == 'ArrowUp' || current.code == 'ArrowDown' || current.code == 'changeN') {
+            this.step = Math.floor((this.vertNum - 3) / 2) + 1;
+            for (let i = 0; i < this.pointsArray.length; i++) {
+                this.pointsArray[i].remove();
+            }
+            this.pointsArray = [];
+            for (let i = 0; i < this.vertNum; i++) {
+                this.pointsArray.push(new point(this.x0, this.y0, this, {
+                    action: "polygon",
+                    attr: "polygon"
+                }));
+            }
+            this.updateAttributes();
         }
-        this.pointsArray = [];
-        for (let i = 0; i < this.vertNum; i++) {
-            this.pointsArray.push(new point(this.x0, this.y0, this, {
-                action: "polygon",
-                attr: "polygon"
-            }));
+    }
+    updateStep(current) {
+        if (current.code == 'ArrowRight' && this.step + 1 <= Math.floor((this.vertNum - 3) / 2) + 1) {
+            this.step++;
         }
-        this.updateAttributes();
+        if (current.code == 'ArrowLeft' && this.step - 1 >= 2) {
+            this.step--;
+        }
+        if (current.code == 'ArrowRight' || current.code == 'ArrowLeft') {
+            this.updateAttributes();
+        }
     }
     fix(event) {
         event.preventDefault();
@@ -1389,6 +1551,7 @@ class pentagram extends object {
             this.updateAttributes();
         }
     }
+    //MOVE
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.updateFrameAndPoints(this.x0 + dx, this.y0 + dy);
     }
@@ -1408,8 +1571,14 @@ class pentagram extends object {
             y: (this.y0 - this.r) - pointRadius
         }
     }
+    //RESIZE
     resize() {
         this.updateAttributes();
+    }
+    //ROTATE
+    rotateTo(newAngle) {
+        this.phi = newAngle;
+        this.updateFrameAndPoints();
     }
 }
 
@@ -1431,8 +1600,7 @@ class pencil extends object {
             y: this.minY + (this.maxY - this.minY) / 2
         };
         this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
-        this.svgElement.setAttribute('stroke-linejoin', "round");
-        this.svgElement.setAttribute('stroke-linecap', "round");
+        makeRoundStroke(this);
         //rotate 
         this.angle = 0;
     }
@@ -1461,6 +1629,17 @@ class pencil extends object {
         }
         clone.updateFrameAndPoints();
         return clone;
+    }
+    addParameters() {
+        pen_panel.style.display = "flex";
+    }
+    updateParameters() {
+        penX.value = this.minX;
+        penY.value = this.minY;
+        angleInput.value = this.angle * 180.0 / Math.PI;
+    }
+    removeParameters() {
+        pen_panel.style.display = "none";
     }
     updateAttributes() {
         this.path += " " + curX + "," + curY;
@@ -1498,6 +1677,7 @@ class pencil extends object {
         this.pointsArray[0].update(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2, transform);
         this.pointsArray[1].update(minX + (maxX - minX) / 2, minY - 20, transform);
     }
+    //MOVE
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.updateFrameAndPoints(getRotateCoords(dx, dy, this.angle).x, getRotateCoords(dx, dy, this.angle).y,
             this.minX + getRotateCoords(dx, dy, this.angle).x,
@@ -1538,6 +1718,7 @@ class pencil extends object {
             y: this.minY - pointRadius
         }
     }
+    //ROTATE
     startRotating() {
         this.rPoint = {
             x: this.getNewCoords(this.minX + (this.maxX - this.minX) / 2, this.minY - 20, this.angle).x,
@@ -1553,12 +1734,19 @@ class pencil extends object {
             Math.acos(angleCos) + angle : 2 * Math.PI - Math.acos(angleCos) + angle;
         this.transform = 'rotate(' + newAngle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
         this.svgElement.setAttribute('transform', this.transform);
-        this.updateFrameAndPoints(0, 0, this.minX, this.minY, this.maxX, this.maxY, this.transform);
+        this.updateFrameAndPoints();
     }
     stopRotating() {
         let argss = this.transform.split('(')[1],
             args = argss.split(')')[0],
             newAngle = args.split(' ')[0] * Math.PI / 180.0;
+        this.angle = newAngle;
+        this.angle = this.angle > 2 * Math.PI ? this.angle - 2 * Math.PI : this.angle;
+        this.updateFrameAndPoints();
+    }
+    rotateTo(newAngle) {
+        this.transform = 'rotate(' + newAngle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
+        this.svgElement.setAttribute('transform', this.transform);
         this.angle = newAngle;
         this.angle = this.angle > 2 * Math.PI ? this.angle - 2 * Math.PI : this.angle;
         this.updateFrameAndPoints();
@@ -1591,6 +1779,7 @@ class pencil extends object {
                 attr: "rotate"
             })
         ];
+        makePrevStroke();
         this.path = "";
         super.complete();
     }
@@ -1684,13 +1873,32 @@ class line extends object {
         clone.isFree = this.isFree;
         clone.cPoint = this.cPoint;
         clone.angle = this.angle;
-        clone.svgElement.setAttribute('x1', this.svgElement.getAttribute('x1'));
-        clone.svgElement.setAttribute('y1', this.svgElement.getAttribute('y1'));
-        clone.svgElement.setAttribute('x2', this.svgElement.getAttribute('x2'));
-        clone.svgElement.setAttribute('y2', this.svgElement.getAttribute('y2'));
+        clone.svgElement.setAttribute('x1', this.x0);
+        clone.svgElement.setAttribute('y1', this.y0);
+        clone.svgElement.setAttribute('x2', this.x2);
+        clone.svgElement.setAttribute('y2', this.y2);
         clone.svgElement.setAttribute('fill', "none");
         clone.svgElement.setAttribute('transform', this.transform);
         return clone;
+    }
+    addParameters() {
+        line_panel.style.display = "flex";
+    }
+    updateParameters() {
+        lineX1.value = this.x0;
+        lineY1.value = this.y0;
+        lineX2.value = this.x2;
+        lineY2.value = this.y2;
+        let x1x2 = this.x2 - this.x0;
+        let y1y2 = this.y2 - this.y0;
+        this.len = Math.sqrt(x1x2 ** 2 + y1y2 ** 2);
+        lineL.value = this.len;
+        this.sin = Math.abs(x1x2 / this.len);
+        this.cos = Math.abs(y1y2 / this.len);
+        angleInput.value = this.angle * 180.0 / Math.PI;
+    }
+    removeParameters() {
+        line_panel.style.display = "none";
     }
     updateAttributes(current) {
         let w = curX - this.x0;
@@ -1740,6 +1948,7 @@ class line extends object {
         this.pointsArray[8].update(x0 + (x2 - x0) / 2, y0 + (y2 - y0) / 2, transform);
         this.pointsArray[9].update(x0 + (x2 - x0) / 2, y0 + (y2 - y0) / 2 - 25, transform);
     }
+    //MOVE
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         let new_dx = getRotateCoords(dx, dy, this.angle).x,
             new_dy = getRotateCoords(dx, dy, this.angle).y;
@@ -1782,6 +1991,7 @@ class line extends object {
             y: Math.min(this.y0, this.y2) - pointRadius
         }
     }
+    //RESIZE
     startResize() {
         this.resizeTemp = {
             x0: this.x0,
@@ -1859,6 +2069,7 @@ class line extends object {
         this.svgElement.setAttribute('transform', this.transform);
         this.updateFrameAndPoints();
     }
+    //ROTATE
     startRotating() {
         this.rPoint = {
             x: this.getNewCoords(this.x0 + (this.x2 - this.x0) / 2, this.y0 + (this.y2 - this.y0) / 2 - 25, this.angle).x,
@@ -1878,12 +2089,23 @@ class line extends object {
         this.svgElement.setAttribute('y2', this.y2);
         this.transform = 'rotate(' + newAngle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
         this.svgElement.setAttribute('transform', this.transform);
-        this.updateFrameAndPoints(this.x0, this.y0, this.x2, this.y2, this.transform);
+        this.updateFrameAndPoints();
     }
     stopRotating() {
         let argss = this.transform.split('(')[1],
             args = argss.split(')')[0],
             newAngle = args.split(' ')[0] * Math.PI / 180.0;
+        this.angle = newAngle;
+        this.angle = this.angle > 2 * Math.PI ? this.angle - 2 * Math.PI : this.angle;
+        this.updateFrameAndPoints();
+    }
+    rotateTo(newAngle) {
+        this.svgElement.setAttribute('x1', this.x0);
+        this.svgElement.setAttribute('y1', this.y0);
+        this.svgElement.setAttribute('x2', this.x2);
+        this.svgElement.setAttribute('y2', this.y2);
+        this.transform = 'rotate(' + newAngle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
+        this.svgElement.setAttribute('transform', this.transform);
         this.angle = newAngle;
         this.angle = this.angle > 2 * Math.PI ? this.angle - 2 * Math.PI : this.angle;
         this.updateFrameAndPoints();
@@ -1952,6 +2174,18 @@ class polyline extends object {
         clone.updateFrameAndPoints();
         return clone;
     }
+
+    addParameters() {
+        pLine_panel.style.display = "flex";
+    }
+    updateParameters() {
+        pLineX.value = this.minX;
+        pLineY.value = this.minY;
+        angleInput.value = this.angle * 180.0 / Math.PI;
+    }
+    removeParameters() {
+        pLine_panel.style.display = "none";
+    }
     updateLine(current) {
         this.line.updateAttributes(current);
         if ((curX - this.x0) ** 2 + (curY - this.y0) ** 2 <= pointRadius ** 2 && this.pointsArray.length > 1) {
@@ -2007,6 +2241,7 @@ class polyline extends object {
         this.frameArray[0].update(this.path, transform);
         this.svgElement.setAttribute('points', this.path);
     }
+    //MOVE
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         let new_dx = getRotateCoords(dx, dy, this.angle).x,
             new_dy = getRotateCoords(dx, dy, this.angle).y;
@@ -2052,6 +2287,7 @@ class polyline extends object {
             this.updateFrameAndPoints();
         }
     }
+    //RESIZE
     resize() {
         let new_curX = this.getNewCoords(curX, curY, 2 * Math.PI - this.angle).x,
             new_curY = this.getNewCoords(curX, curY, 2 * Math.PI - this.angle).y;
@@ -2068,11 +2304,11 @@ class polyline extends object {
             x: this.minX + (this.maxX - this.minX) / 2,
             y: this.minY + (this.maxY - this.minY) / 2
         };
-
         this.transform = 'rotate(' + this.angle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
         this.svgElement.setAttribute('transform', this.transform);
         this.updateFrameAndPoints();
     }
+    //ROTATE
     startRotating() {
         this.rPoint = {
             x: this.getNewCoords(this.minX + (this.maxX - this.minX) / 2, this.minY + (this.maxY - this.minY) / 2 - 20, this.angle).x,
@@ -2088,12 +2324,19 @@ class polyline extends object {
             Math.acos(angleCos) + angle : 2 * Math.PI - Math.acos(angleCos) + angle;
         this.transform = 'rotate(' + newAngle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
         this.svgElement.setAttribute('transform', this.transform);
-        this.updateFrameAndPoints(0, 0, this.minX, this.minY, this.maxX, this.maxY, this.transform);
+        this.updateFrameAndPoints();
     }
     stopRotating() {
         let argss = this.transform.split('(')[1],
             args = argss.split(')')[0],
             newAngle = args.split(' ')[0] * Math.PI / 180.0;
+        this.angle = newAngle;
+        this.angle = this.angle > 2 * Math.PI ? this.angle - 2 * Math.PI : this.angle;
+        this.updateFrameAndPoints();
+    }
+    rotateTo(newAngle) {
+        this.transform = 'rotate(' + newAngle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
+        this.svgElement.setAttribute('transform', this.transform);
         this.angle = newAngle;
         this.angle = this.angle > 2 * Math.PI ? this.angle - 2 * Math.PI : this.angle;
         this.updateFrameAndPoints();

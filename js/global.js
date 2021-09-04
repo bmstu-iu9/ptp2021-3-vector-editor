@@ -39,7 +39,7 @@ var left_panel = document.getElementById("left_panel");
 var buttons = left_panel.getElementsByClassName("tool_button");
 for (var i = 0; i < buttons.length; i++) {
 	buttons[i].addEventListener("click", function () {
-		var current = document.getElementsByClassName("tool_button active");
+		var current = left_panel.getElementsByClassName("tool_button active");
 		if (current.length > 0) {
 			current[0].className = "tool_button";
 		}
@@ -52,8 +52,8 @@ let isEraserActive = false;
 function getCoords(elem) {
 	let box = elem.getBoundingClientRect();
 	return {
-		top: box.top + pageYOffset,
-		left: box.left + pageXOffset,
+		top: box.top + scrollY,
+		left: box.left + scrollX,
 	};
 }
 
@@ -62,29 +62,31 @@ function updateCursorCoords(current) {
 	curY = Math.round((current.pageY - svgPanelCoords.top) / scaleСoef);
 }
 
+//преобразование декартовых координат при повороте системы координат
+function getRotateCoords(x, y, angle) {
+	return {
+		x: x * Math.cos(angle) + y * Math.sin(angle),
+		y: -x * Math.sin(angle) + y * Math.cos(angle)
+	};
+}
+
 window.onresize = function () {
 	svgPanelCoords = getCoords(svgPanel);
 	scrollcoords = getCoords(scrollPanel);
 	updateRulers();
 }
 
-window.onload = function () {
-	updateRulers();
-}
-
-//updateRulersPos
-function updateRulersPos() {
-	rulerX.style.top = scrollPanel.scrollTop + "px";
-	rulerX.style.left = scrollPanel.scrollLeft + 15 + "px";
-	rulerY.style.top = scrollPanel.scrollTop + 15 + "px";
-	rulerY.style.left = scrollPanel.scrollLeft + "px";
-}
-
 scrollPanel.onscroll = function () {
 	svgPanelCoords = getCoords(svgPanel);
-	updateRulersPos();
 	updateRulers();
 };
+
+let firstWidth = svgPanel.clientWidth,
+	firstHeight = svgPanel.clientHeight;
+
+function updateSizeOfCanvas() {
+	firstWidth = svgPanel.clientWidth, firstHeight = svgPanel.clientHeight;
+}
 
 function resetCurrentObject() {
 	if (currentObject != null) {
@@ -92,12 +94,4 @@ function resetCurrentObject() {
 		currentObject.removePanel()
 		currentObject = null;
 	}
-}
-
-//преобразование декартовых координат при повороте системы координат
-function getRotateCoords(x, y, angle) {
-	return {
-		x: x * Math.cos(angle) + y * Math.sin(angle),
-		y: -x * Math.sin(angle) + y * Math.cos(angle)
-	};
 }

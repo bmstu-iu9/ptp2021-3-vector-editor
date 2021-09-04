@@ -8,7 +8,7 @@ function updateRulers() {
   ruler_x_pattern.setAttribute("x", svgPanelCoords.left - rulerXcoords.left);
   ruler_y_pattern.setAttribute("y", svgPanelCoords.top - rulerYcoords.top);
   var text_dist = 50 * scaleСoef;
-  var coef = 1; 
+  var coef = 1;
   if (text_dist > 100) {
     for (text_dist; text_dist > 60; text_dist /= 2) {
       coef *= 1 / 2;
@@ -26,12 +26,12 @@ function updateRulers() {
   var text = 0;
   for (var i = parseFloat(ruler_x_pattern.getAttribute("x")); i < parseInt(rulerX.style.width);) {
     var newText = document.createElement("text");
-    newText.setAttribute("x", i+1);
-    newText.setAttribute("y", 8);  
+    newText.setAttribute("x", i + 1);
+    newText.setAttribute("y", 8);
     ruler_x_text.innerHTML += "<text x=" + newText.getAttribute("x") + " " + "y=" + newText.getAttribute("y") + ">" + text + "</text>";
     text += 50 * coef;
     i += text_dist;
-  } 
+  }
   text = -50 * coef;
   for (var i = svgPanelCoords.left - rulerXcoords.left - text_dist; i > 0;) {
     var newText = document.createElement("text");
@@ -47,12 +47,12 @@ function updateRulers() {
     var newText = document.createElement("text");
     newText.textContent = String(text);
     newText.setAttribute("x", 8);
-    newText.setAttribute("y", i); 
-    newText.setAttribute("transform", "rotate(-90 8 " + i + ")");  
-    ruler_y_text.appendChild(newText); 
+    newText.setAttribute("y", i);
+    newText.setAttribute("transform", "rotate(-90 8 " + i + ")");
+    ruler_y_text.appendChild(newText);
     text += 50 * coef;
     i += text_dist;
-  } 
+  }
   ruler_y_text.innerHTML = ruler_y_text.innerHTML;
   text = -50 * coef;
   for (var i = svgPanelCoords.top - rulerYcoords.top - text_dist; i > 0;) {
@@ -60,7 +60,7 @@ function updateRulers() {
     newText.textContent = String(text);
     newText.setAttribute("x", 8);
     newText.setAttribute("y", i);
-    newText.setAttribute("transform", "rotate(-90 8 " + i + ")");  
+    newText.setAttribute("transform", "rotate(-90 8 " + i + ")");
     ruler_y_text.appendChild(newText);
     text -= 50 * coef;
     i -= text_dist;
@@ -71,9 +71,9 @@ function updateRulers() {
   for (var i = 0; i < 10; i++) {
     var newLine = document.createElement("line");
     if (i == 0) {
-      newLine.setAttribute("y1", 0); 
+      newLine.setAttribute("y1", 0);
     } else {
-      newLine.setAttribute("y1", 10); 
+      newLine.setAttribute("y1", 10);
     }
     newLine.setAttribute("x1", dist);
     newLine.setAttribute("x2", dist);
@@ -87,9 +87,9 @@ function updateRulers() {
   for (var i = 0; i < 10; i++) {
     var newLine = document.createElement("line");
     if (i == 0) {
-      newLine.setAttribute("x1", 0); 
+      newLine.setAttribute("x1", 0);
     } else {
-      newLine.setAttribute("x1", 10); 
+      newLine.setAttribute("x1", 10);
     }
     newLine.setAttribute("y1", dist);
     newLine.setAttribute("y2", dist);
@@ -99,3 +99,5 @@ function updateRulers() {
   }
   ruler_y_pattern.innerHTML = ruler_y_pattern.innerHTML;
 }
+
+updateRulers();

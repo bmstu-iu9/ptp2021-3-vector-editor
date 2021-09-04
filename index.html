@@ -9,6 +9,7 @@
   <meta name="keywords" content="графический редактор, создать, удалить, переместить, объединить">
   <meta name="authors" content="">
   <title>Pentagram - svg-редактор</title>
+  <link rel="icon" href="img/icon.svg" type="image/x-icon">
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/right.css" />
   <link rel="stylesheet" href="css/help.css" />
@@ -47,7 +48,7 @@
             <li id="savePng"> Сохранить как PNG </li>
           </ul>
         </li>
-        <li> Редактировать
+        <li id="edit"> Редактировать
           <ul class="sub_menu">
             <li id="cut"> Вырезать </li>
             <li id="copy"> Копировать </li>
@@ -77,16 +78,49 @@
     <div id="obj_panel">
       <img title="На передний план" class=func_button id="frontObject" src="img/to_front.svg">
       <img title="На задний план" class=func_button id="backObject" src="img/to_back.svg">
+      <img src="img/angle.svg" class="not_buttons">
+      <input id="angle" type="number" class="property" required>
     </div>
     <div class="properties_panel" id="rect_panel">
       &nbsp;x <input id="rectX" type="number" class="property" required>
       &nbsp;y <input id="rectY" type="number" class="property" required>
       &nbsp;w <input id="rectW" type="number" class="property" min="1" required>
       &nbsp;h <input id="rectH" type="number" class="property" min="1" required>
-      <img src="img/angle.svg" class="not_buttons">
-      <input id="rectA" type="number" class="property a" min="-180" max="180" required>
       <img src="img/corner.svg" class="not_buttons">
-      <input id="rectR" type="number" class="property" min="0" max="100" required>
+      <input id="rectR" type="number" class="property" min="0" max="50" style="
+      width: 40px;" required>
+    </div>
+    <div class="properties_panel" id="ell_panel">
+      &nbsp;cx <input id="ellCX" type="number" class="property" required>
+      &nbsp;cy <input id="ellCY" type="number" class="property" required>
+      &nbsp;rx <input id="ellRX" type="number" class="property" min="1" required>
+      &nbsp;ry <input id="ellRY" type="number" class="property" min="1" required>
+    </div>
+    <div class="properties_panel" id="pen_panel">
+      &nbsp;x <input id="penX" type="number" class="property" required>
+      &nbsp;y <input id="penY" type="number" class="property" required>
+    </div>
+    <div class="properties_panel" id="line_panel">
+      &nbsp;x1 <input id="lineX1" type="number" class="property" required>
+      &nbsp;y1 <input id="lineY1" type="number" class="property" required>
+      &nbsp;x2 <input id="lineX2" type="number" class="property" required>
+      &nbsp;y2 <input id="lineY2" type="number" class="property" required>
+      &nbsp;len <input id="lineL" type="number" class="property" min="1" required>
+    </div>
+    <div class="properties_panel" id="pol_panel">
+      &nbsp;x <input id="polX" type="number" class="property" required>
+      &nbsp;y <input id="polY" type="number" class="property" required>
+      &nbsp;r <input id="polR" type="number" class="property" min="1" required>
+      &nbsp;n <input id="polN" type="number" class="property" style="
+      width: 40px;" required>
+    </div>
+    <div id="step_panel">
+      &nbsp;step <input id="polS" type="number" class="property" style="
+      width: 40px;" required>
+    </div>
+    <div class="properties_panel" id="pLine_panel">
+      &nbsp;x <input id="pLineX" type="number" class="property" required>
+      &nbsp;y <input id="pLineY" type="number" class="property" required>
     </div>
 
   </header>
@@ -150,10 +184,11 @@
         <div id="widthBox"><img src="img/stroke/width.svg"><input type="number" id="strokeWidth" min="0" max="100"
             value="2" title="Ширина контура"></div>
         <div class="styleListBox">
-          <input type="checkbox" name="stroke" id="dash" hidden><label for="dash"><img
-              src="img/stroke/lines.svg"></label>
+          <input type="checkbox" name="stroke" id="dash" hidden><label for="dash">
+            <img id="dashImg" src="img/stroke/lines.svg"></label>
           <ul class="styleList" id="lines">
-            <li><input type="radio" name="dash" id="d0" hidden><label for="d0"><img src="img/stroke/line0.svg"></label>
+            <li><input type="radio" name="dash" id="d0" hidden checked><label for="d0">
+                <img src="img/stroke/line0.svg"></label>
             </li>
             <li><input type="radio" name="dash" id="d1" hidden><label for="d1"><img src="img/stroke/line1.svg"></label>
             </li>
@@ -169,10 +204,11 @@
         </div>
 
         <div class="styleListBox">
-          <input type="checkbox" name="stroke" id="join" hidden><label for="join"><img
-              src="img/stroke/join0.svg"></label>
+          <input type="checkbox" name="stroke" id="join" hidden><label for="join">
+            <img id="joinImg" src="img/stroke/join0.svg"></label>
           <ul class="styleList">
-            <li><input type="radio" name="join" id="j0" hidden><label for="j0"><img src="img/stroke/join0.svg"></label>
+            <li><input type="radio" name="join" id="j0" hidden checked><label for="j0">
+                <img src="img/stroke/join0.svg"></label>
             </li>
             <li><input type="radio" name="join" id="j1" hidden><label for="j1"><img src="img/stroke/join1.svg"></label>
             </li>
@@ -182,9 +218,11 @@
         </div>
 
         <div class="styleListBox">
-          <input type="checkbox" name="stroke" id="cap" hidden><label for="cap"><img src="img/stroke/cap0.svg"></label>
+          <input type="checkbox" name="stroke" id="cap" hidden><label for="cap">
+            <img id="capImg" src="img/stroke/cap0.svg"></label>
           <ul class="styleList">
-            <li><input type="radio" name="cap" id="c0" hidden><label for="c0"><img src="img/stroke/cap0.svg"></label>
+            <li><input type="radio" name="cap" id="c0" hidden checked><label for="c0">
+                <img src="img/stroke/cap0.svg"></label>
             </li>
             <li><input type="radio" name="cap" id="c1" hidden><label for="c1"><img src="img/stroke/cap1.svg"></label>
             </li>

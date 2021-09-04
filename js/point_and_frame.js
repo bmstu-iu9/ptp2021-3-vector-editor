@@ -19,6 +19,7 @@ class point {
         //select
         this.circle.addEventListener("mousedown", function () {
             if (wasPressed == "cursor") {
+                this.setColor("red");
                 isSomePointSelected = true;
                 this.isSelected = true;
             }
@@ -52,16 +53,7 @@ class point {
         }
         //rotateObject
         if (this.type.action == "rotate") {
-            this.circle.addEventListener("mouseover", function () {
-                if (wasPressed == "cursor") {
-                    svgPanel.style.cursor = "url(img/rotate.svg) 10 10, pointer";
-                }
-            });
-            this.circle.addEventListener("mouseout", function () {
-                if (!this.object.isRotating && wasPressed == "cursor") {
-                    svgPanel.style.cursor = "default";
-                }
-            }.bind(this));
+            this.circle.style.cursor = "url(img/rotate.svg) 10 10, pointer";
 
             const rotate = ((current) => {
                 if (this.object.isRotating) {
@@ -89,10 +81,12 @@ class point {
                     currentPointTypeAttr = null;
                     this.isSelected = false;
                     isSomePointSelected = false;
+                    doFunc("rotate", this.object, this.object.angle)
                     this.object.stopRotating();
+                    this.object.updateParameters();
                 }
             }).bind(this);
-            svgPanel.addEventListener("mouseup", stopRotating);
+            document.addEventListener("mouseup", stopRotating);
         }
         //movePoint
         if (this.type.action == "resize" || this.type.action == "polygon" || this.type.action == "polyline") {
@@ -120,16 +114,17 @@ class point {
             const stopMoving = (() => {
                 if (this.isMoving) {
                     this.isMoving = false;
-                    if (this.circle != null) this.circle.setAttribute('fill', "white");
                     currentPointTypeAttr = null;
                     this.isSelected = false;
+                    this.setColor("white");
                     isSomePointSelected = false;
                     document.removeEventListener("mousemove", move);
                     this.object.stopResize();
+                    this.object.updateParameters();
                     this.object.removeHotKeys();
                 }
             }).bind(this);
-            svgPanel.addEventListener("mouseup", stopMoving);
+            document.addEventListener("mouseup", stopMoving);
         }
         //удаление точки пера
         const deletePoint = ((event) => {
@@ -154,7 +149,7 @@ class point {
         return clone;
     }
     setColor(color) {
-        if (!isSomePointSelected && this.object.isCompleted) {
+        if (this.circle != null && !isSomePointSelected && this.object.isCompleted) {
             this.circle.setAttribute('fill', color);
         }
     }
@@ -174,10 +169,8 @@ class point {
         this.circle.setAttribute(attributeName, value);
     }
     update(x, y, transform, attr = this.type.attr) {
-        if (this.type.action != "polygon") {
-            if (currentPointTypeAttr != null && currentPointTypeAttr == attr) this.circle.setAttribute('fill', "red");
-            else this.circle.setAttribute('fill', "white");
-        }
+        if (currentPointTypeAttr == null || currentPointTypeAttr != attr)
+            this.setColor("white");
         this.x = x;
         this.y = y;
         if (transform) {

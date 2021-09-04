@@ -36,14 +36,8 @@ document.addEventListener('keydown', function (event) {
 function copyFunc() {
     buffer = currentObject.createClone();
     buffer.moveTo(0, 0);
-    paste.style.color = "#fff";
-    paste.style.cursor = "pointer";
-    paste.onmouseover = () => {
-        paste.style.background = "#555";
-    }
-    paste.onmouseout = () => {
-        paste.style.background = "#333";
-    }
+    currentObject.addPanel();
+    unblockEditing(3);
 }
 
 //PASTE
@@ -60,13 +54,14 @@ document.addEventListener('keydown', function (event) {
 });
 
 function pasteFunc() {
-    if (currentObject != null) currentObject.hideFrameAndPoints();
+    resetCurrentObject();
     buffer.show();
     currentObject = buffer;
     doFunc("create", currentObject);
     buffer = buffer.createClone();
     buffer.move(50, 50);
     buffer.stopMoving(50, 50);
+    currentObject.addPanel();
 }
 
 //CUT
@@ -84,6 +79,25 @@ document.addEventListener('keydown', function (event) {
         deleteFunc();
     }
 });
+
+editFunctions = [cut, copy, deleteObject, paste];
+
+function unblockEditing(i) {
+    func = editFunctions[i];
+    func.style.color = "#fff";
+    func.style.cursor = "pointer";
+    func.onmouseover = (e) => e.target.style.background = "#555";
+    func.onmouseout = (e) => e.target.style.background = "#333";
+}
+
+function blockEditing(i) {
+    func = editFunctions[i];
+    func.style.color = "#999";
+    func.style.cursor = "default";
+    func.style.background = "#333";
+    func.onmouseover = null;
+    func.onmouseout = null;
+}
 
 function centralLocation(width, height) {
     svgPanel.setAttribute('style', 'top: 50%; left: 50%; transform: translate(-50%, -50%);');
@@ -123,6 +137,7 @@ create.onclick = function () {
     createFirstLayer();
     canvas.setAttribute('width', width);
     canvas.setAttribute('height', height);
+    updateSizeOfCanvas();
 }
 
 //OPEN
@@ -172,6 +187,7 @@ function readFile(object) {
         canvas.setAttribute('height', height);
     };
     reader.readAsText(file);
+    updateSizeOfCanvas();
 }
 
 document.getElementById("file-selector").addEventListener("change", readFile);
@@ -241,25 +257,25 @@ savePng.onclick = function () {
 //SCALING
 zoomIn = document.getElementById("zoomIn");
 zoomIn.onclick = function () {
-    svgPanelCoords = getCoords(svgPanel);
-    svgPanel.style.transform = "translate(0, 0)";
     svgPanel.style.left = svgPanelCoords.left - scrollcoords.left;
     svgPanel.style.top = svgPanelCoords.top - scrollcoords.top;
-    svgPanel.style.width = svgPanel.clientWidth * 1.5 + "px";
-    svgPanel.style.height = svgPanel.clientHeight * 1.5 + "px";
+    w = svgPanel.clientWidth * 1.5, h = svgPanel.clientHeight * 1.5;
+    centralLocation(w, h);
+    svgPanel.style.width = w + "px";
+    svgPanel.style.height = h + "px";
     scaleСoef *= 1.5;
+    svgPanelCoords = getCoords(svgPanel);
     updateRulers();
 }
 
 zoomOut = document.getElementById("zoomOut");
 zoomOut.onclick = function () {
-    svgPanelCoords = getCoords(svgPanel);
-    svgPanel.style.transform = "translate(0, 0)";
-    svgPanel.style.left = svgPanelCoords.left - scrollcoords.left;
-    svgPanel.style.top = svgPanelCoords.top - scrollcoords.top;
-    svgPanel.style.width = svgPanel.clientWidth / 1.5 + "px";
-    svgPanel.style.height = svgPanel.clientHeight / 1.5 + "px";
+    w = svgPanel.clientWidth / 1.5, h = svgPanel.clientHeight / 1.5;
+    centralLocation(w, h);
+    svgPanel.style.width = w + "px";
+    svgPanel.style.height = h + "px";
     scaleСoef /= 1.5;
+    svgPanelCoords = getCoords(svgPanel);
     updateRulers();
 }
 
@@ -269,12 +285,6 @@ frontObject = document.getElementById("frontObject");
 frontObject.onclick = function () {
     if (currentObject != null) {
         currentObject.appendSvgElement();
-        for (let i = 0; i < currentObject.frameArray.length; i++) {
-            svgPanel.append(currentObject.frameArray[i].svgElement);
-        }
-        for (let i = 0; i < currentObject.pointsArray.length; i++) {
-            svgPanel.append(currentObject.pointsArray[i].circle);
-        }
     }
 }
 
@@ -354,6 +364,12 @@ class action {
                 let coords = this.attr;
                 this.attr = this.object.getCornerCoords();
                 this.object.moveTo(coords.x, coords.y);
+                break;
+            case "rotate":
+                let ang = this.attr;
+                this.attr = this.object.angle;
+                this.object.rotateTo(ang);
+                break;
         }
         redoActions.push(this);
         if (redoActions.length > maxActionsNum) redoActions.shift();
@@ -361,6 +377,7 @@ class action {
     redo() {
         switch (this.type) {
             case "delete":
+                if (currentObject == this.object) currentObject = null;
                 this.object.hide();
                 break;
             case "create":
@@ -370,6 +387,12 @@ class action {
                 let coords = this.attr;
                 this.attr = this.object.getCornerCoords();
                 this.object.moveTo(coords.x, coords.y);
+                break;
+            case "rotate":
+                let ang = this.attr;
+                this.attr = this.object.angle;
+                this.object.rotateTo(ang);
+                break;
         }
         undoActions.push(this);
         if (undoActions.length > maxActionsNum) undoActions.shift();

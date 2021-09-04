@@ -104,7 +104,8 @@ header {
 
 #functions,
 #obj_panel,
-.properties_panel {
+.properties_panel,
+#step_panel {
     height: 60%;
     width: initial;
     display: flex;
@@ -127,7 +128,8 @@ header {
 /*properties_panel*/
 
 #obj_panel,
-.properties_panel {
+.properties_panel,
+#step_panel {
     display: none;
     cursor: default;
 }
@@ -257,7 +259,7 @@ main {
     /*-webkit-box-shadow: inset 0px 0px 0 2px #191919;*/
 }
 
-::-webkit-scrollbar-thumb:hover{
+::-webkit-scrollbar-thumb:hover {
     background-color: #555;
 }
 

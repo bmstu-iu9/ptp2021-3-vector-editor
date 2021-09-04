@@ -177,19 +177,32 @@ polR.onchange = () => {
 
 polN.onchange = () => {
     let n = polN.value;
-    if (n < 3) {
-        polN.value = 3;
+    if (n < 3)
         n = 3;
-    }
-    if (currentObject.type == 'star' && n < 5) {
-        polN.value = 5;
+    if (currentObject.type == 'star' && n < 5)
         n = 5;
-    }
+    polN.value = n;
     currentObject.vertNum = n;
     currentObject.radiusIsFixed = true;
     currentObject.updateVertNum(e = {
-        code: "none"
+        code: "changeN"
     });
+    currentObject.radiusIsFixed = false;
+    if (currentObject.type == 'star') {
+        var event = new Event('change');
+        polS.dispatchEvent(event);
+    }
+}
+
+polS.onchange = () => {
+    let s = Number(polS.value);
+    if (s < 2) s = 2;
+    let max = Math.floor((currentObject.vertNum - 3) / 2) + 1;
+    if (s > max) s = max;
+    polS.value = s;
+    currentObject.step = s;
+    currentObject.radiusIsFixed = true;
+    currentObject.updateFrameAndPoints();
     currentObject.radiusIsFixed = false;
 }
 

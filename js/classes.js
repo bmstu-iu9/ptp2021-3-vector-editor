@@ -975,6 +975,7 @@ class polygon extends object {
     }
     addParameters() {
         pol_panel.style.display = "flex";
+        polN.min = "3";
     }
     updateParameters() {
         polX.value = this.x0;
@@ -1046,7 +1047,7 @@ class polygon extends object {
             curVertNum--;
             this.vertNum--;
         }
-        if (current.code == 'ArrowUp' || current.code == 'ArrowDown') {
+        if (current.code == 'ArrowUp' || current.code == 'ArrowDown' || current.code == 'changeN') {
             for (let i = 0; i < this.pointsArray.length; i++) {
                 this.pointsArray[i].remove();
             }
@@ -1164,6 +1165,7 @@ class starPolygon extends object {
     }
     addParameters() {
         pol_panel.style.display = "flex";
+        step_panel.style.display = "flex";
         polN.min = "5";
     }
     updateParameters() {
@@ -1171,10 +1173,12 @@ class starPolygon extends object {
         polY.value = this.y0;
         polR.value = this.r;
         polN.value = this.vertNum;
+        polS.value = this.step;
         angleInput.value = this.phi * 180.0 / Math.PI;
     }
     removeParameters() {
         pol_panel.style.display = "none";
+        step_panel.style.display = "none";
     }
     updateAttributes() {
         let dx = curX - this.x0,
@@ -1229,6 +1233,7 @@ class starPolygon extends object {
         this.count++;
         if (ind == this.endInd) return;
         this.path += "L " + this.verticesCoords[ind].x + "," + this.verticesCoords[ind].y;
+        console.log((ind + this.step) % this.vertNum);
         this.setPath((ind + this.step) % this.vertNum);
     }
     addHotKeys() {
@@ -1255,7 +1260,7 @@ class starPolygon extends object {
             curStarPolygonVertNum--;
             this.vertNum--;
         }
-        if (current.code == 'ArrowUp' || current.code == 'ArrowDown') {
+        if (current.code == 'ArrowUp' || current.code == 'ArrowDown' || current.code == 'changeN') {
             this.step = Math.floor((this.vertNum - 3) / 2) + 1;
             for (let i = 0; i < this.pointsArray.length; i++) {
                 this.pointsArray[i].remove();
@@ -1392,6 +1397,7 @@ class pentagram extends object {
     }
     addParameters() {
         pol_panel.style.display = "flex";
+        step_panel.style.display = "flex";
         polN.min = "5";
     }
     updateParameters() {
@@ -1399,10 +1405,12 @@ class pentagram extends object {
         polY.value = this.y0;
         polR.value = this.r;
         polN.value = this.vertNum;
+        polS.value = this.step;
         angleInput.value = this.phi * 180.0 / Math.PI;
     }
     removeParameters() {
         pol_panel.style.display = "none";
+        step_panel.style.display = "none";
     }
     updateAttributes() {
         let dx = curX - this.x0,
@@ -1488,7 +1496,7 @@ class pentagram extends object {
             curPentagramVertNum--;
             this.vertNum--;
         }
-        if (current.code == 'ArrowUp' || current.code == 'ArrowDown') {
+        if (current.code == 'ArrowUp' || current.code == 'ArrowDown' || current.code == 'changeN') {
             this.step = Math.floor((this.vertNum - 3) / 2) + 1;
             for (let i = 0; i < this.pointsArray.length; i++) {
                 this.pointsArray[i].remove();

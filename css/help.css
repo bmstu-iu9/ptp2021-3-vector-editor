@@ -71,12 +71,24 @@ h2 {
     height: 30%;
 }
 
+.big_height {
+    height: 60%;
+}
+
+.full_height {
+    height: 90%;
+}
+
 .help_text {
     color: #fff;
     font-family: 'Times New Roman';
-    font-size: 3vh;;
+    font-size: 2.4vh;
     width: 80%;
     text-align: justify;
+}
+
+.full_width {
+    width: 100%;
 }
 
 strong {
@@ -87,13 +99,14 @@ strong {
 
 .help_button {
     position: absolute;
-    width: 17vh;
-    height: 17vh;
+    width: 8vw;
+    height: 8vw;
     background-size: cover;
     background-color: #333;
     border-color: #fff;
     border-radius: 10%;
     margin: 0vh 2vh;
+    align-self: center;
     right: 0;
     top: 0;
 }

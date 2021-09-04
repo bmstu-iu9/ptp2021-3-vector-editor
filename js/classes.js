@@ -733,10 +733,10 @@ class ellipse extends object {
             rx: this.rx,
             ry: this.ry
         };
-        this.resizeCx = this.cx;
-        this.resizeCy = this.cy;
     }
     resize(dx, dy) {
+        this.resizeCx = this.cx;
+        this.resizeCy = this.cy;
         let new_dx = getRotateCoords(dx, dy, this.angle).x,
             new_dy = getRotateCoords(dx, dy, this.angle).y;
         let n = {
@@ -1085,6 +1085,7 @@ class polygon extends object {
 class starPolygon extends object {
     constructor() {
         super('path');
+        this.type = 'star';
         this.path = "";
         this.r = 0;
         this.phi = 0;
@@ -1117,6 +1118,19 @@ class starPolygon extends object {
         clone.vertices = this.vertices;
         clone.updateFrameAndPoints();
         return clone;
+    }
+    addParameters() {
+        pol_panel.style.display = "flex";
+        polN.min = "5";
+    }
+    updateParameters() {
+        polX.value = this.x0;
+        polY.value = this.y0;
+        polR.value = this.r;
+        polN.value = this.vertNum;
+    }
+    removeParameters() {
+        pol_panel.style.display = "none";
     }
     updateAttributes() {
         let dx = curX - this.x0,
@@ -1262,7 +1276,7 @@ class starPolygon extends object {
 class pentagram extends object {
     constructor() {
         super('g');
-        this.type = 'pentagram';
+        this.type = 'star';
         this.path = "";
         this.r = 0;
         this.phi = 0;

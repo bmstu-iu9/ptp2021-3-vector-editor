@@ -4,6 +4,7 @@ scale.onclick = function () {
   wasPressed = "scale";
   svgPanel.style.cursor = "zoom-in";
   svgPanel.onmousedown = function (event) {
+    svgPanel.style.transform = "translate(0, 0)";
     if (event.ctrlKey) {
       sizeCoef = 2 / 3;
       shiftCoef = 1 / 3;
@@ -21,7 +22,6 @@ scale.onclick = function () {
     svgPanelX = svgPanelCoords.left - scrollcoords.left;
     svgPanelY = svgPanelCoords.top - scrollcoords.top;
 
-    svgPanel.style.transform = "translate(0, 0)";
     let left = svgPanelX + shiftX * shiftCoef + scrollPanel.scrollLeft;
     let top = svgPanelY + shiftY * shiftCoef + scrollPanel.scrollTop;
     if (left > 15) {

@@ -10,18 +10,18 @@ hand.onclick = function () {
 
     svgPanel.onmousemove = function (current) {
       svgPanel.style.transform = "translate(0, 0)";
-      if (current.pageX - shiftX > 15) {
-        svgPanel.style.left = current.pageX - shiftX + "px";
-        updateRulers();
-      } else {
-        svgPanel.style.left = 15;
-      }
-      if (current.pageY - shiftY > 15) {
-        svgPanel.style.top = current.pageY - shiftY + "px";
-        updateRulers();
-      } else {
-        svgPanel.style.top = 15;
-      }
+      let left = current.pageX - shiftX,
+        top = current.pageY - shiftY;
+      if (left > 15)
+        svgPanel.style.left = left + "px";
+      else
+        svgPanel.style.left = "15px";
+      if (top > 15)
+        svgPanel.style.top = top + "px";
+      else
+        svgPanel.style.top = "15px";
+
+      updateRulers();
       svgPanelCoords = getCoords(svgPanel);
     };
 

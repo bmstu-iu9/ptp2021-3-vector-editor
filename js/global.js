@@ -52,8 +52,8 @@ let isEraserActive = false;
 function getCoords(elem) {
 	let box = elem.getBoundingClientRect();
 	return {
-		top: box.top + pageYOffset,
-		left: box.left + pageXOffset,
+		top: box.top + scrollY,
+		left: box.left + scrollX,
 	};
 }
 
@@ -76,14 +76,17 @@ window.onresize = function () {
 	updateRulers();
 }
 
-window.onload = function () {
-	updateRulers();
-}
-
 scrollPanel.onscroll = function () {
 	svgPanelCoords = getCoords(svgPanel);
 	updateRulers();
 };
+
+let firstWidth = svgPanel.clientWidth,
+	firstHeight = svgPanel.clientHeight;
+
+function updateSizeOfCanvas() {
+	firstWidth = svgPanel.clientWidth, firstHeight = svgPanel.clientHeight;
+}
 
 function resetCurrentObject() {
 	if (currentObject != null) {

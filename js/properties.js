@@ -166,7 +166,7 @@ penY.onchange = () => {
 
 //polygon
 polR.onchange = () => {
-    let r = polR.value;
+    let r = Number(polR.value);
     if (r < 1) {
         polR.value = 1;
         r = 1;
@@ -181,14 +181,16 @@ polN.onchange = () => {
         polN.value = 3;
         n = 3;
     }
-    if (currentObject.type == 'pentagram' && n < 5) {
+    if (currentObject.type == 'star' && n < 5) {
         polN.value = 5;
         n = 5;
     }
     currentObject.vertNum = n;
+    currentObject.radiusIsFixed = true;
     currentObject.updateVertNum(e = {
         code: "none"
     });
+    currentObject.radiusIsFixed = false;
 }
 
 polX.onchange = () => {

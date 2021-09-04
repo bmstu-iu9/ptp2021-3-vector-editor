@@ -137,6 +137,7 @@ create.onclick = function () {
     createFirstLayer();
     canvas.setAttribute('width', width);
     canvas.setAttribute('height', height);
+    updateSizeOfCanvas();
 }
 
 //OPEN
@@ -186,6 +187,7 @@ function readFile(object) {
         canvas.setAttribute('height', height);
     };
     reader.readAsText(file);
+    updateSizeOfCanvas();
 }
 
 document.getElementById("file-selector").addEventListener("change", readFile);
@@ -255,25 +257,25 @@ savePng.onclick = function () {
 //SCALING
 zoomIn = document.getElementById("zoomIn");
 zoomIn.onclick = function () {
-    svgPanelCoords = getCoords(svgPanel);
-    svgPanel.style.transform = "translate(0, 0)";
     svgPanel.style.left = svgPanelCoords.left - scrollcoords.left;
     svgPanel.style.top = svgPanelCoords.top - scrollcoords.top;
-    svgPanel.style.width = svgPanel.clientWidth * 1.5 + "px";
-    svgPanel.style.height = svgPanel.clientHeight * 1.5 + "px";
+    w = svgPanel.clientWidth * 1.5, h = svgPanel.clientHeight * 1.5;
+    centralLocation(w, h);
+    svgPanel.style.width = w + "px";
+    svgPanel.style.height = h + "px";
     scaleСoef *= 1.5;
+    svgPanelCoords = getCoords(svgPanel);
     updateRulers();
 }
 
 zoomOut = document.getElementById("zoomOut");
 zoomOut.onclick = function () {
-    svgPanelCoords = getCoords(svgPanel);
-    svgPanel.style.transform = "translate(0, 0)";
-    svgPanel.style.left = svgPanelCoords.left - scrollcoords.left;
-    svgPanel.style.top = svgPanelCoords.top - scrollcoords.top;
-    svgPanel.style.width = svgPanel.clientWidth / 1.5 + "px";
-    svgPanel.style.height = svgPanel.clientHeight / 1.5 + "px";
+    w = svgPanel.clientWidth / 1.5, h = svgPanel.clientHeight / 1.5;
+    centralLocation(w, h);
+    svgPanel.style.width = w + "px";
+    svgPanel.style.height = h + "px";
     scaleСoef /= 1.5;
+    svgPanelCoords = getCoords(svgPanel);
     updateRulers();
 }
 

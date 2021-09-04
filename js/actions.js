@@ -364,6 +364,12 @@ class action {
                 let coords = this.attr;
                 this.attr = this.object.getCornerCoords();
                 this.object.moveTo(coords.x, coords.y);
+                break;
+            case "rotate":
+                let ang = this.attr;
+                this.attr = this.object.angle;
+                this.object.rotateTo(ang);
+                break;
         }
         redoActions.push(this);
         if (redoActions.length > maxActionsNum) redoActions.shift();
@@ -371,6 +377,7 @@ class action {
     redo() {
         switch (this.type) {
             case "delete":
+                if (currentObject == this.object) currentObject = null;
                 this.object.hide();
                 break;
             case "create":
@@ -380,6 +387,12 @@ class action {
                 let coords = this.attr;
                 this.attr = this.object.getCornerCoords();
                 this.object.moveTo(coords.x, coords.y);
+                break;
+            case "rotate":
+                let ang = this.attr;
+                this.attr = this.object.angle;
+                this.object.rotateTo(ang);
+                break;
         }
         undoActions.push(this);
         if (undoActions.length > maxActionsNum) undoActions.shift();

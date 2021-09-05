@@ -93,7 +93,16 @@ join.forEach(s => s.addEventListener('change', () => {
 
 strokeWidth = document.getElementById("strokeWidth");
 strokeWidth.onchange = () => {
+  if (strokeWidth.value <= 0) {
+    strokeWidth.value = 1;
+  }
   changeStroke(0, 1, 0, 1, 0);
+}
+
+strokeWidth.onkeyup = (e) => {
+  if (e.key == 'Enter') {
+    e.target.blur();
+  }
 }
 
 function updateStroke(object, c = 1, width = 1, l = 1, d = 1, j = 1) {
@@ -171,14 +180,15 @@ function makeRoundStroke(pen) {
   prevC = rightPanel.querySelector('input[name="cap"]:checked')
   j1.checked = "true";
   c2.checked = "true";
+  prevObject = currentObject;
   currentObject = pen;
   var event = new Event('change');
   j1.dispatchEvent(event);
   c2.dispatchEvent(event);
-  currentObject = null;
+  currentObject = prevObject;
 }
 
-function makePrevStroke(pen) {
+function makePrevStroke() {
   prevJ.checked = "true";
   prevC.checked = "true";
   var event = new Event('change');

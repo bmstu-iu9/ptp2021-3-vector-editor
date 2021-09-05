@@ -222,7 +222,7 @@ class object {
     rotateTo() {}
     stopRotating() {}
     getNewCoords() {} //преобразование координат ключевых точек при повороте фигуры
-    complete() {
+    complete(isSizeNotZero = this.svgElement.getBoundingClientRect().width * this.svgElement.getBoundingClientRect().height > 0) {
         this.updateFrameAndPoints();
         this.removeHotKeys();
         svgPanel.onmousemove = null;
@@ -233,7 +233,7 @@ class object {
         document.onclick = null;
         document.onmouseenter = null;
 
-        if (this.svgElement.getBoundingClientRect().width > 0 && this.svgElement.getBoundingClientRect().height > 0) {
+        if (isSizeNotZero) {
             isSomeObjectSelected = false;
             resetCurrentObject();
             this.addPanel();
@@ -1780,8 +1780,8 @@ class pencil extends object {
             })
         ];
         makePrevStroke();
+        super.complete(this.path != this.x0 + "," + this.y0);
         this.path = "";
-        super.complete();
     }
 }
 
@@ -2357,7 +2357,7 @@ class polyline extends object {
             }));
             this.updateFrameAndPoints();
             polylineIsCompleted = true;
-            super.complete();
+            super.complete(this.path != this.x0 + "," + this.y0 + " " + this.x0 + "," + this.y0);
         }
     }
 }

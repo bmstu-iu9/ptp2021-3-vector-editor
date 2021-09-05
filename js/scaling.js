@@ -53,7 +53,12 @@ scale.onclick = function () {
 };
 
 scaleP.onchange = () => {
-  scaleСoef = scaleP.value / 100;
+  let s = scaleP.value;
+  if (s<1) {
+    s = 1;
+    scaleP.value = 1
+  }
+  scaleСoef = s / 100;
   updateScale();
 }
 

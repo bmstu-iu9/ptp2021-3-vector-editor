@@ -217,11 +217,10 @@ class frame {
         this.svgElement.setAttribute(attributeName, value);
     }
     update() {
-        this.svgElement.setAttribute('opacity', "0.5");
         if (this.red) this.svgElement.setAttribute('stroke', "red");
         else this.svgElement.setAttribute('stroke', this.object.getElementAttribute('stroke'));
         if (this.red) this.svgElement.setAttribute('stroke-width', pointRadius);
-        else this.svgElement.setAttribute('stroke-width', this.object.getElementAttribute('stroke-width'));
+        else this.svgElement.setAttribute('stroke-width', this.object.strokeWidth);
         if (this.red || this.object.getElementAttribute('stroke-dasharray') == null ||
             this.object.getElementAttribute('stroke-dasharray') == "null") this.svgElement.setAttribute('stroke-dasharray', this.svgElement.getAttribute('stroke-width') * 4);
         else this.svgElement.setAttribute('stroke-dasharray', this.object.getElementAttribute('stroke-dasharray'));

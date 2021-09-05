@@ -105,17 +105,12 @@ pencilButton.onclick = function () {
         updateCursorCoords(current);
         let newObject = new pencil();
 
-        svgPanel.onmousemove = function (current) {
+        document.onmousemove = function (current) {
             updateCursorCoords(current);
             newObject.updateAttributes();
         };
         document.onmouseup = function () {
             newObject.complete();
-        };
-        svgPanel.onmouseenter = function (current) {
-            document.onmouseup();
-            resetCurrentObject();
-            svgPanel.onmousedown(current);
         };
     };
 };
@@ -134,7 +129,7 @@ line.onclick = function () {
             newObject.updateAttributes(current);
         };
         document.onmouseup = function () {
-            newObject.complete();
+            newObject.complete(newObject.x0 != newObject.x2 || newObject.y0 != newObject.y2);
         };
     };
 }

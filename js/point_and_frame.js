@@ -116,8 +116,8 @@ class point {
                     this.isMoving = false;
                     currentPointTypeAttr = null;
                     this.isSelected = false;
-                    this.setColor("white");
                     isSomePointSelected = false;
+                    this.setColor("white");
                     document.removeEventListener("mousemove", move);
                     this.object.stopResize();
                     this.object.updateParameters();

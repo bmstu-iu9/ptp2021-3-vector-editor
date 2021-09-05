@@ -44,8 +44,15 @@ for (var i = 0; i < buttons.length; i++) {
 			current[0].className = "tool_button";
 		}
 		this.className += " active";
+		wasPressed = this.id;
+		left_panel.dispatchEvent(new Event('change'));
 	});
 }
+
+left_panel.onchange = () => {
+	scale_panel.style.display = "none";
+}
+
 let isEraserActive = false;
 
 //GET COORDS 

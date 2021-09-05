@@ -129,7 +129,7 @@ class layer {
         let enter = document.createElement('input');
         enter.type = "text";
         enter.value = this.name;
-        enter.setAttribute('maxlength', 14);
+        enter.setAttribute('maxlength', 13);
         this.text.appendChild(enter);
         enter.focus();
         enter.onblur = () => {

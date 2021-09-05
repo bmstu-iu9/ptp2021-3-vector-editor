@@ -100,11 +100,17 @@ function blockEditing(i) {
 }
 
 function centralLocation(width, height) {
-    svgPanel.setAttribute('style', 'top: 50%; left: 50%; transform: translate(-50%, -50%);');
-    if (scrollPanel.clientWidth - 15 < width)
-        svgPanel.setAttribute('style', 'transform: translate(0, -50%); left: 15px;');
-    if (scrollPanel.clientHeight - 15 < height)
-        svgPanel.setAttribute('style', 'transform: translate(-50%, 0); top: 15px;');
+    svgPanel.style.left = "50%";
+    svgPanel.style.top = "50%";
+    svgPanel.style.transform = "translate(-50%, -50%)";
+    if (scrollPanel.clientWidth - 15 < width) {
+        svgPanel.style.left = "15px";
+        svgPanel.style.transform = "translate(0, -50%)";
+    }
+    if (scrollPanel.clientHeight - 15 < height) {
+        svgPanel.style.top = "15px";
+        svgPanel.style.transform = "translate(-50%, 0)";
+    }
     if (scrollPanel.clientWidth - 15 < width && scrollPanel.clientHeight - 15 < height)
         svgPanel.style.transform = "translate(0, 0)";
 }
@@ -257,26 +263,18 @@ savePng.onclick = function () {
 //SCALING
 zoomIn = document.getElementById("zoomIn");
 zoomIn.onclick = function () {
-    svgPanel.style.left = svgPanelCoords.left - scrollcoords.left;
-    svgPanel.style.top = svgPanelCoords.top - scrollcoords.top;
-    w = svgPanel.clientWidth * 1.5, h = svgPanel.clientHeight * 1.5;
-    centralLocation(w, h);
-    svgPanel.style.width = w + "px";
-    svgPanel.style.height = h + "px";
-    scaleСoef *= 1.5;
-    svgPanelCoords = getCoords(svgPanel);
-    updateRulers();
+    scaleСoef *= 1.25;
+    updateScale();
+    scale_panel.style.display = "flex";
+    scaleP.value = scaleСoef * 100;
 }
 
 zoomOut = document.getElementById("zoomOut");
 zoomOut.onclick = function () {
-    w = svgPanel.clientWidth / 1.5, h = svgPanel.clientHeight / 1.5;
-    centralLocation(w, h);
-    svgPanel.style.width = w + "px";
-    svgPanel.style.height = h + "px";
-    scaleСoef /= 1.5;
-    svgPanelCoords = getCoords(svgPanel);
-    updateRulers();
+    scaleСoef /= 1.25;
+    updateScale();
+    scale_panel.style.display = "flex";
+    scaleP.value = scaleСoef * 100;
 }
 
 //LAYERS

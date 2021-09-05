@@ -998,6 +998,7 @@ class polygon extends object {
         if (!this.angleIsFixed) {
             if (this.rotationIsFixed) this.phi = (this.vertNum - 2) * Math.PI / (this.vertNum * 2);
             else if (this.r > 0) this.phi = dy > 0 ? Math.acos(dx / this.r) : -Math.acos(dx / this.r);
+            if (!this.phi) this.phi = (dx / this.r) > 0 ? 0 : Math.PI; //ошибки нет, но теперь дергается
         }
         this.updateFrameAndPoints();
     }
@@ -1233,7 +1234,6 @@ class starPolygon extends object {
         this.count++;
         if (ind == this.endInd) return;
         this.path += "L " + this.verticesCoords[ind].x + "," + this.verticesCoords[ind].y;
-        console.log((ind + this.step) % this.vertNum);
         this.setPath((ind + this.step) % this.vertNum);
     }
     addHotKeys() {

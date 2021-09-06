@@ -216,6 +216,8 @@ class object {
     startResize() {}
     resize() {}
     stopResize() {}
+    getResizeAttrs() {}
+    setResizeAttrs() {}
     //ROTATE
     startRotating() {}
     rotate() {}
@@ -545,6 +547,31 @@ class rectangle extends object {
         this.transform = 'rotate(' + this.angle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
         this.svgElement.setAttribute('x', this.x);
         this.svgElement.setAttribute('y', this.y);
+        this.svgElement.setAttribute('width', this.width);
+        this.svgElement.setAttribute('height', this.height);
+        this.svgElement.setAttribute('transform', this.transform);
+        this.updateFrameAndPoints();
+        this.updateProperties();
+    }
+    getResizeAttrs() {
+        return [
+            Number(this.getElementAttribute('x')),
+            Number(this.getElementAttribute('y')),
+            Number(this.getElementAttribute('width')),
+            Number(this.getElementAttribute('height'))
+        ]
+    }
+    setResizeAttrs(attrs) {
+        [this.x, this.y, this.width, this.height] = attrs;
+        this.cPoint = {
+            x: this.x + this.width / 2,
+            y: this.y + this.height / 2
+        };
+        this.transform = 'rotate(' + this.angle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
+        this.svgElement.setAttribute('x', this.x);
+        this.svgElement.setAttribute('y', this.y);
+        this.svgElement.setAttribute('width', this.width);
+        this.svgElement.setAttribute('height', this.height);
         this.svgElement.setAttribute('transform', this.transform);
         this.setElementAttribute('rx', Math.max(this.height, this.width) * this.r / 100);
         this.updateFrameAndPoints();
@@ -889,9 +916,24 @@ class ellipse extends object {
         this.ry = this.resizeTemp.ry;
         this.svgElement.setAttribute('cx', this.cx);
         this.svgElement.setAttribute('cy', this.cy);
+        this.svgElement.setAttribute('rx', this.rx);
+        this.svgElement.setAttribute('ry', this.ry);
         this.transform = 'rotate(' + this.angle * 180.0 / Math.PI + ' ' + this.cx + ' ' + this.cy + ')';
         this.svgElement.setAttribute('transform', this.transform);
         this.updateFrameAndPoints();
+    }
+    getResizeAttrs() {
+        return [
+            Number(this.getElementAttribute('cx')),
+            Number(this.getElementAttribute('cy')),
+            Number(this.getElementAttribute('rx')),
+            Number(this.getElementAttribute('ry'))
+        ]
+    }
+    setResizeAttrs(attrs) {
+        [this.cx, this.cy, this.rx, this.ry] = attrs;
+        this.startResize();
+        this.stopResize();
     }
     //ROTATE
     startRotating() {
@@ -1114,6 +1156,35 @@ class polygon extends object {
     //RESIZE
     resize() {
         this.updateAttributes();
+    }
+    getResizeAttrs() {
+        return [
+            this.x0,
+            this.y0,
+            this.r,
+            this.phi,
+            this.vertNum
+        ]
+    }
+    setResizeAttrs(attrs) {
+        let pVertNum = this.vertNum;
+        [this.x0, this.y0, this.r, this.phi, this.vertNum] = attrs;
+        if (pVertNum != this.vertNum) {
+            if (this.arePointsAndFrameShown) {
+                for (let i = 0; i < this.pointsArray.length; i++) {
+                    this.pointsArray[i].remove();
+                }
+            }
+            this.pointsArray = [];
+            for (let i = 0; i < this.vertNum; i++) {
+                this.pointsArray.push(new point(this.x0, this.y0, this, {
+                    action: "polygon",
+                    attr: "polygon"
+                }));
+                if (!this.isSelected) this.pointsArray[i].hide();
+            }
+        }
+        this.updateFrameAndPoints();
     }
     //ROTATE
     rotateTo(newAngle) {
@@ -1338,6 +1409,36 @@ class starPolygon extends object {
     //RESIZE
     resize() {
         this.updateAttributes();
+    }
+    getResizeAttrs() {
+        return [
+            this.x0,
+            this.y0,
+            this.r,
+            this.phi,
+            this.vertNum,
+            this.step
+        ]
+    }
+    setResizeAttrs(attrs) {
+        let pVertNum = this.vertNum;
+        [this.x0, this.y0, this.r, this.phi, this.vertNum, this.step] = attrs;
+        if (pVertNum != this.vertNum) {
+            if (this.arePointsAndFrameShown) {
+                for (let i = 0; i < this.pointsArray.length; i++) {
+                    this.pointsArray[i].remove();
+                }
+            }
+            this.pointsArray = [];
+            for (let i = 0; i < this.vertNum; i++) {
+                this.pointsArray.push(new point(this.x0, this.y0, this, {
+                    action: "polygon",
+                    attr: "polygon"
+                }));
+                if (!this.isSelected) this.pointsArray[i].hide();
+            }
+        }
+        this.updateFrameAndPoints();
     }
     //ROTATE
     rotateTo(newAngle) {
@@ -1574,6 +1675,36 @@ class pentagram extends object {
     //RESIZE
     resize() {
         this.updateAttributes();
+    }
+    getResizeAttrs() {
+        return [
+            this.x0,
+            this.y0,
+            this.r,
+            this.phi,
+            this.vertNum,
+            this.step
+        ]
+    }
+    setResizeAttrs(attrs) {
+        let pVertNum = this.vertNum;
+        [this.x0, this.y0, this.r, this.phi, this.vertNum, this.step] = attrs;
+        if (pVertNum != this.vertNum) {
+            if (this.arePointsAndFrameShown) {
+                for (let i = 0; i < this.pointsArray.length; i++) {
+                    this.pointsArray[i].remove();
+                }
+            }
+            this.pointsArray = [];
+            for (let i = 0; i < this.vertNum; i++) {
+                this.pointsArray.push(new point(this.x0, this.y0, this, {
+                    action: "polygon",
+                    attr: "polygon"
+                }));
+                if (!this.isSelected) this.pointsArray[i].hide();
+            }
+        }
+        this.updateFrameAndPoints();
     }
     //ROTATE
     rotateTo(newAngle) {
@@ -2069,6 +2200,28 @@ class line extends object {
         this.svgElement.setAttribute('transform', this.transform);
         this.updateFrameAndPoints();
     }
+    getResizeAttrs() {
+        return [
+            Number(this.getElementAttribute('x1')),
+            Number(this.getElementAttribute('y1')),
+            Number(this.getElementAttribute('x2')),
+            Number(this.getElementAttribute('y2'))
+        ]
+    }
+    setResizeAttrs(attrs) {
+        [this.x0, this.y0, this.x2, this.y2] = attrs;
+        this.cPoint = {
+            x: (this.x0 + this.x2) / 2,
+            y: (this.y0 + this.y2) / 2
+        };
+        this.svgElement.setAttribute('x1', this.x0);
+        this.svgElement.setAttribute('y1', this.y0);
+        this.svgElement.setAttribute('x2', this.x2);
+        this.svgElement.setAttribute('y2', this.y2);
+        this.transform = 'rotate(' + this.angle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
+        this.svgElement.setAttribute('transform', this.transform);
+        this.updateFrameAndPoints();
+    }
     //ROTATE
     startRotating() {
         this.rPoint = {
@@ -2232,6 +2385,7 @@ class polyline extends object {
             if (i == 0) this.path = x + "," + y;
             else this.path += " " + x + "," + y;
             this.pointsArray[i].update(x, y, transform);
+            this.pointsArray[i].type.attr = i;
         }
         if (this.isCompleted)
             this.pointsArray[this.pointsArray.length - 1].update(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2 - 20, transform);
@@ -2307,6 +2461,22 @@ class polyline extends object {
         this.transform = 'rotate(' + this.angle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
         this.svgElement.setAttribute('transform', this.transform);
         this.updateFrameAndPoints();
+    }
+    getResizeAttrs(ind = currentPointTypeAttr) {
+        return [
+            this.pathCoords[ind].x,
+            this.pathCoords[ind].y,
+            ind
+        ]
+    }
+    setResizeAttrs(attrs) {
+        this.pathCoords[attrs[2]].x = attrs[0];
+        this.pathCoords[attrs[2]].y = attrs[1];
+        this.minX = Math.min(this.minX, attrs[0]);
+        this.minY = Math.min(this.minY, attrs[1]);
+        this.maxX = Math.max(this.maxX, attrs[0]);
+        this.maxY = Math.max(this.maxY, attrs[1]);
+        this.stopResize();
     }
     //ROTATE
     startRotating() {

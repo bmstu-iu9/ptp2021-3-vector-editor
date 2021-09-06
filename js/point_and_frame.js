@@ -113,6 +113,7 @@ class point {
                         x: curX,
                         y: curY
                     };
+                    doFunc("resize", this.object, this.object.getResizeAttrs());
                     this.object.startResize();
                     document.addEventListener("mousemove", move);
                 }

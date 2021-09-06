@@ -225,13 +225,9 @@ class object {
     complete(isSizeNotZero = this.svgElement.getBoundingClientRect().width * this.svgElement.getBoundingClientRect().height > 0) {
         this.updateFrameAndPoints();
         this.removeHotKeys();
-        svgPanel.onmousemove = null;
-        svgPanel.onmouseup = null;
-        svgPanel.onmouseenter = null;
         document.onmousemove = null;
         document.onmouseup = null;
         document.onclick = null;
-        document.onmouseenter = null;
 
         if (isSizeNotZero) {
             isSomeObjectSelected = false;

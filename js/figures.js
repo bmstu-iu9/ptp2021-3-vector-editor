@@ -116,9 +116,9 @@ pencilButton.onclick = function () {
 };
 
 //LINE
-line = document.getElementById("line");
+lineButton = document.getElementById("line");
 
-line.onclick = function () {
+lineButton.onclick = function () {
     svgPanel.style.cursor = "default";
     svgPanel.onmousedown = function (current) {
         updateCursorCoords(current);
@@ -150,7 +150,7 @@ pathTool.onclick = function () {
                 updateCursorCoords(current);
                 newObject.updateLine(current);
             };
-            svgPanel.onmouseup = function (current) {
+            document.onmouseup = function (current) {
                 newObject.updateAttributes();
                 if (current.ctrlKey) {
                     newObject.complete();
@@ -163,4 +163,51 @@ pathTool.onclick = function () {
             }
         }
     };
+};
+
+//VECTOR
+vectorTool = document.getElementById("vector");
+let vectorIsCompleted = true;
+
+vectorTool.onclick = function () {
+    svgPanel.style.cursor = "default";
+    svgPanel.onmousedown = startVector;
+};
+
+function startVector(current) {
+    if (vectorIsCompleted && current.which == 1) {
+        updateCursorCoords(current);
+        let newObject = new vector();
+        vectorIsCompleted = false;
+
+        /*document.onmousemove = function (current) {
+            updateCursorCoords(current);
+            newObject.updateFirstPath();
+        };*/
+
+        document.onmouseup = function (current) {
+            updateCursorCoords(current);
+            newObject.updateFirstPath();
+            document.onmousemove = function (current) {
+                updateCursorCoords(current);
+                newObject.updatePath();
+            };
+            svgPanel.onmousedown = function (current) {
+                updateCursorCoords(current);
+                newObject.updatePoint();
+                document.onmousemove = function (current) {
+                    updateCursorCoords(current);
+                    newObject.updateSecondPath();
+                };
+            };
+            if (current.ctrlKey) {
+                newObject.complete();
+            }
+        };
+        document.onclick = function () {
+            if (wasPressed != "vector") {
+                newObject.complete();
+            }
+        }
+    }
 };

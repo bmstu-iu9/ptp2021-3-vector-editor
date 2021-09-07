@@ -236,6 +236,7 @@ class object {
             resetCurrentObject();
             this.addPanel();
             currentObject = this;
+            cursor.click();
             this.isSelected = true;
             doFunc("create", this);
         } else {

@@ -243,6 +243,9 @@ class lineFrame extends frame {
         this.svgElement.setAttribute('x2', x2);
         this.svgElement.setAttribute('y2', y2);
         this.red = red;
+        if (this.object.type == 'vector') this.setFrameAttribute('stroke', 'blue');
+        this.setFrameAttribute('stroke-width', 2);
+        this.svgElement.setAttribute('stroke-dasharray', 'none');
     }
     createClone(newObject) {
         let clone = new lineFrame(this.x1, this.y1, this.x2, this.y2, newObject, this.red);
@@ -266,6 +269,9 @@ class lineFrame extends frame {
             this.transform = transform;
             this.setFrameAttribute('transform', transform);
         }
+        if (this.object.type == 'vector') this.setFrameAttribute('stroke', 'blue');
+        this.setFrameAttribute('stroke-width', 2);
+        this.svgElement.setAttribute('stroke-dasharray', 'none');
     }
 }
 class rectangleFrame extends frame {

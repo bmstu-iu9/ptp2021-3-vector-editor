@@ -180,10 +180,10 @@ function startVector(current) {
         let newObject = new vector();
         vectorIsCompleted = false;
 
-        /*document.onmousemove = function (current) {
+        document.onmousemove = function (current) {
             updateCursorCoords(current);
-            newObject.updateFirstPath();
-        };*/
+            newObject.updateLine();
+        };
 
         document.onmouseup = function (current) {
             updateCursorCoords(current);

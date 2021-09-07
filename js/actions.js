@@ -368,6 +368,11 @@ class action {
                 this.attr = this.object.angle;
                 this.object.rotateTo(ang);
                 break;
+            case "resize":
+                let resizeAttrs = this.attr;
+                this.attr = this.object.getResizeAttrs(this.attr[2]);
+                this.object.setResizeAttrs(resizeAttrs);
+                break;
         }
         redoActions.push(this);
         if (redoActions.length > maxActionsNum) redoActions.shift();
@@ -390,6 +395,11 @@ class action {
                 let ang = this.attr;
                 this.attr = this.object.angle;
                 this.object.rotateTo(ang);
+                break;
+            case "resize":
+                let resizeAttrs = this.attr;
+                this.attr = this.object.getResizeAttrs(this.attr[2]);
+                this.object.setResizeAttrs(resizeAttrs);
                 break;
         }
         undoActions.push(this);

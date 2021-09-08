@@ -224,22 +224,19 @@ class object {
     rotateTo() {}
     stopRotating() {}
     getNewCoords() {} //преобразование координат ключевых точек при повороте фигуры
-    complete() {
+    complete(isSizeNotZero = this.svgElement.getBoundingClientRect().width * this.svgElement.getBoundingClientRect().height > 0) {
         this.updateFrameAndPoints();
         this.removeHotKeys();
-        svgPanel.onmousemove = null;
-        svgPanel.onmouseup = null;
-        svgPanel.onmouseenter = null;
         document.onmousemove = null;
         document.onmouseup = null;
         document.onclick = null;
-        document.onmouseenter = null;
 
-        if (this.svgElement.getBoundingClientRect().width > 0 && this.svgElement.getBoundingClientRect().height > 0) {
+        if (isSizeNotZero) {
             isSomeObjectSelected = false;
             resetCurrentObject();
             this.addPanel();
             currentObject = this;
+            cursor.click();
             this.isSelected = true;
             doFunc("create", this);
         } else {
@@ -1040,6 +1037,7 @@ class polygon extends object {
         if (!this.angleIsFixed) {
             if (this.rotationIsFixed) this.phi = (this.vertNum - 2) * Math.PI / (this.vertNum * 2);
             else if (this.r > 0) this.phi = dy > 0 ? Math.acos(dx / this.r) : -Math.acos(dx / this.r);
+            if (!this.phi) this.phi = (dx / this.r) > 0 ? 0 : Math.PI; //ошибки нет, но теперь дергается
         }
         this.updateFrameAndPoints();
     }
@@ -1304,7 +1302,6 @@ class starPolygon extends object {
         this.count++;
         if (ind == this.endInd) return;
         this.path += "L " + this.verticesCoords[ind].x + "," + this.verticesCoords[ind].y;
-        console.log((ind + this.step) % this.vertNum);
         this.setPath((ind + this.step) % this.vertNum);
     }
     addHotKeys() {
@@ -1911,8 +1908,8 @@ class pencil extends object {
             })
         ];
         makePrevStroke();
+        super.complete(this.path != this.x0 + "," + this.y0);
         this.path = "";
-        super.complete();
     }
 }
 
@@ -2527,7 +2524,7 @@ class polyline extends object {
             }));
             this.updateFrameAndPoints();
             polylineIsCompleted = true;
-            super.complete();
+            super.complete(this.path != this.x0 + "," + this.y0 + " " + this.x0 + "," + this.y0);
         }
     }
 }

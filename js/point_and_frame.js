@@ -117,8 +117,8 @@ class point {
                     this.isMoving = false;
                     currentPointTypeAttr = null;
                     this.isSelected = false;
-                    this.setColor("white");
                     isSomePointSelected = false;
+                    this.setColor("white");
                     document.removeEventListener("mousemove", move);
                     this.object.stopResize();
                     this.object.updateParameters();
@@ -218,11 +218,10 @@ class frame {
         this.svgElement.setAttribute(attributeName, value);
     }
     update() {
-        this.svgElement.setAttribute('opacity', "0.5");
         if (this.red) this.svgElement.setAttribute('stroke', "red");
         else this.svgElement.setAttribute('stroke', this.object.getElementAttribute('stroke'));
         if (this.red) this.svgElement.setAttribute('stroke-width', pointRadius);
-        else this.svgElement.setAttribute('stroke-width', this.object.getElementAttribute('stroke-width'));
+        else this.svgElement.setAttribute('stroke-width', this.object.strokeWidth);
         if (this.red || this.object.getElementAttribute('stroke-dasharray') == null ||
             this.object.getElementAttribute('stroke-dasharray') == "null") this.svgElement.setAttribute('stroke-dasharray', this.svgElement.getAttribute('stroke-width') * 4);
         else this.svgElement.setAttribute('stroke-dasharray', this.object.getElementAttribute('stroke-dasharray'));
@@ -244,6 +243,9 @@ class lineFrame extends frame {
         this.svgElement.setAttribute('x2', x2);
         this.svgElement.setAttribute('y2', y2);
         this.red = red;
+        if (this.object.type == 'vector') this.setFrameAttribute('stroke', 'blue');
+        this.setFrameAttribute('stroke-width', 2);
+        this.svgElement.setAttribute('stroke-dasharray', 'none');
     }
     createClone(newObject) {
         let clone = new lineFrame(this.x1, this.y1, this.x2, this.y2, newObject, this.red);
@@ -267,6 +269,9 @@ class lineFrame extends frame {
             this.transform = transform;
             this.setFrameAttribute('transform', transform);
         }
+        if (this.object.type == 'vector') this.setFrameAttribute('stroke', 'blue');
+        this.setFrameAttribute('stroke-width', 2);
+        this.svgElement.setAttribute('stroke-dasharray', 'none');
     }
 }
 class rectangleFrame extends frame {

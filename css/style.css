@@ -256,7 +256,6 @@ main {
 ::-webkit-scrollbar-thumb {
     border-radius: 4px;
     background-color: #444;
-    /*-webkit-box-shadow: inset 0px 0px 0 2px #191919;*/
 }
 
 ::-webkit-scrollbar-thumb:hover {

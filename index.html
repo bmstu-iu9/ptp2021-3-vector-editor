@@ -16,21 +16,25 @@
 </head>
 
 <body>
-   <div id="helpbox">
+  <div id="helpbox">
     <div id="banner"></div>
     <div id="bannerinside">
-        <a href="#" title="Закрыть" id="exit" style="background-image: url(img/help/cross.svg);"></a>
-        <a href="#" title="Закрыть" id="exitred" style="background-image: url(img/help/cross_hover.svg);"></a>
-        <h2>Помощь</h2>
-        <hr color="#fff" width="90%" align="center" size="2" style="margin-left: 5%">
-        <div id="helppage"></div>
-        <hr color="#fff" width="90%" align="center" size="2" style="margin-left: 5%">
-        <h2 id="page_count">Страницы: 0/0</h2>
+      <a href="#" title="Закрыть" id="exit" style="background-image: url(img/help/cross.svg);"></a>
+      <a href="#" title="Закрыть" id="exitred" style="background-image: url(img/help/cross_hover.svg);"></a>
+      <h2>Помощь</h2>
+      <hr color="#fff" width="90%" align="center" size="2" style="margin-left: 5%">
+      <div id="helppage"></div>
+      <hr color="#fff" width="90%" align="center" size="2" style="margin-left: 5%">
+      <h2 id="page_count">Страницы: 0/0</h2>
     </div>
-    <a href="#" title="Предыдущая страница" class="arr7" id="prev" style="background-image: url(img/help/arrow.svg);"></a>
-    <a href="#" title="Предыдущая страница" class="arr7 arred" id="prevred" style="background-image: url(img/help/arrow_hover.svg);"></a>
-    <a href="#" title="Следующая страница" class="arr7" id="next" style="background-image: url(img/help/arrow.svg);"></a>
-    <a href="#" title="Следующая страница" class="arr7 arred" id="nextred" style="background-image: url(img/help/arrow_hover.svg);"></a>
+    <a href="#" title="Предыдущая страница" class="arr7" id="prev"
+      style="background-image: url(img/help/arrow.svg);"></a>
+    <a href="#" title="Предыдущая страница" class="arr7 arred" id="prevred"
+      style="background-image: url(img/help/arrow_hover.svg);"></a>
+    <a href="#" title="Следующая страница" class="arr7" id="next"
+      style="background-image: url(img/help/arrow.svg);"></a>
+    <a href="#" title="Следующая страница" class="arr7 arred" id="nextred"
+      style="background-image: url(img/help/arrow_hover.svg);"></a>
     <div class="peaks" id="peaksup" style="background-image: url(img/help/peaks.svg);"></div>
     <div class="peaks" id="peaksdown" style="background-image: url(img/help/peaks.svg);"></div>
   </div>
@@ -122,6 +126,13 @@
       &nbsp;x <input id="pLineX" type="number" class="property" required>
       &nbsp;y <input id="pLineY" type="number" class="property" required>
     </div>
+    <!--<div class="properties_panel" id="vect_panel">
+      &nbsp;<input id="vectEnd" type="checkbox" hidden><label for="vectEnd">
+        <img src="img/stroke/vectEnd.svg"></label>
+    </div>-->
+    <div class="properties_panel" id="scale_panel">
+      &nbsp;<input id="scaleP" type="number" class="property" step="25" min="0" required>
+    </div>
 
   </header>
 
@@ -155,8 +166,14 @@
       </li>
       <li><button title="Текст" class="tool_button" id="text" style="background-image: url(img/text.svg)"></button>
       </li>
-      <li><button title="Перо" class="tool_button" id="pathTool"
-          style="background-image: url(img/path_tool.svg)"></button></li>
+      <li><button disabled title="Перо" class="tool_button" style="background-image: url(img/pen.svg)"></button>
+        <ul>
+          <li><button title="Произвольный многоугольник" class="tool_button" id="pathTool"
+              style="background-image: url(img/path_tool.svg)"></button></li>
+          <li><button title="Вектор" class="tool_button" id="vector"
+              style="background-image: url(img/vector.svg)"></button></li>
+        </ul>
+      </li>
       <li><button title="Ластик" class="tool_button" id="eraser" style="background-image: url(img/eraser.svg)"></button>
       </li>
       <li><button title="Заливка" class="tool_button" id="filling" style="background-image: url(img/fill.svg)"></button>
@@ -181,7 +198,7 @@
           <input type="range" class="opacity" min="0" max="1" step="0.01" value="1" title="Прозрачность заливки">
           <p class="opValue">100</p>
         </div>
-        <div id="widthBox"><img src="img/stroke/width.svg"><input type="number" id="strokeWidth" min="0" max="100"
+        <div id="widthBox"><img src="img/stroke/width.svg"><input type="number" id="strokeWidth" min="1" max="100"
             value="2" title="Ширина контура"></div>
         <div class="styleListBox">
           <input type="checkbox" name="stroke" id="dash" hidden><label for="dash">
@@ -314,6 +331,7 @@
   <script src="js/scaling.js"></script>
   <script src="js/figures.js"></script>
   <script src="js/classes.js"></script>
+  <script src="js/vector.js"></script>
   <script src="js/point_and_frame.js"></script>
   <script src="js/color.js"></script>
   <script src="js/eraser.js"></script>

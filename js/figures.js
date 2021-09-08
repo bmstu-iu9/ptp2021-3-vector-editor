@@ -2,7 +2,6 @@
 rectangleButton = document.getElementById("rectangle");
 
 rectangleButton.onclick = function () {
-    wasPressed = "rectangle";
     svgPanel.style.cursor = "default";
     svgPanel.onmousedown = function (current) {
         updateCursorCoords(current);
@@ -22,7 +21,6 @@ rectangleButton.onclick = function () {
 ellipseButton = document.getElementById("ellipse");
 
 ellipseButton.onclick = function () {
-    wasPressed = "ellipse";
     svgPanel.style.cursor = "default";
     svgPanel.onmousedown = function (current) {
         updateCursorCoords(current);
@@ -43,7 +41,6 @@ polygonButton = document.getElementById("polygon");
 let curVertNum = 3;
 
 polygonButton.onclick = function () {
-    wasPressed = "polygon";
     svgPanel.style.cursor = "default";
     svgPanel.onmousedown = function (current) {
         updateCursorCoords(current);
@@ -64,7 +61,6 @@ starPolygonButton = document.getElementById("starPolygon");
 let curStarPolygonVertNum = 5;
 
 starPolygonButton.onclick = function () {
-    wasPressed = "starPolygon";
     svgPanel.style.cursor = "default";
     svgPanel.onmousedown = function (current) {
         updateCursorCoords(current);
@@ -85,7 +81,6 @@ pentagramButton = document.getElementById("pentagram");
 let curPentagramVertNum = 5;
 
 pentagramButton.onclick = function () {
-    wasPressed = "pentagram";
     svgPanel.style.cursor = "default";
     svgPanel.onmousedown = function (current) {
         updateCursorCoords(current);
@@ -105,32 +100,25 @@ pentagramButton.onclick = function () {
 pencilButton = document.getElementById("pencil");
 
 pencilButton.onclick = function () {
-    wasPressed = "pencil";
     svgPanel.style.cursor = "url(img/pencil_cursor.svg) 0 20, default";
     svgPanel.onmousedown = function (current) {
         updateCursorCoords(current);
         let newObject = new pencil();
 
-        svgPanel.onmousemove = function (current) {
+        document.onmousemove = function (current) {
             updateCursorCoords(current);
             newObject.updateAttributes();
         };
         document.onmouseup = function () {
             newObject.complete();
         };
-        svgPanel.onmouseenter = function (current) {
-            document.onmouseup();
-            resetCurrentObject();
-            svgPanel.onmousedown(current);
-        };
     };
 };
 
 //LINE
-line = document.getElementById("line");
+lineButton = document.getElementById("line");
 
-line.onclick = function () {
-    wasPressed = "line";
+lineButton.onclick = function () {
     svgPanel.style.cursor = "default";
     svgPanel.onmousedown = function (current) {
         updateCursorCoords(current);
@@ -141,7 +129,7 @@ line.onclick = function () {
             newObject.updateAttributes(current);
         };
         document.onmouseup = function () {
-            newObject.complete();
+            newObject.complete(newObject.x0 != newObject.x2 || newObject.y0 != newObject.y2);
         };
     };
 }
@@ -151,7 +139,6 @@ pathTool = document.getElementById("pathTool");
 let polylineIsCompleted = true;
 
 pathTool.onclick = function () {
-    wasPressed = "pathTool";
     svgPanel.style.cursor = "default";
     svgPanel.onmousedown = function (current) {
         if (polylineIsCompleted && current.which == 1) {
@@ -163,7 +150,7 @@ pathTool.onclick = function () {
                 updateCursorCoords(current);
                 newObject.updateLine(current);
             };
-            svgPanel.onmouseup = function (current) {
+            document.onmouseup = function (current) {
                 newObject.updateAttributes();
                 if (current.ctrlKey) {
                     newObject.complete();
@@ -176,4 +163,51 @@ pathTool.onclick = function () {
             }
         }
     };
+};
+
+//VECTOR
+vectorTool = document.getElementById("vector");
+let vectorIsCompleted = true;
+
+vectorTool.onclick = function () {
+    svgPanel.style.cursor = "default";
+    svgPanel.onmousedown = startVector;
+};
+
+function startVector(current) {
+    if (vectorIsCompleted && current.which == 1) {
+        updateCursorCoords(current);
+        let newObject = new vector();
+        vectorIsCompleted = false;
+
+        document.onmousemove = function (current) {
+            updateCursorCoords(current);
+            newObject.updateLine();
+        };
+
+        document.onmouseup = function (current) {
+            updateCursorCoords(current);
+            newObject.updateFirstPath();
+            document.onmousemove = function (current) {
+                updateCursorCoords(current);
+                newObject.updatePath();
+            };
+            svgPanel.onmousedown = function (current) {
+                updateCursorCoords(current);
+                newObject.updatePoint();
+                document.onmousemove = function (current) {
+                    updateCursorCoords(current);
+                    newObject.updateSecondPath();
+                };
+            };
+            if (current.ctrlKey) {
+                newObject.complete();
+            }
+        };
+        document.onclick = function () {
+            if (wasPressed != "vector") {
+                newObject.complete();
+            }
+        }
+    }
 };

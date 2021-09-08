@@ -121,11 +121,15 @@ header {
 }
 
 .func_button:hover {
-    background-color: #444;
+    background-color: #555;
 }
 
 .func_check:checked~label img {
     background-color: #444;
+}
+
+.func_check:checked~label img:hover {
+    background-color: #555;
 }
 
 /*properties_panel*/

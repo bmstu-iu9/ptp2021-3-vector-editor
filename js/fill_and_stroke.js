@@ -183,7 +183,7 @@ function makeRoundStroke(pen) {
   prevC = rightPanel.querySelector('input[name="cap"]:checked')
   j1.checked = "true";
   c2.checked = "true";
-  prevObject = currentObject;
+  let prevObject = currentObject;
   currentObject = pen;
   var event = new Event('change');
   j1.dispatchEvent(event);

@@ -224,3 +224,24 @@ pLineX.onchange = () => {
 pLineY.onchange = () => {
     moveY(pLineY.value - currentObject.minY);
 }
+
+polEnd.onchange = () => {
+    if (polEnd.checked) {
+        currentObject.hasEnd = true;
+        currentObject.updateFrameAndPoints();
+    } else {
+        currentObject.hasEnd = false;
+        currentObject.updateFrameAndPoints();
+    }
+}
+
+//vector
+vectEnd.onchange = () => {
+    if (vectEnd.checked) {
+        currentObject.path += "Z";
+        currentObject.setElementAttribute('d', currentObject.path);
+    } else {
+        currentObject.path = currentObject.path.substring(0, currentObject.path.length - 1);;
+        currentObject.setElementAttribute('d', currentObject.path);
+    }
+}

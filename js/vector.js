@@ -9,7 +9,7 @@ class vector extends object {
         }];
         this.i = 0;
         this.newPath = "";
-        this.svgElement.setAttribute('d', this.path);
+        this.setElementAttribute('d', this.path);
         this.frameArray = [new lineFrame(curX, curY, curX, curY, this)];
         this.pointsArray = [new point(curX, curY, this, {
             action: "vector",
@@ -62,7 +62,7 @@ class vector extends object {
     }
     updatePath() {
         this.newPath = this.prevPoint + curX + " " + curY + ", " + curX + " " + curY + " ";
-        this.svgElement.setAttribute('d', this.path + this.newPath);
+        this.setElementAttribute('d', this.path + this.newPath);
     }
     updateSecondPath() {
         let x = this.pathCoords[this.i].x,
@@ -70,14 +70,12 @@ class vector extends object {
         let newX = 2 * x - curX,
             newY = 2 * y - curY;
         this.newPath = this.prevPoint + newX + " " + newY + ", " + x + " " + y + " ";
-        this.svgElement.setAttribute('d', this.path + this.newPath);
+        this.setElementAttribute('d', this.path + this.newPath);
         this.updateLine();
     }
     complete() {
         if (!vectorIsCompleted) {
             vectorIsCompleted = true;
-            this.path += "Z";
-            this.svgElement.setAttribute('d', this.path);
             svgPanel.onmousedown = startVector;
             super.complete(this.path != "M" + " " + this.x0 + " " + this.y0 + " " + "Z");
         }

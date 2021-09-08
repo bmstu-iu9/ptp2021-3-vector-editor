@@ -2285,6 +2285,7 @@ class polyline extends object {
         }));
         this.pointsArray[0].setPointAttribute('fill', "blue");
         this.line = new line(curX, curY, curX, curY, false);
+        this.hasEnd = false;
         this.minX = this.x0;
         this.minY = this.y0;
         this.maxX = this.x0;
@@ -2348,6 +2349,8 @@ class polyline extends object {
         const x = Number(this.line.getElementAttribute('x2')),
             y = Number(this.line.getElementAttribute('y2'));
         if ((curX - this.x0) ** 2 + (curY - this.y0) ** 2 <= pointRadius ** 2 && this.pointsArray.length > 1) {
+            polEnd.checked = "true";
+            this.hasEnd = true;
             this.complete();
             return;
         }
@@ -2386,9 +2389,11 @@ class polyline extends object {
         }
         if (this.isCompleted)
             this.pointsArray[this.pointsArray.length - 1].update(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2 - 20, transform);
-        let x = this.pathCoords[0].x + dx,
-            y = this.pathCoords[0].y + dy;
-        this.path += " " + x + "," + y;
+        if (this.hasEnd) {
+            let x = this.pathCoords[0].x + dx,
+                y = this.pathCoords[0].y + dy;
+            this.path += " " + x + "," + y;
+        }
         this.frameArray[0].update(this.path, transform);
         this.svgElement.setAttribute('points', this.path);
     }
@@ -2522,7 +2527,6 @@ class polyline extends object {
                 action: "rotate",
                 attr: "rotate"
             }));
-            this.updateFrameAndPoints();
             polylineIsCompleted = true;
             super.complete(this.path != this.x0 + "," + this.y0 + " " + this.x0 + "," + this.y0);
         }

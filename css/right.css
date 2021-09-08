@@ -3,6 +3,12 @@ img {
     height: 100%;
 }
 
+label {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
 /*PALETTE*/
 #palette {
     display: flex;
@@ -77,7 +83,6 @@ header hr {
     width: 2vw;
     height: 2vw;
     margin: 1vh 0;
-    display: block;
 }
 
 .styleList {
@@ -94,7 +99,6 @@ header hr {
 
 #lines li label {
     height: initial;
-    display: flex;
     padding: 7px 0;
 }
 

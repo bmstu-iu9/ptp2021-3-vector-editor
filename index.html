@@ -80,9 +80,9 @@
     </div>
 
     <div id="obj_panel">
-      <img title="На передний план" class=func_button id="frontObject" src="img/to_front.svg">
-      <img title="На задний план" class=func_button id="backObject" src="img/to_back.svg">
-      <img src="img/angle.svg" class="not_buttons">
+      <img title="На передний план" class=func_button id="frontObject" src="img/properties/to_front.svg">
+      <img title="На задний план" class=func_button id="backObject" src="img/properties/to_back.svg">
+      <img src="img/properties/angle.svg" class="not_buttons">
       <input id="angle" type="number" class="property" required>
     </div>
     <div class="properties_panel" id="rect_panel">
@@ -90,7 +90,7 @@
       &nbsp;y <input id="rectY" type="number" class="property" required>
       &nbsp;w <input id="rectW" type="number" class="property" min="1" required>
       &nbsp;h <input id="rectH" type="number" class="property" min="1" required>
-      <img src="img/corner.svg" class="not_buttons">
+      <img src="img/properties/corner.svg" class="not_buttons">
       <input id="rectR" type="number" class="property" min="0" max="50" style="
       width: 40px;" required>
     </div>
@@ -126,10 +126,10 @@
       &nbsp;x <input id="pLineX" type="number" class="property" required>
       &nbsp;y <input id="pLineY" type="number" class="property" required>
     </div>
-    <!--<div class="properties_panel" id="vect_panel">
-      &nbsp;<input id="vectEnd" type="checkbox" hidden><label for="vectEnd">
-        <img src="img/stroke/vectEnd.svg"></label>
-    </div>-->
+    <div class="properties_panel" id="vect_panel">
+      &nbsp;<input id="vectEnd" type="checkbox" class="func_check" hidden><label for="vectEnd">
+        <img src="img/properties/vectEnd.svg" class="func_button"></label>
+    </div>
     <div class="properties_panel" id="scale_panel">
       &nbsp;<input id="scaleP" type="number" class="property" step="25" min="0" required>
     </div>

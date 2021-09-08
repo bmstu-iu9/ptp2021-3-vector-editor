@@ -22,6 +22,14 @@ class vector extends object {
             attr: this.i * 3 + 2
         })];
     }
+    addParameters() {
+        vect_panel.style.display = "flex";
+    }
+    updateParameters() {
+    }
+    removeParameters() {
+        vect_panel.style.display = "none";
+    }
     updatePoint() {
         this.pathCoords.push({
             x: curX,

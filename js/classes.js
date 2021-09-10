@@ -2387,7 +2387,6 @@ class polyline extends object {
             if (i == 0) this.path = x + "," + y;
             else this.path += " " + x + "," + y;
             this.pointsArray[i].update(x, y, transform);
-            this.pointsArray[i].type.attr = i;
         }
         if (this.isCompleted)
             this.pointsArray[this.pointsArray.length - 1].update(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2 - 20, transform);

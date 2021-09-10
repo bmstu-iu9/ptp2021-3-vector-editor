@@ -239,9 +239,11 @@ polEnd.onchange = () => {
 vectEnd.onchange = () => {
     if (vectEnd.checked) {
         currentObject.path += "Z";
+        currentObject.hasEnd = true;
         currentObject.setElementAttribute('d', currentObject.path);
     } else {
-        currentObject.path = currentObject.path.substring(0, currentObject.path.length - 1);;
+        currentObject.path = currentObject.path.substring(0, currentObject.path.length - 1);
+        currentObject.hasEnd = false;
         currentObject.setElementAttribute('d', currentObject.path);
     }
 }

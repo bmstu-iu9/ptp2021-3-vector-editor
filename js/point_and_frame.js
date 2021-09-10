@@ -269,9 +269,11 @@ class lineFrame extends frame {
             this.transform = transform;
             this.setFrameAttribute('transform', transform);
         }
-        if (this.object.type == 'vector') this.setFrameAttribute('stroke', 'blue');
-        this.setFrameAttribute('stroke-width', 2);
-        this.svgElement.setAttribute('stroke-dasharray', 'none');
+        if (this.object.type == 'vector') {
+            this.setFrameAttribute('stroke', 'blue');
+            this.setFrameAttribute('stroke-width', 2);
+            this.setFrameAttribute('stroke-dasharray', 'none');
+        }
     }
 }
 class rectangleFrame extends frame {

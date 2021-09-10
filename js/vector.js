@@ -77,7 +77,7 @@ class vector extends object {
         if (!vectorIsCompleted) {
             vectorIsCompleted = true;
             svgPanel.onmousedown = startVector;
-            super.complete(this.path != "M" + " " + this.x0 + " " + this.y0 + " " + "Z");
+            super.complete(this.path != "M" + " " + this.x0 + " " + this.y0 + " ");
         }
     }
 }

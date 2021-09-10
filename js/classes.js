@@ -227,6 +227,7 @@ class object {
     complete(isSizeNotZero = this.svgElement.getBoundingClientRect().width * this.svgElement.getBoundingClientRect().height > 0) {
         this.updateFrameAndPoints();
         this.removeHotKeys();
+        document.onmousedown = null;
         document.onmousemove = null;
         document.onmouseup = null;
         document.onclick = null;
@@ -2302,7 +2303,8 @@ class polyline extends object {
         let clone = new polyline();
         this.clone = clone;
         super.createClone();
-        clone.line.remove();
+        clone.line.hide();
+        clone.hasEnd = this.hasEnd;
         clone.minX = this.minX;
         clone.minY = this.minY;
         clone.maxX = this.maxX;
@@ -2369,7 +2371,7 @@ class polyline extends object {
             });
             this.path += " " + x + "," + y;
             this.svgElement.setAttribute('points', this.path);
-            this.line.remove();
+            this.line.hide();
             this.line = new line(x, y, curX, curY, false);
             this.pointsArray.push(new point(x, y, this, {
                 action: "polyline",
@@ -2521,14 +2523,14 @@ class polyline extends object {
     }
     complete() {
         if (!polylineIsCompleted) {
-            this.line.remove();
+            this.line.hide();
             this.pointsArray[0].setPointAttribute('fill', "white");
             this.pointsArray.push(new point(this.minX + (this.maxX - this.minX) / 2, this.minY + (this.maxY - this.minY) / 2 - 20, this, {
                 action: "rotate",
                 attr: "rotate"
             }));
             polylineIsCompleted = true;
-            super.complete(this.path != this.x0 + "," + this.y0 + " " + this.x0 + "," + this.y0);
+            super.complete(this.path != this.x0 + "," + this.y0 + " " + this.x0 + "," + this.y0 && this.path != this.x0 + "," + this.y0);
         }
     }
 }

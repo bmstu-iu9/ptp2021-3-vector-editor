@@ -156,11 +156,17 @@ pathTool.onclick = function () {
                     newObject.complete();
                 }
             };
+            container.onmousedown = function () {
+                newObject.complete();
+            };
+            rightPanel.onmousedown = function () {
+                newObject.complete();
+            };
             document.onclick = function () {
                 if (wasPressed != "pathTool") {
                     newObject.complete();
                 }
-            }
+            };
         }
     };
 };
@@ -192,7 +198,7 @@ function startVector(current) {
                 updateCursorCoords(current);
                 newObject.updatePath();
             };
-            svgPanel.onmousedown = function (current) {
+            document.onmousedown = function (current) {
                 updateCursorCoords(current);
                 newObject.updatePoint();
                 document.onmousemove = function (current) {
@@ -204,10 +210,16 @@ function startVector(current) {
                 newObject.complete();
             }
         };
+        container.onmousedown = function () {
+            newObject.complete();
+        };
+        rightPanel.onmousedown = function () {
+            newObject.complete();
+        };
         document.onclick = function () {
             if (wasPressed != "vector") {
                 newObject.complete();
             }
-        }
+        };
     }
-};
+}

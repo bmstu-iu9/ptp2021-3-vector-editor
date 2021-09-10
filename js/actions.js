@@ -126,7 +126,7 @@ create.onclick = function () {
         alert("Недопустимый размер холста!")
         return;
     }
-
+    resetCurrentObject();
     for (var i = 2; i < svgPanel.childNodes.length;)
         svgPanel.removeChild(svgPanel.childNodes[i]);
     for (var i = 0; i < layersPanel.childNodes.length;)

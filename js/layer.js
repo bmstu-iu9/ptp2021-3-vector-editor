@@ -216,7 +216,7 @@ class layer {
         this.panel.before(clone.panel);
 
         let content = this.group.childNodes;
-        for (i = 0; i < content.length; i++) {
+        for (let i = 0; i < content.length; i++) {
             let figure = content[i].obj.createClone();
             clone.group.append(figure.svgElement);
         }

@@ -777,10 +777,10 @@ class ellipse extends object {
             rx: this.rx,
             ry: this.ry
         };
-    }
-    resize(dx, dy) {
         this.resizeCx = this.cx;
         this.resizeCy = this.cy;
+    }
+    resize(dx, dy) {
         let new_dx = getRotateCoords(dx, dy, this.angle).x,
             new_dy = getRotateCoords(dx, dy, this.angle).y;
         let n = {
@@ -1804,6 +1804,11 @@ class pencil extends object {
         this.frameArray[4].update(this.path, transform);
         this.pointsArray[0].update(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2, transform);
         this.pointsArray[1].update(minX + (maxX - minX) / 2, minY - 20, transform);
+        this.pointsArray[2].update(minX + (maxX - minX) / 2, minY, transform);
+        this.pointsArray[3].update(maxX, minY + (maxY - minY) / 2, transform);
+        this.pointsArray[4].update(minX + (maxX - minX) / 2, maxY, transform);
+        this.pointsArray[5].update(minX, minY + (maxY - minY) / 2, transform);
+        this.path = "";
     }
     //MOVE
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
@@ -1905,6 +1910,22 @@ class pencil extends object {
             new point(this.minX + (this.maxX - this.minX) / 2, this.minY - 20, this, {
                 action: "rotate",
                 attr: "rotate"
+            }),
+            new point(this.minX + (this.maxX - this.minX) / 2, this.minY, this, {
+                action: "resize",
+                attr: "t"
+            }),
+            new point(this.maxX, this.minY + (this.maxY - this.minY) / 2, this, {
+                action: "resize",
+                attr: "r"
+            }),
+            new point(this.minX + (this.maxX - this.minX) / 2, this.maxY, this, {
+                action: "resize",
+                attr: "b"
+            }),
+            new point(this.minX, this.minY + (this.maxY - this.minY) / 2, this, {
+                action: "resize",
+                attr: "l"
             })
         ];
         makePrevStroke();

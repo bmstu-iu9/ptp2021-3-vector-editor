@@ -170,8 +170,10 @@ class point {
         this.circle.setAttribute(attributeName, value);
     }
     update(x, y, transform, attr = this.type.attr) {
-        if (currentPointTypeAttr == null || currentPointTypeAttr != attr)
-            this.setColor("white");
+        if (this.type.action != "polygon") {
+            if (currentPointTypeAttr != null && currentPointTypeAttr == attr) this.circle.setAttribute('fill', "red");
+            else this.circle.setAttribute('fill', "white");
+        }
         this.x = x;
         this.y = y;
         if (transform) {

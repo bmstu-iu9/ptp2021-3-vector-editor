@@ -18,12 +18,14 @@ angleInput.onchange = () => {
 }
 
 function resizeX(dx) {
+    currentObject.startResize();
     currentObject.resize(dx, 0);
     currentObject.stopResize(dx, 0);
     currentObject.updateParameters();
 }
 
 function resizeY(dy) {
+    currentObject.startResize();
     currentObject.resize(0, dy);
     currentObject.stopResize(0, dy);
     currentObject.updateParameters();

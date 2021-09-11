@@ -548,7 +548,6 @@ class rectangle extends object {
         this.svgElement.setAttribute('height', this.height);
         this.svgElement.setAttribute('transform', this.transform);
         this.updateFrameAndPoints();
-        this.updateProperties();
     }
     getResizeAttrs() {
         return [
@@ -1716,7 +1715,10 @@ class pencil extends object {
         super('polyline');
         this.type = 'pencil';
         this.path = this.x0 + "," + this.y0;
-        this.pathCoords = [];
+        this.pathCoords = [{
+            x: this.x0,
+            y: this.y0
+        }];
         this.svgElement.setAttribute('fill', "none");
         this.svgElement.setAttribute('points', this.path);
         this.minX = this.x0;
@@ -1785,15 +1787,13 @@ class pencil extends object {
             y: this.minY + (this.maxY - this.minY) / 2
         };
     }
-    updateFrameAndPoints(dx = 0, dy = 0, minX = this.minX, minY = this.minY, maxX = this.maxX, maxY = this.maxY, transform = this.transform) {
+    updateFrameAndPoints(dx = 0, dy = 0, minX = this.minX, minY = this.minY, maxX = this.maxX, maxY = this.maxY, transform = this.transform, pathCoords = this.pathCoords) {
         //включает обновление атрибута
-        let newX0 = this.x0 + dx,
-            newY0 = this.y0 + dy;
-        this.path = newX0 + "," + newY0;
-        for (let i = 0; i < this.pathCoords.length; i++) {
-            let newX = this.pathCoords[i].x + dx,
-                newY = this.pathCoords[i].y + dy;
-            this.path += " " + newX + "," + newY;
+        for (let i = 0; i < pathCoords.length; i++) {
+            let newX = pathCoords[i].x + dx,
+                newY = pathCoords[i].y + dy;
+            if (i == 0) this.path = newX + "," + newY;
+            else this.path += " " + newX + "," + newY;
         }
         this.svgElement.setAttribute('points', this.path);
 
@@ -1802,12 +1802,16 @@ class pencil extends object {
         this.frameArray[2].update(maxX, minY, minX, minY, transform);
         this.frameArray[3].update(minX, minY, minX, maxY, transform);
         this.frameArray[4].update(this.path, transform);
-        this.pointsArray[0].update(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2, transform);
-        this.pointsArray[1].update(minX + (maxX - minX) / 2, minY - 20, transform);
-        this.pointsArray[2].update(minX + (maxX - minX) / 2, minY, transform);
+        this.pointsArray[0].update(minX, minY, transform);
+        this.pointsArray[1].update(minX + (maxX - minX) / 2, minY, transform);
+        this.pointsArray[2].update(maxX, minY, transform);
         this.pointsArray[3].update(maxX, minY + (maxY - minY) / 2, transform);
-        this.pointsArray[4].update(minX + (maxX - minX) / 2, maxY, transform);
-        this.pointsArray[5].update(minX, minY + (maxY - minY) / 2, transform);
+        this.pointsArray[4].update(maxX, maxY, transform);
+        this.pointsArray[5].update(minX + (maxX - minX) / 2, maxY, transform);
+        this.pointsArray[6].update(minX, maxY, transform);
+        this.pointsArray[7].update(minX, minY + (maxY - minY) / 2, transform);
+        this.pointsArray[8].update(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2, transform);
+        this.pointsArray[9].update(minX + (maxX - minX) / 2, minY - 20, transform);
         this.path = "";
     }
     //MOVE
@@ -1850,6 +1854,135 @@ class pencil extends object {
             x: this.minX - pointRadius,
             y: this.minY - pointRadius
         }
+    }
+    //RESIZE
+    startResize() {
+        this.resizeTemp = {
+            pathCoords: this.pathCoords,
+            minX: this.minX,
+            minY: this.minY,
+            maxX: this.maxX,
+            maxY: this.maxY,
+        }
+    }
+    resize(dx, dy) {
+        let new_dx = getRotateCoords(dx, dy, this.angle).x,
+            new_dy = getRotateCoords(dx, dy, this.angle).y;
+
+        let n = {
+            pathCoords: [],
+            minX: this.minX,
+            minY: this.minY,
+            maxX: this.maxX,
+            maxY: this.maxY,
+        };
+        n.pathCoords = [];
+        for (let i = 0; i < this.pathCoords.length; i++) {
+            n.pathCoords[i] = {
+                x: 0,
+                y: 0
+            }
+            n.pathCoords[i].x = this.pathCoords[i].x;
+            n.pathCoords[i].y = this.pathCoords[i].y;
+        }
+
+
+        let kx = 0,
+            ky = 0,
+            diffX = 0,
+            diffY = 0,
+            qx = 1,
+            qy = 1;
+        switch (currentPointTypeAttr) {
+            case "ltc":
+                kx = 1 - (n.maxX - (n.minX + new_dx)) / (n.maxX - n.minX);
+                n.minX += new_dx;
+                diffX = n.maxX;
+
+                ky = 1 - (n.maxY - (n.minY + new_dy)) / (n.maxY - n.minY);
+                n.minY += new_dy;
+                diffY = n.maxY;
+                break;
+            case "t":
+                ky = 1 - (n.maxY - (n.minY + new_dy)) / (n.maxY - n.minY);
+                n.minY += new_dy;
+                diffY = n.maxY;
+                break;
+            case "rtc":
+                kx = 1 - (n.maxX - (n.minX + new_dx)) / (n.maxX - n.minX);
+                n.maxX += new_dx;
+                diffX = n.minX;
+                qx = -1;
+
+                ky = 1 - (n.maxY - (n.minY + new_dy)) / (n.maxY - n.minY);
+                n.minY += new_dy;
+                diffY = n.maxY;
+                break;
+            case "r":
+                kx = 1 - (n.maxX - (n.minX + new_dx)) / (n.maxX - n.minX);
+                n.maxX += new_dx;
+                diffX = n.minX;
+                qx = -1;
+                break;
+            case "rbc":
+                kx = 1 - (n.maxX - (n.minX + new_dx)) / (n.maxX - n.minX);
+                n.maxX += new_dx;
+                diffX = n.minX;
+                qx = -1;
+
+                ky = 1 - (n.maxY - (n.minY + new_dy)) / (n.maxY - n.minY);
+                n.maxY += new_dy;
+                diffY = n.minY;
+                qy = -1;
+                break;
+            case "b":
+                ky = 1 - (n.maxY - (n.minY + new_dy)) / (n.maxY - n.minY);
+                n.maxY += new_dy;
+                diffY = n.minY;
+                qy = -1;
+                break;
+            case "lbc":
+                kx = 1 - (n.maxX - (n.minX + new_dx)) / (n.maxX - n.minX);
+                n.minX += new_dx;
+                diffX = n.maxX;
+
+                ky = 1 - (n.maxY - (n.minY + new_dy)) / (n.maxY - n.minY);
+                n.maxY += new_dy;
+                diffY = n.minY;
+                qy = -1;
+                break;
+            case "l":
+                kx = 1 - (n.maxX - (n.minX + new_dx)) / (n.maxX - n.minX);
+                n.minX += new_dx;
+                diffX = n.maxX;
+                break;
+        }
+        for (let i = 0; i < n.pathCoords.length; i++) {
+            n.pathCoords[i].x = n.pathCoords[i].x + qx * (diffX - n.pathCoords[i].x) * kx;
+            n.pathCoords[i].y = n.pathCoords[i].y + qy * (diffY - n.pathCoords[i].y) * ky;
+        }
+        this.resizeTemp.pathCoords = n.pathCoords;
+        this.resizeTemp.minX = Math.min(n.minX, n.maxX);
+        this.resizeTemp.minY = Math.min(n.minY, n.maxY);
+        this.resizeTemp.maxX = Math.max(n.minX, n.maxX);
+        this.resizeTemp.maxY = Math.max(n.minY, n.maxY);
+        this.updateFrameAndPoints(0, 0, this.resizeTemp.minX, this.resizeTemp.minY, this.resizeTemp.maxX, this.resizeTemp.maxY,
+            this.transform, n.pathCoords);
+    }
+    stopResize() {
+        this.pathCoords = this.resizeTemp.pathCoords;
+        this.minX = this.resizeTemp.minX;
+        this.minY = this.resizeTemp.minY;
+        this.maxX = this.resizeTemp.maxX;
+        this.maxY = this.resizeTemp.maxY;
+
+        this.cPoint = {
+            x: this.minX + (this.maxX - this.minX) / 2,
+            y: this.minY + (this.maxY - this.minY) / 2
+        };
+        this.transform = 'rotate(' + this.angle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
+        this.svgElement.setAttribute('transform', this.transform);
+        this.updateFrameAndPoints();
     }
     //ROTATE
     startRotating() {
@@ -1903,29 +2036,45 @@ class pencil extends object {
             new lineFrame(this.minX, this.minY, this.minX, this.maxY, this, true),
             new polylineFrame(this.path, this)
         ];
-        this.pointsArray = [new point(this.minX + (this.maxX - this.minX) / 2, this.minY + (this.maxY - this.minY) / 2, this, {
+        this.pointsArray = [new point(this.minX, this.minY, this, {
+                action: "resize",
+                attr: "ltc"
+            }),
+            new point(this.minX + (this.maxX - this.minX) / 2, this.minY, this, {
+                action: "resize",
+                attr: "t"
+            }),
+            new point(this.maxX, this.minY, this, {
+                action: "resize",
+                attr: "rtc"
+            }),
+            new point(this.maxX, this.minY + (this.maxY - this.minY) / 2, this, {
+                action: "resize",
+                attr: "r"
+            }),
+            new point(this.maxX, this.maxY, this, {
+                action: "resize",
+                attr: "rbc"
+            }),
+            new point(this.minX + (this.maxX - this.minX) / 2, this.maxY, this, {
+                action: "resize",
+                attr: "b"
+            }),
+            new point(this.minX, this.maxY, this, {
+                action: "resize",
+                attr: "lbc"
+            }),
+            new point(this.minX, this.minY + (this.maxY - this.minY) / 2, this, {
+                action: "resize",
+                attr: "l"
+            }),
+            new point(this.minX + (this.maxX - this.minX) / 2, this.minY + (this.maxY - this.minY) / 2, this, {
                 action: "move",
                 attr: "move"
             }),
             new point(this.minX + (this.maxX - this.minX) / 2, this.minY - 20, this, {
                 action: "rotate",
                 attr: "rotate"
-            }),
-            new point(this.minX + (this.maxX - this.minX) / 2, this.minY, this, {
-                action: "resize",
-                attr: "t"
-            }),
-            new point(this.maxX, this.minY + (this.maxY - this.minY) / 2, this, {
-                action: "resize",
-                attr: "r"
-            }),
-            new point(this.minX + (this.maxX - this.minX) / 2, this.maxY, this, {
-                action: "resize",
-                attr: "b"
-            }),
-            new point(this.minX, this.minY + (this.maxY - this.minY) / 2, this, {
-                action: "resize",
-                attr: "l"
             })
         ];
         makePrevStroke();

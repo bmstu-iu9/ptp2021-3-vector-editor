@@ -53,7 +53,15 @@ class point {
         }
         //rotateObject
         if (this.type.action == "rotate") {
-            this.circle.style.cursor = "url(img/rotate.svg) 10 10, pointer";
+            //чтобы менялся только, когда выбран курсор
+            this.setRotateCursor = (() => {
+                if (wasPressed == "cursor") {
+                    this.circle.style.cursor = "url(img/rotate.svg) 10 10, pointer";
+                } else {
+                    this.circle.style.cursor = svgPanel.style.cursor;
+                }
+            }).bind(this);
+            document.addEventListener('click', this.setRotateCursor);
 
             const rotate = ((current) => {
                 if (this.object.isRotating) {
@@ -78,6 +86,7 @@ class point {
                     this.object.isRotating = false;
                     updateCursorCoords(current);
                     svgPanel.style.cursor = "default";
+                    document.dispatchEvent(new Event("mouseup"));
                     currentPointTypeAttr = null;
                     this.isSelected = false;
                     isSomePointSelected = false;
@@ -162,6 +171,9 @@ class point {
         svgPanel.appendChild(this.circle);
     }
     remove() {
+        if (this.type.action == "rotate") {
+            document.removeEventListener('click', this.setRotateCursor);
+        }
         svgPanel.removeChild(this.circle);
         this.circle = null;
         this.isSelected = false;
@@ -195,10 +207,10 @@ class frame {
         this.svgElement.setAttribute('opacity', "0.5");
         if (red) this.svgElement.setAttribute('stroke', "red");
         else this.svgElement.setAttribute('stroke', object.getElementAttribute('stroke'));
-        if (red) this.svgElement.setAttribute('stroke-width', pointRadius);
+        if (red) this.svgElement.setAttribute('stroke-width', 2);
         else this.svgElement.setAttribute('stroke-width', object.strokeWidth);
-        if (red || object.getElementAttribute('stroke-dasharray') == null) this.svgElement.setAttribute('stroke-dasharray', this.svgElement.getAttribute('stroke-width') * 4);
-        else this.svgElement.setAttribute('stroke-dasharray', object.getElementAttribute('stroke-dasharray'));
+        if (!red && object.getElementAttribute('stroke-dasharray') == null) this.svgElement.setAttribute('stroke-dasharray', this.svgElement.getAttribute('stroke-width') * 4);
+        else if (!red) this.svgElement.setAttribute('stroke-dasharray', object.getElementAttribute('stroke-dasharray'));
         if (red) this.svgElement.setAttribute('stroke-linejoin', "none");
         else this.svgElement.setAttribute('stroke-linejoin', object.getElementAttribute('stroke-linejoin'));
         if (red) this.svgElement.setAttribute('stroke-linecap', "none");
@@ -222,11 +234,11 @@ class frame {
     update() {
         if (this.red) this.svgElement.setAttribute('stroke', "red");
         else this.svgElement.setAttribute('stroke', this.object.getElementAttribute('stroke'));
-        if (this.red) this.svgElement.setAttribute('stroke-width', pointRadius);
+        if (this.red) this.svgElement.setAttribute('stroke-width', 2);
         else this.svgElement.setAttribute('stroke-width', this.object.strokeWidth);
-        if (this.red || this.object.getElementAttribute('stroke-dasharray') == null ||
+        if (!this.red && this.object.getElementAttribute('stroke-dasharray') == null ||
             this.object.getElementAttribute('stroke-dasharray') == "null") this.svgElement.setAttribute('stroke-dasharray', this.svgElement.getAttribute('stroke-width') * 4);
-        else this.svgElement.setAttribute('stroke-dasharray', this.object.getElementAttribute('stroke-dasharray'));
+        else if (!this.red) this.svgElement.setAttribute('stroke-dasharray', this.object.getElementAttribute('stroke-dasharray'));
         if (this.red) this.svgElement.setAttribute('stroke-linejoin', "none");
         else this.svgElement.setAttribute('stroke-linejoin', this.object.getElementAttribute('stroke-linejoin'));
         if (this.red) this.svgElement.setAttribute('stroke-linecap', "none");
@@ -272,13 +284,11 @@ class lineFrame extends frame {
             this.setFrameAttribute('transform', transform);
         }
         if (this.object.type == 'vector') this.setFrameAttribute('stroke', 'blue');
-        this.setFrameAttribute('stroke-width', 2);
-        this.svgElement.setAttribute('stroke-dasharray', 'none');
     }
 }
 class rectangleFrame extends frame {
-    constructor(x, y, width, height, object) {
-        super('rect', object);
+    constructor(x, y, width, height, object, red = false) {
+        super('rect', object, red);
         this.x = x;
         this.y = y;
         this.width = width;
@@ -287,9 +297,10 @@ class rectangleFrame extends frame {
         this.svgElement.setAttribute('y', y);
         this.svgElement.setAttribute('width', width);
         this.svgElement.setAttribute('height', height);
+        this.red = red;
     }
     createClone(newObject) {
-        let clone = new rectangleFrame(this.x, this.y, this.width, this.height, newObject);
+        let clone = new rectangleFrame(this.x, this.y, this.width, this.height, newObject, this.red);
         clone.transform = this.transform;
         clone.setFrameAttribute('transform', this.transform);
         return clone;

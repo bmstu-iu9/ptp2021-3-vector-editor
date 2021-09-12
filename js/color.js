@@ -198,7 +198,7 @@ function makePrevStroke() {
 
 //fill tool
 fill = document.getElementById("filling");
-fill.onclick = function () {
+fill.onmousedown = function () {
   wasPressed = "fill";
   svgPanel.style.cursor = "url(img/fill.ico) 4 28, default";
   svgPanel.onmousedown = function (event) {

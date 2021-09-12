@@ -11,16 +11,18 @@ class vector extends object {
         this.newPath = "";
         this.hasEnd = false;
         this.setElementAttribute('d', this.path);
-        this.frameArray = [new lineFrame(curX, curY, curX, curY, this)];
+        this.frameArray = [new lineFrame(curX, curY, curX, curY, this),
+            new lineFrame(curX, curY, curX, curY, this)
+        ];
         this.pointsArray = [new point(curX, curY, this, {
-            action: "vector",
-            attr: this.i * 3
+            action: "resize",
+            attr: this.i * 3                  //точка, отвечающая за предыдущий путь
         }), new point(curX, curY, this, {
-            action: "vector",
-            attr: this.i * 3 + 1
+            action: "resize",
+            attr: this.i * 3 + 1              //точка угла
         }), new point(curX, curY, this, {
-            action: "vector",
-            attr: this.i * 3 + 2
+            action: "resize",
+            attr: this.i * 3 + 2              ////точка, отвечающая за следующий путь
         })];
     }
     addParameters() {
@@ -36,8 +38,10 @@ class vector extends object {
                 y = this.pathCoords[i].y + dy;
             this.pointsArray[i].update(x, y);
             if (i == 0) {
-                this.x1 = x;
-                this.y1 = y;
+                let newX = 2 * (this.pathCoords[i + 1].x + dx) - (this.pathCoords[i + 2].x + dx),
+                    newY = 2 * (this.pathCoords[i + 1].y + dy) - (this.pathCoords[i + 2].y + dy);
+                this.pointsArray[0].update(newX, newY);
+                this.frameArray[0].update(this.pathCoords[i + 1].x + dx, this.pathCoords[i + 1].y + dy, newX, newY);
                 continue;
             }
             if (i == 1) {
@@ -45,21 +49,23 @@ class vector extends object {
                 continue;
             }
             if (i == this.pathCoords.length - 1) {
-                this.frameArray[i / 3 | 0].update(x, y, this.x1, this.y1);
+                let newX = 2 * (this.pathCoords[i - 1].x + dx) - (this.pathCoords[i - 2].x + dx),
+                    newY = 2 * (this.pathCoords[i - 1].y + dy) - (this.pathCoords[i - 2].y + dy);
+                this.pointsArray[i].update(newX, newY);
+                this.frameArray[(i / 3 | 0) * 2 + 1].update(this.pathCoords[i - 1].x + dx, this.pathCoords[i - 1].y + dy, newX, newY);
                 continue;
             }
             if (i % 3 == 2) {
-                this.frameArray[i / 3 | 0].update(x, y, this.x1, this.y1);
+                this.frameArray[(i / 3 | 0) * 2 + 1].update(this.pathCoords[i - 1].x + dx, this.pathCoords[i - 1].y + dy, x, y);
                 this.path += "C" + " " + x + " " + y + ", ";
             }
             if (i % 3 == 0) {
-                this.x1 = x;
-                this.y1 = y;
+                this.frameArray[(i / 3 | 0) * 2].update(this.pathCoords[i + 1].x + dx, this.pathCoords[i + 1].y + dy, x, y);
                 this.path += x + " " + y + ", ";
             }
-            if (i % 3 == 1) this.path += x + " " + y + " ";
-
-            //currentPointTypeAttr = this.i * 3 + 2;
+            if (i % 3 == 1) {
+                this.path += x + " " + y + " ";
+            }
         }
         if (this.hasEnd) this.path += 'Z';
         this.setElementAttribute('d', this.path);
@@ -71,9 +77,23 @@ class vector extends object {
         this.x0 += dx;
         this.y0 += dy;
         for (let i = 0; i < this.pathCoords.length; i++) {
-            this.pathCoords[i].x += dx,
-                this.pathCoords[i].y += dy;
+            this.pathCoords[i].x += dx;
+            this.pathCoords[i].y += dy;
         }
+        this.updateFrameAndPoints();
+    }
+    resize() {
+        let i = currentPointTypeAttr;
+        if (i % 3 == 1) {
+            let dx = curX - this.pathCoords[i].x,
+                dy = curY - this.pathCoords[i].y;
+            this.pathCoords[i - 1].x += dx;
+            this.pathCoords[i - 1].y += dy;
+            this.pathCoords[i + 1].x += dx;
+            this.pathCoords[i + 1].y += dy;
+        }
+        this.pathCoords[i].x = curX;
+        this.pathCoords[i].y = curY;
         this.updateFrameAndPoints();
     }
     updatePoint() {
@@ -82,25 +102,26 @@ class vector extends object {
             y: curY
         });
         this.i++;
-        this.frameArray.push(new lineFrame(curX, curY, curX, curY, this));
+        this.frameArray.push(new lineFrame(curX, curY, curX, curY, this),
+            new lineFrame(curX, curY, curX, curY, this));
         this.pointsArray.push(new point(curX, curY, this, {
-            action: "vector",
+            action: "resize",
             attr: this.i * 3
         }), new point(curX, curY, this, {
-            action: "vector",
+            action: "resize",
             attr: this.i * 3 + 1
         }), new point(curX, curY, this, {
-            action: "vector",
+            action: "resize",
             attr: this.i * 3 + 2
         }));
     }
     updateLine() {
         let x = this.pathCoords[this.i].x,
             y = this.pathCoords[this.i].y;
-        this.frameArray[this.i].update(curX, curY, 2 * x - curX, 2 * y - curY);
-        currentPointTypeAttr = this.i * 3 + 2;
-        this.pointsArray[this.i * 3 + 2].update(curX, curY);
+        this.frameArray[this.i * 2].update(x, y, 2 * x - curX, 2 * y - curY);
+        this.frameArray[this.i * 2 + 1].update(x, y, curX, curY);
         this.pointsArray[this.i * 3].update(2 * x - curX, 2 * y - curY);
+        this.pointsArray[this.i * 3 + 2].update(curX, curY);
     }
     updateFirstPath() {
         this.path += this.newPath;
@@ -125,11 +146,16 @@ class vector extends object {
             svgPanel.onmousedown = startVector;
             this.pathCoords = [];
             for (let i = 0; i < this.pointsArray.length; i++) {
+                if (i % 3 == 0) {
+                    this.pointsArray[i + 1].circle.after(this.pointsArray[i].circle);
+                }
                 this.pathCoords.push({
                     x: this.pointsArray[i].x,
                     y: this.pointsArray[i].y
                 })
             }
+            this.pointsArray[0].circle.style.pointerEvents = "none";
+            this.pointsArray[this.pointsArray.length - 1].circle.style.pointerEvents = "none";
             super.complete(this.path != "M" + " " + this.x0 + " " + this.y0 + " ");
         }
     }

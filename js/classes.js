@@ -1,9 +1,9 @@
 class object {
-    constructor(name) {
+    constructor(name, type = name) {
         this.svgElement = document.createElementNS("http://www.w3.org/2000/svg", name);
         currentLayer.group.appendChild(this.svgElement);
         this.svgElement.obj = this;
-        this.type = name;
+        this.type = type;
         this.isCompleted = false;
         this.isSelected = false;
         this.isMoving = false;
@@ -91,7 +91,7 @@ class object {
         }).bind(this);
         document.addEventListener("mousemove", move);
         const startMoving = ((current) => {
-            if (wasPressed == "cursor" && this.isCompleted && this.isSelected && this.type != 'foreignObject') {
+            if (wasPressed == "cursor" && this.isCompleted && this.isSelected && this.type != 'text') {
                 this.isMoving = true;
                 updateCursorCoords(current);
                 this.start = {
@@ -628,10 +628,7 @@ class ellipse extends object {
         this.ry = 0;
         this.cx = curX;
         this.cy = curY;
-        this.frameArray = [new lineFrame(this.cx - this.rx, this.cy + this.ry, this.cx + this.rx, this.cy + this.ry, this, true),
-            new lineFrame(this.cx + this.rx, this.cy + this.ry, this.cx + this.rx, this.cy - this.ry, this, true),
-            new lineFrame(this.cx + this.rx, this.cy - this.ry, this.cx - this.rx, this.cy - this.ry, this, true),
-            new lineFrame(this.cx - this.rx, this.cy - this.ry, this.cx - this.rx, this.cy + this.ry, this, true),
+        this.frameArray = [new rectangleFrame(this.cx - this.rx, this.cy - this.ry, this.rx * 2, this.ry * 2, this, true),
             new ellipseFrame(this.cx, this.cy, this.rx, this.ry, this)
         ];
         this.pointsArray = [new point(this.cx - this.rx, this.cy - this.ry, this, {
@@ -727,11 +724,8 @@ class ellipse extends object {
         this.updateFrameAndPoints();
     }
     updateFrameAndPoints(rx = this.rx, ry = this.ry, cx = this.cx, cy = this.cy, transform = this.transform) {
-        this.frameArray[0].update(cx - rx, cy + ry, cx + rx, cy + ry, transform);
-        this.frameArray[1].update(cx + rx, cy + ry, cx + rx, cy - ry, transform);
-        this.frameArray[2].update(cx + rx, cy - ry, cx - rx, cy - ry, transform);
-        this.frameArray[3].update(cx - rx, cy - ry, cx - rx, cy + ry, transform);
-        this.frameArray[4].update(cx, cy, rx, ry, transform);
+        this.frameArray[0].update(cx - rx, cy - ry, rx * 2, ry * 2, transform);
+        this.frameArray[1].update(cx, cy, rx, ry, transform);
 
         this.pointsArray[0].update(cx - rx, cy - ry, transform);
         this.pointsArray[1].update(cx, cy - ry, transform);
@@ -1717,7 +1711,7 @@ class pentagram extends object {
 //PENCIL
 class pencil extends object {
     constructor() {
-        super('polyline');
+        super('polyline', 'pencil');
         this.type = 'pencil';
         this.path = this.x0 + "," + this.y0;
         this.pathCoords = [{
@@ -1816,7 +1810,7 @@ class pencil extends object {
         this.pointsArray[6].update(minX, maxY, transform);
         this.pointsArray[7].update(minX, minY + (maxY - minY) / 2, transform);
         this.pointsArray[8].update(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2, transform);
-        this.pointsArray[9].update(minX + (maxX - minX) / 2, minY - 20, transform);
+        this.pointsArray[9].update(Math.min(minX, maxX) + (Math.max(minX, maxX) - Math.min(minX, maxX)) / 2, Math.min(minY, maxY) - 20, transform);
         this.path = "";
     }
     //MOVE
@@ -1890,7 +1884,6 @@ class pencil extends object {
             n.pathCoords[i].x = this.pathCoords[i].x;
             n.pathCoords[i].y = this.pathCoords[i].y;
         }
-
 
         let kx = 0,
             ky = 0,
@@ -1966,20 +1959,15 @@ class pencil extends object {
             n.pathCoords[i].x = n.pathCoords[i].x + qx * (diffX - n.pathCoords[i].x) * kx;
             n.pathCoords[i].y = n.pathCoords[i].y + qy * (diffY - n.pathCoords[i].y) * ky;
         }
-        this.resizeTemp.pathCoords = n.pathCoords;
-        this.resizeTemp.minX = Math.min(n.minX, n.maxX);
-        this.resizeTemp.minY = Math.min(n.minY, n.maxY);
-        this.resizeTemp.maxX = Math.max(n.minX, n.maxX);
-        this.resizeTemp.maxY = Math.max(n.minY, n.maxY);
-        this.updateFrameAndPoints(0, 0, this.resizeTemp.minX, this.resizeTemp.minY, this.resizeTemp.maxX, this.resizeTemp.maxY,
-            this.transform, n.pathCoords);
+        this.resizeTemp = n;
+        this.updateFrameAndPoints(0, 0, n.minX, n.minY, n.maxX, n.maxY, this.transform, n.pathCoords);
     }
     stopResize() {
         this.pathCoords = this.resizeTemp.pathCoords;
-        this.minX = this.resizeTemp.minX;
-        this.minY = this.resizeTemp.minY;
-        this.maxX = this.resizeTemp.maxX;
-        this.maxY = this.resizeTemp.maxY;
+        this.minX = Math.min(this.resizeTemp.minX, this.resizeTemp.maxX);
+        this.minY = Math.min(this.resizeTemp.minY, this.resizeTemp.maxY);
+        this.maxX = Math.max(this.resizeTemp.minX, this.resizeTemp.maxX);
+        this.maxY = Math.max(this.resizeTemp.minY, this.resizeTemp.maxY);
 
         this.cPoint = {
             x: this.minX + (this.maxX - this.minX) / 2,
@@ -2115,10 +2103,7 @@ class line extends object {
             this.svgElement.setAttribute('stroke-width', "2");
             this.svgElement.setAttribute('stroke-dasharray', "8");
         } else {
-            this.frameArray = [new lineFrame(this.x0, this.y0, this.x2, this.y0, this, true),
-                new lineFrame(this.x2, this.y0, this.x2, this.y2, this, true),
-                new lineFrame(this.x2, this.y2, this.x0, this.y2, this, true),
-                new lineFrame(this.x0, this.y2, this.x0, this.y0, this, true),
+            this.frameArray = [new rectangleFrame(Math.min(this.x0, this.x2), Math.min(this.y0, this.y2), Math.abs(this.x2 - this.x0), Math.abs(this.y2 - this.y0), this, true),
                 new lineFrame(this.x0, this.y0, this.x2, this.y2, this)
             ]
             this.pointsArray = [new point(this.x0, this.y0, this, {
@@ -2236,11 +2221,8 @@ class line extends object {
         this.angleY2 = this.y2;
     }
     updateFrameAndPoints(x0 = this.x0, y0 = this.y0, x2 = this.x2, y2 = this.y2, transform = this.transform) {
-        this.frameArray[0].update(x0, y0, x2, y0, transform);
-        this.frameArray[1].update(x2, y0, x2, y2, transform);
-        this.frameArray[2].update(x2, y2, x0, y2, transform);
-        this.frameArray[3].update(x0, y2, x0, y0, transform);
-        this.frameArray[4].update(x0, y0, x2, y2, transform);
+        this.frameArray[0].update(Math.min(x0, x2), Math.min(y0, y2), Math.abs(x2 - x0), Math.abs(y2 - y0), transform);
+        this.frameArray[1].update(x0, y0, x2, y2, transform);
 
         this.pointsArray[0].update(x0, y0, transform);
         this.pointsArray[1].update(x0 + (x2 - x0) / 2, y0, transform);

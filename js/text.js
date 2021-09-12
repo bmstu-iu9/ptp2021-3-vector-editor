@@ -1,6 +1,6 @@
 class text extends object {
     constructor() {
-        super('foreignObject');
+        super('foreignObject', 'text');
         this.width = 300;
         this.height = 200;
         this.x = curX - 15;

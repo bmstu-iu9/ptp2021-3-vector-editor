@@ -40,7 +40,6 @@ var buttons = left_panel.getElementsByClassName("tool_button");
 for (var i = 0; i < buttons.length; i++) {
 	buttons[i].addEventListener("mousedown", function () {
 		var current = left_panel.getElementsByClassName("tool_button active");
-		console.log(current.length)
 		let n = current.length;
 		for (let i = 0; i < n; i++) {
 			current[0].className = "tool_button";

@@ -211,3 +211,15 @@ function startVector(current) {
         }
     }
 };
+
+//TEXT
+textButton = document.getElementById("text");
+
+textButton.onclick = function () {
+    svgPanel.style.cursor = "default";
+    svgPanel.onmousedown = function (current) {
+        updateCursorCoords(current);
+        let newObject = new text();
+        newObject.complete();
+    };
+}

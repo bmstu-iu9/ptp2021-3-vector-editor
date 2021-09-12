@@ -91,7 +91,7 @@ class object {
         }).bind(this);
         document.addEventListener("mousemove", move);
         const startMoving = ((current) => {
-            if (wasPressed == "cursor" && this.isCompleted && this.isSelected) {
+            if (wasPressed == "cursor" && this.isCompleted && this.isSelected && this.type != 'foreignObject') {
                 this.isMoving = true;
                 updateCursorCoords(current);
                 this.start = {

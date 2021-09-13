@@ -70,7 +70,10 @@ function updateFill(obj, i = -1) {
   }
   if (i == 0 || i == -1) obj.setElementAttribute('opacity', opacity[0].value);
   if (i == 1 || i == -1) obj.setElementAttribute('fill-opacity', opacity[1].value);
-  if (i == 2 || i == -1) obj.setElementAttribute('fill', fillColor.value);
+  if (i == 2 || i == -1) {
+    if (obj.type == 'foreignObject' && obj.textDiv != null) obj.textDiv.style.color = fillColor.value;
+    else obj.setElementAttribute('fill', fillColor.value);
+  }
 }
 
 //stroke style
@@ -198,7 +201,7 @@ function makePrevStroke() {
 
 //fill tool
 fill = document.getElementById("filling");
-fill.onclick = function () {
+fill.onmousedown = function () {
   wasPressed = "fill";
   svgPanel.style.cursor = "url(img/fill.ico) 4 28, default";
   svgPanel.onmousedown = function (event) {

@@ -5,8 +5,8 @@ class text extends object {
         this.height = 200;
         this.x = curX - 15;
         this.y = curY - 10;
-        this.setElementAttribute('width', this.width + this.strokeWidth * 2);
-        this.setElementAttribute('height', this.height + this.strokeWidth * 2);
+        this.setElementAttribute('width', this.width);
+        this.setElementAttribute('height', this.height);
         this.setElementAttribute('x', this.x);
         this.setElementAttribute('y', this.y);
         this.textDiv = document.createElement('div');
@@ -70,6 +70,29 @@ class text extends object {
         };
         this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
         this.angle = 0;
+    }
+    createClone() {
+        this.textDiv.setAttribute('contenteditable', 'false');
+        this.textDiv.style.webkitTouchCallout = 'none';
+        this.textDiv.style.webkitUserSelect = 'none';
+        this.textDiv.style.userSelect = 'none';
+        let clone = new text();
+        this.clone = clone;
+        clone.transform = this.transform;
+        super.createClone();
+        clone.width = this.width;
+        clone.height = this.height;
+        clone.x = this.x;
+        clone.y = this.y;
+        clone.cPoint = this.cPoint;
+        clone.angle = this.angle;
+        clone.textDiv.innerHTML = this.textDiv.innerHTML;
+        this.setElementAttribute('width', this.width);
+        this.setElementAttribute('height', this.height);
+        this.setElementAttribute('x', this.x);
+        this.setElementAttribute('y', this.y);
+        clone.svgElement.setAttribute('transform', this.transform);
+        return clone;
     }
     addActions() {
         super.addActions();

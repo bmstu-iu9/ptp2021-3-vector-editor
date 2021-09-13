@@ -224,8 +224,7 @@ class frame {
         svgPanel.appendChild(this.svgElement);
     }
     remove() {
-        if (this.object == currentObject || !this.object.isCompleted)
-            svgPanel.removeChild(this.svgElement);
+        svgPanel.removeChild(this.svgElement);
         this.svgElement = null;
     }
     setFrameAttribute(attributeName, value) {
@@ -236,8 +235,8 @@ class frame {
         else this.svgElement.setAttribute('stroke', this.object.getElementAttribute('stroke'));
         if (this.red) this.svgElement.setAttribute('stroke-width', 2);
         else this.svgElement.setAttribute('stroke-width', this.object.strokeWidth);
-        if (!this.red && this.object.getElementAttribute('stroke-dasharray') == null ||
-            this.object.getElementAttribute('stroke-dasharray') == "null") this.svgElement.setAttribute('stroke-dasharray', this.svgElement.getAttribute('stroke-width') * 4);
+        if (!this.red && (this.object.getElementAttribute('stroke-dasharray') == null ||
+                this.object.getElementAttribute('stroke-dasharray') == "null")) this.svgElement.setAttribute('stroke-dasharray', this.svgElement.getAttribute('stroke-width') * 4);
         else if (!this.red) this.svgElement.setAttribute('stroke-dasharray', this.object.getElementAttribute('stroke-dasharray'));
         if (this.red) this.svgElement.setAttribute('stroke-linejoin', "none");
         else this.svgElement.setAttribute('stroke-linejoin', this.object.getElementAttribute('stroke-linejoin'));

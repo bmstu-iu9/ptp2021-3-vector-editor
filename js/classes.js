@@ -111,7 +111,7 @@ class object {
                 this.updateParameters();
             }
         }).bind(this);
-        svgPanel.addEventListener("mouseup", stopMoving);
+        document.addEventListener("mouseup", stopMoving);
         this.svgElement.addEventListener("mouseover", () => {
             if (isEraserActive) {
                 doFunc("delete", this);
@@ -231,6 +231,8 @@ class object {
         document.onmousemove = null;
         document.onmouseup = null;
         document.onclick = null;
+        container.onmousedown = null;
+        rightPanel.onmousedown = null;
 
         if (isSizeNotZero) {
             isSomeObjectSelected = false;
@@ -549,7 +551,6 @@ class rectangle extends object {
         this.svgElement.setAttribute('height', this.height);
         this.svgElement.setAttribute('transform', this.transform);
         this.updateFrameAndPoints();
-        this.updateProperties();
     }
     getResizeAttrs() {
         return [
@@ -2327,7 +2328,6 @@ class polyline extends object {
         clone.updateFrameAndPoints();
         return clone;
     }
-
     addParameters() {
         pLine_panel.style.display = "flex";
     }
@@ -2360,11 +2360,7 @@ class polyline extends object {
         this.minY = Math.min(this.minY, y);
         this.maxX = Math.max(this.maxX, x);
         this.maxY = Math.max(this.maxY, y);
-        this.cPoint = {
-            x: this.minX + (this.maxX - this.minX) / 2,
-            y: this.minY + (this.maxY - this.minY) / 2
-        };
-        if (x != this.x0) {
+        if (x != this.x0 || y != this.y0) {
             this.pathCoords.push({
                 x: x,
                 y: y
@@ -2450,10 +2446,18 @@ class polyline extends object {
             new_curY = this.getNewCoords(curX, curY, 2 * Math.PI - this.angle).y;
         this.pathCoords[currentPointTypeAttr].x = new_curX;
         this.pathCoords[currentPointTypeAttr].y = new_curY;
-        this.minX = Math.min(this.minX, new_curX);
-        this.minY = Math.min(this.minY, new_curY);
-        this.maxX = Math.max(this.maxX, new_curX);
-        this.maxY = Math.max(this.maxY, new_curY);
+        this.minX = 10000;
+        this.minY = 10000;
+        this.maxX = -10000;
+        this.maxY = -10000;
+        for (let i = 0; i < this.pathCoords.length; i++) {
+            let x = this.pathCoords[i].x,
+                y = this.pathCoords[i].y;
+            this.minX = Math.min(this.minX, x);
+            this.minY = Math.min(this.minY, y);
+            this.maxX = Math.max(this.maxX, x);
+            this.maxY = Math.max(this.maxY, y);
+        }
         this.updateFrameAndPoints();
     }
     stopResize() {
@@ -2524,7 +2528,12 @@ class polyline extends object {
         if (!polylineIsCompleted) {
             this.line.hide();
             this.pointsArray[0].setPointAttribute('fill', "white");
-            this.pointsArray.push(new point(this.minX + (this.maxX - this.minX) / 2, this.minY + (this.maxY - this.minY) / 2 - 20, this, {
+
+            this.cPoint = {
+                x: this.minX + (this.maxX - this.minX) / 2,
+                y: this.minY + (this.maxY - this.minY) / 2
+            };
+            this.pointsArray.push(new point(this.cPoint.x, this.cPoint.y - 20, this, {
                 action: "rotate",
                 attr: "rotate"
             }));

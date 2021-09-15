@@ -92,6 +92,7 @@ rectR.onchange = () => {
     }
     currentObject.setElementAttribute('rx', Math.max(currentObject.height, currentObject.width) * r / 100);
     currentObject.r = r;
+    currentObject.updateFrameAndPoints();
 }
 
 //ellipse
@@ -236,6 +237,14 @@ polEnd.onchange = () => {
 }
 
 //vector
+vectX.onchange = () => {
+    moveX(vectX.value - currentObject.minX);
+}
+
+vectY.onchange = () => {
+    moveY(vectY.value - currentObject.minY);
+}
+
 vectEnd.onchange = () => {
     if (vectEnd.checked) {
         currentObject.path += "Z";

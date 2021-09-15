@@ -193,7 +193,7 @@ class frame {
         this.svgElement.setAttribute('opacity', "0.5");
         if (red) this.svgElement.setAttribute('stroke', "red");
         else this.svgElement.setAttribute('stroke', object.getElementAttribute('stroke'));
-        if (red) this.svgElement.setAttribute('stroke-width', pointRadius);
+        if (red || object.strokeWidth > 4) this.svgElement.setAttribute('stroke-width', pointRadius);
         else this.svgElement.setAttribute('stroke-width', object.strokeWidth);
         if (red || object.getElementAttribute('stroke-dasharray') == null) this.svgElement.setAttribute('stroke-dasharray', this.svgElement.getAttribute('stroke-width') * 4);
         else this.svgElement.setAttribute('stroke-dasharray', object.getElementAttribute('stroke-dasharray'));
@@ -220,7 +220,7 @@ class frame {
     update() {
         if (this.red) this.svgElement.setAttribute('stroke', "red");
         else this.svgElement.setAttribute('stroke', this.object.getElementAttribute('stroke'));
-        if (this.red) this.svgElement.setAttribute('stroke-width', pointRadius);
+        if (this.red || this.object.strokeWidth > 4) this.svgElement.setAttribute('stroke-width', pointRadius);
         else this.svgElement.setAttribute('stroke-width', this.object.strokeWidth);
         if (this.red || this.object.getElementAttribute('stroke-dasharray') == null ||
             this.object.getElementAttribute('stroke-dasharray') == "null") this.svgElement.setAttribute('stroke-dasharray', this.svgElement.getAttribute('stroke-width') * 4);
@@ -295,6 +295,7 @@ class rectangleFrame extends frame {
         return clone;
     }
     update(x, y, width, height, transform) {
+        this.red = this.object.r > 5 ? true : false;
         super.update();
         this.x = x;
         this.y = y;

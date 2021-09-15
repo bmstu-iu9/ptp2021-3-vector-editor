@@ -209,6 +209,7 @@ class layer {
     dublicate() {
         resetCurrentLayer();
         this.cloneNum++;
+        while (layers[this.name + "(" + this.cloneNum + ")"]) this.cloneNum++;
         let name = this.name + "(" + this.cloneNum + ")";
         layers[name] = new layer(name);
         let clone = layers[name];
@@ -241,6 +242,7 @@ newLayer = document.getElementById("new_layer");
 newLayer.onclick = () => {
     resetCurrentLayer();
     layersNum++;
+    while (layers["Cлой " + layersNum]) layersNum++;
     layers["Cлой " + layersNum] = new layer("Cлой " + layersNum);
 }
 

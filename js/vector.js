@@ -71,18 +71,10 @@ class vector extends object {
         vect_panel.style.display = "none";
     }
     updateFrameAndPoints(dx = 0, dy = 0) {
-        this.minX = 10000;
-        this.minY = 10000;
-        this.maxX = -10000;
-        this.maxY = -10000;
         for (let i = 0; i < this.pathCoords.length; i++) {
             let x = this.pathCoords[i].x + dx,
                 y = this.pathCoords[i].y + dy;
             if (!this.isClosed || i != this.pathCoords.length - 1) this.pointsArray[i].update(x, y);
-            this.minX = Math.min(this.minX, x);
-            this.minY = Math.min(this.minY, y);
-            this.maxX = Math.max(this.maxX, x);
-            this.maxY = Math.max(this.maxY, y);
             if (i == 0) {
                 this.path = "M" + " " + x + " " + y + " ";
                 continue;
@@ -126,6 +118,12 @@ class vector extends object {
         this.move(dx, dy);
         this.stopMoving(dx, dy);
     }
+    getCornerCoords() {
+        return {
+            x: this.minX - pointRadius,
+            y: this.minY - pointRadius
+        };
+    }
     resize() {
         let i = currentPointTypeAttr;
         if (i % 3 == 0) {
@@ -142,10 +140,6 @@ class vector extends object {
         }
         this.pathCoords[i].x = curX;
         this.pathCoords[i].y = curY;
-        this.minX = Math.min(this.minX, curX);
-        this.minY = Math.min(this.minY, curY);
-        this.maxX = Math.max(this.maxX, curX);
-        this.maxY = Math.max(this.maxY, curY);
         this.updateFrameAndPoints();
         if (i == 0 && this.isClosed) {
             currentPointTypeAttr = this.pathCoords.length - 1;
@@ -154,11 +148,61 @@ class vector extends object {
         }
     }
     stopResize() {
+        this.minX = 10000;
+        this.minY = 10000;
+        this.maxX = -10000;
+        this.maxY = -10000;
+        for (let i = 0; i < this.pathCoords.length; i++) {
+            let x = this.pathCoords[i].x,
+                y = this.pathCoords[i].y;
+            this.minX = Math.min(this.minX, x);
+            this.minY = Math.min(this.minY, y);
+            this.maxX = Math.max(this.maxX, x);
+            this.maxY = Math.max(this.maxY, y);
+        }
         this.cPoint = {
             x: this.minX + (this.maxX - this.minX) / 2,
             y: this.minY + (this.maxY - this.minY) / 2
         };
         this.updateFrameAndPoints();
+    }
+    getResizeAttrs(ind = currentPointTypeAttr) {
+        let attrs = [
+            this.pathCoords[this.pathCoords.length - 2].x,
+            this.pathCoords[this.pathCoords.length - 2].y,
+            ind,
+            this.pathCoords[ind].x, this.pathCoords[ind].y,
+        ];
+
+        if (ind < this.pathCoords.length - 1) attrs.push(this.pathCoords[ind + 1].x, this.pathCoords[ind + 1].y);
+        if (ind > 0) attrs.push(this.pathCoords[ind - 1].x, this.pathCoords[ind - 1].y);
+        return attrs;
+    }
+    setResizeAttrs(attrs) {
+        let i = attrs[2];
+        if (i % 3 == 0) {
+            if (i < this.pathCoords.length - 1) {
+                this.pathCoords[i + 1].x = attrs[5];
+                this.pathCoords[i + 1].y = attrs[6];
+                if (i > 0) {
+                    this.pathCoords[i - 1].x = attrs[7];
+                    this.pathCoords[i - 1].y = attrs[8];
+                }
+            } else
+            if (i > 0) {
+                this.pathCoords[i - 1].x = attrs[5];
+                this.pathCoords[i - 1].y = attrs[6];
+            }
+            if (i == 0 && this.isClosed) {
+                this.pathCoords[this.pathCoords.length - 1].x = attrs[3];
+                this.pathCoords[this.pathCoords.length - 1].y = attrs[4];
+                this.pathCoords[this.pathCoords.length - 2].x = attrs[0];
+                this.pathCoords[this.pathCoords.length - 2].y = attrs[1];
+            }
+        }
+        this.pathCoords[i].x = attrs[3];
+        this.pathCoords[i].y = attrs[4];
+        this.stopResize();
     }
     updatePoint() {
         if ((curX - this.x0) ** 2 + (curY - this.y0) ** 2 <= pointRadius ** 2 && this.pointsArray.length > 1) {

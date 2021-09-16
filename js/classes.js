@@ -405,7 +405,7 @@ class rectangle extends object {
         return {
             x: this.x - pointRadius,
             y: this.y - pointRadius
-        }
+        };
     }
     //RESIZE
     startResize() {
@@ -558,7 +558,7 @@ class rectangle extends object {
             Number(this.getElementAttribute('y')),
             Number(this.getElementAttribute('width')),
             Number(this.getElementAttribute('height'))
-        ]
+        ];
     }
     setResizeAttrs(attrs) {
         [this.x, this.y, this.width, this.height] = attrs;
@@ -769,7 +769,7 @@ class ellipse extends object {
         return {
             x: (this.cx - this.rx) - pointRadius,
             y: (this.cy - this.ry) - pointRadius
-        }
+        };
     }
     //RESIZE
     startResize() {
@@ -927,7 +927,7 @@ class ellipse extends object {
             Number(this.getElementAttribute('cy')),
             Number(this.getElementAttribute('rx')),
             Number(this.getElementAttribute('ry'))
-        ]
+        ];
     }
     setResizeAttrs(attrs) {
         [this.cx, this.cy, this.rx, this.ry] = attrs;
@@ -1151,7 +1151,7 @@ class polygon extends object {
         return {
             x: (this.x0 - this.r) - pointRadius,
             y: (this.y0 - this.r) - pointRadius
-        }
+        };
     }
     //RESIZE
     resize() {
@@ -1164,7 +1164,7 @@ class polygon extends object {
             this.r,
             this.phi,
             this.vertNum
-        ]
+        ];
     }
     setResizeAttrs(attrs) {
         let pVertNum = this.vertNum;
@@ -1403,7 +1403,7 @@ class starPolygon extends object {
         return {
             x: (this.x0 - this.r) - pointRadius,
             y: (this.y0 - this.r) - pointRadius
-        }
+        };
     }
     //RESIZE
     resize() {
@@ -1417,7 +1417,7 @@ class starPolygon extends object {
             this.phi,
             this.vertNum,
             this.step
-        ]
+        ];
     }
     setResizeAttrs(attrs) {
         let pVertNum = this.vertNum;
@@ -1669,7 +1669,7 @@ class pentagram extends object {
         return {
             x: (this.x0 - this.r) - pointRadius,
             y: (this.y0 - this.r) - pointRadius
-        }
+        };
     }
     //RESIZE
     resize() {
@@ -1683,7 +1683,7 @@ class pentagram extends object {
             this.phi,
             this.vertNum,
             this.step
-        ]
+        ];
     }
     setResizeAttrs(attrs) {
         let pVertNum = this.vertNum;
@@ -1846,7 +1846,7 @@ class pencil extends object {
         return {
             x: this.minX - pointRadius,
             y: this.minY - pointRadius
-        }
+        };
     }
     //ROTATE
     startRotating() {
@@ -1885,13 +1885,7 @@ class pencil extends object {
         return {
             x: (x - this.cPoint.x) * Math.cos(angle) - (y - this.cPoint.y) * Math.sin(angle) + this.cPoint.x,
             y: (x - this.cPoint.x) * Math.sin(angle) + (y - this.cPoint.y) * Math.cos(angle) + this.cPoint.y
-        }
-    }
-    getNewCoords(x = this.x0, y = this.y0, angle = this.angle) {
-        return {
-            x: (x - this.cPoint.x) * Math.cos(angle) - (y - this.cPoint.y) * Math.sin(angle) + this.cPoint.x,
-            y: (x - this.cPoint.x) * Math.sin(angle) + (y - this.cPoint.y) * Math.cos(angle) + this.cPoint.y
-        }
+        };
     }
     complete() {
         this.frameArray = [new lineFrame(this.minX, this.maxY, this.maxX, this.maxY, this, true),
@@ -2119,7 +2113,7 @@ class line extends object {
         return {
             x: Math.min(this.x0, this.x2) - pointRadius,
             y: Math.min(this.y0, this.y2) - pointRadius
-        }
+        };
     }
     //RESIZE
     startResize() {
@@ -2205,7 +2199,7 @@ class line extends object {
             Number(this.getElementAttribute('y1')),
             Number(this.getElementAttribute('x2')),
             Number(this.getElementAttribute('y2'))
-        ]
+        ];
     }
     setResizeAttrs(attrs) {
         [this.x0, this.y0, this.x2, this.y2] = attrs;
@@ -2266,7 +2260,7 @@ class line extends object {
         return {
             x: (x - this.cPoint.x) * Math.cos(angle) - (y - this.cPoint.y) * Math.sin(angle) + this.cPoint.x,
             y: (x - this.cPoint.x) * Math.sin(angle) + (y - this.cPoint.y) * Math.cos(angle) + this.cPoint.y
-        }
+        };
     }
 }
 
@@ -2430,7 +2424,7 @@ class polyline extends object {
         return {
             x: this.minX - pointRadius,
             y: this.minY - pointRadius
-        }
+        };
     }
     deletePoint(ind) {
         if (this.pathCoords.length == 2) deleteFunc(); //actions.js
@@ -2475,15 +2469,11 @@ class polyline extends object {
             this.pathCoords[ind].x,
             this.pathCoords[ind].y,
             ind
-        ]
+        ];
     }
     setResizeAttrs(attrs) {
         this.pathCoords[attrs[2]].x = attrs[0];
         this.pathCoords[attrs[2]].y = attrs[1];
-        this.minX = Math.min(this.minX, attrs[0]);
-        this.minY = Math.min(this.minY, attrs[1]);
-        this.maxX = Math.max(this.maxX, attrs[0]);
-        this.maxY = Math.max(this.maxY, attrs[1]);
         this.stopResize();
     }
     //ROTATE
@@ -2523,7 +2513,7 @@ class polyline extends object {
         return {
             x: (x - this.cPoint.x) * Math.cos(angle) - (y - this.cPoint.y) * Math.sin(angle) + this.cPoint.x,
             y: (x - this.cPoint.x) * Math.sin(angle) + (y - this.cPoint.y) * Math.cos(angle) + this.cPoint.y
-        }
+        };
     }
     complete() {
         if (!polylineIsCompleted) {

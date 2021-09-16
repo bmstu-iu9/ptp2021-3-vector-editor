@@ -163,6 +163,7 @@ class text extends object {
             dy = y + pointRadius - this.y;
         this.move(dx, dy);
         this.stopMoving(dx, dy);
+        this.updateParameters();
     }
     getCornerCoords() {
         return {
@@ -337,6 +338,7 @@ class text extends object {
         this.svgElement.setAttribute('transform', this.transform);
         this.setElementAttribute('rx', Math.max(this.height, this.width) * this.r / 100);
         this.updateFrameAndPoints();
+        this.updateParameters();
     }
     //ROTATE
     startRotating() {
@@ -376,6 +378,7 @@ class text extends object {
         this.angle = newAngle;
         this.angle = this.angle > 2 * Math.PI ? this.angle - 2 * Math.PI : this.angle;
         this.updateFrameAndPoints();
+        this.updateParameters();
     }
     getNewCoords(x = this.x, y = this.y, angle = this.angle) {
         return {

@@ -282,6 +282,7 @@ frontObject = document.getElementById("frontObject");
 
 frontObject.onclick = function () {
     if (currentObject != null) {
+        doFunc("append", currentObject)
         currentObject.appendSvgElement();
     }
 }
@@ -290,6 +291,7 @@ backObject = document.getElementById("backObject");
 
 backObject.onclick = function () {
     if (currentObject != null) {
+        doFunc("prepend", currentObject)
         currentObject.prependSvgElement();
     }
 }
@@ -370,7 +372,7 @@ class action {
                 break;
             case "resize":
                 let resizeAttrs = this.attr;
-                this.attr = this.object.getResizeAttrs();
+                this.attr = this.object.getResizeAttrs(this.attr[2]); //аргумент для пера(индекс)
                 this.object.setResizeAttrs(resizeAttrs);
                 break;
             case "fill":
@@ -387,6 +389,12 @@ class action {
                 let strokeAttrs = this.attr;
                 this.attr = this.object.getStrokeAttrs();
                 this.object.setStrokeAttrs(strokeAttrs);
+                break;
+            case "append":
+                this.object.prependSvgElement();
+                break;
+            case "prepend":
+                this.object.appendSvgElement();
                 break;
         }
         redoActions.push(this);
@@ -413,7 +421,7 @@ class action {
                 break;
             case "resize":
                 let resizeAttrs = this.attr;
-                this.attr = this.object.getResizeAttrs();
+                this.attr = this.object.getResizeAttrs(this.attr[2]); //аргумент для пера(индекс)
                 this.object.setResizeAttrs(resizeAttrs);
                 break;
             case "fill":
@@ -430,6 +438,12 @@ class action {
                 let strokeAttrs = this.attr;
                 this.attr = this.object.getStrokeAttrs();
                 this.object.setStrokeAttrs(strokeAttrs);
+                break;
+            case "append":
+                this.object.appendSvgElement();
+                break;
+            case "prepend":
+                this.object.prependSvgElement();
                 break;
         }
         undoActions.push(this);

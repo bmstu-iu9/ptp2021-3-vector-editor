@@ -17,8 +17,7 @@ class object {
         updateStroke(this);
         this.addActions();
     }
-    createClone() {
-        let clone = this.clone;
+    createClone(clone) {
         clone.type = this.type;
         clone.isCompleted = true;
         clone.isSelected = true;
@@ -203,10 +202,40 @@ class object {
     updateFrameAndPoints() {}
     addHotKeys() {}
     removeHotKeys() {}
+    create() {}
     //PROPERTIES PANEL
     addParameters() {}
     updateParameters() {}
     removeParameters() {}
+    //FILL AND STROKE
+    getFillAttrs() {
+        return [
+            this.getElementAttribute('opacity'),
+            this.getElementAttribute('fill-opacity'),
+            this.getElementAttribute('fill')
+        ]
+    }
+    setFillAttrs(attrs) {
+        this.svgElement.setAttribute('opacity', attrs[0]);
+        this.svgElement.setAttribute('fill-opacity', attrs[1]);
+        this.svgElement.setAttribute('fill', attrs[2]);
+    }
+    getStrokeAttrs() {
+        return [
+            this.getElementAttribute('stroke-width'),
+            this.getElementAttribute('stroke-linecap'),
+            this.getElementAttribute('stroke-dasharray'),
+            this.getElementAttribute('stroke-linejoin'),
+            this.getElementAttribute('stroke'),
+        ]
+    }
+    setStrokeAttrs(attrs) {
+        this.svgElement.setAttribute('stroke-width', attrs[0]);
+        this.svgElement.setAttribute('stroke-linecap', attrs[1]);
+        this.svgElement.setAttribute('stroke-dasharray', attrs[2]);
+        this.svgElement.setAttribute('stroke-linejoin', attrs[3]);
+        this.svgElement.setAttribute('stroke', attrs[4]);
+    }
     //MOVE
     move() {}
     stopMoving() {}
@@ -229,6 +258,7 @@ class object {
         this.removeHotKeys();
         document.onmousemove = null;
         document.onmouseup = null;
+        document.onmousedown = null;
         document.onclick = null;
 
         if (isSizeNotZero) {
@@ -305,9 +335,8 @@ class rectangle extends object {
     }
     createClone() {
         let clone = new rectangle();
-        this.clone = clone;
+        super.createClone(clone);
         clone.transform = this.transform;
-        super.createClone();
         clone.width = this.width;
         clone.height = this.height;
         clone.x = this.x;
@@ -674,9 +703,8 @@ class ellipse extends object {
     }
     createClone() {
         let clone = new ellipse();
-        this.clone = clone;
+        super.createClone(clone);
         clone.transform = this.transform;
-        super.createClone();
         clone.rx = this.rx;
         clone.ry = this.ry;
         clone.cx = this.cx;
@@ -1000,8 +1028,7 @@ class polygon extends object {
     }
     createClone() {
         let clone = new polygon();
-        this.clone = clone;
-        super.createClone();
+        super.createClone(clone);
         clone.r = this.r;
         clone.phi = this.phi;
         clone.vertNum = this.vertNum;
@@ -1219,8 +1246,7 @@ class starPolygon extends object {
     }
     createClone() {
         let clone = new starPolygon();
-        this.clone = clone;
-        super.createClone();
+        super.createClone(clone);
         clone.path = this.path;
         clone.r = this.r;
         clone.phi = this.phi;
@@ -1480,8 +1506,7 @@ class pentagram extends object {
     }
     createClone() {
         let clone = new pentagram();
-        this.clone = clone;
-        super.createClone();
+        super.createClone(clone);
         clone.path = this.path;
         clone.r = this.r;
         clone.phi = this.phi;
@@ -1735,8 +1760,7 @@ class pencil extends object {
     }
     createClone() {
         let clone = new pencil();
-        this.clone = clone;
-        super.createClone();
+        super.createClone(clone);
         clone.minX = this.minX;
         clone.minY = this.minY;
         clone.maxX = this.maxX;
@@ -2153,9 +2177,8 @@ class line extends object {
     }
     createClone() {
         let clone = new line();
-        this.clone = clone;
+        super.createClone(clone);
         clone.transform = this.transform;
-        super.createClone();
         clone.x0 = this.x0;
         clone.y0 = this.y0;
         clone.x2 = this.x2;
@@ -2460,8 +2483,7 @@ class polyline extends object {
     }
     createClone() {
         let clone = new polyline();
-        this.clone = clone;
-        super.createClone();
+        super.createClone(clone);
         clone.line.remove();
         clone.minX = this.minX;
         clone.minY = this.minY;

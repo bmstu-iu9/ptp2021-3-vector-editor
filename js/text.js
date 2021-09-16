@@ -131,6 +131,13 @@ class text extends object {
         this.pointsArray[8].update(x + width / 2, y + height / 2, transform);
         this.pointsArray[9].update(x + width / 2, y - 20, transform);
     }
+    //FILL AND STROKE
+    getFillAttrs() {
+        if (this.isCompleted) return [this.textDiv.style.color]
+    }
+    setFillAttrs(attrs) {
+        this.textDiv.style.color = attrs[0];
+    }
     //MOVE
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         let new_dx = getRotateCoords(dx, dy, this.angle).x,

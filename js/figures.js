@@ -156,7 +156,7 @@ pathTool.onclick = function () {
                     newObject.complete();
                 }
             };
-            document.onclick = function () {
+            document.onmousedown = function () {
                 if (wasPressed != "pathTool") {
                     newObject.complete();
                 }

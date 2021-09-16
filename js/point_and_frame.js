@@ -86,10 +86,10 @@ class point {
                     this.object.isRotating = false;
                     updateCursorCoords(current);
                     svgPanel.style.cursor = "default";
-                    document.dispatchEvent(new Event("mouseup"));
                     currentPointTypeAttr = null;
                     this.isSelected = false;
                     isSomePointSelected = false;
+                    document.dispatchEvent(new Event("mouseup"));
                     doFunc("rotate", this.object, this.object.angle)
                     this.object.stopRotating();
                     this.object.updateParameters();

@@ -192,8 +192,7 @@ function startVector(current) {
         };
 
         document.onmouseup = function (current) {
-            updateCursorCoords(current);
-            newObject.updateFirstPath();
+
             document.onmousemove = function (current) {
                 updateCursorCoords(current);
                 newObject.updatePath();
@@ -206,6 +205,10 @@ function startVector(current) {
                     newObject.updateSecondPath();
                 };
             };
+
+            updateCursorCoords(current);
+            newObject.updateFirstPath();
+
             if (current.ctrlKey) {
                 newObject.complete();
             }

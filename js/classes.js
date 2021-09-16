@@ -2334,6 +2334,7 @@ class polyline extends object {
     updateParameters() {
         pLineX.value = this.minX;
         pLineY.value = this.minY;
+        polEnd.checked = this.hasEnd ? true : false;
         angleInput.value = this.angle * 180.0 / Math.PI;
     }
     removeParameters() {

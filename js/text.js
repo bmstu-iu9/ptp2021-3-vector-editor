@@ -131,6 +131,13 @@ class text extends object {
         this.pointsArray[8].update(x + width / 2, y + height / 2, transform);
         this.pointsArray[9].update(x + width / 2, y - 20, transform);
     }
+    //FILL AND STROKE
+    getFillAttrs() {
+        if (this.isCompleted) return [this.textDiv.style.color]
+    }
+    setFillAttrs(attrs) {
+        this.textDiv.style.color = attrs[0];
+    }
     //MOVE
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
         let new_dx = getRotateCoords(dx, dy, this.angle).x,
@@ -156,6 +163,7 @@ class text extends object {
             dy = y + pointRadius - this.y;
         this.move(dx, dy);
         this.stopMoving(dx, dy);
+        this.updateParameters();
     }
     getCornerCoords() {
         return {
@@ -330,6 +338,7 @@ class text extends object {
         this.svgElement.setAttribute('transform', this.transform);
         this.setElementAttribute('rx', Math.max(this.height, this.width) * this.r / 100);
         this.updateFrameAndPoints();
+        this.updateParameters();
     }
     //ROTATE
     startRotating() {
@@ -369,6 +378,7 @@ class text extends object {
         this.angle = newAngle;
         this.angle = this.angle > 2 * Math.PI ? this.angle - 2 * Math.PI : this.angle;
         this.updateFrameAndPoints();
+        this.updateParameters();
     }
     getNewCoords(x = this.x, y = this.y, angle = this.angle) {
         return {

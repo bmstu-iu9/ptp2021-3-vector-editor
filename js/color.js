@@ -64,6 +64,7 @@ for (i = 0; i < 2; i++) {
 
 //CURRENT COLOR
 function updateFill(obj, i = -1) {
+  if (obj.isCompleted) doFunc("fill", obj, obj.getFillAttrs())
   if (f.checked) {
     obj.setElementAttribute('fill', "transparent");
     return;
@@ -71,7 +72,7 @@ function updateFill(obj, i = -1) {
   if (i == 0 || i == -1) obj.setElementAttribute('opacity', opacity[0].value);
   if (i == 1 || i == -1) obj.setElementAttribute('fill-opacity', opacity[1].value);
   if (i == 2 || i == -1) {
-    if (obj.type == 'foreignObject' && obj.textDiv != null) obj.textDiv.style.color = fillColor.value;
+    if (obj.type == 'text' && obj.isCompleted) obj.textDiv.style.color = fillColor.value;
     else obj.setElementAttribute('fill', fillColor.value);
   }
 }
@@ -109,6 +110,7 @@ strokeWidth.onkeyup = (e) => {
 }
 
 function updateStroke(object, c = 1, width = 1, l = 1, d = 1, j = 1) {
+  if (object.isCompleted) doFunc("stroke", object, object.getStrokeAttrs())
   let obj = object.svgElement;
   if (s.checked && (object == null || (object.type != 'pencil' && object.type != 'line'))) {
     obj.removeAttribute('stroke');
@@ -205,7 +207,9 @@ fill.onmousedown = function () {
   wasPressed = "fill";
   svgPanel.style.cursor = "url(img/fill.ico) 4 28, default";
   svgPanel.onmousedown = function (event) {
-    if (event.target == svgBackground)
+    if (event.target == svgBackground) {
+      doFunc("backgroundFill", null, svgPanel.style.background);
       svgPanel.style.background = fillColor.value;
+    }
   }
 }

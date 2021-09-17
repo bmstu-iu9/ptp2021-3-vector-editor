@@ -2,10 +2,14 @@ property = document.getElementsByClassName("property");
 
 for (i = 0; i < property.length; i++) {
     property[i].onkeyup = (e) => {
-        if (e.key == 'Enter') {
+        if (e.key == 'Enter')
             e.target.blur();
-        }
     }
+}
+
+for (i = 0; i < property.length; i++) {
+    property[i].onmousedown = (e) =>
+        doFunc("property", currentObject, [e.target, e.target.value]);
 }
 
 angleInput = document.getElementById("angle");
@@ -37,6 +41,7 @@ function resizeW(dx) {
 }
 
 function resizeH(dy) {
+    doFunc("resize", currentObject, currentObject.getResizeAttrs());
     currentPointTypeAttr = "b";
     resizeY(dy);
     currentPointTypeAttr = "t";
@@ -44,23 +49,21 @@ function resizeH(dy) {
 }
 
 function moveX(dx) {
+    //doFunc("move", currentObject, currentObject.getCornerCoords());
     currentObject.move(dx, 0);
     currentObject.stopMoving(dx, 0);
 }
 
 function moveY(dy) {
+    //doFunc("move", currentObject, currentObject.getCornerCoords());
     currentObject.move(0, dy);
     currentObject.stopMoving(0, dy);
 }
 
 //rectangle
-rectX.onchange = () => {
-    moveX(rectX.value - currentObject.x);
-}
+rectX.onchange = () => moveX(rectX.value - currentObject.x);
 
-rectY.onchange = () => {
-    moveY(rectY.value - currentObject.y);
-}
+rectY.onchange = () => moveY(rectY.value - currentObject.y);
 
 rectW.onchange = () => {
     let w = rectW.value;
@@ -96,13 +99,9 @@ rectR.onchange = () => {
 }
 
 //ellipse
-ellCX.onchange = () => {
-    moveX(ellCX.value - currentObject.cx);
-}
+ellCX.onchange = () => moveX(ellCX.value - currentObject.cx);
 
-ellCY.onchange = () => {
-    moveY(ellCY.value - currentObject.cy);
-}
+ellCY.onchange = () => moveY(ellCY.value - currentObject.cy);
 
 ellRX.onchange = () => {
     let rx = ellRX.value;
@@ -124,26 +123,31 @@ ellRY.onchange = () => {
 
 //line
 lineX1.onchange = () => {
+    doFunc("resize", currentObject, currentObject.getResizeAttrs());
     currentPointTypeAttr = "l";
     resizeX(lineX1.value - currentObject.x0);
 }
 
 lineY1.onchange = () => {
+    doFunc("resize", currentObject, currentObject.getResizeAttrs());
     currentPointTypeAttr = "t";
     resizeY(lineY1.value - currentObject.y0);
 }
 
 lineX2.onchange = () => {
+    doFunc("resize", currentObject, currentObject.getResizeAttrs());
     currentPointTypeAttr = "r";
     resizeX(lineX2.value - currentObject.x2);
 }
 
 lineY2.onchange = () => {
+    doFunc("resize", currentObject, currentObject.getResizeAttrs());
     currentPointTypeAttr = "b";
     resizeY(lineY2.value - currentObject.y2);
 }
 
 lineL.onchange = () => {
+    doFunc("resize", currentObject, currentObject.getResizeAttrs());
     let l = lineL.value;
     if (l < 1) {
         lineL.value = 1;
@@ -157,13 +161,9 @@ lineL.onchange = () => {
 }
 
 //pencil
-penX.onchange = () => {
-    moveX(penX.value - currentObject.minX);
-}
+penX.onchange = () => moveX(penX.value - currentObject.minX);
 
-penY.onchange = () => {
-    moveY(penY.value - currentObject.minY);
-}
+penY.onchange = () => moveY(penY.value - currentObject.minY);
 
 //polygon
 polR.onchange = () => {
@@ -207,24 +207,14 @@ polS.onchange = () => {
     currentObject.radiusIsFixed = false;
 }
 
-polX.onchange = () => {
-    currentObject.x0 = Number(polX.value);
-    currentObject.updateFrameAndPoints();
-}
+polX.onchange = () => moveX(Number(polX.value) - currentObject.x0);
 
-polY.onchange = () => {
-    currentObject.y0 = Number(polY.value);
-    currentObject.updateFrameAndPoints();
-}
+polY.onchange = () => moveY(Number(polY.value) - currentObject.y0);
 
 //polyline
-pLineX.onchange = () => {
-    moveX(pLineX.value - currentObject.minX);
-}
+pLineX.onchange = () => moveX(pLineX.value - currentObject.minX);
 
-pLineY.onchange = () => {
-    moveY(pLineY.value - currentObject.minY);
-}
+pLineY.onchange = () => moveY(pLineY.value - currentObject.minY);
 
 polEnd.onchange = () => {
     if (polEnd.checked) {
@@ -237,13 +227,9 @@ polEnd.onchange = () => {
 }
 
 //vector
-vectX.onchange = () => {
-    moveX(vectX.value - currentObject.minX);
-}
+vectX.onchange = () => moveX(vectX.value - currentObject.minX);
 
-vectY.onchange = () => {
-    moveY(vectY.value - currentObject.minY);
-}
+vectY.onchange = () => moveY(vectY.value - currentObject.minY);
 
 vectEnd.onchange = () => {
     if (vectEnd.checked) {

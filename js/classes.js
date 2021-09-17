@@ -106,7 +106,7 @@ class object {
                 this.isMoving = false;
                 updateCursorCoords(current);
                 currentPointTypeAttr = null;
-                doFunc("move", this, this.getCornerCoords())
+                doFunc("move", this, this.getCornerCoords());
                 this.stopMoving();
                 this.updateParameters();
             }
@@ -1090,9 +1090,10 @@ class polygon extends object {
             this.vertNum--;
         }
         if (current.code == 'ArrowUp' || current.code == 'ArrowDown' || current.code == 'changeN') {
-            for (let i = 0; i < this.pointsArray.length; i++) {
-                this.pointsArray[i].remove();
-            }
+            if (this.arePointsAndFrameShown)
+                for (let i = 0; i < this.pointsArray.length; i++) {
+                    this.pointsArray[i].remove();
+                }
             this.pointsArray = [];
             for (let i = 0; i < this.vertNum; i++) {
                 this.pointsArray.push(new point(this.x0, this.y0, this, {
@@ -1100,6 +1101,9 @@ class polygon extends object {
                     attr: "polygon"
                 }));
             }
+            if (!this.arePointsAndFrameShown)
+                for (let i = 0; i < this.vertNum; i++)
+                    this.pointsArray[i].hide();
             this.updateAttributes();
         }
     }
@@ -1332,9 +1336,10 @@ class starPolygon extends object {
         }
         if (current.code == 'ArrowUp' || current.code == 'ArrowDown' || current.code == 'changeN') {
             this.step = Math.floor((this.vertNum - 3) / 2) + 1;
-            for (let i = 0; i < this.pointsArray.length; i++) {
-                this.pointsArray[i].remove();
-            }
+            if (this.arePointsAndFrameShown)
+                for (let i = 0; i < this.pointsArray.length; i++) {
+                    this.pointsArray[i].remove();
+                }
             this.pointsArray = [];
             for (let i = 0; i < this.vertNum; i++) {
                 this.pointsArray.push(new point(this.x0, this.y0, this, {
@@ -1342,6 +1347,9 @@ class starPolygon extends object {
                     attr: "polygon"
                 }));
             }
+            if (!this.arePointsAndFrameShown)
+                for (let i = 0; i < this.vertNum; i++)
+                    this.pointsArray[i].hide();
             this.updateAttributes();
         }
     }
@@ -1598,9 +1606,10 @@ class pentagram extends object {
         }
         if (current.code == 'ArrowUp' || current.code == 'ArrowDown' || current.code == 'changeN') {
             this.step = Math.floor((this.vertNum - 3) / 2) + 1;
-            for (let i = 0; i < this.pointsArray.length; i++) {
-                this.pointsArray[i].remove();
-            }
+            if (this.arePointsAndFrameShown)
+                for (let i = 0; i < this.pointsArray.length; i++) {
+                    this.pointsArray[i].remove();
+                }
             this.pointsArray = [];
             for (let i = 0; i < this.vertNum; i++) {
                 this.pointsArray.push(new point(this.x0, this.y0, this, {
@@ -1608,6 +1617,9 @@ class pentagram extends object {
                     attr: "polygon"
                 }));
             }
+            if (!this.arePointsAndFrameShown)
+                for (let i = 0; i < this.vertNum; i++)
+                    this.pointsArray[i].hide();
             this.updateAttributes();
         }
     }

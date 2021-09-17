@@ -373,6 +373,19 @@ class action {
                 this.attr = this.object.getResizeAttrs(this.attr[2]);
                 this.object.setResizeAttrs(resizeAttrs);
                 break;
+            case "property":
+                let prev = currentObject;
+                currentObject = this.object;
+                currentObject.addPanel();
+                let prevValue = this.attr[0].value;
+                this.attr[0].value = this.attr[1];
+                this.attr[1] = prevValue;
+                var event = new Event('change');
+                this.attr[0].dispatchEvent(event);
+                currentObject.removePanel();
+                currentObject = prev;
+                if (prev != null) currentObject.addPanel();
+                break;
         }
         redoActions.push(this);
         if (redoActions.length > maxActionsNum) redoActions.shift();
@@ -400,6 +413,18 @@ class action {
                 let resizeAttrs = this.attr;
                 this.attr = this.object.getResizeAttrs(this.attr[2]);
                 this.object.setResizeAttrs(resizeAttrs);
+                break;
+            case "property":
+                let prev = currentObject;
+                currentObject = this.object;
+                let prevValue = this.attr[0].value;
+                this.attr[0].value = this.attr[1];
+                this.attr[1] = prevValue;
+                var event = new Event('change');
+                this.attr[0].dispatchEvent(event);
+                currentObject.removePanel();
+                currentObject = prev;
+                if (prev != null) currentObject.addPanel();
                 break;
         }
         undoActions.push(this);

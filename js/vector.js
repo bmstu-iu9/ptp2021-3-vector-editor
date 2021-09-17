@@ -27,12 +27,15 @@ class vector extends object {
             action: "resize",
             attr: this.i * 3 - 1 //точка, отвечающая за предыдущий путь
         }), new point(curX, curY, this, {
-            action: "resize",
+            action: "polyline",
             attr: this.i * 3 //точка угла
         }), new point(curX, curY, this, {
             action: "resize",
             attr: this.i * 3 + 1 //точка, отвечающая за следующий путь
         })];
+        //rotate
+        this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
+        this.angle = 0;
     }
     createClone() {
         let clone = new vector();
@@ -45,6 +48,8 @@ class vector extends object {
         clone.maxX = this.maxX;
         clone.maxY = this.maxY;
         clone.cPoint = this.cPoint;
+        clone.transform = this.transform;
+        clone.svgElement.setAttribute('transform', this.transform);
         clone.path = "";
         clone.pathCoords = [];
         for (let i = 0; i < this.pathCoords.length; i++) {
@@ -65,7 +70,7 @@ class vector extends object {
         vectX.value = this.minX;
         vectY.value = this.minY;
         vectEnd.checked = this.hasEnd ? true : false;
-        //angleInput.value = this.angle * 180.0 / Math.PI;
+        angleInput.value = this.angle * 180.0 / Math.PI;
     }
     removeParameters() {
         vect_panel.style.display = "none";
@@ -74,17 +79,17 @@ class vector extends object {
         for (let i = 0; i < this.pathCoords.length; i++) {
             let x = this.pathCoords[i].x + dx,
                 y = this.pathCoords[i].y + dy;
-            if (!this.isClosed || i != this.pathCoords.length - 1) this.pointsArray[i].update(x, y);
+            if (!this.isClosed || i != this.pathCoords.length - 1) this.pointsArray[i].update(x, y, this.transform, i);
             if (i == 0) {
                 this.path = "M" + " " + x + " " + y + " ";
                 continue;
             }
             if (i % 3 == 1) {
-                this.frameArray[(i / 3 | 0) * 2].update(this.pathCoords[i - 1].x + dx, this.pathCoords[i - 1].y + dy, x, y);
+                this.frameArray[(i / 3 | 0) * 2].update(this.pathCoords[i - 1].x + dx, this.pathCoords[i - 1].y + dy, x, y, this.transform);
                 this.path += "C" + " " + x + " " + y + ", ";
             }
             if (i % 3 == 2) {
-                this.frameArray[(i / 3 | 0) * 2 + 1].update(this.pathCoords[i + 1].x + dx, this.pathCoords[i + 1].y + dy, x, y);
+                this.frameArray[(i / 3 | 0) * 2 + 1].update(this.pathCoords[i + 1].x + dx, this.pathCoords[i + 1].y + dy, x, y, this.transform);
                 this.path += x + " " + y + ", ";
             }
             if (i % 3 == 0) {
@@ -95,7 +100,9 @@ class vector extends object {
         this.setElementAttribute('d', this.path);
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {
-        this.updateFrameAndPoints(dx, dy);
+        let new_dx = getRotateCoords(dx, dy, this.angle).x,
+            new_dy = getRotateCoords(dx, dy, this.angle).y;
+        this.updateFrameAndPoints(new_dx, new_dy);
     }
     stopMoving(dx = curX - this.start.x, dy = curY - this.start.y) {
         this.minX += dx;
@@ -105,11 +112,14 @@ class vector extends object {
         this.cPoint = {
             x: this.minX + (this.maxX - this.minX) / 2,
             y: this.minY + (this.maxY - this.minY) / 2
-        }
+        };
         for (let i = 0; i < this.pathCoords.length; i++) {
             this.pathCoords[i].x += dx;
             this.pathCoords[i].y += dy;
         }
+
+        this.transform = 'rotate(' + this.angle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
+        this.svgElement.setAttribute('transform', this.transform);
         this.updateFrameAndPoints();
     }
     moveTo(x, y) {
@@ -124,11 +134,46 @@ class vector extends object {
             y: this.minY - pointRadius
         };
     }
+    deletePoint(ind) {
+        if (this.pathCoords.length == 4) deleteFunc(); //actions.js
+        else {
+            if (ind == 0) {
+                ind++;
+                this.frameArray[0].remove();
+                this.frameArray[1].remove();
+                this.frameArray.splice(0, 2);
+                if (this.isClosed) {
+                    this.pathCoords[this.pathCoords.length - 1].x = this.pathCoords[3].x;
+                    this.pathCoords[this.pathCoords.length - 1].y = this.pathCoords[3].y;
+                }
+            }
+            else
+            if (ind == this.pathCoords.length - 1) {
+                ind--;
+                this.frameArray[this.frameArray.length - 1].remove();
+                this.frameArray[this.frameArray.length - 2].remove();
+            this.frameArray.splice(this.frameArray.length - 2, 2);
+            }
+            else {
+                this.frameArray[(ind / 3) * 2 - 1].remove();
+                this.frameArray[(ind / 3) * 2].remove();
+                this.frameArray.splice((ind / 3 | 0) * 2 - 1, 2);
+            }
+            this.pointsArray[ind].remove();
+            this.pointsArray[ind - 1].remove();
+            this.pointsArray[ind + 1].remove();
+            this.pointsArray.splice(ind - 1, 3);
+            this.pathCoords.splice(ind - 1, 3);
+            this.updateFrameAndPoints();
+        }
+    }
     resize() {
+        let new_curX = this.getNewCoords(curX, curY, 2 * Math.PI - this.angle).x,
+            new_curY = this.getNewCoords(curX, curY, 2 * Math.PI - this.angle).y;
         let i = currentPointTypeAttr;
         if (i % 3 == 0) {
-            let dx = curX - this.pathCoords[i].x,
-                dy = curY - this.pathCoords[i].y;
+            let dx = new_curX - this.pathCoords[i].x,
+                dy = new_curY - this.pathCoords[i].y;
             if (i < this.pathCoords.length - 1) {
                 this.pathCoords[i + 1].x += dx;
                 this.pathCoords[i + 1].y += dy;
@@ -138,8 +183,8 @@ class vector extends object {
                 this.pathCoords[i - 1].y += dy;
             }
         }
-        this.pathCoords[i].x = curX;
-        this.pathCoords[i].y = curY;
+        this.pathCoords[i].x = new_curX;
+        this.pathCoords[i].y = new_curY;
         this.updateFrameAndPoints();
         if (i == 0 && this.isClosed) {
             currentPointTypeAttr = this.pathCoords.length - 1;
@@ -164,6 +209,8 @@ class vector extends object {
             x: this.minX + (this.maxX - this.minX) / 2,
             y: this.minY + (this.maxY - this.minY) / 2
         };
+        this.transform = 'rotate(' + this.angle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
+        this.svgElement.setAttribute('transform', this.transform);
         this.updateFrameAndPoints();
     }
     getResizeAttrs(ind = currentPointTypeAttr) {
@@ -204,6 +251,19 @@ class vector extends object {
         this.pathCoords[i].y = attrs[4];
         this.stopResize();
     }
+    rotateTo(newAngle) {
+        this.transform = 'rotate(' + newAngle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
+        this.svgElement.setAttribute('transform', this.transform);
+        this.angle = newAngle;
+        this.angle = this.angle > 2 * Math.PI ? this.angle - 2 * Math.PI : this.angle;
+        this.updateFrameAndPoints();
+    }
+    getNewCoords(x = this.x0, y = this.y0, angle = this.angle) {
+        return {
+            x: (x - this.cPoint.x) * Math.cos(angle) - (y - this.cPoint.y) * Math.sin(angle) + this.cPoint.x,
+            y: (x - this.cPoint.x) * Math.sin(angle) + (y - this.cPoint.y) * Math.cos(angle) + this.cPoint.y
+        };
+    }
     updatePoint() {
         if ((curX - this.x0) ** 2 + (curY - this.y0) ** 2 <= pointRadius ** 2 && this.pointsArray.length > 1) {
             vectEnd.checked = "true";
@@ -222,7 +282,7 @@ class vector extends object {
             action: "resize",
             attr: this.i * 3 - 1
         }), new point(curX, curY, this, {
-            action: "resize",
+            action: "polyline",
             attr: this.i * 3
         }), new point(curX, curY, this, {
             action: "resize",
@@ -304,6 +364,12 @@ class vector extends object {
             this.frameArray.pop();
             this.pointsArray.splice(0, 1);
             this.frameArray.splice(0, 1);
+
+            this.cPoint = {
+                x: this.minX + (this.maxX - this.minX) / 2,
+                y: this.minY + (this.maxY - this.minY) / 2
+            };
+            this.transform = 'rotate(' + this.angle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
             super.complete(this.path != "M" + " " + this.x0 + " " + this.y0 + " ");
         }
     }

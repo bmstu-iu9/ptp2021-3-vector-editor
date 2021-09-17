@@ -2377,7 +2377,7 @@ class polyline extends object {
                 y = this.pathCoords[i].y + dy;
             if (i == 0) this.path = x + "," + y;
             else this.path += " " + x + "," + y;
-            this.pointsArray[i].update(x, y, transform);
+            this.pointsArray[i].update(x, y, transform, i);
         }
         if (this.isCompleted)
             this.pointsArray[this.pointsArray.length - 1].update(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2 - 20, transform);
@@ -2405,7 +2405,7 @@ class polyline extends object {
         this.cPoint = {
             x: this.minX + (this.maxX - this.minX) / 2,
             y: this.minY + (this.maxY - this.minY) / 2
-        }
+        };
         for (let i = 0; i < this.pathCoords.length; i++) {
             this.pathCoords[i].x += dx;
             this.pathCoords[i].y += dy;
@@ -2524,6 +2524,7 @@ class polyline extends object {
                 x: this.minX + (this.maxX - this.minX) / 2,
                 y: this.minY + (this.maxY - this.minY) / 2
             };
+
             this.pointsArray.push(new point(this.cPoint.x, this.cPoint.y - 20, this, {
                 action: "rotate",
                 attr: "rotate"

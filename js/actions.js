@@ -387,6 +387,7 @@ class action {
                 currentObject.removePanel();
                 currentObject = prev;
                 if (prev != null) currentObject.addPanel();
+                break;
             case "fill":
                 let fillAttrs = this.attr;
                 this.attr = this.object.getFillAttrs();
@@ -447,6 +448,7 @@ class action {
                 currentObject.removePanel();
                 currentObject = prev;
                 if (prev != null) currentObject.addPanel();
+                break;
             case "fill":
                 let fillAttrs = this.attr;
                 this.attr = this.object.getFillAttrs();

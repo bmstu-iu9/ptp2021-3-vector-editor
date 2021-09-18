@@ -235,7 +235,7 @@ class frame {
         else this.svgElement.setAttribute('stroke', this.object.getElementAttribute('stroke'));
         if (this.red || this.object.strokeWidth > 2) this.svgElement.setAttribute('stroke-width', 2);
         else this.svgElement.setAttribute('stroke-width', this.object.strokeWidth);
-        if (!this.red && (this.object.getElementAttribute('stroke-dasharray') == null ||
+        if (this.red || !this.red && (this.object.getElementAttribute('stroke-dasharray') == null ||
                 this.object.getElementAttribute('stroke-dasharray') == "null")) this.svgElement.setAttribute('stroke-dasharray', this.svgElement.getAttribute('stroke-width') * 4);
         else if (!this.red) this.svgElement.setAttribute('stroke-dasharray', this.object.getElementAttribute('stroke-dasharray'));
         if (this.red) this.svgElement.setAttribute('stroke-linejoin', "none");
@@ -282,6 +282,7 @@ class lineFrame extends frame {
             this.transform = transform;
             this.setFrameAttribute('transform', transform);
         }
+        this.svgElement.setAttribute('stroke-dasharray', 'none');
         if (this.object.type == 'vector') this.setFrameAttribute('stroke', 'blue');
     }
 }
@@ -305,7 +306,6 @@ class rectangleFrame extends frame {
         return clone;
     }
     update(x, y, width, height, transform) {
-        this.red = this.object.r > 5 ? true : false;
         super.update();
         this.x = x;
         this.y = y;

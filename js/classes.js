@@ -1371,9 +1371,9 @@ class starPolygon extends object {
         if (current.code == 'ArrowUp' || current.code == 'ArrowDown' || current.code == 'changeN') {
             this.step = 2;
             if (this.arePointsAndFrameShown)
-            for (let i = 0; i < this.pointsArray.length; i++) {
-                this.pointsArray[i].remove();
-            }
+                for (let i = 0; i < this.pointsArray.length; i++) {
+                    this.pointsArray[i].remove();
+                }
             this.pointsArray = [];
             for (let i = 0; i < this.vertNum; i++) {
                 this.pointsArray.push(new point(this.x0, this.y0, this, {
@@ -1643,9 +1643,9 @@ class pentagram extends object {
         if (current.code == 'ArrowUp' || current.code == 'ArrowDown' || current.code == 'changeN') {
             this.step = 2;
             if (this.arePointsAndFrameShown)
-            for (let i = 0; i < this.pointsArray.length; i++) {
-                this.pointsArray[i].remove();
-            }
+                for (let i = 0; i < this.pointsArray.length; i++) {
+                    this.pointsArray[i].remove();
+                }
             this.pointsArray = [];
             for (let i = 0; i < this.vertNum; i++) {
                 this.pointsArray.push(new point(this.x0, this.y0, this, {

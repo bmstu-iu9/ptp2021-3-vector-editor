@@ -1,6 +1,6 @@
 class vector extends object {
-    constructor() {
-        super('path');
+    constructor(svgElement = null) {
+        super('path', svgElement, 'vector');
         this.type = 'vector';
         this.path = "M" + " " + this.x0 + " " + this.y0 + " ";
         this.pathCoords = [{

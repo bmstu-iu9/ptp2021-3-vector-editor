@@ -282,6 +282,7 @@ frontObject = document.getElementById("frontObject");
 
 frontObject.onclick = function () {
     if (currentObject != null) {
+        doFunc("append", currentObject)
         currentObject.appendSvgElement();
     }
 }
@@ -290,6 +291,7 @@ backObject = document.getElementById("backObject");
 
 backObject.onclick = function () {
     if (currentObject != null) {
+        doFunc("prepend", currentObject)
         currentObject.prependSvgElement();
     }
 }
@@ -370,7 +372,7 @@ class action {
                 break;
             case "resize":
                 let resizeAttrs = this.attr;
-                this.attr = this.object.getResizeAttrs(this.attr[2]);
+                this.attr = this.object.getResizeAttrs(this.attr[2]); //аргумент для пера(индекс)
                 this.object.setResizeAttrs(resizeAttrs);
                 break;
             case "property":
@@ -385,6 +387,26 @@ class action {
                 currentObject.removePanel();
                 currentObject = prev;
                 if (prev != null) currentObject.addPanel();
+            case "fill":
+                let fillAttrs = this.attr;
+                this.attr = this.object.getFillAttrs();
+                this.object.setFillAttrs(fillAttrs);
+                break;
+            case "backgroundFill":
+                let backgroundColor = this.attr;
+                this.attr = svgPanel.style.background;
+                svgPanel.style.background = backgroundColor;
+                break;
+            case "stroke":
+                let strokeAttrs = this.attr;
+                this.attr = this.object.getStrokeAttrs();
+                this.object.setStrokeAttrs(strokeAttrs);
+                break;
+            case "append":
+                this.object.prependSvgElement();
+                break;
+            case "prepend":
+                this.object.appendSvgElement();
                 break;
         }
         redoActions.push(this);
@@ -411,7 +433,7 @@ class action {
                 break;
             case "resize":
                 let resizeAttrs = this.attr;
-                this.attr = this.object.getResizeAttrs(this.attr[2]);
+                this.attr = this.object.getResizeAttrs(this.attr[2]); //аргумент для пера(индекс)
                 this.object.setResizeAttrs(resizeAttrs);
                 break;
             case "property":
@@ -425,6 +447,26 @@ class action {
                 currentObject.removePanel();
                 currentObject = prev;
                 if (prev != null) currentObject.addPanel();
+            case "fill":
+                let fillAttrs = this.attr;
+                this.attr = this.object.getFillAttrs();
+                this.object.setFillAttrs(fillAttrs);
+                break;
+            case "backgroundFill":
+                let backgroundColor = this.attr;
+                this.attr = svgPanel.style.background;
+                svgPanel.style.background = backgroundColor;
+                break;
+            case "stroke":
+                let strokeAttrs = this.attr;
+                this.attr = this.object.getStrokeAttrs();
+                this.object.setStrokeAttrs(strokeAttrs);
+                break;
+            case "append":
+                this.object.appendSvgElement();
+                break;
+            case "prepend":
+                this.object.prependSvgElement();
                 break;
         }
         undoActions.push(this);

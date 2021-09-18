@@ -38,13 +38,20 @@ let isGridEnabled = false;
 var left_panel = document.getElementById("left_panel");
 var buttons = left_panel.getElementsByClassName("tool_button");
 for (var i = 0; i < buttons.length; i++) {
-	buttons[i].addEventListener("click", function () {
+	buttons[i].addEventListener("mousedown", function () {
 		var current = left_panel.getElementsByClassName("tool_button active");
-		if (current.length > 0) {
+		let n = current.length;
+		for (let i = 0; i < n; i++) {
 			current[0].className = "tool_button";
 		}
 		this.className += " active";
 		wasPressed = this.id;
+		if (["rectangle", "ellipse", "polygon", "starPolygon", "pentagram"].indexOf(this.id) + 1) {
+			document.getElementById("figures").className += " active";
+		}
+		if (["pathTool", "vector"].indexOf(this.id) + 1) {
+			document.getElementById("pathAndvector").className += " active";
+		}
 		left_panel.dispatchEvent(new Event('change'));
 	});
 }

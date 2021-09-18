@@ -15,7 +15,7 @@ rectangleButton.onclick = function () {
             newObject.complete();
         };
     };
-}
+};
 
 //ELLIPSE
 ellipseButton = document.getElementById("ellipse");
@@ -34,7 +34,7 @@ ellipseButton.onclick = function () {
             newObject.complete();
         };
     };
-}
+};
 
 //POLYGON
 polygonButton = document.getElementById("polygon");
@@ -54,7 +54,7 @@ polygonButton.onclick = function () {
             newObject.complete();
         };
     };
-}
+};
 
 //STAR POLYGON
 starPolygonButton = document.getElementById("starPolygon");
@@ -74,7 +74,7 @@ starPolygonButton.onclick = function () {
             newObject.complete();
         };
     };
-}
+};
 
 //PENTAGRAM
 pentagramButton = document.getElementById("pentagram");
@@ -94,7 +94,7 @@ pentagramButton.onclick = function () {
             newObject.complete();
         };
     };
-}
+};
 
 //PENCIL
 pencilButton = document.getElementById("pencil");
@@ -132,7 +132,7 @@ lineButton.onclick = function () {
             newObject.complete(newObject.x0 != newObject.x2 || newObject.y0 != newObject.y2);
         };
     };
-}
+};
 
 //POLYLINE
 pathTool = document.getElementById("pathTool");
@@ -162,7 +162,7 @@ pathTool.onclick = function () {
             rightPanel.onmousedown = function () {
                 newObject.complete();
             };
-            document.onclick = function () {
+            document.onmousedown = function () {
                 if (wasPressed != "pathTool") {
                     newObject.complete();
                 }
@@ -225,4 +225,16 @@ function startVector(current) {
             }
         };
     }
-}
+};
+
+//TEXT
+textButton = document.getElementById("text");
+
+textButton.onclick = function () {
+    svgPanel.style.cursor = "default";
+    svgPanel.onmousedown = function (current) {
+        updateCursorCoords(current);
+        let newObject = new text();
+        newObject.complete();
+    };
+};

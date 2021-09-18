@@ -22,14 +22,16 @@ angleInput.onchange = () => {
 }
 
 function resizeX(dx) {
+    currentObject.startResize();
     currentObject.resize(dx, 0);
-    currentObject.stopResize(dx, 0);
+    currentObject.stopResize();
     currentObject.updateParameters();
 }
 
 function resizeY(dy) {
+    currentObject.startResize();
     currentObject.resize(0, dy);
-    currentObject.stopResize(0, dy);
+    currentObject.stopResize();
     currentObject.updateParameters();
 }
 
@@ -41,7 +43,6 @@ function resizeW(dx) {
 }
 
 function resizeH(dy) {
-    doFunc("resize", currentObject, currentObject.getResizeAttrs());
     currentPointTypeAttr = "b";
     resizeY(dy);
     currentPointTypeAttr = "t";
@@ -49,13 +50,11 @@ function resizeH(dy) {
 }
 
 function moveX(dx) {
-    //doFunc("move", currentObject, currentObject.getCornerCoords());
     currentObject.move(dx, 0);
     currentObject.stopMoving(dx, 0);
 }
 
 function moveY(dy) {
-    //doFunc("move", currentObject, currentObject.getCornerCoords());
     currentObject.move(0, dy);
     currentObject.stopMoving(0, dy);
 }
@@ -95,7 +94,6 @@ rectR.onchange = () => {
     }
     currentObject.setElementAttribute('rx', Math.max(currentObject.height, currentObject.width) * r / 100);
     currentObject.r = r;
-    currentObject.updateFrameAndPoints();
 }
 
 //ellipse
@@ -123,31 +121,26 @@ ellRY.onchange = () => {
 
 //line
 lineX1.onchange = () => {
-    doFunc("resize", currentObject, currentObject.getResizeAttrs());
     currentPointTypeAttr = "l";
     resizeX(lineX1.value - currentObject.x0);
 }
 
 lineY1.onchange = () => {
-    doFunc("resize", currentObject, currentObject.getResizeAttrs());
     currentPointTypeAttr = "t";
     resizeY(lineY1.value - currentObject.y0);
 }
 
 lineX2.onchange = () => {
-    doFunc("resize", currentObject, currentObject.getResizeAttrs());
     currentPointTypeAttr = "r";
     resizeX(lineX2.value - currentObject.x2);
 }
 
 lineY2.onchange = () => {
-    doFunc("resize", currentObject, currentObject.getResizeAttrs());
     currentPointTypeAttr = "b";
     resizeY(lineY2.value - currentObject.y2);
 }
 
 lineL.onchange = () => {
-    doFunc("resize", currentObject, currentObject.getResizeAttrs());
     let l = lineL.value;
     if (l < 1) {
         lineL.value = 1;
@@ -178,10 +171,8 @@ polR.onchange = () => {
 
 polN.onchange = () => {
     let n = polN.value;
-    if (n < 3)
-        n = 3;
-    if (currentObject.type == 'star' && n < 5)
-        n = 5;
+    if (n < 3) n = 3;
+    if (currentObject.type == 'star' && n < 5) n = 5;
     polN.value = n;
     currentObject.vertNum = n;
     currentObject.radiusIsFixed = true;
@@ -197,8 +188,8 @@ polN.onchange = () => {
 
 polS.onchange = () => {
     let s = Number(polS.value);
-    if (s < 2) s = 2;
     let max = Math.floor((currentObject.vertNum - 3) / 2) + 1;
+    if (s < 2) s = 2;
     if (s > max) s = max;
     polS.value = s;
     currentObject.step = s;
@@ -206,11 +197,9 @@ polS.onchange = () => {
     currentObject.updateFrameAndPoints();
     currentObject.radiusIsFixed = false;
 }
-
 polX.onchange = () => moveX(Number(polX.value) - currentObject.x0);
 
 polY.onchange = () => moveY(Number(polY.value) - currentObject.y0);
-
 //polyline
 pLineX.onchange = () => moveX(pLineX.value - currentObject.minX);
 

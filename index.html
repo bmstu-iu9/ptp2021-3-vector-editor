@@ -80,9 +80,9 @@
     </div>
 
     <div id="obj_panel">
-      <img title="На передний план" class=func_button id="frontObject" src="img/to_front.svg">
-      <img title="На задний план" class=func_button id="backObject" src="img/to_back.svg">
-      <img src="img/angle.svg" class="not_buttons">
+      <img title="На передний план" class=func_button id="frontObject" src="img/properties/to_front.svg">
+      <img title="На задний план" class=func_button id="backObject" src="img/properties/to_back.svg">
+      <img src="img/properties/angle.svg" class="not_buttons">
       <input id="angle" type="number" class="property" required>
     </div>
     <div class="properties_panel" id="rect_panel">
@@ -90,9 +90,8 @@
       &nbsp;y <input id="rectY" type="number" class="property" required>
       &nbsp;w <input id="rectW" type="number" class="property" min="1" required>
       &nbsp;h <input id="rectH" type="number" class="property" min="1" required>
-      <img src="img/corner.svg" class="not_buttons">
-      <input id="rectR" type="number" class="property" min="0" max="50" style="
-      width: 40px;" required>
+      <img src="img/properties/corner.svg" class="not_buttons">
+      <input id="rectR" type="number" class="property" min="0" max="50" style="width: 40px;" required>
     </div>
     <div class="properties_panel" id="ell_panel">
       &nbsp;cx <input id="ellCX" type="number" class="property" required>
@@ -115,21 +114,23 @@
       &nbsp;x <input id="polX" type="number" class="property" required>
       &nbsp;y <input id="polY" type="number" class="property" required>
       &nbsp;r <input id="polR" type="number" class="property" min="1" required>
-      &nbsp;n <input id="polN" type="number" class="property" style="
-      width: 40px;" required>
+      &nbsp;n <input id="polN" type="number" class="property" style="width: 40px;" required>
     </div>
     <div id="step_panel">
-      &nbsp;step <input id="polS" type="number" class="property" style="
-      width: 40px;" required>
+      &nbsp;step <input id="polS" type="number" class="property" style="width: 40px;" required>
     </div>
     <div class="properties_panel" id="pLine_panel">
       &nbsp;x <input id="pLineX" type="number" class="property" required>
       &nbsp;y <input id="pLineY" type="number" class="property" required>
+      <input id="polEnd" type="checkbox" class="func_check" hidden><label for="polEnd">
+        <img src="img/properties/polEnd.svg" class="func_button"></label>
     </div>
-    <!--<div class="properties_panel" id="vect_panel">
-      &nbsp;<input id="vectEnd" type="checkbox" hidden><label for="vectEnd">
-        <img src="img/stroke/vectEnd.svg"></label>
-    </div>-->
+    <div class="properties_panel" id="vect_panel">
+      &nbsp;x <input id="vectX" type="number" class="property" required>
+      &nbsp;y <input id="vectY" type="number" class="property" required>
+      &nbsp;<input id="vectEnd" type="checkbox" class="func_check" hidden><label for="vectEnd">
+        <img src="img/properties/vectEnd.svg" class="func_button"></label>
+    </div>
     <div class="properties_panel" id="scale_panel">
       &nbsp;<input id="scaleP" type="number" class="property" step="25" min="0" required>
     </div>
@@ -335,7 +336,7 @@
   <script src="js/vector.js"></script>
   <script src="js/text.js"></script>
   <script src="js/point_and_frame.js"></script>
-  <script src="js/color.js"></script>
+  <script src="js/fill_and_stroke.js"></script>
   <script src="js/eraser.js"></script>
   <script src="js/properties.js"></script>
   <script src="js/helpbox.js"></script>

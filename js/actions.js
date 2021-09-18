@@ -126,7 +126,7 @@ create.onclick = function () {
         alert("Недопустимый размер холста!")
         return;
     }
-
+    resetCurrentObject();
     for (var i = 2; i < svgPanel.childNodes.length;)
         svgPanel.removeChild(svgPanel.childNodes[i]);
     for (var i = 0; i < layersPanel.childNodes.length;)
@@ -375,6 +375,19 @@ class action {
                 this.attr = this.object.getResizeAttrs(this.attr[2]); //аргумент для пера(индекс)
                 this.object.setResizeAttrs(resizeAttrs);
                 break;
+            case "property":
+                let prev = currentObject;
+                currentObject = this.object;
+                currentObject.addPanel();
+                let prevValue = this.attr[0].value;
+                this.attr[0].value = this.attr[1];
+                this.attr[1] = prevValue;
+                var event = new Event('change');
+                this.attr[0].dispatchEvent(event);
+                currentObject.removePanel();
+                currentObject = prev;
+                if (prev != null) currentObject.addPanel();
+                break;
             case "fill":
                 let fillAttrs = this.attr;
                 this.attr = this.object.getFillAttrs();
@@ -423,6 +436,18 @@ class action {
                 let resizeAttrs = this.attr;
                 this.attr = this.object.getResizeAttrs(this.attr[2]); //аргумент для пера(индекс)
                 this.object.setResizeAttrs(resizeAttrs);
+                break;
+            case "property":
+                let prev = currentObject;
+                currentObject = this.object;
+                let prevValue = this.attr[0].value;
+                this.attr[0].value = this.attr[1];
+                this.attr[1] = prevValue;
+                var event = new Event('change');
+                this.attr[0].dispatchEvent(event);
+                currentObject.removePanel();
+                currentObject = prev;
+                if (prev != null) currentObject.addPanel();
                 break;
             case "fill":
                 let fillAttrs = this.attr;

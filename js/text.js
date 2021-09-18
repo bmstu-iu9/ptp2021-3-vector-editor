@@ -13,6 +13,8 @@ class text extends object {
         this.textDiv.setAttribute('contenteditable', true);
         this.textDiv.style.overflow = 'hidden';
         this.textDiv.style.overflowWrap = 'break-word';
+        this.textDiv.style.fontSize = '12pt';
+        this.textDiv.style.fontFamily = 'Arial';
         this.textDiv.textContent = 'Text';
         this.textDiv.style.width = this.width + "px";
         this.textDiv.style.height = this.height + "px";
@@ -93,6 +95,19 @@ class text extends object {
         this.setElementAttribute('y', this.y);
         clone.svgElement.setAttribute('transform', this.transform);
         return clone;
+    }
+    addParameters() {
+        text_panel.style.display = "flex";
+    }
+    updateParameters() {
+        textX.value = this.x;
+        textY.value = this.y;
+        angleInput.value = this.angle * 180.0 / Math.PI;
+        textS.value = this.textDiv.style.fontSize.substring(0, this.textDiv.style.fontSize.length - 2);
+        textF.value = this.textDiv.style.fontFamily;
+    }
+    removeParameters() {
+        text_panel.style.display = "none";
     }
     addActions() {
         super.addActions();

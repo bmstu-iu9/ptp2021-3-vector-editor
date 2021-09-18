@@ -231,3 +231,13 @@ vectEnd.onchange = () => {
         currentObject.setElementAttribute('d', currentObject.path);
     }
 }
+
+//text
+textX.onchange = () => moveX(textX.value - currentObject.x);
+textY.onchange = () => moveY(textY.value - currentObject.y);
+textS.onchange = () => {
+    currentObject.textDiv.style.fontSize = textS.value + 'pt';
+}
+textF.onchange = () => {
+    currentObject.textDiv.style.fontFamily = textF.value;
+}

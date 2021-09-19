@@ -54,7 +54,7 @@ scale.onclick = function () {
 
 scaleP.onchange = () => {
   let s = scaleP.value;
-  if (s<1) {
+  if (s < 1) {
     s = 1;
     scaleP.value = 1
   }

@@ -5,13 +5,14 @@ class object {
         } else {
             this.svgElement = svgElement;
             this.transform = this.getElementAttribute('transform')
-            this.angle = this.transform.split('(')[1].split(' ')[0] * Math.PI / 180.0;
+            if (this.transform != null) this.angle = this.transform.split('(')[1].split(' ')[0] * Math.PI / 180.0;
+            else this.angle = 0;
             this.strokeWidth = Number(this.getElementAttribute('stroke-width'));
         }
         currentLayer.group.appendChild(this.svgElement);
         this.svgElement.obj = this; //???
         this.type = type;
-        this.setElementAttribute('class', type);
+        this.setElementAttribute('type', type);
         this.isCompleted = false;
         this.isSelected = false;
         this.isMoving = false;
@@ -309,6 +310,7 @@ class rectangle extends object {
             };
             //rotate
             this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
+            this.setElementAttribute('transform', this.transform);
             this.angle = 0;
         }
         this.frameArray = [new rectangleFrame(this.x, this.y, this.width, this.height, this)];
@@ -686,6 +688,7 @@ class ellipse extends object {
             this.cy = curY;
             //rotate
             this.transform = 'rotate(' + 0 + ' ' + this.cx + ' ' + this.cy + ')';
+            this.setElementAttribute('transform', this.transform);
             this.angle = 0;
         }
         this.frameArray = [new rectangleFrame(this.cx - this.rx, this.cy - this.ry, this.rx * 2, this.ry * 2, this, true),
@@ -1033,21 +1036,43 @@ class ellipse extends object {
 
 //POLYGON
 class polygon extends object {
-    constructor() {
-        super('polygon');
-        this.r = 0;
-        this.phi = 0;
-        this.vertNum = curVertNum;
-        this.vertices = "";
-        this.rotationIsFixed = false;
-        this.angleIsFixed = false;
-        this.radiusIsFixed = false;
+    constructor(svgElement = null) {
+        super('polygon', svgElement);
         this.fix = this.fix.bind(this);
         this.free = this.free.bind(this);
         this.updateVertNum = this.updateVertNum.bind(this);
-        this.addHotKeys();
+        if (svgElement != null) {
+            this.vertices = this.getElementAttribute('points');
+            let split = this.vertices.split(' ');
+            let sumX = 0,
+                sumY = 0;
+            this.vertNum = 0;
+            for (let i = 0; i < split.length; i++) {
+                let x = Number(split[i].split(',')[0]),
+                    y = Number(split[i].split(',')[1]);
+                sumX += x;
+                sumY += y;
+                this.vertNum++;
+            }
+            this.x0 = sumX / this.vertNum;
+            this.y0 = sumY / this.vertNum;
+
+            let dx = split[0].split(',')[0] - this.x0,
+                dy = split[0].split(',')[1] - this.y0;
+            this.r = Math.sqrt(dx ** 2 + dy ** 2);
+            this.angle = dy > 0 ? Math.acos(dx / this.r) : -Math.acos(dx / this.r);
+        } else {
+            this.r = 0;
+            this.angle = 0;
+            this.vertNum = curVertNum;
+            this.vertices = "";
+            this.addHotKeys();
+        }
+        this.rotationIsFixed = false;
+        this.angleIsFixed = false;
+        this.radiusIsFixed = false;
         this.frameArray = [new polygonFrame(this.vertices, this)];
-        for (let i = 0; i < curVertNum; i++) {
+        for (let i = 0; i < this.vertNum; i++) {
             this.pointsArray.push(new point(this.x0, this.y0, this, {
                 action: "polygon",
                 attr: "polygon"
@@ -1058,7 +1083,7 @@ class polygon extends object {
         let clone = new polygon();
         super.createClone(clone);
         clone.r = this.r;
-        clone.phi = this.phi;
+        clone.angle = this.angle;
         clone.vertNum = this.vertNum;
         clone.vertices = this.vertices;
         clone.setElementAttribute('points', this.vertices);
@@ -1074,7 +1099,7 @@ class polygon extends object {
         polY.value = this.y0;
         polR.value = this.r;
         polN.value = this.vertNum;
-        angleInput.value = this.phi * 180.0 / Math.PI;
+        angleInput.value = this.angle * 180.0 / Math.PI;
     }
     removeParameters() {
         pol_panel.style.display = "none";
@@ -1107,8 +1132,8 @@ class polygon extends object {
         }
         this.frameArray[0].update(this.vertices);
         for (let i = 0; i < this.vertNum; i++) {
-            let x = x0 + this.r * Math.cos(this.phi + 2 * Math.PI * i / this.vertNum);
-            let y = y0 + this.r * Math.sin(this.phi + 2 * Math.PI * i / this.vertNum);
+            let x = x0 + this.r * Math.cos(this.angle + 2 * Math.PI * i / this.vertNum);
+            let y = y0 + this.r * Math.sin(this.angle + 2 * Math.PI * i / this.vertNum);
             this.pointsArray[i].update(x, y);
             if (currentPointTypeAttr == "polygon") {
                 if (i == 0) this.pointsArray[i].setPointAttribute("fill", "red");
@@ -1214,13 +1239,13 @@ class polygon extends object {
             this.x0,
             this.y0,
             this.r,
-            this.phi,
+            this.angle,
             this.vertNum
         ]
     }
     setResizeAttrs(attrs) {
         let pVertNum = this.vertNum;
-        [this.x0, this.y0, this.r, this.phi, this.vertNum] = attrs;
+        [this.x0, this.y0, this.r, this.angle, this.vertNum] = attrs;
         if (pVertNum != this.vertNum) {
             if (this.arePointsAndFrameShown) {
                 for (let i = 0; i < this.pointsArray.length; i++) {
@@ -1241,7 +1266,7 @@ class polygon extends object {
     }
     //ROTATE
     rotateTo(newAngle) {
-        this.phi = newAngle;
+        this.angle = newAngle;
         this.updateFrameAndPoints();
         this.updateParameters();
     }
@@ -1249,16 +1274,58 @@ class polygon extends object {
 
 //STAR POLYGON
 class starPolygon extends object {
-    constructor() {
-        super('path');
-        this.type = 'star';
-        this.path = "";
-        this.r = 0;
-        this.phi = 0;
-        this.step = 2;
-        this.vertNum = curStarPolygonVertNum;
-        this.step = 2;
+    constructor(svgElement = null) {
+        super('path', svgElement, 'star');
+        this.fix = this.fix.bind(this);
+        this.free = this.free.bind(this);
+        this.updateVertNum = this.updateVertNum.bind(this);
+        this.updateStep = this.updateStep.bind(this);
+        if (svgElement != null) {
+            this.path = this.getElementAttribute('d');
+            let split = this.path.split(' ');
+            let sumX = 0,
+                sumY = 0;
+            this.vertNum = 0;
+            for (let i = 2; i < split.length; i++) {
+                if (split[i] == 'M') {
+                    i++;
+                    continue;
+                } else if (split[i] == 'L') {
+                    continue;
+                }
+                let x = Number(split[i].split(',')[0]),
+                    y = Number(split[i].split(',')[1]);
+                sumX += x;
+                sumY += y;
+                this.vertNum++;
+            }
+            this.x0 = sumX / this.vertNum;
+            this.y0 = sumY / this.vertNum;
+
+            let dx = split[1].split(',')[0] - this.x0,
+                dy = split[1].split(',')[1] - this.y0;
+            this.r = Math.sqrt(dx ** 2 + dy ** 2);
+            this.angle = dy > 0 ? Math.acos(dx / this.r) : -Math.acos(dx / this.r);
+            for (let i = 1; i < this.vertNum; i++) {
+                let x = this.x0 + this.r * Math.cos(this.angle + 2 * Math.PI * i / this.vertNum);
+                let y = this.y0 + this.r * Math.sin(this.angle + 2 * Math.PI * i / this.vertNum);
+                if (x == split[3].split(',')[0] && y == split[3].split(',')[1]) {
+                    this.step = i;
+                    break;
+                }
+            }
+        } else {
+            this.path = "";
+            this.r = 0;
+            this.angle = 0;
+            this.step = 2;
+            this.vertNum = curStarPolygonVertNum;
+            this.addHotKeys();
+        }
         this.verticesCoords = [];
+        this.rotationIsFixed = false;
+        this.angleIsFixed = false;
+        this.radiusIsFixed = false;
         this.frameArray = [new pathFrame(this.path, this)];
         for (let i = 0; i < this.vertNum; i++) {
             this.pointsArray.push(new point(this.x0, this.y0, this, {
@@ -1266,21 +1333,13 @@ class starPolygon extends object {
                 attr: "polygon"
             }));
         }
-        this.rotationIsFixed = false;
-        this.angleIsFixed = false;
-        this.radiusIsFixed = false;
-        this.fix = this.fix.bind(this);
-        this.free = this.free.bind(this);
-        this.updateVertNum = this.updateVertNum.bind(this);
-        this.updateStep = this.updateStep.bind(this);
-        this.addHotKeys();
     }
     createClone() {
         let clone = new starPolygon();
         super.createClone(clone);
         clone.path = this.path;
         clone.r = this.r;
-        clone.phi = this.phi;
+        clone.angle = this.angle;
         clone.vertNum = this.vertNum;
         clone.step = this.step;
         clone.vertices = this.vertices;
@@ -1298,7 +1357,7 @@ class starPolygon extends object {
         polR.value = this.r;
         polN.value = this.vertNum;
         polS.value = this.step;
-        angleInput.value = this.phi * 180.0 / Math.PI;
+        angleInput.value = this.angle * 180.0 / Math.PI;
     }
     removeParameters() {
         pol_panel.style.display = "none";
@@ -1338,13 +1397,13 @@ class starPolygon extends object {
         this.endInd = 0;
         this.count = 0;
         this.setPath(this.step);
-        this.path += "L " + this.verticesCoords[0].x + "," + this.verticesCoords[0].y;
+        this.path += " L " + this.verticesCoords[0].x + "," + this.verticesCoords[0].y;
         if (this.vertNum != this.count) {
             for (let i = 1; i < this.step; i++) {
-                this.path += "M " + this.verticesCoords[i].x + "," + this.verticesCoords[i].y;
+                this.path += " M " + this.verticesCoords[i].x + "," + this.verticesCoords[i].y;
                 this.endInd = i;
                 this.setPath(this.step + i);
-                this.path += "L " + this.verticesCoords[i].x + "," + this.verticesCoords[i].y;
+                this.path += " L " + this.verticesCoords[i].x + "," + this.verticesCoords[i].y;
             }
         }
 
@@ -1356,7 +1415,7 @@ class starPolygon extends object {
     setPath(ind) {
         this.count++;
         if (ind == this.endInd) return;
-        this.path += "L " + this.verticesCoords[ind].x + "," + this.verticesCoords[ind].y;
+        this.path += " L " + this.verticesCoords[ind].x + "," + this.verticesCoords[ind].y;
         this.setPath((ind + this.step) % this.vertNum);
     }
     addHotKeys() {
@@ -1468,14 +1527,14 @@ class starPolygon extends object {
             this.x0,
             this.y0,
             this.r,
-            this.phi,
+            this.angle,
             this.vertNum,
             this.step
         ]
     }
     setResizeAttrs(attrs) {
         let previousVertNum = this.vertNum;
-        [this.x0, this.y0, this.r, this.phi, this.vertNum, this.step] = attrs;
+        [this.x0, this.y0, this.r, this.angle, this.vertNum, this.step] = attrs;
         if (previousVertNum != this.vertNum) {
             if (this.arePointsAndFrameShown) {
                 for (let i = 0; i < this.pointsArray.length; i++) {
@@ -1496,7 +1555,7 @@ class starPolygon extends object {
     }
     //ROTATE
     rotateTo(newAngle) {
-        this.phi = newAngle;
+        this.angle = newAngle;
         this.updateFrameAndPoints();
         this.updateParameters();
     }
@@ -1505,21 +1564,65 @@ class starPolygon extends object {
 
 //PENTAGRAM
 class pentagram extends object {
-    constructor() {
-        super('g');
-        this.type = 'star';
-        this.path = "";
-        this.r = 0;
-        this.phi = 0;
-        this.step = 2;
-        this.vertNum = curPentagramVertNum;
-        this.step = 2;
+    constructor(svgElement = null) {
+        super('g', svgElement, 'pentagram');
+        this.fix = this.fix.bind(this);
+        this.free = this.free.bind(this);
+        this.updateVertNum = this.updateVertNum.bind(this);
+        this.updateStep = this.updateStep.bind(this);
+        if (svgElement != null) {
+            this.star = svgElement.childNodes[0];
+            this.circle = svgElement.childNodes[1];
+            this.path = this.star.getAttribute('d');
+            let split = this.path.split(' ');
+            let sumX = 0,
+                sumY = 0;
+            this.vertNum = 0;
+            for (let i = 2; i < split.length; i++) {
+                if (split[i] == 'M') {
+                    i++;
+                    continue;
+                } else if (split[i] == 'L') {
+                    continue;
+                }
+                let x = Number(split[i].split(',')[0]),
+                    y = Number(split[i].split(',')[1]);
+                sumX += x;
+                sumY += y;
+                this.vertNum++;
+            }
+            this.x0 = sumX / this.vertNum;
+            this.y0 = sumY / this.vertNum;
+
+            let dx = split[1].split(',')[0] - this.x0,
+                dy = split[1].split(',')[1] - this.y0;
+            this.r = Math.sqrt(dx ** 2 + dy ** 2);
+            this.angle = dy > 0 ? Math.acos(dx / this.r) : -Math.acos(dx / this.r);
+            for (let i = 1; i < this.vertNum; i++) {
+                let x = this.x0 + this.r * Math.cos(this.angle + 2 * Math.PI * i / this.vertNum);
+                let y = this.y0 + this.r * Math.sin(this.angle + 2 * Math.PI * i / this.vertNum);
+                if (x == split[3].split(',')[0] && y == split[3].split(',')[1]) {
+                    this.step = i;
+                    break;
+                }
+            }
+        } else {
+            this.path = "";
+            this.r = 0;
+            this.angle = 0;
+            this.step = 2;
+            this.vertNum = curPentagramVertNum;
+            this.star = document.createElementNS("http://www.w3.org/2000/svg", 'path');
+            this.circle = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
+            this.svgElement.appendChild(this.star);
+            this.svgElement.appendChild(this.circle);
+            this.circle.setAttribute('fill', "none");
+            this.addHotKeys();
+        }
         this.verticesCoords = [];
-        this.star = document.createElementNS("http://www.w3.org/2000/svg", 'path');
-        this.circle = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
-        this.svgElement.appendChild(this.star);
-        this.svgElement.appendChild(this.circle);
-        this.circle.setAttribute('fill', "none");
+        this.rotationIsFixed = false;
+        this.angleIsFixed = false;
+        this.radiusIsFixed = false;
         this.frameArray = [new pathFrame(this.path, this),
             new ellipseFrame(this.x0, this.y0, 0, 0, this)
         ];
@@ -1529,21 +1632,13 @@ class pentagram extends object {
                 attr: "polygon"
             }));
         }
-        this.rotationIsFixed = false;
-        this.angleIsFixed = false;
-        this.radiusIsFixed = false;
-        this.fix = this.fix.bind(this);
-        this.free = this.free.bind(this);
-        this.updateVertNum = this.updateVertNum.bind(this);
-        this.updateStep = this.updateStep.bind(this);
-        this.addHotKeys();
     }
     createClone() {
         let clone = new pentagram();
         super.createClone(clone);
         clone.path = this.path;
         clone.r = this.r;
-        clone.phi = this.phi;
+        clone.angle = this.angle;
         clone.vertNum = this.vertNum;
         clone.step = this.step;
         clone.vertices = this.vertices;
@@ -1561,7 +1656,7 @@ class pentagram extends object {
         polR.value = this.r;
         polN.value = this.vertNum;
         polS.value = this.step;
-        angleInput.value = this.phi * 180.0 / Math.PI;
+        angleInput.value = this.angle * 180.0 / Math.PI;
     }
     removeParameters() {
         pol_panel.style.display = "none";
@@ -1588,10 +1683,9 @@ class pentagram extends object {
         this.circle.setAttribute('r', this.r + this.strokeWidth);
         this.frameArray[1].update(x0, y0, this.r + this.strokeWidth, this.r + this.strokeWidth);
 
-        this.verticesCoords = [];
         for (let i = 0; i < this.vertNum; i++) {
-            let x = x0 + this.r * Math.cos(this.phi + 2 * Math.PI * i / this.vertNum);
-            let y = y0 + this.r * Math.sin(this.phi + 2 * Math.PI * i / this.vertNum);
+            let x = x0 + this.r * Math.cos(this.angle + 2 * Math.PI * i / this.vertNum);
+            let y = y0 + this.r * Math.sin(this.angle + 2 * Math.PI * i / this.vertNum);
             this.verticesCoords.push({
                 x: x,
                 y: y
@@ -1606,13 +1700,13 @@ class pentagram extends object {
         this.endInd = 0;
         this.count = 0;
         this.setPath(this.step);
-        this.path += "L " + this.verticesCoords[0].x + "," + this.verticesCoords[0].y;
+        this.path += " L " + this.verticesCoords[0].x + "," + this.verticesCoords[0].y;
         if (this.vertNum != this.count) {
             for (let i = 1; i < this.step; i++) {
-                this.path += "M " + this.verticesCoords[i].x + "," + this.verticesCoords[i].y;
+                this.path += " M " + this.verticesCoords[i].x + "," + this.verticesCoords[i].y;
                 this.endInd = i;
                 this.setPath(this.step + i);
-                this.path += "L " + this.verticesCoords[i].x + "," + this.verticesCoords[i].y;
+                this.path += " L " + this.verticesCoords[i].x + "," + this.verticesCoords[i].y;
             }
         }
 
@@ -1624,7 +1718,7 @@ class pentagram extends object {
     setPath(ind) {
         this.count++;
         if (ind == this.endInd) return;
-        this.path += "L " + this.verticesCoords[ind].x + "," + this.verticesCoords[ind].y;
+        this.path += " L " + this.verticesCoords[ind].x + "," + this.verticesCoords[ind].y;
         this.setPath((ind + this.step) % this.vertNum);
     }
     addHotKeys() {
@@ -1736,14 +1830,14 @@ class pentagram extends object {
             this.x0,
             this.y0,
             this.r,
-            this.phi,
+            this.angle,
             this.vertNum,
             this.step
         ]
     }
     setResizeAttrs(attrs) {
         let previousVertNum = this.vertNum;
-        [this.x0, this.y0, this.r, this.phi, this.vertNum, this.step] = attrs;
+        [this.x0, this.y0, this.r, this.angle, this.vertNum, this.step] = attrs;
         if (previousVertNum != this.vertNum) {
             if (this.arePointsAndFrameShown) {
                 for (let i = 0; i < this.pointsArray.length; i++) {
@@ -1764,7 +1858,7 @@ class pentagram extends object {
     }
     //ROTATE
     rotateTo(newAngle) {
-        this.phi = newAngle;
+        this.angle = newAngle;
         this.updateFrameAndPoints();
         this.updateParameters();
     }
@@ -1818,6 +1912,7 @@ class pencil extends object {
                 y: this.minY + (this.maxY - this.minY) / 2
             };
             this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
+            this.setElementAttribute('transform', this.transform);
             //rotate 
             this.angle = 0;
 
@@ -2199,6 +2294,7 @@ class line extends object {
                 y: curY
             };
             this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
+            this.setElementAttribute('transform', this.transform);
             //rotate 
             this.angle = 0;
         }
@@ -2598,6 +2694,7 @@ class pathTool extends object {
             };
             //rotate
             this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
+            this.setElementAttribute('transform', this.transform);
             this.angle = 0;
         }
     }

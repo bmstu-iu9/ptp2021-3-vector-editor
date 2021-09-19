@@ -283,17 +283,34 @@ class object {
 
 //RECTANGLE
 class rectangle extends object {
-    constructor() {
-        super('rect');
-        this.x = curX;
-        this.y = curY;
-        this.width = 0;
-        this.height = 0;
-        this.r = 0;
-        this.cPoint = {
-            x: curX,
-            y: curY
-        };
+    constructor(svgElement = null) {
+        super('rect', svgElement);
+        if (svgElement != null) {
+            [this.x, this.y, this.width, this.height, this.r] = [
+                Number(this.getElementAttribute('x')),
+                Number(this.getElementAttribute('y')),
+                Number(this.getElementAttribute('width')),
+                Number(this.getElementAttribute('height')),
+                Number(this.getElementAttribute('rx'))
+            ]
+            this.cPoint = {
+                x: this.x + this.width / 2,
+                y: this.y + this.height / 2
+            };
+        } else {
+            this.x = curX;
+            this.y = curY;
+            this.width = 0;
+            this.height = 0;
+            this.r = 0;
+            this.cPoint = {
+                x: curX,
+                y: curY
+            };
+            //rotate
+            this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
+            this.angle = 0;
+        }
         this.frameArray = [new rectangleFrame(this.x, this.y, this.width, this.height, this)];
         this.pointsArray = [new point(this.x, this.y, this, {
                 action: "resize",
@@ -332,9 +349,6 @@ class rectangle extends object {
                 attr: "rotate"
             })
         ];
-        //rotate
-        this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
-        this.angle = 0;
     }
     createClone() {
         let clone = new rectangle();
@@ -656,12 +670,24 @@ class rectangle extends object {
 
 //ELLIPSE
 class ellipse extends object {
-    constructor() {
-        super('ellipse');
-        this.rx = 0;
-        this.ry = 0;
-        this.cx = curX;
-        this.cy = curY;
+    constructor(svgElement = null) {
+        super('ellipse', svgElement);
+        if (svgElement != null) {
+            [this.cx, this.cy, this.rx, this.ry] = [
+                Number(this.getElementAttribute('cx')),
+                Number(this.getElementAttribute('cy')),
+                Number(this.getElementAttribute('rx')),
+                Number(this.getElementAttribute('ry'))
+            ]
+        } else {
+            this.rx = 0;
+            this.ry = 0;
+            this.cx = curX;
+            this.cy = curY;
+            //rotate
+            this.transform = 'rotate(' + 0 + ' ' + this.cx + ' ' + this.cy + ')';
+            this.angle = 0;
+        }
         this.frameArray = [new rectangleFrame(this.cx - this.rx, this.cy - this.ry, this.rx * 2, this.ry * 2, this, true),
             new ellipseFrame(this.cx, this.cy, this.rx, this.ry, this)
         ];
@@ -702,9 +728,6 @@ class ellipse extends object {
                 attr: "rotate"
             })
         ];
-        //rotate
-        this.transform = 'rotate(' + 0 + ' ' + this.cx + ' ' + this.cy + ')';
-        this.angle = 0;
     }
     createClone() {
         let clone = new ellipse();
@@ -1749,28 +1772,59 @@ class pentagram extends object {
 
 //PENCIL
 class pencil extends object {
-    constructor() {
-        super('polyline', 'pencil');
-        this.type = 'pencil';
-        this.path = this.x0 + "," + this.y0;
-        this.pathCoords = [{
-            x: this.x0,
-            y: this.y0
-        }];
-        this.svgElement.setAttribute('fill', "none");
-        this.svgElement.setAttribute('points', this.path);
-        this.minX = this.x0;
-        this.minY = this.y0;
-        this.maxX = this.x0;
-        this.maxY = this.y0;
-        this.cPoint = {
-            x: this.minX + (this.maxX - this.minX) / 2,
-            y: this.minY + (this.maxY - this.minY) / 2
-        };
-        this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
+    constructor(svgElement = null) {
+        super('polyline', svgElement, 'pencil');
+        if (svgElement != null) {
+            this.path = this.getElementAttribute('points');
+            let split = this.path.split(' ');
+            this.x0 = Number(split[0].split(',')[0]);
+            this.y0 = Number(split[0].split(',')[1]);
+            this.pathCoords = [{
+                x: this.x0,
+                y: this.y0
+            }];
+            this.minX = this.x0;
+            this.minY = this.y0;
+            this.maxX = this.x0;
+            this.maxY = this.y0;
+            for (let i = 1; i < split.length; i++) {
+                let x = Number(split[i].split(',')[0]),
+                    y = Number(split[i].split(',')[1]);
+                this.pathCoords.push({
+                    x: x,
+                    y: y
+                })
+                this.minX = Math.min(this.minX, x);
+                this.minY = Math.min(this.minY, y);
+                this.maxX = Math.max(this.maxX, x);
+                this.maxY = Math.max(this.maxY, y);
+            }
+            this.cPoint = {
+                x: this.minX + (this.maxX - this.minX) / 2,
+                y: this.minY + (this.maxY - this.minY) / 2
+            };
+        } else {
+            this.path = this.x0 + "," + this.y0;
+            this.pathCoords = [{
+                x: this.x0,
+                y: this.y0
+            }];
+            this.minX = this.x0;
+            this.minY = this.y0;
+            this.maxX = this.x0;
+            this.maxY = this.y0;
+            this.cPoint = {
+                x: this.minX + (this.maxX - this.minX) / 2,
+                y: this.minY + (this.maxY - this.minY) / 2
+            };
+            this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
+            //rotate 
+            this.angle = 0;
+
+            this.setElementAttribute('points', this.path);
+        }
+        this.setElementAttribute('fill', "none");
         makeRoundStroke(this);
-        //rotate 
-        this.angle = 0;
     }
     createClone() {
         let clone = new pencil();
@@ -2117,23 +2171,38 @@ class pencil extends object {
 
 //LINE
 class line extends object {
-    constructor(x1 = curX, y1 = curY, x2 = curX, y2 = curY, isFree = true) {
-        super('line');
-        this.x0 = x1;
-        this.y0 = y1;
-        this.svgElement.setAttribute('x1', x1);
-        this.svgElement.setAttribute('y1', y1);
-        this.svgElement.setAttribute('x2', x2);
-        this.svgElement.setAttribute('y2', y2);
-        this.x2 = x2;
-        this.y2 = y2;
-        this.svgElement.setAttribute('fill', "none");
-        this.isFree = isFree;
-        this.cPoint = {
-            x: curX,
-            y: curY
-        };
-        this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
+    constructor(svgElement = null, x1 = curX, y1 = curY, x2 = curX, y2 = curY, isFree = true) {
+        super('line', svgElement);
+        if (svgElement != null) {
+            [this.x0, this.y0, this.x2, this.y2] = [
+                Number(this.getElementAttribute('x1')),
+                Number(this.getElementAttribute('y1')),
+                Number(this.getElementAttribute('x2')),
+                Number(this.getElementAttribute('y2'))
+            ]
+            this.cPoint = {
+                x: (this.x0 + this.x2) / 2,
+                y: (this.y0 + this.y2) / 2
+            };
+        } else {
+            this.x0 = x1;
+            this.y0 = y1;
+            this.setElementAttribute('x1', x1);
+            this.setElementAttribute('y1', y1);
+            this.setElementAttribute('x2', x2);
+            this.setElementAttribute('y2', y2);
+            this.x2 = x2;
+            this.y2 = y2;
+            this.isFree = isFree;
+            this.cPoint = {
+                x: curX,
+                y: curY
+            };
+            this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
+            //rotate 
+            this.angle = 0;
+        }
+        this.setElementAttribute('fill', "none");
         if (!isFree) {
             this.setElementAttribute('stroke', "black");
             this.setElementAttribute('stroke-opacity', "0.5");
@@ -2185,8 +2254,6 @@ class line extends object {
                 }),
             ];
         }
-        //rotate 
-        this.angle = 0;
     }
     createClone() {
         let clone = new line();
@@ -2469,30 +2536,70 @@ class line extends object {
 class pathTool extends object {
     constructor(svgElement = null) {
         super('polyline', svgElement, 'pathTool');
-        this.path = this.x0 + "," + this.y0;
-        this.pathCoords = [{
-            x: this.x0,
-            y: this.y0
-        }];
-        this.setElementAttribute('points', this.path);
-        this.frameArray = [new polylineFrame(this.path, this)];
-        this.pointsArray.push(new point(this.x0, this.y0, this, {
-            action: "pathTool",
-            attr: 0
-        }));
-        this.pointsArray[0].setPointAttribute('fill', "blue");
-        this.line = new line(null, curX, curY, curX, curY, false);
-        this.minX = this.x0;
-        this.minY = this.y0;
-        this.maxX = this.x0;
-        this.maxY = this.y0;
-        this.cPoint = {
-            x: this.minX + (this.maxX - this.minX) / 2,
-            y: this.minY + (this.maxY - this.minY) / 2
-        };
-        //rotate
-        this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
-        this.angle = 0;
+        if (svgElement != null) {
+            this.path = this.getElementAttribute('points');
+            this.frameArray = [new polylineFrame(this.path, this)];
+            let split = this.path.split(' ');
+            this.x0 = Number(split[0].split(',')[0]);
+            this.y0 = Number(split[0].split(',')[1]);
+            this.pathCoords = [{
+                x: this.x0,
+                y: this.y0
+            }];
+            this.minX = this.x0;
+            this.minY = this.y0;
+            this.maxX = this.x0;
+            this.maxY = this.y0;
+            this.pointsArray.push(new point(this.x0, this.y0, this, {
+                action: "pathTool",
+                attr: 0
+            }));
+            for (let i = 1; i < split.length; i++) {
+                let x = Number(split[i].split(',')[0]),
+                    y = Number(split[i].split(',')[1]);
+                this.pathCoords.push({
+                    x: x,
+                    y: y
+                })
+                this.minX = Math.min(this.minX, x);
+                this.minY = Math.min(this.minY, y);
+                this.maxX = Math.max(this.maxX, x);
+                this.maxY = Math.max(this.maxY, y);
+                this.pointsArray.push(new point(x, y, this, {
+                    action: "pathTool",
+                    attr: i
+                }));
+            }
+            this.cPoint = {
+                x: this.minX + (this.maxX - this.minX) / 2,
+                y: this.minY + (this.maxY - this.minY) / 2
+            };
+        } else {
+            this.path = this.x0 + "," + this.y0;
+            this.pathCoords = [{
+                x: this.x0,
+                y: this.y0
+            }];
+            this.setElementAttribute('points', this.path);
+            this.frameArray = [new polylineFrame(this.path, this)];
+            this.pointsArray.push(new point(this.x0, this.y0, this, {
+                action: "pathTool",
+                attr: 0
+            }));
+            this.pointsArray[0].setPointAttribute('fill', "blue");
+            this.line = new line(null, curX, curY, curX, curY, false);
+            this.minX = this.x0;
+            this.minY = this.y0;
+            this.maxX = this.x0;
+            this.maxY = this.y0;
+            this.cPoint = {
+                x: this.minX + (this.maxX - this.minX) / 2,
+                y: this.minY + (this.maxY - this.minY) / 2
+            };
+            //rotate
+            this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
+            this.angle = 0;
+        }
     }
     createClone() {
         let clone = new pathTool();
@@ -2712,13 +2819,12 @@ class pathTool extends object {
     }
     complete() {
         if (!polylineIsCompleted) {
-            this.line.remove();
+            if (this.line != null) this.line.remove();
             this.pointsArray[0].setPointAttribute('fill', "white");
             this.pointsArray.push(new point(this.minX + (this.maxX - this.minX) / 2, this.minY + (this.maxY - this.minY) / 2 - 20, this, {
                 action: "rotate",
                 attr: "rotate"
             }));
-            this.updateFrameAndPoints();
             polylineIsCompleted = true;
             super.complete(this.path != this.x0 + "," + this.y0 + " " + this.x0 + "," + this.y0);
         }

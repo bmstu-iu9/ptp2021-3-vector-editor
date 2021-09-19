@@ -98,7 +98,7 @@ class point {
             document.addEventListener("mouseup", stopRotating);
         }
         //movePoint
-        if (this.type.action == "resize" || this.type.action == "polygon" || this.type.action == "polyline") {
+        if (this.type.action == "resize" || this.type.action == "polygon" || this.type.action == "pathTool") {
             const move = ((current) => {
                 if (this.isMoving && currentObject == this.object) {
                     updateCursorCoords(current);
@@ -144,7 +144,7 @@ class point {
                 isSomePointSelected = false;
             }
         })
-        if (this.type.action == "polyline") {
+        if (this.type.action == "pathTool") {
             this.circle.addEventListener("contextmenu", deletePoint);
         }
     }

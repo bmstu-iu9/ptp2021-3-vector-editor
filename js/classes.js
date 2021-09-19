@@ -2552,11 +2552,10 @@ class polyline extends object {
     }
     updateLine(current) {
         this.line.updateAttributes(current);
-        if ((curX - this.x0) ** 2 + (curY - this.y0) ** 2 <= pointRadius ** 2 && this.pointsArray.length > 1) {
+        if ((curX - this.x0) ** 2 + (curY - this.y0) ** 2 <= pointRadius ** 2 && this.pointsArray.length > 1)
             this.pointsArray[0].setPointAttribute('fill', "red");
-        } else {
+        else
             this.pointsArray[0].setPointAttribute('fill', "blue");
-        }
     }
     updateAttributes() {
         const x = Number(this.line.getElementAttribute('x2')),

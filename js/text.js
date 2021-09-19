@@ -104,7 +104,7 @@ class text extends object {
         textY.value = this.y;
         angleInput.value = this.angle * 180.0 / Math.PI;
         textS.value = this.textDiv.style.fontSize.substring(0, this.textDiv.style.fontSize.length - 2);
-        textF.value = this.textDiv.style.fontFamily;
+        textF.setAttribute('value', this.textDiv.style.fontFamily);
     }
     removeParameters() {
         text_panel.style.display = "none";

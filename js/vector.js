@@ -1,8 +1,65 @@
 class vector extends object {
     constructor(svgElement = null) {
         super('path', svgElement, 'vector');
-        this.type = 'vector';
-        this.path = "M" + " " + this.x0 + " " + this.y0 + " ";
+        /*if (svgElement != null) {
+            vectorIsCompleted = false;
+            this.path = this.getElementAttribute('d');
+            let split = this.path.split(' ');
+            this.x0 = Number(split[1].split(',')[0]);
+            this.y0 = Number(split[1].split(',')[1]);
+            this.pathCoords = [{
+                x: this.x0,
+                y: this.y0
+            }];
+            this.minX = this.x0;
+            this.minY = this.y0;
+            this.maxX = this.x0;
+            this.maxY = this.y0;
+            this.frameArray = [];
+            this.pointsArray = [];
+            this.i = 0;
+
+            for (let i = 3; i < split.length; i++) {
+                if (split[i] == "C") {
+                    continue;
+                }
+                let x = Number(split[i].split(',')[0]),
+                    y = Number(split[i].split(',')[1]);
+                this.pathCoords.push({
+                    x: x,
+                    y: y
+                })
+                console.log(this.pathCoords)
+                this.minX = Math.min(this.minX, x);
+                this.minY = Math.min(this.minY, y);
+                this.maxX = Math.max(this.maxX, x);
+                this.maxY = Math.max(this.maxY, y);
+                this.frameArray.push(new lineFrame(x, y, x, y, this, true),
+                    new lineFrame(x, y, x, y, this, true));
+                if ((i - 1) % 2 == 0) {
+                    this.pointsArray.push(new point(x, y, this, {
+                        action: "resize",
+                        attr: this.i * 3 - 1
+                    }), new point(x, y, this, {
+                        action: "pathTool",
+                        attr: this.i * 3
+                    }), new point(x, y, this, {
+                        action: "resize",
+                        attr: this.i * 3 + 1
+                    }));
+                }
+                this.i++;
+            }
+            this.cPoint = {
+                x: this.minX + (this.maxX - this.minX) / 2,
+                y: this.minY + (this.maxY - this.minY) / 2
+            };
+            if (split[split.length - 1] == "Z") {
+                vectEnd.checked = "true";
+                this.hasEnd = true;
+            }
+        } else {*/
+        this.path = "M " + this.x0 + "," + this.y0;
         this.pathCoords = [{
             x: this.x0,
             y: this.y0
@@ -20,27 +77,31 @@ class vector extends object {
             y: this.minY + (this.maxY - this.minY) / 2
         };
         this.setElementAttribute('d', this.path);
-        this.frameArray = [new lineFrame(curX, curY, curX, curY, this),
-            new lineFrame(curX, curY, curX, curY, this)
+        this.frameArray = [new lineFrame(this.x0, this.y0, this.x0, this.y0, this, true),
+            new lineFrame(this.x0, curY, this.x0, this.y0, this, true)
         ];
-        this.pointsArray = [new point(curX, curY, this, {
+        this.pointsArray = [new point(this.x0, this.y0, this, {
             action: "resize",
             attr: this.i * 3 - 1 //точка, отвечающая за предыдущий путь
-        }), new point(curX, curY, this, {
-            action: "polyline",
+        }), new point(this.x0, this.y0, this, {
+            action: "pathTool",
             attr: this.i * 3 //точка угла
-        }), new point(curX, curY, this, {
+        }), new point(this.x0, this.y0, this, {
             action: "resize",
             attr: this.i * 3 + 1 //точка, отвечающая за следующий путь
         })];
         //rotate
         this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
         this.angle = 0;
+        //}
+    }
+    static create(svgElement) {
+        let newObj = new vector(svgElement);
+        super.create(newObj);
     }
     createClone() {
         let clone = new vector();
-        this.clone = clone;
-        super.createClone();
+        super.createClone(clone);
         clone.hasEnd = this.hasEnd;
         clone.isClosed = this.isClosed;
         clone.minX = this.minX;
@@ -76,24 +137,25 @@ class vector extends object {
         vect_panel.style.display = "none";
     }
     updateFrameAndPoints(dx = 0, dy = 0) {
+        console.log(this.pathCoords)
         for (let i = 0; i < this.pathCoords.length; i++) {
             let x = this.pathCoords[i].x + dx,
                 y = this.pathCoords[i].y + dy;
             if (!this.isClosed || i != this.pathCoords.length - 1) this.pointsArray[i].update(x, y, this.transform, i);
             if (i == 0) {
-                this.path = "M" + " " + x + " " + y + " ";
+                this.path = "M " + x + "," + y;
                 continue;
             }
             if (i % 3 == 1) {
                 this.frameArray[(i / 3 | 0) * 2].update(this.pathCoords[i - 1].x + dx, this.pathCoords[i - 1].y + dy, x, y, this.transform);
-                this.path += "C" + " " + x + " " + y + ", ";
+                this.path += " C " + x + "," + y;
             }
             if (i % 3 == 2) {
                 this.frameArray[(i / 3 | 0) * 2 + 1].update(this.pathCoords[i + 1].x + dx, this.pathCoords[i + 1].y + dy, x, y, this.transform);
-                this.path += x + " " + y + ", ";
+                this.path += " " + x + "," + y;
             }
             if (i % 3 == 0) {
-                this.path += x + " " + y + " ";
+                this.path += " " + x + "," + y;
             }
         }
         if (this.hasEnd) this.path += 'Z';
@@ -146,15 +208,13 @@ class vector extends object {
                     this.pathCoords[this.pathCoords.length - 1].x = this.pathCoords[3].x;
                     this.pathCoords[this.pathCoords.length - 1].y = this.pathCoords[3].y;
                 }
-            }
-            else
+            } else
             if (ind == this.pathCoords.length - 1) {
                 ind--;
                 this.frameArray[this.frameArray.length - 1].remove();
                 this.frameArray[this.frameArray.length - 2].remove();
-            this.frameArray.splice(this.frameArray.length - 2, 2);
-            }
-            else {
+                this.frameArray.splice(this.frameArray.length - 2, 2);
+            } else {
                 this.frameArray[(ind / 3) * 2 - 1].remove();
                 this.frameArray[(ind / 3) * 2].remove();
                 this.frameArray.splice((ind / 3 | 0) * 2 - 1, 2);
@@ -276,13 +336,13 @@ class vector extends object {
             y: curY
         });
         this.i++;
-        this.frameArray.push(new lineFrame(curX, curY, curX, curY, this),
-            new lineFrame(curX, curY, curX, curY, this));
+        this.frameArray.push(new lineFrame(curX, curY, curX, curY, this, true),
+            new lineFrame(curX, curY, curX, curY, this, true));
         this.pointsArray.push(new point(curX, curY, this, {
             action: "resize",
             attr: this.i * 3 - 1
         }), new point(curX, curY, this, {
-            action: "polyline",
+            action: "pathTool",
             attr: this.i * 3
         }), new point(curX, curY, this, {
             action: "resize",
@@ -303,7 +363,7 @@ class vector extends object {
     }
     updateFirstPath() {
         this.path += this.newPath;
-        this.prevPoint = "C" + " " + curX + " " + curY + ", ";
+        this.prevPoint = " C " + curX + "," + curY;
         let x = this.pathCoords[this.i].x,
             y = this.pathCoords[this.i].y;
         this.minX = Math.min(this.minX, curX, 2 * x - curX);
@@ -316,7 +376,7 @@ class vector extends object {
         }
     }
     updatePath() {
-        this.newPath = this.prevPoint + curX + " " + curY + ", " + curX + " " + curY + " ";
+        this.newPath = this.prevPoint + " " + curX + "," + curY + " " + curX + "," + curY;
         this.setElementAttribute('d', this.path + this.newPath);
     }
     updateSecondPath() {
@@ -324,7 +384,7 @@ class vector extends object {
             y = this.pathCoords[this.i].y;
         let newX = 2 * x - curX,
             newY = 2 * y - curY;
-        this.newPath = this.prevPoint + newX + " " + newY + ", " + x + " " + y + " ";
+        this.newPath = this.prevPoint + " " + newX + "," + newY + " " + x + "," + y;
         this.setElementAttribute('d', this.path + this.newPath);
         this.updateLine();
     }
@@ -342,7 +402,6 @@ class vector extends object {
                     y: this.pointsArray[i].y
                 })
             }
-            this.pointsArray[0].remove();
             this.pointsArray[this.pointsArray.length - 1].remove();
             if (this.isClosed) {
                 this.pathCoords.push({
@@ -370,7 +429,7 @@ class vector extends object {
                 y: this.minY + (this.maxY - this.minY) / 2
             };
             this.transform = 'rotate(' + this.angle * 180.0 / Math.PI + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
-            super.complete(this.path != "M" + " " + this.x0 + " " + this.y0 + " ");
+            super.complete(this.path != "M " + this.x0 + "," + this.y0);
         }
     }
 }

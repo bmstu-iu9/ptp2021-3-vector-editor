@@ -2,6 +2,10 @@ class object {
     constructor(name, svgElement = null, type = name) {
         if (svgElement == null) {
             this.svgElement = document.createElementNS("http://www.w3.org/2000/svg", name);
+            this.x0 = curX;
+            this.y0 = curY;
+            updateFill(this);
+            updateStroke(this);
         } else {
             this.svgElement = svgElement;
             this.transform = this.getElementAttribute('transform')
@@ -10,20 +14,20 @@ class object {
             this.strokeWidth = Number(this.getElementAttribute('stroke-width'));
         }
         currentLayer.group.appendChild(this.svgElement);
-        this.svgElement.obj = this; //???
+        this.svgElement.obj = this;
         this.type = type;
         this.setElementAttribute('type', type);
         this.isCompleted = false;
         this.isSelected = false;
         this.isMoving = false;
         this.arePointsAndFrameShown = true;
-        this.x0 = curX;
-        this.y0 = curY;
         this.pointsArray = [];
         this.frameArray = [];
-        updateFill(this);
-        updateStroke(this);
         this.addActions();
+    }
+    static create(newObj) {
+        newObj.complete();
+        newObj.hideFrameAndPoints();
     }
     createClone(clone) {
         clone.isCompleted = true;
@@ -355,6 +359,10 @@ class rectangle extends object {
             })
         ];
     }
+    static create(svgElement) {
+        let newObj = new rectangle(svgElement);
+        super.create(newObj);
+    }
     createClone() {
         let clone = new rectangle();
         super.createClone(clone);
@@ -371,10 +379,6 @@ class rectangle extends object {
         clone.setElementAttribute('y', this.y);
         clone.setElementAttribute('transform', this.transform);
         return clone;
-    }
-    static create(svgElement) {
-        let newObj = new rectangle(svgElement);
-        newObj.complete();
     }
     addParameters() {
         rect_panel.style.display = "flex";
@@ -615,7 +619,7 @@ class rectangle extends object {
         ];
     }
     setResizeAttrs(attrs) {
-        [this.x, this.y, this.width, this.height, this.r] = attrs;
+        [this.x, this.y, this.width, this.height] = attrs;
         this.cPoint = {
             x: this.x + this.width / 2,
             y: this.y + this.height / 2
@@ -625,9 +629,7 @@ class rectangle extends object {
         this.setElementAttribute('y', this.y);
         this.setElementAttribute('width', this.width);
         this.setElementAttribute('height', this.height);
-        this.setElementAttribute('rx', this.r);
         this.setElementAttribute('transform', this.transform);
-        this.setElementAttribute('rx', Math.max(this.height, this.width) * this.r / 100);
         this.updateFrameAndPoints();
         this.updateParameters();
     }
@@ -740,7 +742,7 @@ class ellipse extends object {
     }
     static create(svgElement) {
         let newObj = new ellipse(svgElement);
-        newObj.complete();
+        super.create(newObj);
     }
     createClone() {
         let clone = new ellipse();
@@ -1091,7 +1093,7 @@ class polygon extends object {
     }
     static create(svgElement) {
         let newObj = new polygon(svgElement);
-        newObj.complete();
+        super.create(newObj);
     }
     createClone() {
         let clone = new polygon();
@@ -1354,7 +1356,7 @@ class starPolygon extends object {
     }
     static create(svgElement) {
         let newObj = new starPolygon(svgElement);
-        newObj.complete();
+        super.create(newObj);
     }
     createClone() {
         let clone = new starPolygon();
@@ -1605,10 +1607,10 @@ class pentagram extends object {
                 sumY = 0;
             this.vertNum = 0;
             for (let i = 2; i < split.length; i++) {
-                if (split[i] == 'M') {
+                if (split[i] == "M") {
                     i++;
                     continue;
-                } else if (split[i] == 'L') {
+                } else if (split[i] == "L") {
                     continue;
                 }
                 let x = Number(split[i].split(',')[0]),
@@ -1661,7 +1663,7 @@ class pentagram extends object {
     }
     static create(svgElement) {
         let newObj = new pentagram(svgElement);
-        newObj.complete();
+        super.create(newObj);
     }
     createClone() {
         let clone = new pentagram();
@@ -1958,7 +1960,7 @@ class pencil extends object {
     }
     static create(svgElement) {
         let newObj = new pencil(svgElement);
-        newObj.complete();
+        super.create(newObj);
     }
     createClone() {
         let clone = new pencil();
@@ -2022,11 +2024,8 @@ class pencil extends object {
         }
         this.setElementAttribute('points', this.path);
 
-        this.frameArray[0].update(minX, maxY, maxX, maxY, transform);
-        this.frameArray[1].update(maxX, maxY, maxX, minY, transform);
-        this.frameArray[2].update(maxX, minY, minX, minY, transform);
-        this.frameArray[3].update(minX, minY, minX, maxY, transform);
-        this.frameArray[4].update(this.path, transform);
+        this.frameArray[0].update(minX, minY, maxX - minX, maxY - minY, transform);
+        this.frameArray[1].update(this.path, transform);
         this.pointsArray[0].update(minX, minY, transform);
         this.pointsArray[1].update(minX + (maxX - minX) / 2, minY, transform);
         this.pointsArray[2].update(maxX, minY, transform);
@@ -2244,10 +2243,7 @@ class pencil extends object {
         };
     }
     complete() {
-        this.frameArray = [new lineFrame(this.minX, this.maxY, this.maxX, this.maxY, this, true),
-            new lineFrame(this.maxX, this.maxY, this.maxX, this.minY, this, true),
-            new lineFrame(this.maxX, this.minY, this.minX, this.minY, this, true),
-            new lineFrame(this.minX, this.minY, this.minX, this.maxY, this, true),
+        this.frameArray = [new rectangleFrame(this.minX, this.minY, this.maxX - this.minX, this.maxY - this.minY, this, true),
             new polylineFrame(this.path, this)
         ];
         this.pointsArray = [new point(this.minX, this.minY, this, {
@@ -2386,7 +2382,7 @@ class line extends object {
     }
     static create(svgElement) {
         let newObj = new line(svgElement);
-        newObj.complete();
+        super.create(newObj);
     }
     createClone() {
         let clone = new line();
@@ -2708,6 +2704,7 @@ class pathTool extends object {
                 x: this.minX + (this.maxX - this.minX) / 2,
                 y: this.minY + (this.maxY - this.minY) / 2
             };
+            this.hasEnd = true;
         } else {
             this.path = this.x0 + "," + this.y0;
             this.pathCoords = [{
@@ -2722,6 +2719,7 @@ class pathTool extends object {
             }));
             this.pointsArray[0].setPointAttribute('fill', "blue");
             this.line = new line(null, curX, curY, curX, curY, false);
+            this.hasEnd = false;
             this.minX = this.x0;
             this.minY = this.y0;
             this.maxX = this.x0;
@@ -2738,7 +2736,7 @@ class pathTool extends object {
     }
     static create(svgElement) {
         let newObj = new pathTool(svgElement);
-        newObj.complete();
+        super.create(newObj);
     }
     createClone() {
         let clone = new pathTool();

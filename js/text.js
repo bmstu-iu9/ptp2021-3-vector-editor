@@ -86,6 +86,10 @@ class text extends object {
             })
         ];
     }
+    static create(svgElement) {
+        let newObj = new text(svgElement);
+        newObj.complete();
+    }
     createClone() {
         this.textDiv.setAttribute('contenteditable', 'false');
         this.textDiv.style.webkitTouchCallout = 'none';

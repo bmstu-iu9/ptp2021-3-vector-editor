@@ -369,6 +369,10 @@ class rectangle extends object {
         clone.setElementAttribute('transform', this.transform);
         return clone;
     }
+    static create(svgElement) {
+        let newObj = new rectangle(svgElement);
+        newObj.complete();
+    }
     addParameters() {
         rect_panel.style.display = "flex";
     }
@@ -732,6 +736,10 @@ class ellipse extends object {
             })
         ];
     }
+    static create(svgElement) {
+        let newObj = new ellipse(svgElement);
+        newObj.complete();
+    }
     createClone() {
         let clone = new ellipse();
         super.createClone(clone);
@@ -1079,6 +1087,10 @@ class polygon extends object {
             }));
         }
     }
+    static create(svgElement) {
+        let newObj = new polygon(svgElement);
+        newObj.complete();
+    }
     createClone() {
         let clone = new polygon();
         super.createClone(clone);
@@ -1333,6 +1345,10 @@ class starPolygon extends object {
                 attr: "polygon"
             }));
         }
+    }
+    static create(svgElement) {
+        let newObj = new starPolygon(svgElement);
+        newObj.complete();
     }
     createClone() {
         let clone = new starPolygon();
@@ -1633,6 +1649,10 @@ class pentagram extends object {
             }));
         }
     }
+    static create(svgElement) {
+        let newObj = new pentagram(svgElement);
+        newObj.complete();
+    }
     createClone() {
         let clone = new pentagram();
         super.createClone(clone);
@@ -1921,6 +1941,10 @@ class pencil extends object {
         }
         this.setElementAttribute('fill', "none");
         makeRoundStroke(this);
+    }
+    static create(svgElement) {
+        let newObj = new pencil(svgElement);
+        newObj.complete();
     }
     createClone() {
         let clone = new pencil();
@@ -2352,6 +2376,10 @@ class line extends object {
             ];
         }
     }
+    static create(svgElement) {
+        let newObj = new line(svgElement);
+        newObj.complete();
+    }
     createClone() {
         let clone = new line();
         super.createClone(clone);
@@ -2634,6 +2662,7 @@ class pathTool extends object {
     constructor(svgElement = null) {
         super('polyline', svgElement, 'pathTool');
         if (svgElement != null) {
+            polylineIsCompleted = false;
             this.path = this.getElementAttribute('points');
             this.frameArray = [new polylineFrame(this.path, this)];
             let split = this.path.split(' ');
@@ -2698,6 +2727,10 @@ class pathTool extends object {
             this.setElementAttribute('transform', this.transform);
             this.angle = 0;
         }
+    }
+    static create(svgElement) {
+        let newObj = new pathTool(svgElement);
+        newObj.complete();
     }
     createClone() {
         let clone = new pathTool();

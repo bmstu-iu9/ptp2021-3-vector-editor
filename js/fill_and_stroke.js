@@ -1,4 +1,3 @@
-//COLOR CHANGE
 function changeStroke(c, w, l, d, j) {
   if (currentObject != null) {
     updateStroke(currentObject, c, w, l, d, j);
@@ -10,6 +9,8 @@ function changeFill(i) {
     updateFill(currentObject, i);
   }
 }
+
+//COLOR CHANGE
 strokeColor = document.getElementById("strokeColor");
 strokeColor.onchange = () => changeStroke(1, 0, 0, 0, 0);
 
@@ -62,7 +63,7 @@ for (i = 0; i < 2; i++) {
   }
 }
 
-//CURRENT COLOR
+//CURRENT FILL
 function updateFill(obj, i = -1) {
   if (obj.isCompleted) doFunc("fill", obj, obj.getFillAttrs())
   if (f.checked) {
@@ -95,6 +96,7 @@ join.forEach(s => s.addEventListener('change', () => {
   joinImg.src = "img/stroke/join" + rightPanel.querySelector('input[name="join"]:checked').id[1] + ".svg";
 }));
 
+//STROKE WIDTH
 strokeWidth = document.getElementById("strokeWidth");
 strokeWidth.onchange = () => {
   if (strokeWidth.value <= 0) {
@@ -109,6 +111,7 @@ strokeWidth.onkeyup = (e) => {
   }
 }
 
+//CURRENT STROKE
 function updateStroke(object, c = 1, width = 1, l = 1, d = 1, j = 1) {
   if (object.isCompleted) doFunc("stroke", object, object.getStrokeAttrs())
   let obj = object.svgElement;
@@ -179,13 +182,13 @@ function updateStroke(object, c = 1, width = 1, l = 1, d = 1, j = 1) {
 
 let prevJ, prevC;
 
-//для карандаша
+//for pencil
 function makeRoundStroke(pen) {
   prevJ = rightPanel.querySelector('input[name="join"]:checked');
   prevC = rightPanel.querySelector('input[name="cap"]:checked')
   j1.checked = "true";
   c2.checked = "true";
-  prevObject = currentObject;
+  let prevObject = currentObject;
   currentObject = pen;
   var event = new Event('change');
   j1.dispatchEvent(event);

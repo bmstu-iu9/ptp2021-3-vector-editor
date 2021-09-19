@@ -113,7 +113,6 @@ header {
 }
 
 .func_button {
-    height: 100%;
     padding: 3px;
     background-size: cover;
     background-color: transparent;
@@ -122,6 +121,14 @@ header {
 }
 
 .func_button:hover {
+    background-color: #555;
+}
+
+.func_check:checked~label img {
+    background-color: #444;
+}
+
+.func_check:checked~label img:hover {
     background-color: #555;
 }
 
@@ -337,6 +344,7 @@ main {
     background: rgb(245, 245, 245);
     box-shadow: 0 0 10px #000000;
     z-index: 1;
+    overflow: visible;
 }
 
 /*VERT MENU*/

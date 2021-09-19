@@ -207,7 +207,7 @@ class frame {
         this.svgElement.setAttribute('opacity', "0.5");
         if (red) this.svgElement.setAttribute('stroke', "red");
         else this.svgElement.setAttribute('stroke', object.getElementAttribute('stroke'));
-        if (red) this.svgElement.setAttribute('stroke-width', 2);
+        if (red || object.strokeWidth > 2) this.svgElement.setAttribute('stroke-width', 2);
         else this.svgElement.setAttribute('stroke-width', object.strokeWidth);
         if (!red && object.getElementAttribute('stroke-dasharray') == null) this.svgElement.setAttribute('stroke-dasharray', this.svgElement.getAttribute('stroke-width') * 4);
         else if (!red) this.svgElement.setAttribute('stroke-dasharray', object.getElementAttribute('stroke-dasharray'));
@@ -233,9 +233,9 @@ class frame {
     update() {
         if (this.red) this.svgElement.setAttribute('stroke', "red");
         else this.svgElement.setAttribute('stroke', this.object.getElementAttribute('stroke'));
-        if (this.red) this.svgElement.setAttribute('stroke-width', 2);
+        if (this.red || this.object.strokeWidth > 2) this.svgElement.setAttribute('stroke-width', 2);
         else this.svgElement.setAttribute('stroke-width', this.object.strokeWidth);
-        if (!this.red && (this.object.getElementAttribute('stroke-dasharray') == null ||
+        if (this.red || !this.red && (this.object.getElementAttribute('stroke-dasharray') == null ||
                 this.object.getElementAttribute('stroke-dasharray') == "null")) this.svgElement.setAttribute('stroke-dasharray', this.svgElement.getAttribute('stroke-width') * 4);
         else if (!this.red) this.svgElement.setAttribute('stroke-dasharray', this.object.getElementAttribute('stroke-dasharray'));
         if (this.red) this.svgElement.setAttribute('stroke-linejoin', "none");
@@ -282,6 +282,7 @@ class lineFrame extends frame {
             this.transform = transform;
             this.setFrameAttribute('transform', transform);
         }
+        this.svgElement.setAttribute('stroke-dasharray', 'none');
         if (this.object.type == 'vector') this.setFrameAttribute('stroke', 'blue');
     }
 }

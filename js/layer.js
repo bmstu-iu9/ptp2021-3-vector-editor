@@ -209,6 +209,7 @@ class layer {
     dublicate() {
         resetCurrentLayer();
         this.cloneNum++;
+        while (layers[this.name + "(" + this.cloneNum + ")"]) this.cloneNum++;
         let name = this.name + "(" + this.cloneNum + ")";
         layers[name] = new layer(name);
         let clone = layers[name];
@@ -216,7 +217,7 @@ class layer {
         this.panel.before(clone.panel);
 
         let content = this.group.childNodes;
-        for (i = 0; i < content.length; i++) {
+        for (let i = 0; i < content.length; i++) {
             let figure = content[i].obj.createClone();
             clone.group.append(figure.svgElement);
         }
@@ -241,6 +242,7 @@ newLayer = document.getElementById("new_layer");
 newLayer.onclick = () => {
     resetCurrentLayer();
     layersNum++;
+    while (layers["Cлой " + layersNum]) layersNum++;
     layers["Cлой " + layersNum] = new layer("Cлой " + layersNum);
 }
 

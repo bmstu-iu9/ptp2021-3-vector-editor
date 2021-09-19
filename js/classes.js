@@ -1108,22 +1108,22 @@ class polygon extends object {
         let dx = curX - this.x0,
             dy = curY - this.y0;
         if (!this.radiusIsFixed) this.r = Math.sqrt(dx ** 2 + dy ** 2);
-        else if (dx != 0 && dy != 0) {
+        else if (dx != 0 || dy != 0) {
             dx *= this.r / Math.sqrt(dx ** 2 + dy ** 2);
             dy *= this.r / Math.sqrt(dx ** 2 + dy ** 2);
+            if (dx > this.r) dx = this.r;
         }
         if (!this.angleIsFixed) {
-            if (this.rotationIsFixed) this.phi = (this.vertNum - 2) * Math.PI / (this.vertNum * 2);
-            else if (this.r > 0) this.phi = dy > 0 ? Math.acos(dx / this.r) : -Math.acos(dx / this.r);
-            if (!this.phi) this.phi = (dx / this.r) > 0 ? 0 : Math.PI; //ошибки нет, но теперь дергается
+            if (this.rotationIsFixed) this.angle = (this.vertNum - 2) * Math.PI / (this.vertNum * 2);
+            else if (this.r > 0) this.angle = dy > 0 ? Math.acos(dx / this.r) : -Math.acos(dx / this.r);
         }
         this.updateFrameAndPoints();
     }
     updateFrameAndPoints(x0 = this.x0, y0 = this.y0) {
         //включает обновление атрибута
         for (let i = 0; i < this.vertNum; i++) {
-            let x = x0 + this.r * Math.cos(this.phi + 2 * Math.PI * i / this.vertNum);
-            let y = y0 + this.r * Math.sin(this.phi + 2 * Math.PI * i / this.vertNum);
+            let x = x0 + this.r * Math.cos(this.angle + 2 * Math.PI * i / this.vertNum);
+            let y = y0 + this.r * Math.sin(this.angle + 2 * Math.PI * i / this.vertNum);
             if (i == 0) {
                 this.vertices = x + "," + y;
             } else {
@@ -1367,22 +1367,22 @@ class starPolygon extends object {
         let dx = curX - this.x0,
             dy = curY - this.y0;
         if (!this.radiusIsFixed) this.r = Math.sqrt(dx ** 2 + dy ** 2);
-        else if (dx != 0 && dy != 0) {
+        else if (dx != 0 || dy != 0) {
             dx *= this.r / Math.sqrt(dx ** 2 + dy ** 2);
             dy *= this.r / Math.sqrt(dx ** 2 + dy ** 2);
+            if (dx > this.r) dx = this.r;
         }
         if (!this.angleIsFixed) {
-            if (this.rotationIsFixed) this.phi = (this.vertNum - 2) * Math.PI / (this.vertNum * 2);
-            else if (this.r > 0) this.phi = dy > 0 ? Math.acos(dx / this.r) : -Math.acos(dx / this.r);
+            if (this.rotationIsFixed) this.angle = (this.vertNum - 2) * Math.PI / (this.vertNum * 2);
+            else if (this.r > 0) this.angle = dy > 0 ? Math.acos(dx / this.r) : -Math.acos(dx / this.r);
         }
         this.updateFrameAndPoints();
     }
     updateFrameAndPoints(x0 = this.x0, y0 = this.y0) {
         //включает обновление атрибута
-        this.verticesCoords = [];
         for (let i = 0; i < this.vertNum; i++) {
-            let x = x0 + this.r * Math.cos(this.phi + 2 * Math.PI * i / this.vertNum);
-            let y = y0 + this.r * Math.sin(this.phi + 2 * Math.PI * i / this.vertNum);
+            let x = x0 + this.r * Math.cos(this.angle + 2 * Math.PI * i / this.vertNum);
+            let y = y0 + this.r * Math.sin(this.angle + 2 * Math.PI * i / this.vertNum);
             this.verticesCoords.push({
                 x: x,
                 y: y
@@ -1666,13 +1666,14 @@ class pentagram extends object {
         let dx = curX - this.x0,
             dy = curY - this.y0;
         if (!this.radiusIsFixed) this.r = Math.sqrt(dx ** 2 + dy ** 2);
-        else if (dx != 0 && dy != 0) {
+        else if (dx != 0 || dy != 0) {
             dx *= this.r / Math.sqrt(dx ** 2 + dy ** 2);
             dy *= this.r / Math.sqrt(dx ** 2 + dy ** 2);
+            if (dx > this.r) dx = this.r;
         }
         if (!this.angleIsFixed) {
-            if (this.rotationIsFixed) this.phi = (this.vertNum - 2) * Math.PI / (this.vertNum * 2);
-            else if (this.r > 0) this.phi = dy > 0 ? Math.acos(dx / this.r) : -Math.acos(dx / this.r);
+            if (this.rotationIsFixed) this.angle = (this.vertNum - 2) * Math.PI / (this.vertNum * 2);
+            else if (this.r > 0) this.angle = dy > 0 ? Math.acos(dx / this.r) : -Math.acos(dx / this.r);
         }
         this.updateFrameAndPoints();
     }

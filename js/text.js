@@ -328,6 +328,8 @@ class text extends object {
         this.svgElement.setAttribute('y', this.y);
         this.svgElement.setAttribute('width', this.width);
         this.svgElement.setAttribute('height', this.height);
+        this.textDiv.style.width = this.width + "px";
+        this.textDiv.style.height = this.height + "px";
         this.svgElement.setAttribute('transform', this.transform);
         this.updateFrameAndPoints();
     }
@@ -350,6 +352,8 @@ class text extends object {
         this.svgElement.setAttribute('y', this.y);
         this.svgElement.setAttribute('width', this.width);
         this.svgElement.setAttribute('height', this.height);
+        this.textDiv.style.width = this.width + "px";
+        this.textDiv.style.height = this.height + "px";
         this.svgElement.setAttribute('transform', this.transform);
         this.setElementAttribute('rx', Math.max(this.height, this.width) * this.r / 100);
         this.updateFrameAndPoints();

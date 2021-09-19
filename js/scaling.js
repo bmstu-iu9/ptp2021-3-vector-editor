@@ -1,7 +1,7 @@
 scaleP.value = scaleСoef * 100;
 scale = document.getElementById("scale");
 
-scale.onclick = function () {
+scale.onmousedown = function () {
   svgPanel.style.cursor = "zoom-in";
   scale_panel.style.display = "flex";
   if (currentObject != null) currentObject.removePanel();

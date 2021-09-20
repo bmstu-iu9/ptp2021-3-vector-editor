@@ -184,6 +184,7 @@ input[type="text"] {
     color: #e5e5e5;
     background: transparent;
     border: none;
+    user-select: text;
 }
 
 .layer_buttons {

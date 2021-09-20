@@ -206,6 +206,7 @@ pLineX.onchange = () => moveX(pLineX.value - currentObject.minX);
 pLineY.onchange = () => moveY(pLineY.value - currentObject.minY);
 
 polEnd.onchange = () => {
+    console.log(polEnd.checked);
     if (polEnd.checked) {
         currentObject.hasEnd = true;
         currentObject.updateFrameAndPoints();
@@ -214,6 +215,8 @@ polEnd.onchange = () => {
         currentObject.updateFrameAndPoints();
     }
 }
+
+polEndLabel.onmousedown = () => doFunc("end", currentObject, [polEnd, polEnd.checked]);
 
 //vector
 vectX.onchange = () => moveX(vectX.value - currentObject.minX);
@@ -231,6 +234,8 @@ vectEnd.onchange = () => {
         currentObject.setElementAttribute('d', currentObject.path);
     }
 }
+
+vectEndLabel.onmousedown = () => doFunc("end", currentObject, [vectEnd, vectEnd.checked]);
 
 //text
 textX.onchange = () => moveX(textX.value - currentObject.x);

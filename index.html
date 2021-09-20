@@ -122,13 +122,15 @@
     <div class="properties_panel" id="pLine_panel">
       &nbsp;x <input id="pLineX" type="number" class="property" required>
       &nbsp;y <input id="pLineY" type="number" class="property" required>
-      <input id="polEnd" type="checkbox" class="func_check" hidden><label title="Замыкание" for="polEnd">
+      <input id="polEnd" type="checkbox" class="func_check" hidden>
+      <label title="Замыкание" id="polEndLabel" for="polEnd">
         <img src="img/properties/polEnd.svg" class="func_button"></label>
     </div>
     <div class="properties_panel" id="vect_panel">
       &nbsp;x <input id="vectX" type="number" class="property" required>
       &nbsp;y <input id="vectY" type="number" class="property" required>
-      &nbsp;<input id="vectEnd" type="checkbox" class="func_check" hidden><label title="Замыкание" for="vectEnd">
+      &nbsp;<input id="vectEnd" type="checkbox" class="func_check" hidden>
+      <label title="Замыкание" id="vectEndLabel" for="vectEnd">
         <img src="img/properties/vectEnd.svg" class="func_button"></label>
     </div>
     <div class="properties_panel" id="scale_panel">
@@ -138,15 +140,15 @@
       &nbsp;x <input id="textX" type="number" class="property" required>
       &nbsp;y <input id="textY" type="number" class="property" required>
       &nbsp;size <input id="textS" type="number" class="property" min="1" required>
-      &nbsp;font <input id="textF" class="property" style="width: 150px;" list="fonts"/>
+      &nbsp;font <input id="textF" class="property" style="width: 150px;" list="fonts" />
       <datalist id="fonts">
-          <option value="Arial">
-          <option value="Times New Roman">
-          <option value="Marcellus SC">
-          <option value="Comic Sans MS">
-          <option value="Courier New">
-          <option value="Impact">
-          <option value="Brush Script MT">
+        <option value="Arial">
+        <option value="Times New Roman">
+        <option value="Marcellus SC">
+        <option value="Comic Sans MS">
+        <option value="Courier New">
+        <option value="Impact">
+        <option value="Brush Script MT">
       </datalist>
     </div>
 

@@ -85,9 +85,8 @@ function getRotateCoords(x, y, angle) {
 }
 
 window.onresize = function () {
-	svgPanelCoords = getCoords(svgPanel);
 	scrollcoords = getCoords(scrollPanel);
-	updateRulers();
+	centralLocation();
 }
 
 scrollPanel.onscroll = function () {

@@ -54,19 +54,17 @@ scale.onclick = function () {
 
 scaleP.onchange = () => {
   let s = scaleP.value;
-  if (s<1) {
+  if (s < 1)
     s = 1;
-    scaleP.value = 1
-  }
   scaleСoef = s / 100;
   updateScale();
 }
 
 function updateScale() {
   w = firstWidth * scaleСoef, h = firstHeight * scaleСoef;
-  centralLocation(w, h);
   svgPanel.style.width = w + "px";
   svgPanel.style.height = h + "px";
-  svgPanelCoords = getCoords(svgPanel);
-  updateRulers();
+  centralLocation(w, h);
+  scale_panel.style.display = "flex";
+  scaleP.value = scaleСoef * 100;
 }

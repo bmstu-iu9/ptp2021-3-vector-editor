@@ -79,9 +79,8 @@ class text extends object {
         this.textDiv.style.webkitUserSelect = 'none';
         this.textDiv.style.userSelect = 'none';
         let clone = new text();
-        this.clone = clone;
         clone.transform = this.transform;
-        super.createClone();
+        super.createClone(clone);
         clone.width = this.width;
         clone.height = this.height;
         clone.x = this.x;

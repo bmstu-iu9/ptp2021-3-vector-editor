@@ -104,15 +104,15 @@ function centralLocation(width = svgPanel.clientWidth, height = svgPanel.clientH
     svgPanel.style.left = "50%";
     svgPanel.style.top = "50%";
     svgPanel.style.transform = "translate(-50%, -50%)";
-    if (scrollPanel.clientWidth - 15 < width) {
-        svgPanel.style.left = "15px";
+    if (scrollPanel.clientWidth - startCoords < width) {
+        svgPanel.style.left = startCoords + "px";
         svgPanel.style.transform = "translate(0, -50%)";
     }
-    if (scrollPanel.clientHeight - 15 < height) {
-        svgPanel.style.top = "15px";
+    if (scrollPanel.clientHeight - startCoords < height) {
+        svgPanel.style.top = startCoords + "px";
         svgPanel.style.transform = "translate(-50%, 0)";
     }
-    if (scrollPanel.clientWidth - 15 < width && scrollPanel.clientHeight - 15 < height)
+    if (scrollPanel.clientWidth - startCoords < width && scrollPanel.clientHeight - startCoords < height)
         svgPanel.style.transform = "translate(0, 0)";
     svgPanelCoords = getCoords(svgPanel);
     updateRulers();
@@ -269,8 +269,6 @@ zoomIn = document.getElementById("zoomIn");
 zoomIn.onclick = function () {
     scaleСoef *= 1.25;
     updateScale();
-    scale_panel.style.display = "flex";
-    scaleP.value = scaleСoef * 100;
 }
 
 zoomOut = document.getElementById("zoomOut");
@@ -304,8 +302,10 @@ showRulers.onclick = function () {
     if (rulers.style.display == "none") {
         rulers.style.display = "block";
         updateRulers();
+        startCoords = 15;
     } else {
         rulers.style.display = "none";
+        startCoords = 0;
     }
 }
 

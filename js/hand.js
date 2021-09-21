@@ -11,14 +11,14 @@ hand.onclick = function () {
       svgPanel.style.transform = "translate(0, 0)";
       let left = current.pageX - shiftX,
         top = current.pageY - shiftY;
-      if (left > 15)
+      if (left > startCoords)
         svgPanel.style.left = left + "px";
       else
-        svgPanel.style.left = "15px";
-      if (top > 15)
+        svgPanel.style.left = startCoords + "px";
+      if (top > startCoords)
         svgPanel.style.top = top + "px";
       else
-        svgPanel.style.top = "15px";
+        svgPanel.style.top = startCoords + "px";
 
       updateRulers();
       svgPanelCoords = getCoords(svgPanel);

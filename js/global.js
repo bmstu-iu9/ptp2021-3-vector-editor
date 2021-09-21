@@ -14,7 +14,8 @@ let buffer = null; //для копирования
 let svgPanelCoords = getCoords(svgPanel),
 	scrollcoords = getCoords(scrollPanel),
 	curX, curY; //cursor coordinates
-let scaleСoef = 1;
+let scaleСoef = 1,
+	startCoords = 15;
 let pointRadius = 4,
 	pointStart,
 	currentPointTypeAttr = null;

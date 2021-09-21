@@ -35,11 +35,11 @@ svgBackground = document.getElementById("svg_background");
 let isGridEnabled = false;
 
 //ACTIVE TOOL
-var left_panel = document.getElementById("left_panel");
-var buttons = left_panel.getElementsByClassName("tool_button");
+var leftPanel = document.getElementById("left_panel");
+var buttons = leftPanel.getElementsByClassName("tool_button");
 for (var i = 0; i < buttons.length; i++) {
 	buttons[i].addEventListener("mousedown", function () {
-		var current = left_panel.getElementsByClassName("tool_button active");
+		var current = leftPanel.getElementsByClassName("tool_button active");
 		let n = current.length;
 		for (let i = 0; i < n; i++) {
 			current[0].className = "tool_button";
@@ -52,11 +52,11 @@ for (var i = 0; i < buttons.length; i++) {
 		if (["pathTool", "vector"].indexOf(this.id) + 1) {
 			document.getElementById("pathAndvector").className += " active";
 		}
-		left_panel.dispatchEvent(new Event('change'));
+		leftPanel.dispatchEvent(new Event('change'));
 	});
 }
 
-left_panel.onchange = () => {
+leftPanel.onchange = () => {
 	scale_panel.style.display = "none";
 }
 

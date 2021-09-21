@@ -188,6 +188,8 @@ function readFile(object) {
         updateGrid();
         for (var i = 0; i < layersPanel.childNodes.length;)
             layersPanel.removeChild(layersPanel.childNodes[i]);
+        undoActions = [];
+        redoActions = [];
         createFirstLayer();
         canvas.setAttribute('width', width);
         canvas.setAttribute('height', height);
@@ -374,7 +376,6 @@ function search(childs) {
                 default:
                     break;
             }
-            console.log(t, childs[i].id == null, childs[i].nodeName);
         }
     }
 }

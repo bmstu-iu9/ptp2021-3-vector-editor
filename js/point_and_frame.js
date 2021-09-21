@@ -106,7 +106,7 @@ class point {
                 }
             }).bind(this);
             const startMoving = ((current) => {
-                if (this.isSelected && this.object.isCompleted) {
+                if (this.isSelected && this.object.isCompleted && !this.isMoving) {
                     this.isMoving = true;
                     currentPointTypeAttr = this.type.attr;
                     this.object.addHotKeys();

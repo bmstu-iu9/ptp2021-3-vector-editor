@@ -102,7 +102,7 @@ class object {
         }).bind(this);
         document.addEventListener("mousemove", move);
         const startMoving = ((current) => {
-            if (wasPressed == "cursor" && this.isCompleted && this.isSelected && this.type != 'text') {
+            if (wasPressed == "cursor" && this.isCompleted && this.isSelected && this.type != 'text' && !this.isMoving) {
                 this.isMoving = true;
                 updateCursorCoords(current);
                 this.start = {
@@ -279,8 +279,6 @@ class object {
             resetCurrentObject();
             this.addPanel();
             currentObject = this;
-            cursor.dispatchEvent(new Event("mousedown"));
-            cursor.click();
             this.isSelected = true;
             doFunc("create", this);
         } else {

@@ -198,6 +198,10 @@ function startVector(current) {
                 newObject.updatePath();
             };
             document.onmousedown = function (current) {
+                if (wasPressed != "vector") {
+                    newObject.complete();
+                    return;
+                }
                 updateCursorCoords(current);
                 newObject.updatePoint();
                 document.onmousemove = function (current) {
@@ -219,7 +223,7 @@ function startVector(current) {
         rightPanel.onmousedown = function () {
             newObject.complete();
         };
-        document.onclick = function () {
+        document.onmousedown = function () {
             if (wasPressed != "vector") {
                 newObject.complete();
             }

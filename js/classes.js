@@ -88,7 +88,7 @@ class object {
             }
         });
         //hide
-        svgPanel.addEventListener("mousedown", function () {
+        scrollPanel.addEventListener("mousedown", function () {
             if (!isSomeObjectSelected && !isSomePointSelected && wasPressed != "scale") {
                 resetCurrentObject();
             }
@@ -122,7 +122,7 @@ class object {
                 this.updateParameters();
             }
         }).bind(this);
-        document.addEventListener("mouseup", stopMoving);
+        scrollPanel.addEventListener("mouseup", stopMoving);
         this.svgElement.addEventListener("mouseover", () => {
             if (isEraserActive) {
                 doFunc("delete", this);
@@ -266,6 +266,7 @@ class object {
     complete(isSizeNotZero = this.svgElement.getBoundingClientRect().width * this.svgElement.getBoundingClientRect().height > 0) {
         this.updateFrameAndPoints();
         this.removeHotKeys();
+        scrollPanel.onmousedown = null;
         document.onmousedown = null;
         document.onmousemove = null;
         document.onmouseup = null;

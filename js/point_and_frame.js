@@ -58,7 +58,7 @@ class point {
                 if (wasPressed == "cursor") {
                     this.circle.style.cursor = "url(img/rotate.svg) 10 10, pointer";
                 } else {
-                    this.circle.style.cursor = svgPanel.style.cursor;
+                    this.circle.style.cursor = scrollPanel.style.cursor;
                 }
             }).bind(this);
             document.addEventListener('click', this.setRotateCursor);
@@ -76,7 +76,7 @@ class point {
                     this.object.isMoving = false;
                     updateCursorCoords(current);
                     currentPointTypeAttr = "rotate";
-                    svgPanel.style.cursor = "url(img/rotate.svg) 10 10, pointer";
+                    scrollPanel.style.cursor = "url(img/rotate.svg) 10 10, pointer";
                     doFunc("rotate", this.object, this.object.angle)
                     this.object.startRotating();
                 }
@@ -86,7 +86,7 @@ class point {
                 if (this.object.isRotating) {
                     this.object.isRotating = false;
                     updateCursorCoords(current);
-                    svgPanel.style.cursor = "default";
+                    scrollPanel.style.cursor = "default";
                     currentPointTypeAttr = null;
                     this.isSelected = false;
                     isSomePointSelected = false;
@@ -134,7 +134,7 @@ class point {
                     this.object.removeHotKeys();
                 }
             }).bind(this);
-            document.addEventListener("mouseup", stopMoving);
+            scrollPanel.addEventListener("mouseup", stopMoving);
         }
         //удаление точки пера
         const deletePoint = ((event) => {

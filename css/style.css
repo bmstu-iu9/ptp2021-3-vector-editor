@@ -245,7 +245,7 @@ main {
     position: absolute;
     top: 0;
     left: 2.8%;
-    background: #222;
+    background: rgb(39, 39, 39);
     z-index: 1;
 }
 

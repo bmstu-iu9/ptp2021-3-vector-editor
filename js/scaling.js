@@ -2,10 +2,10 @@ scaleP.value = scaleСoef * 100;
 scale = document.getElementById("scale");
 
 scale.onmousedown = function () {
-  svgPanel.style.cursor = "zoom-in";
+  scrollPanel.style.cursor = "zoom-in";
   scale_panel.style.display = "flex";
   if (currentObject != null) currentObject.removePanel();
-  svgPanel.onmousedown = function (event) {
+  scrollPanel.onmousedown = function (event) {
     svgPanel.style.transform = "translate(0, 0)";
     if (event.ctrlKey) {
       scaleСoef *= 4 / 5;
@@ -42,12 +42,12 @@ scale.onmousedown = function () {
   };
   document.addEventListener("keydown", function (event) {
     if (event.ctrlKey && wasPressed == "scale") {
-      svgPanel.style.cursor = "zoom-out";
+      scrollPanel.style.cursor = "zoom-out";
     }
   });
   document.addEventListener("keyup", function (event) {
     if (event.key == "Control" && wasPressed == "scale") {
-      svgPanel.style.cursor = "zoom-in";
+      scrollPanel.style.cursor = "zoom-in";
     }
   });
 };

@@ -120,7 +120,7 @@ class text extends object {
                 this.textDiv.setAttribute('contenteditable', 'true');
                 this.svgElement.style.cursor = "text";
             } else {
-                this.svgElement.style.cursor = svgPanel.style.cursor;
+                this.svgElement.style.cursor = scrollPanel.style.cursor;
                 this.textDiv.setAttribute('contenteditable', 'false');
                 this.textDiv.style.webkitTouchCallout = 'none';
                 this.textDiv.style.webkitUserSelect = 'none';
@@ -132,7 +132,7 @@ class text extends object {
             if (wasPressed == "cursor" && !isSomePointSelected) {
                 this.svgElement.style.cursor = "text";
             } else {
-                this.svgElement.style.cursor = svgPanel.style.cursor;
+                this.svgElement.style.cursor = scrollPanel.style.cursor;
             }
         }.bind(this));
     }

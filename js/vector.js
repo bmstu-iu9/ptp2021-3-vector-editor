@@ -390,7 +390,7 @@ class vector extends object {
     complete() {
         if (!vectorIsCompleted) {
             vectorIsCompleted = true;
-            svgPanel.onmousedown = startVector;
+            scrollPanel.onmousedown = startVector;
             this.pathCoords = [];
             for (let i = 1; i < this.pointsArray.length - 2; i++) {
                 if (i % 3 == 0) {

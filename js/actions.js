@@ -330,6 +330,55 @@ document.addEventListener('keydown', function (event) {
     }
 });
 
+function search(childs) {
+    for (let i = 0; i < childs.length; i++) {
+        if (childs[i].nodeName == "g" && childs[i].id != "pentagram") {
+            search(childs[i].childNodes)
+        } else {
+            let t;
+            if (childs[i].id != null && childs[i].id != "") t = childs[i].id;
+            else t = childs[i].nodeName;
+            switch (t) {
+                case "rect":
+                    rectangle.create(childs[i]);
+                    break;
+                case "ellipse":
+                    ellipse.create(childs[i]);
+                    break;
+                case "polygon":
+                    polygon.create(childs[i]);
+                    break;
+                case "star":
+                    starPolygon.create(childs[i]);
+                    break;
+                case "pentagram":
+                    pentagram.create(childs[i]);
+                    break;
+                case "pencil":
+                    pencil.create(childs[i]);
+                    break;
+                case "line":
+                    line.create(childs[i]);
+                    break;
+                case "pathTool":
+                case "polyline":
+                    pathTool.create(childs[i]);
+                    break;
+                case "vector":
+                case "path":
+                    vector.create(childs[i]);
+                    break;
+                case "text":
+                    text.create(childs[i]);
+                    break;
+                default:
+                    break;
+            }
+            console.log(t, childs[i].id == null, childs[i].nodeName);
+        }
+    }
+}
+
 
 redoButton = document.getElementById("redo");
 redoButton.onclick = function () {

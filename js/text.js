@@ -88,7 +88,7 @@ class text extends object {
     }
     static create(svgElement) {
         let newObj = new text(svgElement);
-        newObj.complete();
+        super.create(newObj);
     }
     createClone() {
         this.textDiv.setAttribute('contenteditable', 'false');

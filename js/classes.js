@@ -6,6 +6,7 @@ class object {
             this.y0 = curY;
             updateFill(this);
             updateStroke(this);
+            currentLayer.group.appendChild(this.svgElement);
         } else {
             this.svgElement = svgElement;
             this.transform = this.getElementAttribute('transform')
@@ -13,10 +14,9 @@ class object {
             else this.angle = 0;
             this.strokeWidth = Number(this.getElementAttribute('stroke-width'));
         }
-        currentLayer.group.appendChild(this.svgElement);
         this.svgElement.obj = this;
         this.type = type;
-        this.setElementAttribute('type', type);
+        this.setElementAttribute('id', type);
         this.isCompleted = false;
         this.isSelected = false;
         this.isMoving = false;
@@ -1963,7 +1963,9 @@ class pencil extends object {
     }
     static create(svgElement) {
         let newObj = new pencil(svgElement);
-        super.create(newObj);
+        newObj.complete();
+        newObj.hideFrameAndPoints();
+        newObj.removePanel();
     }
     createClone() {
         let clone = new pencil();
@@ -2027,7 +2029,7 @@ class pencil extends object {
         }
         this.setElementAttribute('points', this.path);
 
-        this.frameArray[0].update(minX, minY, maxX - minX, maxY - minY, transform);
+        this.frameArray[0].update(Math.min(minX, maxX), Math.min(minY, maxY), Math.max(minX, maxX) - Math.min(minX, maxX), Math.max(minY, maxY) - Math.min(minY, maxY), transform);
         this.frameArray[1].update(this.path, transform);
         this.pointsArray[0].update(minX, minY, transform);
         this.pointsArray[1].update(minX + (maxX - minX) / 2, minY, transform);
@@ -2668,6 +2670,7 @@ class line extends object {
 class pathTool extends object {
     constructor(svgElement = null) {
         super('polyline', svgElement, 'pathTool');
+        this.hasEnd = false;
         if (svgElement != null) {
             polylineIsCompleted = false;
             this.path = this.getElementAttribute('points');
@@ -2707,7 +2710,7 @@ class pathTool extends object {
                 x: this.minX + (this.maxX - this.minX) / 2,
                 y: this.minY + (this.maxY - this.minY) / 2
             };
-            this.hasEnd = true;
+            if (Number(split[split.length - 1].split(',')[0]) == this.x0 && Number(split[split.length - 1].split(',')[1]) == this.y0) this.hasEnd = true;
         } else {
             this.path = this.x0 + "," + this.y0;
             this.pathCoords = [{
@@ -2722,7 +2725,6 @@ class pathTool extends object {
             }));
             this.pointsArray[0].setPointAttribute('fill', "blue");
             this.line = new line(null, curX, curY, curX, curY, false);
-            this.hasEnd = false;
             this.minX = this.x0;
             this.minY = this.y0;
             this.maxX = this.x0;
@@ -2739,7 +2741,9 @@ class pathTool extends object {
     }
     static create(svgElement) {
         let newObj = new pathTool(svgElement);
-        super.create(newObj);
+        newObj.complete();
+        newObj.hideFrameAndPoints();
+        newObj.removePanel();
     }
     createClone() {
         let clone = new pathTool();

@@ -137,7 +137,6 @@ class vector extends object {
         vect_panel.style.display = "none";
     }
     updateFrameAndPoints(dx = 0, dy = 0) {
-        console.log(this.pathCoords)
         for (let i = 0; i < this.pathCoords.length; i++) {
             let x = this.pathCoords[i].x + dx,
                 y = this.pathCoords[i].y + dy;
@@ -402,6 +401,7 @@ class vector extends object {
                     y: this.pointsArray[i].y
                 })
             }
+            this.pointsArray[0].remove();
             this.pointsArray[this.pointsArray.length - 1].remove();
             if (this.isClosed) {
                 this.pathCoords.push({

@@ -122,17 +122,34 @@
     <div class="properties_panel" id="pLine_panel">
       &nbsp;x <input id="pLineX" type="number" class="property" required>
       &nbsp;y <input id="pLineY" type="number" class="property" required>
-      <input id="polEnd" type="checkbox" class="func_check" hidden><label for="polEnd">
+      <input id="polEnd" type="checkbox" class="func_check" hidden>
+      <label title="Замыкание" id="polEndLabel" for="polEnd">
         <img src="img/properties/polEnd.svg" class="func_button"></label>
     </div>
     <div class="properties_panel" id="vect_panel">
       &nbsp;x <input id="vectX" type="number" class="property" required>
       &nbsp;y <input id="vectY" type="number" class="property" required>
-      &nbsp;<input id="vectEnd" type="checkbox" class="func_check" hidden><label for="vectEnd">
+      &nbsp;<input id="vectEnd" type="checkbox" class="func_check" hidden>
+      <label title="Замыкание" id="vectEndLabel" for="vectEnd">
         <img src="img/properties/vectEnd.svg" class="func_button"></label>
     </div>
     <div class="properties_panel" id="scale_panel">
       &nbsp;<input id="scaleP" type="number" class="property" step="25" min="0" required>
+    </div>
+    <div class="properties_panel" id="text_panel">
+      &nbsp;x <input id="textX" type="number" class="property" required>
+      &nbsp;y <input id="textY" type="number" class="property" required>
+      &nbsp;size <input id="textS" type="number" class="property" min="1" required>
+      &nbsp;font <input id="textF" class="property" style="width: 150px;" list="fonts" />
+      <datalist id="fonts">
+        <option value="Arial">
+        <option value="Times New Roman">
+        <option value="Marcellus SC">
+        <option value="Comic Sans MS">
+        <option value="Courier New">
+        <option value="Impact">
+        <option value="Brush Script MT">
+      </datalist>
     </div>
 
   </header>
@@ -185,7 +202,7 @@
     <div id="right_panel">
       <div id="palette">
         <input class="colorpicker" id="strokeColor" type="color" title="Цвет для контура фигур,
-    карандаша и кисти" value="#000000">
+    линии и карандаша" value="#000000">
         <div class="colorOpacity">
           <input type="checkbox" id="stroke" hidden><label class="checkBox" for="stroke">
             <img id="sImg" src="img/stroke/yes.svg"> &ensp;Контур </label>
@@ -193,7 +210,8 @@
           <p class="opValue">100</p>
         </div>
 
-        <input class="colorpicker" id="fillColor" type="color" title="Цвет для заливки фигур" value="#ffffff">
+        <input class="colorpicker" id="fillColor" type="color" title="Цвет для текста 
+и заливки фигур" value="#ffffff">
         <div class="colorOpacity">
           <input type="checkbox" id="fill" hidden><label class="checkBox" for="fill">
             <img id="fImg" src="img/stroke/yes.svg"> &nbsp;Заливка </label>
@@ -203,7 +221,7 @@
         <div id="widthBox"><img src="img/stroke/width.svg"><input type="number" id="strokeWidth" min="1" max="100"
             value="2" title="Ширина контура"></div>
         <div class="styleListBox">
-          <input type="checkbox" name="stroke" id="dash" hidden><label for="dash">
+          <input type="checkbox" name="stroke" id="dash" hidden><label title="Пунктир" for="dash">
             <img id="dashImg" src="img/stroke/lines.svg"></label>
           <ul class="styleList" id="lines">
             <li><input type="radio" name="dash" id="d0" hidden checked><label for="d0">
@@ -223,7 +241,7 @@
         </div>
 
         <div class="styleListBox">
-          <input type="checkbox" name="stroke" id="join" hidden><label for="join">
+          <input type="checkbox" name="stroke" id="join" hidden><label title="Угол контура" for="join">
             <img id="joinImg" src="img/stroke/join0.svg"></label>
           <ul class="styleList">
             <li><input type="radio" name="join" id="j0" hidden checked><label for="j0">
@@ -237,7 +255,7 @@
         </div>
 
         <div class="styleListBox">
-          <input type="checkbox" name="stroke" id="cap" hidden><label for="cap">
+          <input type="checkbox" name="stroke" id="cap" hidden><label title="Конец линии" for="cap">
             <img id="capImg" src="img/stroke/cap0.svg"></label>
           <ul class="styleList">
             <li><input type="radio" name="cap" id="c0" hidden checked><label for="c0">

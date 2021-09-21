@@ -215,6 +215,8 @@ polEnd.onchange = () => {
     }
 }
 
+polEndLabel.onmousedown = () => doFunc("end", currentObject, [polEnd, polEnd.checked]);
+
 //vector
 vectX.onchange = () => moveX(vectX.value - currentObject.minX);
 
@@ -230,4 +232,16 @@ vectEnd.onchange = () => {
         currentObject.hasEnd = false;
         currentObject.setElementAttribute('d', currentObject.path);
     }
+}
+
+vectEndLabel.onmousedown = () => doFunc("end", currentObject, [vectEnd, vectEnd.checked]);
+
+//text
+textX.onchange = () => moveX(textX.value - currentObject.x);
+textY.onchange = () => moveY(textY.value - currentObject.y);
+textS.onchange = () => {
+    currentObject.textDiv.style.fontSize = textS.value + 'pt';
+}
+textF.onchange = () => {
+    currentObject.textDiv.style.fontFamily = textF.value;
 }

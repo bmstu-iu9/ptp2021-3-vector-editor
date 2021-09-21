@@ -1,6 +1,8 @@
 class vector extends object {
     constructor(svgElement = null) {
         super('path', svgElement, 'vector');
+        this.hasEnd = false;
+        this.isClosed = false;
         if (svgElement != null) {
             vectorIsCompleted = false;
             this.path = this.getElementAttribute('d');
@@ -66,8 +68,6 @@ class vector extends object {
             }];
             this.i = 0;
             this.newPath = "";
-            this.hasEnd = false;
-            this.isClosed = false;
             this.minX = this.x0;
             this.minY = this.y0;
             this.maxX = this.x0;
@@ -77,19 +77,20 @@ class vector extends object {
                 y: this.minY + (this.maxY - this.minY) / 2
             };
             this.setElementAttribute('d', this.path);
-            this.frameArray = [new lineFrame(this.x0, this.y0, this.x0, this.y0, this, true),
-                new lineFrame(this.x0, curY, this.x0, this.y0, this, true)
+            this.frameArray = [new lineFrame(this.x0, this.y0, this.x0, this.y0, this),
+                new lineFrame(this.x0, this.y0, this.x0, this.y0, this)
             ];
             this.pointsArray = [new point(this.x0, this.y0, this, {
                 action: "resize",
                 attr: this.i * 3 - 1 //точка, отвечающая за предыдущий путь
             }), new point(this.x0, this.y0, this, {
-                action: "pathTool",
+                action: "polyline",
                 attr: this.i * 3 //точка угла
             }), new point(this.x0, this.y0, this, {
                 action: "resize",
                 attr: this.i * 3 + 1 //точка, отвечающая за следующий путь
             })];
+            this.pointsArray[1].setPointAttribute('fill', "blue");
             //rotate
             this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
             this.angle = 0;
@@ -377,6 +378,10 @@ class vector extends object {
     updatePath() {
         this.newPath = this.prevPoint + " " + curX + "," + curY + " " + curX + "," + curY;
         this.setElementAttribute('d', this.path + this.newPath);
+        if ((curX - this.x0) ** 2 + (curY - this.y0) ** 2 <= pointRadius ** 2)
+            this.pointsArray[1].setPointAttribute('fill', "red");
+        else
+            this.pointsArray[1].setPointAttribute('fill', "blue");
     }
     updateSecondPath() {
         let x = this.pathCoords[this.i].x,
@@ -391,6 +396,7 @@ class vector extends object {
         if (!vectorIsCompleted) {
             vectorIsCompleted = true;
             scrollPanel.onmousedown = startVector;
+            this.pointsArray[1].setPointAttribute('fill', "white");
             this.pathCoords = [];
             for (let i = 1; i < this.pointsArray.length - 2; i++) {
                 if (i % 3 == 0) {

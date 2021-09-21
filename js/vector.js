@@ -81,15 +81,20 @@ class vector extends object {
                 new lineFrame(this.x0, this.y0, this.x0, this.y0, this)
             ];
             this.pointsArray = [new point(this.x0, this.y0, this, {
-                action: "resize",
-                attr: this.i * 3 - 1 //точка, отвечающая за предыдущий путь
-            }), new point(this.x0, this.y0, this, {
-                action: "polyline",
-                attr: this.i * 3 //точка угла
-            }), new point(this.x0, this.y0, this, {
-                action: "resize",
-                attr: this.i * 3 + 1 //точка, отвечающая за следующий путь
-            })];
+                    action: "resize",
+                    attr: this.i * 3 - 1
+                }), new point(curX, curY, this, {
+                    action: "resize",
+                    attr: this.i * 3 + 1
+                }),
+                new point(curX, curY, this, {
+                    action: "polyline",
+                    attr: this.i * 3
+                })
+            ];
+            let t = this.pointsArray[1];
+            this.pointsArray[1] = this.pointsArray[2];
+            this.pointsArray[2] = t;
             this.pointsArray[1].setPointAttribute('fill', "blue");
             //rotate
             this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
@@ -340,13 +345,13 @@ class vector extends object {
             new lineFrame(curX, curY, curX, curY, this, true));
         this.pointsArray.push(new point(curX, curY, this, {
             action: "resize",
-            attr: this.i * 3 - 1
+            attr: this.i * 3 - 1 //точка, отвечающая за предыдущий путь
         }), new point(curX, curY, this, {
             action: "pathTool",
-            attr: this.i * 3
+            attr: this.i * 3 //вершина
         }), new point(curX, curY, this, {
             action: "resize",
-            attr: this.i * 3 + 1
+            attr: this.i * 3 + 1 //точка, отвечающая за следующий путь
         }));
         this.minX = Math.min(this.minX, curX);
         this.minY = Math.min(this.minY, curY);
@@ -430,6 +435,7 @@ class vector extends object {
             this.pointsArray.splice(0, 1);
             this.frameArray.splice(0, 1);
 
+            this.pointsArray[0].circle.after(this.pointsArray[1].circle);
             this.cPoint = {
                 x: this.minX + (this.maxX - this.minX) / 2,
                 y: this.minY + (this.maxY - this.minY) / 2

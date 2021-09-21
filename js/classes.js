@@ -266,7 +266,6 @@ class object {
     complete(isSizeNotZero = this.svgElement.getBoundingClientRect().width * this.svgElement.getBoundingClientRect().height > 0) {
         this.updateFrameAndPoints();
         this.removeHotKeys();
-        scrollPanel.onmousedown = null;
         document.onmousedown = null;
         document.onmousemove = null;
         document.onmouseup = null;

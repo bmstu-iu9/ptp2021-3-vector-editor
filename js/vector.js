@@ -33,6 +33,7 @@ class vector extends object {
             action: "resize",
             attr: this.i * 3 + 1 //точка, отвечающая за следующий путь
         })];
+        this.pointsArray[1].setPointAttribute('fill', "blue");
         //rotate
         this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
         this.angle = 0;
@@ -146,15 +147,13 @@ class vector extends object {
                     this.pathCoords[this.pathCoords.length - 1].x = this.pathCoords[3].x;
                     this.pathCoords[this.pathCoords.length - 1].y = this.pathCoords[3].y;
                 }
-            }
-            else
+            } else
             if (ind == this.pathCoords.length - 1) {
                 ind--;
                 this.frameArray[this.frameArray.length - 1].remove();
                 this.frameArray[this.frameArray.length - 2].remove();
-            this.frameArray.splice(this.frameArray.length - 2, 2);
-            }
-            else {
+                this.frameArray.splice(this.frameArray.length - 2, 2);
+            } else {
                 this.frameArray[(ind / 3) * 2 - 1].remove();
                 this.frameArray[(ind / 3) * 2].remove();
                 this.frameArray.splice((ind / 3 | 0) * 2 - 1, 2);
@@ -318,6 +317,10 @@ class vector extends object {
     updatePath() {
         this.newPath = this.prevPoint + curX + " " + curY + ", " + curX + " " + curY + " ";
         this.setElementAttribute('d', this.path + this.newPath);
+        if ((curX - this.x0) ** 2 + (curY - this.y0) ** 2 <= pointRadius ** 2)
+            this.pointsArray[1].setPointAttribute('fill', "red");
+        else
+            this.pointsArray[1].setPointAttribute('fill', "blue");
     }
     updateSecondPath() {
         let x = this.pathCoords[this.i].x,
@@ -331,6 +334,7 @@ class vector extends object {
     complete() {
         if (!vectorIsCompleted) {
             vectorIsCompleted = true;
+            this.pointsArray[1].setPointAttribute('fill', "white");
             svgPanel.onmousedown = startVector;
             this.pathCoords = [];
             for (let i = 1; i < this.pointsArray.length - 2; i++) {

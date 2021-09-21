@@ -3,18 +3,19 @@ deleteObject = document.getElementById("deleteObject");
 
 deleteObject.onclick = function () {
     if (currentObject != null) {
-        doFunc("delete", currentObject);
+        //doFunc("delete", currentObject);
         deleteFunc();
     }
 }
 document.addEventListener('keydown', function (event) {
     if (event.code == 'Delete' && currentObject != null) {
-        doFunc("delete", currentObject);
+        //doFunc("delete", currentObject);
         deleteFunc();
     }
 });
 
 function deleteFunc() {
+    doFunc("delete", currentObject);
     currentObject.hide();
     currentObject = null;
 }
@@ -99,21 +100,25 @@ function blockEditing(i) {
     func.onmouseout = null;
 }
 
-function centralLocation(width, height) {
+function centralLocation(width = svgPanel.clientWidth, height = svgPanel.clientHeight) {
     svgPanel.style.left = "50%";
     svgPanel.style.top = "50%";
     svgPanel.style.transform = "translate(-50%, -50%)";
-    if (scrollPanel.clientWidth - 15 < width) {
-        svgPanel.style.left = "15px";
+    if (scrollPanel.clientWidth - startCoords < width) {
+        svgPanel.style.left = startCoords + "px";
         svgPanel.style.transform = "translate(0, -50%)";
     }
-    if (scrollPanel.clientHeight - 15 < height) {
-        svgPanel.style.top = "15px";
+    if (scrollPanel.clientHeight - startCoords < height) {
+        svgPanel.style.top = startCoords + "px";
         svgPanel.style.transform = "translate(-50%, 0)";
     }
-    if (scrollPanel.clientWidth - 15 < width && scrollPanel.clientHeight - 15 < height)
+    if (scrollPanel.clientWidth - startCoords < width && scrollPanel.clientHeight - startCoords < height)
         svgPanel.style.transform = "translate(0, 0)";
+    svgPanelCoords = getCoords(svgPanel);
+    updateRulers();
 }
+
+centralLocation();
 
 //CREATE 
 create = document.getElementById("create");
@@ -126,6 +131,7 @@ create.onclick = function () {
         alert("Недопустимый размер холста!")
         return;
     }
+    scaleСoef = 1;
     resetCurrentObject();
     for (var i = 2; i < svgPanel.childNodes.length;)
         svgPanel.removeChild(svgPanel.childNodes[i]);
@@ -137,8 +143,6 @@ create.onclick = function () {
     svgPanel.setAttribute('width', width);
     svgPanel.setAttribute('height', height);
     scrollcoords = getCoords(scrollPanel);
-    svgPanelCoords = getCoords(svgPanel);
-    updateRulers();
     updateGrid();
     createFirstLayer();
     canvas.setAttribute('width', width);
@@ -160,6 +164,8 @@ function readFile(object) {
         let result = confirm("Вы действительно хотите открыть новый файл? Все изменения в текущем файле будут удалены.");
         if (!result)
             return;
+        scaleСoef = 1;
+        resetCurrentObject();
         let clone = svgGrid.cloneNode(true);
         svgPanel.outerHTML = event.target.result;
         clone.setAttribute("id", "svg_grid");
@@ -180,20 +186,18 @@ function readFile(object) {
         }
 
         svgPanel = document.getElementById(first.id);
-        svgPanel.setAttribute('style', 'background-color: #fff; position: absolute;');
+        svgPanel.setAttribute('style', 'position: absolute; background: rgb(245, 245, 245); box-shadow: 0 0 10px #000 z-index: 1; overflow: visible;');
         centralLocation(width, height);
         scrollcoords = getCoords(scrollPanel);
-        svgPanelCoords = getCoords(svgPanel);
-        updateRulers();
         updateGrid();
         for (var i = 0; i < layersPanel.childNodes.length;)
             layersPanel.removeChild(layersPanel.childNodes[i]);
         createFirstLayer();
         canvas.setAttribute('width', width);
         canvas.setAttribute('height', height);
+        updateSizeOfCanvas();
     };
     reader.readAsText(file);
-    updateSizeOfCanvas();
 }
 
 document.getElementById("file-selector").addEventListener("change", readFile);
@@ -265,16 +269,12 @@ zoomIn = document.getElementById("zoomIn");
 zoomIn.onclick = function () {
     scaleСoef *= 1.25;
     updateScale();
-    scale_panel.style.display = "flex";
-    scaleP.value = scaleСoef * 100;
 }
 
 zoomOut = document.getElementById("zoomOut");
 zoomOut.onclick = function () {
     scaleСoef /= 1.25;
     updateScale();
-    scale_panel.style.display = "flex";
-    scaleP.value = scaleСoef * 100;
 }
 
 //LAYERS
@@ -302,8 +302,10 @@ showRulers.onclick = function () {
     if (rulers.style.display == "none") {
         rulers.style.display = "block";
         updateRulers();
+        startCoords = 15;
     } else {
         rulers.style.display = "none";
+        startCoords = 0;
     }
 }
 
@@ -376,17 +378,8 @@ class action {
                 this.object.setResizeAttrs(resizeAttrs);
                 break;
             case "property":
-                let prev = currentObject;
-                currentObject = this.object;
-                currentObject.addPanel();
-                let prevValue = this.attr[0].value;
-                this.attr[0].value = this.attr[1];
-                this.attr[1] = prevValue;
-                var event = new Event('change');
-                this.attr[0].dispatchEvent(event);
-                currentObject.removePanel();
-                currentObject = prev;
-                if (prev != null) currentObject.addPanel();
+            case "end":
+                changeProperty(this)
                 break;
             case "fill":
                 let fillAttrs = this.attr;
@@ -438,16 +431,8 @@ class action {
                 this.object.setResizeAttrs(resizeAttrs);
                 break;
             case "property":
-                let prev = currentObject;
-                currentObject = this.object;
-                let prevValue = this.attr[0].value;
-                this.attr[0].value = this.attr[1];
-                this.attr[1] = prevValue;
-                var event = new Event('change');
-                this.attr[0].dispatchEvent(event);
-                currentObject.removePanel();
-                currentObject = prev;
-                if (prev != null) currentObject.addPanel();
+            case "end":
+                changeProperty(this)
                 break;
             case "fill":
                 let fillAttrs = this.attr;
@@ -474,6 +459,27 @@ class action {
         undoActions.push(this);
         if (undoActions.length > maxActionsNum) undoActions.shift();
     }
+}
+
+function changeProperty(act) {
+    let prev = currentObject;
+    currentObject = act.object;
+    currentObject.addPanel();
+    let prevValue;
+    if (act.type == "end") {
+        prevValue = act.attr[0].checked;
+        act.attr[0].checked = act.attr[1];
+        console.log(polEnd.checked);
+    } else {
+        prevValue = act.attr[0].value;
+        act.attr[0].value = act.attr[1];
+    }
+    act.attr[1] = prevValue;
+    var event = new Event('change');
+    act.attr[0].dispatchEvent(event);
+    currentObject.removePanel();
+    currentObject = prev;
+    if (prev != null) currentObject.addPanel();
 }
 
 function doFunc(type, object, attr = null) {

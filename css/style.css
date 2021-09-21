@@ -145,11 +145,13 @@ header {
     cursor: default;
 }
 
-input[type=number] {
+input[type=number],
+#textF {
     outline: none;
     color: #e5e5e5;
     border-radius: 2%;
     padding: 0 2px 0 8px;
+    user-select: text;
 }
 
 .property {
@@ -338,11 +340,8 @@ main {
 /*холст*/
 #svg_panel {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     background: rgb(245, 245, 245);
-    box-shadow: 0 0 10px #000000;
+    box-shadow: 0 0 10px #000;
     z-index: 1;
     overflow: visible;
 }

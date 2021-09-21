@@ -26,15 +26,15 @@ scale.onclick = function () {
 
     let left = svgPanelX + shiftX * shiftCoef + scrollPanel.scrollLeft;
     let top = svgPanelY + shiftY * shiftCoef + scrollPanel.scrollTop;
-    if (left > 15) {
+    if (left > startCoords) {
       svgPanel.style.left = left + "px";
     } else {
-      svgPanel.style.left = "15px";
+      svgPanel.style.left = startCoords + "px";
     }
-    if (top > 15) {
+    if (top > startCoords) {
       svgPanel.style.top = top + "px";
     } else {
-      svgPanel.style.top = "15px";
+      svgPanel.style.top = startCoords + "px";
     }
     svgPanelCoords = getCoords(svgPanel);
     updateRulers();
@@ -54,19 +54,17 @@ scale.onclick = function () {
 
 scaleP.onchange = () => {
   let s = scaleP.value;
-  if (s<1) {
+  if (s < 1)
     s = 1;
-    scaleP.value = 1
-  }
   scaleСoef = s / 100;
   updateScale();
 }
 
 function updateScale() {
   w = firstWidth * scaleСoef, h = firstHeight * scaleСoef;
-  centralLocation(w, h);
   svgPanel.style.width = w + "px";
   svgPanel.style.height = h + "px";
-  svgPanelCoords = getCoords(svgPanel);
-  updateRulers();
+  centralLocation(w, h);
+  scale_panel.style.display = "flex";
+  scaleP.value = scaleСoef * 100;
 }

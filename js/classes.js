@@ -26,7 +26,9 @@ class object {
         this.addActions();
     }
     static create(newObj) {
-        newObj.complete();
+        newObj.updateFrameAndPoints();
+        newObj.removeHotKeys();
+        newObj.isCompleted = true;
         newObj.hideFrameAndPoints();
     }
     createClone(clone) {
@@ -283,6 +285,7 @@ class object {
             doFunc("create", this);
         } else {
             this.remove();
+            return;
         }
 
         this.isCompleted = true;

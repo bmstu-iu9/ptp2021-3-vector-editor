@@ -1,16 +1,13 @@
 class vector extends object {
     constructor(svgElement = null) {
         super('path', svgElement, 'vector');
-        /*if (svgElement != null) {
+        if (svgElement != null) {
             vectorIsCompleted = false;
             this.path = this.getElementAttribute('d');
             let split = this.path.split(' ');
             this.x0 = Number(split[1].split(',')[0]);
             this.y0 = Number(split[1].split(',')[1]);
-            this.pathCoords = [{
-                x: this.x0,
-                y: this.y0
-            }];
+            this.pathCoords = [];
             this.minX = this.x0;
             this.minY = this.y0;
             this.maxX = this.x0;
@@ -19,8 +16,15 @@ class vector extends object {
             this.pointsArray = [];
             this.i = 0;
 
-            for (let i = 3; i < split.length; i++) {
-                if (split[i] == "C") {
+            let n = split.length;
+            if (split[split.length - 1] == "Z") {
+                vectEnd.checked = "true";
+                this.hasEnd = true;
+                n--;
+            }
+
+            for (let i = 0; i < n; i++) {
+                if (split[i] == "M" || split[i] == "C") {
                     continue;
                 }
                 let x = Number(split[i].split(',')[0]),
@@ -29,24 +33,24 @@ class vector extends object {
                     x: x,
                     y: y
                 })
-                console.log(this.pathCoords)
                 this.minX = Math.min(this.minX, x);
                 this.minY = Math.min(this.minY, y);
                 this.maxX = Math.max(this.maxX, x);
                 this.maxY = Math.max(this.maxY, y);
-                this.frameArray.push(new lineFrame(x, y, x, y, this, true),
-                    new lineFrame(x, y, x, y, this, true));
-                if ((i - 1) % 2 == 0) {
-                    this.pointsArray.push(new point(x, y, this, {
-                        action: "resize",
-                        attr: this.i * 3 - 1
-                    }), new point(x, y, this, {
-                        action: "pathTool",
-                        attr: this.i * 3
-                    }), new point(x, y, this, {
-                        action: "resize",
-                        attr: this.i * 3 + 1
-                    }));
+                if (i == n - 1 && x == this.x0 && y == this.y0) this.isClosed = true;
+                if (!(i == n - 1 && x == this.x0 && y == this.y0)) {
+                    if (this.i % 3 == 0) {
+                        this.pointsArray.push(new point(x, y, this, {
+                            action: "pathTool",
+                            attr: this.i
+                        }));
+                    } else {
+                        this.frameArray.push(new lineFrame(x, y, x, y, this, true));
+                        this.pointsArray.push(new point(x, y, this, {
+                            action: "resize",
+                            attr: this.i
+                        }));
+                    }
                 }
                 this.i++;
             }
@@ -54,46 +58,42 @@ class vector extends object {
                 x: this.minX + (this.maxX - this.minX) / 2,
                 y: this.minY + (this.maxY - this.minY) / 2
             };
-            if (split[split.length - 1] == "Z") {
-                vectEnd.checked = "true";
-                this.hasEnd = true;
-            }
-        } else {*/
-        this.path = "M " + this.x0 + "," + this.y0;
-        this.pathCoords = [{
-            x: this.x0,
-            y: this.y0
-        }];
-        this.i = 0;
-        this.newPath = "";
-        this.hasEnd = false;
-        this.isClosed = false;
-        this.minX = this.x0;
-        this.minY = this.y0;
-        this.maxX = this.x0;
-        this.maxY = this.y0;
-        this.cPoint = {
-            x: this.minX + (this.maxX - this.minX) / 2,
-            y: this.minY + (this.maxY - this.minY) / 2
-        };
-        this.setElementAttribute('d', this.path);
-        this.frameArray = [new lineFrame(this.x0, this.y0, this.x0, this.y0, this, true),
-            new lineFrame(this.x0, curY, this.x0, this.y0, this, true)
-        ];
-        this.pointsArray = [new point(this.x0, this.y0, this, {
-            action: "resize",
-            attr: this.i * 3 - 1 //точка, отвечающая за предыдущий путь
-        }), new point(this.x0, this.y0, this, {
-            action: "pathTool",
-            attr: this.i * 3 //точка угла
-        }), new point(this.x0, this.y0, this, {
-            action: "resize",
-            attr: this.i * 3 + 1 //точка, отвечающая за следующий путь
-        })];
-        //rotate
-        this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
-        this.angle = 0;
-        //}
+        } else {
+            this.path = "M " + this.x0 + "," + this.y0;
+            this.pathCoords = [{
+                x: this.x0,
+                y: this.y0
+            }];
+            this.i = 0;
+            this.newPath = "";
+            this.hasEnd = false;
+            this.isClosed = false;
+            this.minX = this.x0;
+            this.minY = this.y0;
+            this.maxX = this.x0;
+            this.maxY = this.y0;
+            this.cPoint = {
+                x: this.minX + (this.maxX - this.minX) / 2,
+                y: this.minY + (this.maxY - this.minY) / 2
+            };
+            this.setElementAttribute('d', this.path);
+            this.frameArray = [new lineFrame(this.x0, this.y0, this.x0, this.y0, this, true),
+                new lineFrame(this.x0, curY, this.x0, this.y0, this, true)
+            ];
+            this.pointsArray = [new point(this.x0, this.y0, this, {
+                action: "resize",
+                attr: this.i * 3 - 1 //точка, отвечающая за предыдущий путь
+            }), new point(this.x0, this.y0, this, {
+                action: "pathTool",
+                attr: this.i * 3 //точка угла
+            }), new point(this.x0, this.y0, this, {
+                action: "resize",
+                attr: this.i * 3 + 1 //точка, отвечающая за следующий путь
+            })];
+            //rotate
+            this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
+            this.angle = 0;
+        }
     }
     static create(svgElement) {
         let newObj = new vector(svgElement);
@@ -158,7 +158,7 @@ class vector extends object {
                 this.path += " " + x + "," + y;
             }
         }
-        if (this.hasEnd) this.path += 'Z';
+        if (this.hasEnd) this.path += ' Z';
         this.setElementAttribute('d', this.path);
     }
     move(dx = curX - this.start.x, dy = curY - this.start.y) {

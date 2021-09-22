@@ -1,11 +1,11 @@
 scaleP.value = scaleСoef * 100;
 scale = document.getElementById("scale");
 
-scale.onclick = function () {
-  svgPanel.style.cursor = "zoom-in";
+scale.onmousedown = function () {
+  scrollPanel.style.cursor = "zoom-in";
   scale_panel.style.display = "flex";
   if (currentObject != null) currentObject.removePanel();
-  svgPanel.onmousedown = function (event) {
+  scrollPanel.onmousedown = function (event) {
     svgPanel.style.transform = "translate(0, 0)";
     if (event.ctrlKey) {
       scaleСoef *= 4 / 5;
@@ -42,12 +42,12 @@ scale.onclick = function () {
   };
   document.addEventListener("keydown", function (event) {
     if (event.ctrlKey && wasPressed == "scale") {
-      svgPanel.style.cursor = "zoom-out";
+      scrollPanel.style.cursor = "zoom-out";
     }
   });
   document.addEventListener("keyup", function (event) {
     if (event.key == "Control" && wasPressed == "scale") {
-      svgPanel.style.cursor = "zoom-in";
+      scrollPanel.style.cursor = "zoom-in";
     }
   });
 };
@@ -67,4 +67,17 @@ function updateScale() {
   centralLocation(w, h);
   scale_panel.style.display = "flex";
   scaleP.value = scaleСoef * 100;
+}
+
+//buttons
+zoomIn = document.getElementById("zoomIn");
+zoomIn.onclick = function () {
+    scaleСoef *= 1.25;
+    updateScale();
+}
+
+zoomOut = document.getElementById("zoomOut");
+zoomOut.onclick = function () {
+    scaleСoef /= 1.25;
+    updateScale();
 }

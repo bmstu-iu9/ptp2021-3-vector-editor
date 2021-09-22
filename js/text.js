@@ -1,26 +1,48 @@
 class text extends object {
-    constructor() {
-        super('foreignObject', 'text');
-        this.width = 300;
-        this.height = 200;
-        this.x = curX - 15;
-        this.y = curY - 10;
-        this.setElementAttribute('width', this.width);
-        this.setElementAttribute('height', this.height);
-        this.setElementAttribute('x', this.x);
-        this.setElementAttribute('y', this.y);
-        this.textDiv = document.createElement('div');
-        this.textDiv.setAttribute('contenteditable', true);
-        this.textDiv.style.overflow = 'hidden';
-        this.textDiv.style.overflowWrap = 'break-word';
-        this.textDiv.style.fontSize = '12pt';
-        this.textDiv.style.fontFamily = 'Arial';
-        this.textDiv.textContent = 'Text';
-        this.textDiv.style.width = this.width + "px";
-        this.textDiv.style.height = this.height + "px";
-        this.textDiv.style.outline = "none";
-        if (fillColor.value != "#ffffff") this.textDiv.style.color = fillColor.value;
-        this.svgElement.appendChild(this.textDiv);
+    constructor(svgElement = null) {
+        super('foreignObject', svgElement, 'text');
+        if (svgElement != null) {
+            [this.x, this.y, this.width, this.height] = [
+                Number(this.getElementAttribute('x')),
+                Number(this.getElementAttribute('y')),
+                Number(this.getElementAttribute('width')),
+                Number(this.getElementAttribute('height'))
+            ]
+            this.cPoint = {
+                x: this.x + this.width / 2,
+                y: this.y + this.height / 2
+            };
+            this.textDiv = svgElement.childNodes[0];
+        } else {
+            this.width = 300;
+            this.height = 200;
+            this.x = curX - 15;
+            this.y = curY - 10;
+            this.setElementAttribute('x', this.x);
+            this.setElementAttribute('y', this.y);
+            this.setElementAttribute('width', this.width);
+            this.setElementAttribute('height', this.height);
+            this.textDiv = document.createElement('div');
+            this.textDiv.setAttribute('contenteditable', true);
+            this.textDiv.style.overflow = 'hidden';
+            this.textDiv.style.overflowWrap = 'break-word';
+            this.textDiv.style.fontSize = '12pt';
+            this.textDiv.style.fontFamily = 'Arial';
+            this.textDiv.textContent = 'Text';
+            this.textDiv.style.width = this.width + "px";
+            this.textDiv.style.height = this.height + "px";
+            this.textDiv.style.outline = "none";
+            if (fillColor.value != "#ffffff") this.textDiv.style.color = fillColor.value;
+            this.svgElement.appendChild(this.textDiv);
+            //rotate
+            this.cPoint = {
+                x: this.x + this.width / 2,
+                y: this.y + this.height / 2
+            };
+            this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
+            this.setElementAttribute('transform', this.transform);
+            this.angle = 0;
+        }
 
         this.frameArray = [new rectangleFrame(this.x, this.y, this.width, this.height, this, true)];
 
@@ -65,13 +87,10 @@ class text extends object {
                 attr: "rotate"
             })
         ];
-        //rotate
-        this.cPoint = {
-            x: this.x + this.width / 2,
-            y: this.y + this.height / 2
-        };
-        this.transform = 'rotate(' + 0 + ' ' + this.cPoint.x + ' ' + this.cPoint.y + ')';
-        this.angle = 0;
+    }
+    static create(svgElement) {
+        let newObj = new text(svgElement);
+        super.create(newObj);
     }
     createClone() {
         this.textDiv.setAttribute('contenteditable', 'false');
@@ -115,7 +134,7 @@ class text extends object {
                 this.textDiv.setAttribute('contenteditable', 'true');
                 this.svgElement.style.cursor = "text";
             } else {
-                this.svgElement.style.cursor = svgPanel.style.cursor;
+                this.svgElement.style.cursor = scrollPanel.style.cursor;
                 this.textDiv.setAttribute('contenteditable', 'false');
                 this.textDiv.style.webkitTouchCallout = 'none';
                 this.textDiv.style.webkitUserSelect = 'none';
@@ -127,7 +146,7 @@ class text extends object {
             if (wasPressed == "cursor" && !isSomePointSelected) {
                 this.svgElement.style.cursor = "text";
             } else {
-                this.svgElement.style.cursor = svgPanel.style.cursor;
+                this.svgElement.style.cursor = scrollPanel.style.cursor;
             }
         }.bind(this));
     }
@@ -327,6 +346,8 @@ class text extends object {
         this.svgElement.setAttribute('y', this.y);
         this.svgElement.setAttribute('width', this.width);
         this.svgElement.setAttribute('height', this.height);
+        this.textDiv.style.width = this.width + "px";
+        this.textDiv.style.height = this.height + "px";
         this.svgElement.setAttribute('transform', this.transform);
         this.updateFrameAndPoints();
     }
@@ -349,6 +370,8 @@ class text extends object {
         this.svgElement.setAttribute('y', this.y);
         this.svgElement.setAttribute('width', this.width);
         this.svgElement.setAttribute('height', this.height);
+        this.textDiv.style.width = this.width + "px";
+        this.textDiv.style.height = this.height + "px";
         this.svgElement.setAttribute('transform', this.transform);
         this.setElementAttribute('rx', Math.max(this.height, this.width) * this.r / 100);
         this.updateFrameAndPoints();

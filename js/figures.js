@@ -2,8 +2,8 @@
 rectangleButton = document.getElementById("rectangle");
 
 rectangleButton.onclick = function () {
-    svgPanel.style.cursor = "default";
-    svgPanel.onmousedown = function (current) {
+    scrollPanel.style.cursor = "default";
+    scrollPanel.onmousedown = function (current) {
         updateCursorCoords(current);
         let newObject = new rectangle();
 
@@ -21,8 +21,8 @@ rectangleButton.onclick = function () {
 ellipseButton = document.getElementById("ellipse");
 
 ellipseButton.onclick = function () {
-    svgPanel.style.cursor = "default";
-    svgPanel.onmousedown = function (current) {
+    scrollPanel.style.cursor = "default";
+    scrollPanel.onmousedown = function (current) {
         updateCursorCoords(current);
         let newObject = new ellipse();
 
@@ -41,8 +41,8 @@ polygonButton = document.getElementById("polygon");
 let curVertNum = 3;
 
 polygonButton.onclick = function () {
-    svgPanel.style.cursor = "default";
-    svgPanel.onmousedown = function (current) {
+    scrollPanel.style.cursor = "default";
+    scrollPanel.onmousedown = function (current) {
         updateCursorCoords(current);
         let newObject = new polygon();
 
@@ -61,8 +61,8 @@ starPolygonButton = document.getElementById("starPolygon");
 let curStarPolygonVertNum = 5;
 
 starPolygonButton.onclick = function () {
-    svgPanel.style.cursor = "default";
-    svgPanel.onmousedown = function (current) {
+    scrollPanel.style.cursor = "default";
+    scrollPanel.onmousedown = function (current) {
         updateCursorCoords(current);
         let newObject = new starPolygon();
 
@@ -81,8 +81,8 @@ pentagramButton = document.getElementById("pentagram");
 let curPentagramVertNum = 5;
 
 pentagramButton.onclick = function () {
-    svgPanel.style.cursor = "default";
-    svgPanel.onmousedown = function (current) {
+    scrollPanel.style.cursor = "default";
+    scrollPanel.onmousedown = function (current) {
         updateCursorCoords(current);
         let newObject = new pentagram();
 
@@ -100,8 +100,8 @@ pentagramButton.onclick = function () {
 pencilButton = document.getElementById("pencil");
 
 pencilButton.onclick = function () {
-    svgPanel.style.cursor = "url(img/pencil_cursor.svg) 0 20, default";
-    svgPanel.onmousedown = function (current) {
+    scrollPanel.style.cursor = "url(img/pencil_cursor.svg) 0 20, default";
+    scrollPanel.onmousedown = function (current) {
         updateCursorCoords(current);
         let newObject = new pencil();
 
@@ -119,8 +119,8 @@ pencilButton.onclick = function () {
 lineButton = document.getElementById("line");
 
 lineButton.onclick = function () {
-    svgPanel.style.cursor = "default";
-    svgPanel.onmousedown = function (current) {
+    scrollPanel.style.cursor = "default";
+    scrollPanel.onmousedown = function (current) {
         updateCursorCoords(current);
         let newObject = new line();
 
@@ -139,11 +139,11 @@ pathTool = document.getElementById("pathTool");
 let polylineIsCompleted = true;
 
 pathTool.onclick = function () {
-    svgPanel.style.cursor = "default";
-    svgPanel.onmousedown = function (current) {
+    scrollPanel.style.cursor = "default";
+    scrollPanel.onmousedown = function (current) {
         if (polylineIsCompleted && current.which == 1) {
             updateCursorCoords(current);
-            let newObject = new polyline();
+            let newObject = new pathTool();
             polylineIsCompleted = false;
 
             document.onmousemove = function (current) {
@@ -176,8 +176,8 @@ vectorTool = document.getElementById("vector");
 let vectorIsCompleted = true;
 
 vectorTool.onclick = function () {
-    svgPanel.style.cursor = "default";
-    svgPanel.onmousedown = startVector;
+    scrollPanel.style.cursor = "default";
+    scrollPanel.onmousedown = startVector;
 };
 
 function startVector(current) {
@@ -204,6 +204,10 @@ function startVector(current) {
                     updateCursorCoords(current);
                     newObject.updateSecondPath();
                 };
+                if (wasPressed != "vector") {
+                    newObject.complete();
+                    return;
+                }
             };
 
             updateCursorCoords(current);
@@ -219,7 +223,7 @@ function startVector(current) {
         rightPanel.onmousedown = function () {
             newObject.complete();
         };
-        document.onclick = function () {
+        document.onmousedown = function () {
             if (wasPressed != "vector") {
                 newObject.complete();
             }
@@ -231,8 +235,8 @@ function startVector(current) {
 textButton = document.getElementById("text");
 
 textButton.onclick = function () {
-    svgPanel.style.cursor = "default";
-    svgPanel.onmousedown = function (current) {
+    scrollPanel.style.cursor = "default";
+    scrollPanel.onmousedown = function (current) {
         updateCursorCoords(current);
         let newObject = new text();
         newObject.complete();

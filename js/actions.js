@@ -3,19 +3,18 @@ deleteObject = document.getElementById("deleteObject");
 
 deleteObject.onclick = function () {
     if (currentObject != null) {
-        //doFunc("delete", currentObject);
+        doFunc("delete", currentObject);
         deleteFunc();
     }
 }
 document.addEventListener('keydown', function (event) {
     if (event.code == 'Delete' && currentObject != null) {
-        //doFunc("delete", currentObject);
+        doFunc("delete", currentObject);
         deleteFunc();
     }
 });
 
 function deleteFunc() {
-    doFunc("delete", currentObject);
     currentObject.hide();
     currentObject = null;
 }
@@ -132,6 +131,11 @@ create.onclick = function () {
         return;
     }
     scaleСoef = 1;
+    resetDocument(width, height);
+}
+
+function resetDocument(width, height) {
+    scaleСoef = 1;
     resetCurrentObject();
     for (var i = 2; i < svgPanel.childNodes.length;)
         svgPanel.removeChild(svgPanel.childNodes[i]);
@@ -143,6 +147,8 @@ create.onclick = function () {
     svgPanel.setAttribute('width', width);
     svgPanel.setAttribute('height', height);
     scrollcoords = getCoords(scrollPanel);
+    svgPanelCoords = getCoords(svgPanel);
+    updateRulers();
     updateGrid();
     createFirstLayer();
     canvas.setAttribute('width', width);
@@ -164,50 +170,95 @@ function readFile(object) {
         let result = confirm("Вы действительно хотите открыть новый файл? Все изменения в текущем файле будут удалены.");
         if (!result)
             return;
-        scaleСoef = 1;
-        resetCurrentObject();
-        let clone = svgGrid.cloneNode(true);
-        svgPanel.outerHTML = event.target.result;
-        clone.setAttribute("id", "svg_grid");
-        let divs = document.querySelector("#draw_panel");
-        let first = divs.firstElementChild;
-        first.setAttribute("id", "svg_panel");
-        svgPanel = document.getElementById(first.id);
-        svgPanel.insertBefore(clone, svgPanel.firstElementChild);
-        svgGrid = document.getElementById("svg_grid");
-        svgBackground = document.getElementById("svg_background");
-        let width = first.getAttribute('width');
-        let height = first.getAttribute('height')
+        openSvg.outerHTML = event.target.result;
+        let helper = document.querySelector("#helper"),
+            tempSvg = helper.lastElementChild;
+
+        let width = tempSvg.getAttribute('width');
+        let height = tempSvg.getAttribute('height')
+        let backgroundcolor = tempSvg.style.background;
+        if (backgroundcolor != "") svgPanel.style.background = backgroundcolor;
+        else svgPanel.style.background = "";
         if (width == null || height == null) {
-            first.setAttribute('width', 512);
-            first.setAttribute('height', 512);
-            first.setAttribute('viewBox', '0 0 512 512');
+            svgPanel.setAttribute('width', 512);
+            svgPanel.setAttribute('height', 512);
+            svgPanel.setAttribute('viewBox', '0 0 512 512');
             width = 512, height = 512;
         }
+        resetDocument(width, height)
 
-        svgPanel = document.getElementById(first.id);
-        svgPanel.setAttribute('style', 'position: absolute; background: rgb(245, 245, 245); box-shadow: 0 0 10px #000 z-index: 1; overflow: visible;');
-        centralLocation(width, height);
-        scrollcoords = getCoords(scrollPanel);
-        updateGrid();
-        for (var i = 0; i < layersPanel.childNodes.length;)
-            layersPanel.removeChild(layersPanel.childNodes[i]);
-        createFirstLayer();
-        canvas.setAttribute('width', width);
-        canvas.setAttribute('height', height);
-        updateSizeOfCanvas();
+        tempSvg.setAttribute("style", "display: none;");
+        tempSvg.setAttribute("id", "open_svg");
+        openSvg = document.getElementById(tempSvg.id);
+        search(openSvg.childNodes);
+        for (let i = 0; i < elementsToAppend.length; i++) {
+            currentLayer.group.appendChild(elementsToAppend[i]);
+        }
+        elementsToAppend = [];
     };
     reader.readAsText(file);
 }
 
 document.getElementById("file-selector").addEventListener("change", readFile);
 
+let elementsToAppend = [];
+
+function search(childs) {
+    for (let i = 0; i < childs.length; i++) {
+        if (childs[i].nodeName == "g" && childs[i].id != "pentagram") {
+            search(childs[i].childNodes)
+        } else {
+            let t;
+            if (childs[i].id != null && childs[i].id != "") t = childs[i].id.split('_')[0];
+            else t = childs[i].nodeName;
+            switch (t) {
+                case "rect":
+                    rectangle.create(childs[i]);
+                    break;
+                case "ellipse":
+                    ellipse.create(childs[i]);
+                    break;
+                case "polygon":
+                    polygon.create(childs[i]);
+                    break;
+                case "star":
+                    starPolygon.create(childs[i]);
+                    break;
+                case "pentagram":
+                    pentagram.create(childs[i]);
+                    break;
+                case "pencil":
+                    pencil.create(childs[i]);
+                    break;
+                case "line":
+                    line.create(childs[i]);
+                    break;
+                case "pathTool":
+                case "polyline":
+                    pathTool.create(childs[i]);
+                    break;
+                case "vector":
+                case "path":
+                    vector.create(childs[i]);
+                    break;
+                case "text":
+                    text.create(childs[i]);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+}
+
 //SAVE
 save = document.getElementById("save");
 
 save.onclick = function () {
-    let style = svgPanel.getAttribute('style');
-    svgPanel.removeAttribute('style');
+    let style = svgPanel.getAttribute('style'),
+        backgroundcolor = svgPanel.style.background;
+    svgPanel.style = "";
+    svgPanel.style.background = backgroundcolor;
     let svgGridClone = svgGrid;
     svgPanel.removeChild(svgGrid);
     resetCurrentObject()
@@ -234,8 +285,10 @@ save.onclick = function () {
 savePng = document.getElementById("savePng");
 
 savePng.onclick = function () {
-    let style = svgPanel.getAttribute('style');
-    svgPanel.removeAttribute('style');
+    let style = svgPanel.getAttribute('style'),
+        backgroundcolor = svgPanel.style.background;
+    svgPanel.style = "";
+    svgPanel.style.background = backgroundcolor;
     let svgGridClone = svgGrid;
     svgPanel.removeChild(svgGrid);
     resetCurrentObject()
@@ -264,19 +317,6 @@ savePng.onclick = function () {
     svgPanel.prepend(svgGridClone);
 }
 
-//SCALING
-zoomIn = document.getElementById("zoomIn");
-zoomIn.onclick = function () {
-    scaleСoef *= 1.25;
-    updateScale();
-}
-
-zoomOut = document.getElementById("zoomOut");
-zoomOut.onclick = function () {
-    scaleСoef /= 1.25;
-    updateScale();
-}
-
 //LAYERS
 frontObject = document.getElementById("frontObject");
 
@@ -296,31 +336,6 @@ backObject.onclick = function () {
     }
 }
 
-//SHOW RULERS 
-showRulers = document.getElementById("showRulers");
-showRulers.onclick = function () {
-    if (rulers.style.display == "none") {
-        rulers.style.display = "block";
-        updateRulers();
-        startCoords = 15;
-    } else {
-        rulers.style.display = "none";
-        startCoords = 0;
-    }
-}
-
-//SHOW GRID 
-showGrid = document.getElementById("showGrid");
-showGrid.onclick = function () {
-    if (!isGridEnabled) {
-        isGridEnabled = true;
-        svgBackground.setAttribute("fill", "url(#grid_pattern)");
-    } else {
-        isGridEnabled = false;
-        svgBackground.setAttribute("fill", "rgb(255, 255, 255)");
-    }
-}
-
 //UNDO REDO
 undoButton = document.getElementById("undo");
 undoButton.onclick = function () {
@@ -331,7 +346,6 @@ document.addEventListener('keydown', function (event) {
         undoFunc();
     }
 });
-
 
 redoButton = document.getElementById("redo");
 redoButton.onclick = function () {
@@ -469,7 +483,6 @@ function changeProperty(act) {
     if (act.type == "end") {
         prevValue = act.attr[0].checked;
         act.attr[0].checked = act.attr[1];
-        console.log(polEnd.checked);
     } else {
         prevValue = act.attr[0].value;
         act.attr[0].value = act.attr[1];

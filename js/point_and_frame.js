@@ -41,6 +41,9 @@ class point {
                         x: curX,
                         y: curY
                     }
+                    doFunc("move", this, this.object.getCornerCoords())
+                    cornerCoordsbackup.x = this.object.getCornerCoords().x;
+                    cornerCoordsbackup.y = this.object.getCornerCoords().y;
                 }
             }).bind(this);
             this.circle.addEventListener("mousedown", startMoving);
@@ -106,7 +109,7 @@ class point {
                 }
             }).bind(this);
             const startMoving = ((current) => {
-                if (this.isSelected && this.object.isCompleted && !this.isMoving) {
+                if (current.which == 1 && this.isSelected && this.object.isCompleted && !this.isMoving) {
                     this.isMoving = true;
                     currentPointTypeAttr = this.type.attr;
                     this.object.addHotKeys();
@@ -116,6 +119,7 @@ class point {
                         y: curY
                     };
                     doFunc("resize", this.object, this.object.getResizeAttrs());
+                    this.resizeAttrsBackup = this.object.getResizeAttrs().toString();
                     this.object.startResize();
                     document.addEventListener("mousemove", move);
                 }
@@ -132,6 +136,8 @@ class point {
                     this.object.stopResize();
                     this.object.updateParameters();
                     this.object.removeHotKeys();
+                    if (this.resizeAttrsBackup == this.object.getResizeAttrs().toString()) undoActions.pop();
+                    this.resizeAttrsBackup = "";
                 }
             }).bind(this);
             scrollPanel.addEventListener("mouseup", stopMoving);
@@ -282,7 +288,10 @@ class lineFrame extends frame {
             this.transform = transform;
             this.setFrameAttribute('transform', transform);
         }
-        if (this.object.type == 'vector') this.setFrameAttribute('stroke-dasharray', "none");
+        if (this.object.type == 'vector') {
+            this.setFrameAttribute('stroke-dasharray', "none");
+            this.setFrameAttribute('stroke', 'blue');
+        }
     }
 }
 class rectangleFrame extends frame {

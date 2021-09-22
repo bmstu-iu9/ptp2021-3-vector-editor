@@ -13,10 +13,12 @@ class object {
             if (this.transform != null) this.angle = this.transform.split('(')[1].split(' ')[0] * Math.PI / 180.0;
             else this.angle = 0;
             this.strokeWidth = Number(this.getElementAttribute('stroke-width'));
+            elementsToAppend.push(this.svgElement)
         }
         this.svgElement.obj = this;
         this.type = type;
-        this.setElementAttribute('id', type);
+        this.setElementAttribute('id', type + "_" + number);
+        number++;
         this.isCompleted = false;
         this.isSelected = false;
         this.isMoving = false;
@@ -109,7 +111,9 @@ class object {
                     x: curX,
                     y: curY
                 };
-                doFunc("move", this, this.getCornerCoords())
+                doFunc("move", this, this.getCornerCoords());
+                cornerCoordsbackup.x = this.getCornerCoords().x;
+                cornerCoordsbackup.y = this.getCornerCoords().y;
             }
         }).bind(this);
         this.svgElement.addEventListener("mousedown", startMoving);
@@ -120,6 +124,11 @@ class object {
                 currentPointTypeAttr = null;
                 this.stopMoving();
                 this.updateParameters();
+                if (cornerCoordsbackup.x == this.getCornerCoords().x && cornerCoordsbackup.y == this.getCornerCoords().y) undoActions.pop();
+                cornerCoordsbackup = {
+                    x: 0,
+                    y: 0
+                };
             }
         }).bind(this);
         scrollPanel.addEventListener("mouseup", stopMoving);
@@ -266,6 +275,7 @@ class object {
     complete(isSizeNotZero = this.svgElement.getBoundingClientRect().width * this.svgElement.getBoundingClientRect().height > 0) {
         this.updateFrameAndPoints();
         this.removeHotKeys();
+        document.onmousedown = null;
         document.onmousemove = null;
         document.onmouseup = null;
         document.onmousedown = null;
@@ -278,8 +288,8 @@ class object {
             resetCurrentObject();
             this.addPanel();
             currentObject = this;
-            cursor.dispatchEvent(new Event("mousedown"));
-            cursor.click();
+            /*cursor.dispatchEvent(new Event("mousedown"));
+            cursor.click();*/
             this.isSelected = true;
             doFunc("create", this);
         } else {
@@ -1965,6 +1975,7 @@ class pencil extends object {
         newObj.complete();
         newObj.hideFrameAndPoints();
         newObj.removePanel();
+        undoActions.pop()
     }
     createClone() {
         let clone = new pencil();
@@ -2743,6 +2754,7 @@ class pathTool extends object {
         newObj.complete();
         newObj.hideFrameAndPoints();
         newObj.removePanel();
+        undoActions.pop()
     }
     createClone() {
         let clone = new pathTool();

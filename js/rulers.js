@@ -101,16 +101,3 @@ function updateRulers() {
 }
 
 updateRulers();
-
-//SHOW RULERS 
-showRulers = document.getElementById("showRulers");
-showRulers.onclick = function () {
-    if (rulers.style.display == "none") {
-        rulers.style.display = "block";
-        updateRulers();
-        startCoords = 15;
-    } else {
-        rulers.style.display = "none";
-        startCoords = 0;
-    }
-}

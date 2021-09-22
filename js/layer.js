@@ -193,13 +193,12 @@ class layer {
         let newValue = value == 0 ? this.opValue : 0;
         this.group.setAttribute('opacity', newValue);
         this.vis.src = value == 0 ? 'img/layers/visible.svg' : 'img/layers/invisible.svg';
-        this.vis.title = value == 0 ? "Скрыть" : "Показать";
         this.opacity.value = newValue;
     }
     mergeLayer() {
+        layers[this.name] = null;
         let prev = this.group.previousSibling;
         if (prev == null) return;
-        layers[this.name] = null;
         let content = this.group.childNodes;
         let n = content.length;
         for (i = 0; i < n; i++) {
@@ -225,7 +224,6 @@ class layer {
         clone.opValue = this.opValue;
         clone.group.setAttribute('opacity', this.group.getAttribute('opacity'));
         clone.vis.src = this.vis.src;
-        clone.vis.title = this.vis.title;
         clone.opacity.value = this.opacity.value;
     }
 }

@@ -4,6 +4,7 @@ scrollPanel = document.getElementById("scroll_panel");
 layersPanel = document.getElementById("layers_panel");
 rightPanel = document.getElementById("right_panel");
 canvas = document.getElementById("canvas");
+openSvg = document.getElementById("open_svg");
 
 let isSomeObjectSelected = false, //для курсора
 	isSomePointSelected = false;
@@ -19,6 +20,11 @@ let scaleСoef = 1,
 let pointRadius = 4,
 	pointStart,
 	currentPointTypeAttr = null;
+let number = 0;
+let cornerCoordsbackup = {
+	x: 0,
+	y: 0
+};
 
 //RULER
 rulerX = document.getElementById("ruler_x");

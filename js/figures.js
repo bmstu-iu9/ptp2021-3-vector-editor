@@ -198,16 +198,16 @@ function startVector(current) {
                 newObject.updatePath();
             };
             document.onmousedown = function (current) {
+                if (wasPressed != "vector") {
+                    newObject.complete();
+                    return;
+                }
                 updateCursorCoords(current);
                 newObject.updatePoint();
                 document.onmousemove = function (current) {
                     updateCursorCoords(current);
                     newObject.updateSecondPath();
                 };
-                if (wasPressed != "vector") {
-                    newObject.complete();
-                    return;
-                }
             };
 
             updateCursorCoords(current);

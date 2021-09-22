@@ -68,16 +68,3 @@ function updateScale() {
   scale_panel.style.display = "flex";
   scaleP.value = scaleСoef * 100;
 }
-
-//buttons
-zoomIn = document.getElementById("zoomIn");
-zoomIn.onclick = function () {
-    scaleСoef *= 1.25;
-    updateScale();
-}
-
-zoomOut = document.getElementById("zoomOut");
-zoomOut.onclick = function () {
-    scaleСoef /= 1.25;
-    updateScale();
-}

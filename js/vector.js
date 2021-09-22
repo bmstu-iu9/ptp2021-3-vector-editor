@@ -88,7 +88,7 @@ class vector extends object {
                     attr: this.i * 3 + 1
                 }),
                 new point(curX, curY, this, {
-                    action: "polyline",
+                    action: "pathTool",
                     attr: this.i * 3
                 })
             ];
@@ -115,6 +115,7 @@ class vector extends object {
         clone.maxX = this.maxX;
         clone.maxY = this.maxY;
         clone.cPoint = this.cPoint;
+        clone.angle = this.angle;
         clone.transform = this.transform;
         clone.svgElement.setAttribute('transform', this.transform);
         clone.path = "";

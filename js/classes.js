@@ -4,6 +4,7 @@ class object {
             this.svgElement = document.createElementNS("http://www.w3.org/2000/svg", name);
             this.x0 = curX;
             this.y0 = curY;
+            this.angle = 0;
             updateFill(this);
             updateStroke(this);
             currentLayer.group.appendChild(this.svgElement);
@@ -38,6 +39,7 @@ class object {
         clone.isSelected = true;
         clone.x0 = this.x0;
         clone.y0 = this.y0;
+        clone.angle = this.angle;
         clone.strokeWidth = this.strokeWidth;
         clone.removeFrameAndPoints();
         for (let i = 0; i < this.pointsArray.length; i++) {
@@ -112,8 +114,8 @@ class object {
                     y: curY
                 };
                 doFunc("move", this, this.getCornerCoords());
-                cornerCoordsbackup.x = this.getCornerCoords().x;
-                cornerCoordsbackup.y = this.getCornerCoords().y;
+                moveBackup.x = this.getCornerCoords().x;
+                moveBackup.y = this.getCornerCoords().y;
             }
         }).bind(this);
         this.svgElement.addEventListener("mousedown", startMoving);
@@ -124,8 +126,9 @@ class object {
                 currentPointTypeAttr = null;
                 this.stopMoving();
                 this.updateParameters();
-                if (cornerCoordsbackup.x == this.getCornerCoords().x && cornerCoordsbackup.y == this.getCornerCoords().y) undoActions.pop();
-                cornerCoordsbackup = {
+                //проверка на пустое дейтсвие
+                if (moveBackup.x == this.getCornerCoords().x && moveBackup.y == this.getCornerCoords().y) undoActions.pop();
+                moveBackup = {
                     x: 0,
                     y: 0
                 };
@@ -275,7 +278,6 @@ class object {
     complete(isSizeNotZero = this.svgElement.getBoundingClientRect().width * this.svgElement.getBoundingClientRect().height > 0) {
         this.updateFrameAndPoints();
         this.removeHotKeys();
-        document.onmousedown = null;
         document.onmousemove = null;
         document.onmouseup = null;
         document.onmousedown = null;
@@ -288,8 +290,6 @@ class object {
             resetCurrentObject();
             this.addPanel();
             currentObject = this;
-            /*cursor.dispatchEvent(new Event("mousedown"));
-            cursor.click();*/
             this.isSelected = true;
             doFunc("create", this);
         } else {
@@ -384,7 +384,6 @@ class rectangle extends object {
         clone.x = this.x;
         clone.y = this.y;
         clone.cPoint = this.cPoint;
-        clone.angle = this.angle;
         clone.setElementAttribute('width', this.width);
         clone.setElementAttribute('height', this.height);
         clone.setElementAttribute('x', this.x);
@@ -764,7 +763,6 @@ class ellipse extends object {
         clone.ry = this.ry;
         clone.cx = this.cx;
         clone.cy = this.cy;
-        clone.angle = this.angle;
         clone.setElementAttribute('rx', this.rx);
         clone.setElementAttribute('ry', this.ry);
         clone.setElementAttribute('cx', this.cx);
@@ -1111,7 +1109,6 @@ class polygon extends object {
         let clone = new polygon();
         super.createClone(clone);
         clone.r = this.r;
-        clone.angle = this.angle;
         clone.vertNum = this.vertNum;
         clone.vertices = this.vertices;
         clone.setElementAttribute('points', this.vertices);
@@ -1375,7 +1372,6 @@ class starPolygon extends object {
         super.createClone(clone);
         clone.path = this.path;
         clone.r = this.r;
-        clone.angle = this.angle;
         clone.vertNum = this.vertNum;
         clone.step = this.step;
         clone.vertices = this.vertices;
@@ -1682,7 +1678,6 @@ class pentagram extends object {
         super.createClone(clone);
         clone.path = this.path;
         clone.r = this.r;
-        clone.angle = this.angle;
         clone.vertNum = this.vertNum;
         clone.step = this.step;
         clone.vertices = this.vertices;
@@ -1985,7 +1980,6 @@ class pencil extends object {
         clone.maxX = this.maxX;
         clone.maxY = this.maxY;
         clone.cPoint = this.cPoint;
-        clone.angle = this.angle;
         clone.transform = this.transform;
         clone.setElementAttribute('transform', this.transform);
         clone.setElementAttribute('fill', "none");
@@ -2409,7 +2403,6 @@ class line extends object {
         clone.y2 = this.y2;
         clone.isFree = this.isFree;
         clone.cPoint = this.cPoint;
-        clone.angle = this.angle;
         clone.setElementAttribute('x1', this.x0);
         clone.setElementAttribute('y1', this.y0);
         clone.setElementAttribute('x2', this.x2);
@@ -2766,7 +2759,6 @@ class pathTool extends object {
         clone.maxX = this.maxX;
         clone.maxY = this.maxY;
         clone.cPoint = this.cPoint;
-        clone.angle = this.angle;
         clone.newAngle = this.newAngle;
         clone.transform = this.transform;
         clone.setElementAttribute('transform', this.transform);

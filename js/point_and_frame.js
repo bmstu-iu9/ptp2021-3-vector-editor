@@ -41,9 +41,9 @@ class point {
                         x: curX,
                         y: curY
                     }
-                    doFunc("move", this, this.object.getCornerCoords())
-                    cornerCoordsbackup.x = this.object.getCornerCoords().x;
-                    cornerCoordsbackup.y = this.object.getCornerCoords().y;
+                    doFunc("move", this.object, this.object.getCornerCoords())
+                    moveBackup.x = this.object.getCornerCoords().x;
+                    moveBackup.y = this.object.getCornerCoords().y;
                 }
             }).bind(this);
             this.circle.addEventListener("mousedown", startMoving);
@@ -81,6 +81,7 @@ class point {
                     currentPointTypeAttr = "rotate";
                     scrollPanel.style.cursor = "url(img/rotate.svg) 10 10, pointer";
                     doFunc("rotate", this.object, this.object.angle)
+                    rotateBackup = this.object.angle;
                     this.object.startRotating();
                 }
             }).bind(this);
@@ -96,6 +97,8 @@ class point {
                     document.dispatchEvent(new Event("mouseup"));
                     this.object.stopRotating();
                     this.object.updateParameters();
+                    if (rotateBackup == this.object.angle) undoActions.pop(); //проверка на пустое дейтвие
+                    rotateBackup = null;
                 }
             }).bind(this);
             document.addEventListener("mouseup", stopRotating);
@@ -119,7 +122,7 @@ class point {
                         y: curY
                     };
                     doFunc("resize", this.object, this.object.getResizeAttrs());
-                    this.resizeAttrsBackup = this.object.getResizeAttrs().toString();
+                    resizeBackup = this.object.getResizeAttrs().toString();
                     this.object.startResize();
                     document.addEventListener("mousemove", move);
                 }
@@ -136,8 +139,8 @@ class point {
                     this.object.stopResize();
                     this.object.updateParameters();
                     this.object.removeHotKeys();
-                    if (this.resizeAttrsBackup == this.object.getResizeAttrs().toString()) undoActions.pop();
-                    this.resizeAttrsBackup = "";
+                    if (resizeBackup == this.object.getResizeAttrs().toString()) undoActions.pop(); //проверка на пустое дейтсвие
+                    resizeBackup = "";
                 }
             }).bind(this);
             scrollPanel.addEventListener("mouseup", stopMoving);

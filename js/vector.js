@@ -77,8 +77,8 @@ class vector extends object {
                 y: this.minY + (this.maxY - this.minY) / 2
             };
             this.setElementAttribute('d', this.path);
-            this.frameArray = [new lineFrame(this.x0, this.y0, this.x0, this.y0, this),
-                new lineFrame(this.x0, this.y0, this.x0, this.y0, this)
+            this.frameArray = [new lineFrame(this.x0, this.y0, this.x0, this.y0, this, true),
+                new lineFrame(this.x0, this.y0, this.x0, this.y0, this, true)
             ];
             this.pointsArray = [new point(this.x0, this.y0, this, {
                     action: "resize",
@@ -115,7 +115,6 @@ class vector extends object {
         clone.maxX = this.maxX;
         clone.maxY = this.maxY;
         clone.cPoint = this.cPoint;
-        clone.angle = this.angle;
         clone.transform = this.transform;
         clone.svgElement.setAttribute('transform', this.transform);
         clone.path = "";

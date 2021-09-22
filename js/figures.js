@@ -1,3 +1,8 @@
+function setCursorActive() {
+    cursor.dispatchEvent(new Event("mousedown"));
+    cursor.click();
+}
+
 //RECTANGLE
 rectangleButton = document.getElementById("rectangle");
 
@@ -13,6 +18,7 @@ rectangleButton.onclick = function () {
         };
         document.onmouseup = function () {
             newObject.complete();
+            setCursorActive();
         };
     };
 };
@@ -32,6 +38,7 @@ ellipseButton.onclick = function () {
         };
         document.onmouseup = function () {
             newObject.complete();
+            setCursorActive();
         };
     };
 };
@@ -52,6 +59,7 @@ polygonButton.onclick = function () {
         };
         document.onmouseup = function () {
             newObject.complete();
+            setCursorActive();
         };
     };
 };
@@ -72,6 +80,7 @@ starPolygonButton.onclick = function () {
         };
         document.onmouseup = function () {
             newObject.complete();
+            setCursorActive();
         };
     };
 };
@@ -92,6 +101,7 @@ pentagramButton.onclick = function () {
         };
         document.onmouseup = function () {
             newObject.complete();
+            setCursorActive();
         };
     };
 };
@@ -111,6 +121,7 @@ pencilButton.onclick = function () {
         };
         document.onmouseup = function () {
             newObject.complete();
+            setCursorActive();
         };
     };
 };
@@ -154,13 +165,16 @@ pathTool.onclick = function () {
                 newObject.updateAttributes();
                 if (current.ctrlKey) {
                     newObject.complete();
+                    setCursorActive();
                 }
             };
             container.onmousedown = function () {
                 newObject.complete();
+                setCursorActive();
             };
             rightPanel.onmousedown = function () {
                 newObject.complete();
+                setCursorActive();
             };
             document.onmousedown = function () {
                 if (wasPressed != "pathTool") {
@@ -198,16 +212,16 @@ function startVector(current) {
                 newObject.updatePath();
             };
             document.onmousedown = function (current) {
+                if (wasPressed != "vector") {
+                    newObject.complete();
+                    return;
+                }
                 updateCursorCoords(current);
                 newObject.updatePoint();
                 document.onmousemove = function (current) {
                     updateCursorCoords(current);
                     newObject.updateSecondPath();
                 };
-                if (wasPressed != "vector") {
-                    newObject.complete();
-                    return;
-                }
             };
 
             updateCursorCoords(current);
@@ -215,13 +229,16 @@ function startVector(current) {
 
             if (current.ctrlKey) {
                 newObject.complete();
+                setCursorActive();
             }
         };
         container.onmousedown = function () {
             newObject.complete();
+            setCursorActive();
         };
         rightPanel.onmousedown = function () {
             newObject.complete();
+            setCursorActive();
         };
         document.onmousedown = function () {
             if (wasPressed != "vector") {
@@ -240,5 +257,6 @@ textButton.onclick = function () {
         updateCursorCoords(current);
         let newObject = new text();
         newObject.complete();
+        setCursorActive();
     };
 };

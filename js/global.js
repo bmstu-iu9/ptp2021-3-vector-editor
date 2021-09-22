@@ -21,10 +21,12 @@ let pointRadius = 4,
 	pointStart,
 	currentPointTypeAttr = null;
 let number = 0;
-let cornerCoordsbackup = {
-	x: 0,
-	y: 0
-};
+let moveBackup = {
+		x: 0,
+		y: 0
+	},
+	resizeBackup = "",
+	rotateBackup = null;
 
 //RULER
 rulerX = document.getElementById("ruler_x");

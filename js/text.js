@@ -105,7 +105,6 @@ class text extends object {
         clone.x = this.x;
         clone.y = this.y;
         clone.cPoint = this.cPoint;
-        clone.angle = this.angle;
         clone.textDiv.innerHTML = this.textDiv.innerHTML;
         this.setElementAttribute('width', this.width);
         this.setElementAttribute('height', this.height);

@@ -266,7 +266,6 @@ class object {
     complete(isSizeNotZero = this.svgElement.getBoundingClientRect().width * this.svgElement.getBoundingClientRect().height > 0) {
         this.updateFrameAndPoints();
         this.removeHotKeys();
-        document.onmousedown = null;
         document.onmousemove = null;
         document.onmouseup = null;
         document.onmousedown = null;
@@ -279,6 +278,8 @@ class object {
             resetCurrentObject();
             this.addPanel();
             currentObject = this;
+            cursor.dispatchEvent(new Event("mousedown"));
+            cursor.click();
             this.isSelected = true;
             doFunc("create", this);
         } else {

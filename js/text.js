@@ -25,6 +25,7 @@ class text extends object {
             this.textDiv = document.createElement('div');
             this.textDiv.setAttribute('contenteditable', true);
             this.textDiv.style.overflow = 'hidden';
+            this.textDiv.setAttribute("xmlns", "http://www.w3.org/1999/xhtml");
             this.textDiv.style.overflowWrap = 'break-word';
             this.textDiv.style.fontSize = '12pt';
             this.textDiv.style.fontFamily = 'Arial';

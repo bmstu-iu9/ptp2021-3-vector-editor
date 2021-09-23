@@ -153,7 +153,6 @@ function resetDocument(width, height) {
     createFirstLayer();
     canvas.setAttribute('width', width);
     canvas.setAttribute('height', height);
-    updateSizeOfCanvas();
 }
 
 //OPEN
@@ -294,23 +293,20 @@ savePng.onclick = function () {
     resetCurrentObject()
 
     let svgData = draw_panel.innerHTML.toString();
-    let blob = new Blob([svgData], {
-        type: "image/svg+xml;charset=utf-8"
-    });
-    let url = window.URL.createObjectURL(blob);
+    var img = new Image();
+    var url = 'data:image/svg+xml; charset=utf8, ' + encodeURIComponent(svgData + " ");
 
-    let img = new Image();
     img.onload = function () {
-        canvas.getContext("2d").drawImage(img, 0, 0);
-
+        canvas.width = this.width;
+        canvas.height = this.height;
+        canvas.getContext('2d').drawImage(img, 0, 0);
         let a = document.createElement("a");
         a.style = "display: none";
         a.href = canvas.toDataURL("image/png");;
         a.download = ".png";
         a.click();
 
-        window.URL.revokeObjectURL(url);
-    }
+    };
     img.src = url;
 
     svgPanel.style = style;

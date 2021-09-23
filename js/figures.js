@@ -1,6 +1,10 @@
+let newObject;
+
 function setCursorActive() {
-    cursor.dispatchEvent(new Event("mousedown"));
-    cursor.click();
+    if (newObject.isCompleted) {
+        cursor.dispatchEvent(new Event("mousedown"));
+        cursor.click();
+    }
 }
 
 //RECTANGLE
@@ -10,7 +14,7 @@ rectangleButton.onclick = function () {
     scrollPanel.style.cursor = "default";
     scrollPanel.onmousedown = function (current) {
         updateCursorCoords(current);
-        let newObject = new rectangle();
+        newObject = new rectangle();
 
         document.onmousemove = function (current) {
             updateCursorCoords(current);
@@ -30,7 +34,7 @@ ellipseButton.onclick = function () {
     scrollPanel.style.cursor = "default";
     scrollPanel.onmousedown = function (current) {
         updateCursorCoords(current);
-        let newObject = new ellipse();
+        newObject = new ellipse();
 
         document.onmousemove = function (current) {
             updateCursorCoords(current);
@@ -51,7 +55,7 @@ polygonButton.onclick = function () {
     scrollPanel.style.cursor = "default";
     scrollPanel.onmousedown = function (current) {
         updateCursorCoords(current);
-        let newObject = new polygon();
+        newObject = new polygon();
 
         document.onmousemove = function (current) {
             updateCursorCoords(current);
@@ -72,7 +76,7 @@ starPolygonButton.onclick = function () {
     scrollPanel.style.cursor = "default";
     scrollPanel.onmousedown = function (current) {
         updateCursorCoords(current);
-        let newObject = new starPolygon();
+        newObject = new starPolygon();
 
         document.onmousemove = function (current) {
             updateCursorCoords(current);
@@ -93,7 +97,7 @@ pentagramButton.onclick = function () {
     scrollPanel.style.cursor = "default";
     scrollPanel.onmousedown = function (current) {
         updateCursorCoords(current);
-        let newObject = new pentagram();
+        newObject = new pentagram();
 
         document.onmousemove = function (current) {
             updateCursorCoords(current);
@@ -113,7 +117,7 @@ pencilButton.onclick = function () {
     scrollPanel.style.cursor = "url(img/pencil_cursor.svg) 0 20, default";
     scrollPanel.onmousedown = function (current) {
         updateCursorCoords(current);
-        let newObject = new pencil();
+        newObject = new pencil();
 
         document.onmousemove = function (current) {
             updateCursorCoords(current);
@@ -133,7 +137,7 @@ lineButton.onclick = function () {
     scrollPanel.style.cursor = "default";
     scrollPanel.onmousedown = function (current) {
         updateCursorCoords(current);
-        let newObject = new line();
+        newObject = new line();
 
         document.onmousemove = function (current) {
             updateCursorCoords(current);
@@ -141,6 +145,7 @@ lineButton.onclick = function () {
         };
         document.onmouseup = function () {
             newObject.complete(newObject.x0 != newObject.x2 || newObject.y0 != newObject.y2);
+            setCursorActive();
         };
     };
 };
@@ -154,7 +159,7 @@ pathTool.onclick = function () {
     scrollPanel.onmousedown = function (current) {
         if (polylineIsCompleted && current.which == 1) {
             updateCursorCoords(current);
-            let newObject = new pathTool();
+            newObject = new pathTool();
             polylineIsCompleted = false;
 
             document.onmousemove = function (current) {
@@ -197,7 +202,7 @@ vectorTool.onclick = function () {
 function startVector(current) {
     if (vectorIsCompleted && current.which == 1) {
         updateCursorCoords(current);
-        let newObject = new vector();
+        newObject = new vector();
         vectorIsCompleted = false;
 
         document.onmousemove = function (current) {
@@ -255,7 +260,7 @@ textButton.onclick = function () {
     scrollPanel.style.cursor = "default";
     scrollPanel.onmousedown = function (current) {
         updateCursorCoords(current);
-        let newObject = new text();
+        newObject = new text();
         newObject.complete();
         setCursorActive();
     };

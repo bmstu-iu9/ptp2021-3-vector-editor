@@ -122,7 +122,7 @@ class point {
                         y: curY
                     };
                     doFunc("resize", this.object, this.object.getResizeAttrs());
-                    resizeBackup = this.object.getResizeAttrs().toString();
+                    resizeBackup = JSON.stringify(this.object.getResizeAttrs());
                     this.object.startResize();
                     document.addEventListener("mousemove", move);
                 }
@@ -131,7 +131,6 @@ class point {
             const stopMoving = (() => {
                 if (this.isMoving) {
                     this.isMoving = false;
-                    currentPointTypeAttr = null;
                     this.isSelected = false;
                     isSomePointSelected = false;
                     this.setColor("white");
@@ -139,8 +138,9 @@ class point {
                     this.object.stopResize();
                     this.object.updateParameters();
                     this.object.removeHotKeys();
-                    if (resizeBackup == this.object.getResizeAttrs().toString()) undoActions.pop(); //проверка на пустое дейтсвие
+                    if (resizeBackup == JSON.stringify(this.object.getResizeAttrs())) undoActions.pop(); //проверка на пустое дейтсвие
                     resizeBackup = "";
+                    currentPointTypeAttr = null;
                 }
             }).bind(this);
             scrollPanel.addEventListener("mouseup", stopMoving);

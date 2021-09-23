@@ -292,6 +292,7 @@ class object {
             currentObject = this;
             this.isSelected = true;
             doFunc("create", this);
+            this.svgElement.style.cursor = "move";
         } else {
             this.remove();
             return;
@@ -2825,6 +2826,7 @@ class pathTool extends object {
             polEnd.checked = "true";
             this.hasEnd = true;
             this.complete();
+            setCursorActive();
             return;
         }
         this.minX = Math.min(this.minX, x);

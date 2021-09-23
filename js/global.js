@@ -5,6 +5,7 @@ layersPanel = document.getElementById("layers_panel");
 rightPanel = document.getElementById("right_panel");
 canvas = document.getElementById("canvas");
 openSvg = document.getElementById("open_svg");
+cursor = document.getElementById("cursor");
 
 let isSomeObjectSelected = false, //для курсора
 	isSomePointSelected = false;
@@ -67,6 +68,10 @@ for (var i = 0; i < buttons.length; i++) {
 
 leftPanel.onchange = () => {
 	scale_panel.style.display = "none";
+	scrollPanel.onmousedown = null;
+	svgPanel.onmousedown = null;
+	scrollPanel.style.cursor = "default";
+	svgPanel.style.cursor = "default";
 }
 
 let isEraserActive = false;
@@ -105,6 +110,10 @@ scrollPanel.onscroll = function () {
 
 let firstWidth = svgPanel.clientWidth,
 	firstHeight = svgPanel.clientHeight;
+
+function updateSizeOfCanvas() {
+	firstWidth = svgPanel.clientWidth, firstHeight = svgPanel.clientHeight;
+}
 
 function resetCurrentObject() {
 	if (currentObject != null) {

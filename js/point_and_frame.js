@@ -33,7 +33,7 @@ class point {
         //moveObject
         if (this.type.action == "move") {
             const startMoving = ((current) => {
-                if (this.isSelected && this.object.isCompleted) {
+                if (this.isSelected && this.object.isCompleted && !this.object.isMoving) {
                     this.object.isMoving = true;
                     updateCursorCoords(current);
                     currentPointTypeAttr = this.type.attr;

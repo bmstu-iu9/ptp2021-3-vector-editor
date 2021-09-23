@@ -209,6 +209,7 @@ fill = document.getElementById("filling");
 fill.onmousedown = function () {
   wasPressed = "fill";
   scrollPanel.style.cursor = "url(img/fill.ico) 4 28, default";
+  svgPanel.style.cursor = "url(img/fill.ico) 4 28, default";
   svgPanel.onmousedown = function (event) {
     if (event.target == svgBackground) {
       doFunc("backgroundFill", null, svgPanel.style.background);

@@ -153,6 +153,7 @@ function resetDocument(width, height) {
     createFirstLayer();
     canvas.setAttribute('width', width);
     canvas.setAttribute('height', height);
+    updateSizeOfCanvas();
 }
 
 //OPEN

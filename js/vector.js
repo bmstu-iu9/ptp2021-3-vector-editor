@@ -378,6 +378,7 @@ class vector extends object {
 
         if (this.isClosed) {
             this.complete();
+            setCursorActive();
         }
     }
     updatePath() {

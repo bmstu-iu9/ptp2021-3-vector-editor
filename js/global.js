@@ -106,10 +106,6 @@ scrollPanel.onscroll = function () {
 let firstWidth = svgPanel.clientWidth,
 	firstHeight = svgPanel.clientHeight;
 
-function updateSizeOfCanvas() {
-	firstWidth = svgPanel.clientWidth, firstHeight = svgPanel.clientHeight;
-}
-
 function resetCurrentObject() {
 	if (currentObject != null) {
 		currentObject.hideFrameAndPoints();

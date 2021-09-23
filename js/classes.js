@@ -2212,6 +2212,30 @@ class pencil extends object {
         this.setElementAttribute('transform', this.transform);
         this.updateFrameAndPoints();
     }
+    getResizeAttrs() {
+        let pathCoords = [];
+        for (let i = 0; i < this.pathCoords.length; i++) {
+            pathCoords[i] = {
+                x: 0,
+                y: 0
+            }
+            pathCoords[i].x = this.pathCoords[i].x;
+            pathCoords[i].y = this.pathCoords[i].y;
+        }
+        return [
+            pathCoords,
+            this.minX,
+            this.minY,
+            this.maxX,
+            this.maxY
+        ];
+    }
+    setResizeAttrs(attrs) {
+        [this.pathCoords, this.minX, this.minY, this.maxX, this.maxY] = attrs;
+        this.startResize();
+        this.stopResize();
+        this.updateParameters();
+    }
     //ROTATE
     startRotating() {
         this.rPoint = {

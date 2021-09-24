@@ -401,7 +401,6 @@ class vector extends object {
     complete() {
         if (!vectorIsCompleted) {
             vectorIsCompleted = true;
-            scrollPanel.onmousedown = startVector;
             this.pointsArray[1].setPointAttribute('fill', "white");
             this.pathCoords = [];
             for (let i = 1; i < this.pointsArray.length - 2; i++) {

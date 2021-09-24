@@ -32,8 +32,20 @@ class point {
         this.circle.addEventListener("mouseout", this.setColor.bind(this, "white"));
         //moveObject
         if (this.type.action == "move") {
+            this.setCursorStyle = (() => {
+                if (wasPressed == "cursor") {
+                    this.circle.style.cursor = "move";
+                } else {
+                    this.circle.style.cursor = scrollPanel.style.cursor;
+                }
+            }).bind(this);
+            document.addEventListener('click', this.setCursorStyle);
             const startMoving = ((current) => {
                 if (this.isSelected && this.object.isCompleted && !this.object.isMoving) {
+                    wasPressed = "someObjectIsMoving";
+                    scrollPanel.style.cursor = "move";
+                    svgPanel.style.cursor = "move";
+                    document.dispatchEvent(new Event("click"));
                     this.object.isMoving = true;
                     updateCursorCoords(current);
                     currentPointTypeAttr = this.type.attr;
@@ -57,14 +69,14 @@ class point {
         //rotateObject
         if (this.type.action == "rotate") {
             //чтобы менялся только, когда выбран курсор
-            this.setRotateCursor = (() => {
+            this.setCursorStyle = (() => {
                 if (wasPressed == "cursor") {
                     this.circle.style.cursor = "url(img/rotate.svg) 10 10, pointer";
                 } else {
                     this.circle.style.cursor = scrollPanel.style.cursor;
                 }
             }).bind(this);
-            document.addEventListener('click', this.setRotateCursor);
+            document.addEventListener('click', this.setCursorStyle);
 
             const rotate = ((current) => {
                 if (this.object.isRotating) {
@@ -75,11 +87,14 @@ class point {
             document.addEventListener("mousemove", rotate);
             const startRotating = ((current) => {
                 if (this.isSelected && this.object.isCompleted) {
+                    wasPressed = "someObjectIsRotating";
+                    scrollPanel.style.cursor = "url(img/rotate.svg) 10 10, pointer";
+                    svgPanel.style.cursor = "url(img/rotate.svg) 10 10, pointer";
+                    document.dispatchEvent(new Event("click"));
                     this.object.isRotating = true;
                     this.object.isMoving = false;
                     updateCursorCoords(current);
                     currentPointTypeAttr = "rotate";
-                    scrollPanel.style.cursor = "url(img/rotate.svg) 10 10, pointer";
                     doFunc("rotate", this.object, this.object.angle)
                     rotateBackup = this.object.angle;
                     this.object.startRotating();
@@ -88,13 +103,14 @@ class point {
             this.circle.addEventListener("mousedown", startRotating);
             const stopRotating = ((current) => {
                 if (this.object.isRotating) {
+                    wasPressed = "cursor";
+                    scrollPanel.style.cursor = "default";
+                    svgPanel.style.cursor = "default";
                     this.object.isRotating = false;
                     updateCursorCoords(current);
-                    scrollPanel.style.cursor = "default";
                     currentPointTypeAttr = null;
                     this.isSelected = false;
                     isSomePointSelected = false;
-                    document.dispatchEvent(new Event("mouseup"));
                     this.object.stopRotating();
                     this.object.updateParameters();
                     if (rotateBackup == this.object.angle) undoActions.pop(); //проверка на пустое дейтвие
@@ -113,6 +129,10 @@ class point {
             }).bind(this);
             const startMoving = ((current) => {
                 if (current.which == 1 && this.isSelected && this.object.isCompleted && !this.isMoving) {
+                    wasPressed = "somePointIsMoving";
+                    scrollPanel.style.cursor = "default";
+                    svgPanel.style.cursor = "default";
+                    document.dispatchEvent(new Event("click"));
                     this.isMoving = true;
                     currentPointTypeAttr = this.type.attr;
                     this.object.addHotKeys();
@@ -130,6 +150,7 @@ class point {
             this.circle.addEventListener("mousedown", startMoving);
             const stopMoving = (() => {
                 if (this.isMoving) {
+                    wasPressed = "cursor";
                     this.isMoving = false;
                     this.isSelected = false;
                     isSomePointSelected = false;
@@ -173,15 +194,21 @@ class point {
         }
     }
     hide() {
+        if (this.type.action == "rotate" || this.type.action == "move") {
+            document.removeEventListener('click', this.setCursorStyle);
+        }
         this.setColor("white");
         svgPanel.removeChild(this.circle);
     }
     show() {
+        if (this.type.action == "rotate" || this.type.action == "move") {
+            document.addEventListener('click', this.setCursorStyle);
+        }
         svgPanel.appendChild(this.circle);
     }
     remove() {
-        if (this.type.action == "rotate") {
-            document.removeEventListener('click', this.setRotateCursor);
+        if (this.type.action == "rotate" || this.type.action == "move") {
+            document.removeEventListener('click', this.setCursorStyle);
         }
         svgPanel.removeChild(this.circle);
         this.circle = null;

@@ -137,8 +137,10 @@ create.onclick = function () {
 function resetDocument(width, height) {
     scaleСoef = 1;
     resetCurrentObject();
-    for (var i = 2; i < svgPanel.childNodes.length;)
+    for (var i = 2; i < svgPanel.childNodes.length;) {
         svgPanel.removeChild(svgPanel.childNodes[i]);
+        svgPanel.childNodes[i].remove();
+    }
     for (var i = 0; i < layersPanel.childNodes.length;)
         layersPanel.removeChild(layersPanel.childNodes[i]);
 

@@ -107,6 +107,10 @@ class object {
         document.addEventListener("mousemove", move);
         const startMoving = ((current) => {
             if (wasPressed == "cursor" && this.isCompleted && this.isSelected && this.type != 'text' && !this.isMoving) {
+                wasPressed = "someObjectIsMoving";
+                scrollPanel.style.cursor = "move";
+                svgPanel.style.cursor = "move";
+                document.dispatchEvent(new Event("click"));
                 this.isMoving = true;
                 updateCursorCoords(current);
                 this.start = {
@@ -121,6 +125,9 @@ class object {
         this.svgElement.addEventListener("mousedown", startMoving);
         const stopMoving = ((current) => {
             if (this.isSelected && this.isMoving) {
+                wasPressed = "cursor";
+                scrollPanel.style.cursor = "default";
+                svgPanel.style.cursor = "default";
                 this.isMoving = false;
                 updateCursorCoords(current);
                 currentPointTypeAttr = null;
@@ -152,6 +159,7 @@ class object {
         return this.svgElement.getAttribute(attributeName);
     }
     remove() {
+        document.removeEventListener('click', this.setCursorStyle);
         currentLayer.group.removeChild(this.svgElement);
         this.svgElement = null;
         this.isSelected = false;
@@ -169,11 +177,13 @@ class object {
         this.frameArray = [];
     }
     hide() {
+        document.removeEventListener('click', this.setCursorStyle);
         this.hideFrameAndPoints()
         currentLayer.group.removeChild(this.svgElement);
         this.removePanel();
     }
     show() {
+        document.addEventListener('click', this.setCursorStyle);
         currentLayer.group.appendChild(this.svgElement);
         this.showFrameAndPoints();
     }
@@ -292,7 +302,16 @@ class object {
             currentObject = this;
             this.isSelected = true;
             doFunc("create", this);
-            this.svgElement.style.cursor = "move";
+            this.setCursorStyle = (() => {
+                if (wasPressed == "cursor" && this.type != "text")
+                    this.svgElement.style.cursor = "move";
+                else if (wasPressed == "cursor" && this.type == "text")
+                    this.svgElement.style.cursor = "text";
+                else
+                    this.svgElement.style.cursor = scrollPanel.style.cursor;
+
+            }).bind(this);
+            document.addEventListener('click', this.setCursorStyle);
         } else {
             this.remove();
             return;

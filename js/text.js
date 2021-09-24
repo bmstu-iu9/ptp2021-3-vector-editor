@@ -132,23 +132,13 @@ class text extends object {
         document.addEventListener('mousedown', () => {
             if (wasPressed == "cursor" && !isSomePointSelected) {
                 this.textDiv.setAttribute('contenteditable', 'true');
-                this.svgElement.style.cursor = "text";
             } else {
-                this.svgElement.style.cursor = scrollPanel.style.cursor;
                 this.textDiv.setAttribute('contenteditable', 'false');
                 this.textDiv.style.webkitTouchCallout = 'none';
                 this.textDiv.style.webkitUserSelect = 'none';
                 this.textDiv.style.userSelect = 'none';
             }
         });
-        //чтобы после вращения курсор над текстом менялся на default(если мышка после вращения осталась на текстом)
-        document.addEventListener("mouseup", function () {
-            if (wasPressed == "cursor" && !isSomePointSelected) {
-                this.svgElement.style.cursor = "text";
-            } else {
-                this.svgElement.style.cursor = scrollPanel.style.cursor;
-            }
-        }.bind(this));
     }
     updateFrameAndPoints(width = this.width, height = this.height, x = this.x, y = this.y, transform = this.transform) {
         this.frameArray[0].update(x, y, width, height, transform);
